@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Narengi</string>
+
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="search_hint">دنبال چه جور جايی هستی؟</string>
+
+    <!-- Drawer menu -->
+    <string name="drawer_welcome_message">خوش آمديد</string>
+    <string name="drawer_menu_settings">تنظيمات</string>
+    <string name="drawer_menu_profile">پروفايل</string>
+    <string name="drawer_menu_map">نمايش نقشه</string>
+
+
+</resources>
