@@ -1,26 +1,19 @@
 package xyz.narengi.android.common.dto;
 
+import java.util.List;
+
 /**
  * @author Siavash Mahmoudpour
  */
 public class SearchResult {
 
-    private Long id;
-    private Object data;
+    private List<AroundLocation> aroundLocations;
 
-    public Long getId() {
-        return id;
+    public List<AroundLocation> getAroundLocations() {
+        return aroundLocations;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
+    public void setAroundLocations(List<AroundLocation> aroundLocations) {
+        this.aroundLocations = aroundLocations;
     }
 }

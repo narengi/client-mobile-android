@@ -29,8 +29,8 @@
         <!--<item name="popupTheme">@style/ItemMenuBackground</item>-->
         <!--<item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>-->
         <item name="android:actionButtonStyle">@style/ActionButtonStyle</item>
-        <item name="android:padding">10dp</item>
-        <item name="android:layout_margin">10dp</item>
+        <item name="android:padding">20dp</item>
+        <!--<item name="android:layout_margin">20dp</item>-->
     </style>
 
     <style name="ItemMenuBackground" parent="ThemeOverlay.AppCompat.Light">

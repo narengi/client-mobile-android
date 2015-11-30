@@ -9,22 +9,22 @@
         android:icon="@drawable/ic_action_location_on"
         app:showAsAction="always"
         />
-    <item android:id="@+id/explore_action_left_space"
-        android:title="Settings"
-        android:icon="@drawable/ic_action_location_on"
-        app:showAsAction="always"
-        />
+    <!--<item android:id="@+id/explore_action_left_space"-->
+        <!--android:title="Settings"-->
+        <!--android:icon="@drawable/ic_action_location_on"-->
+        <!--app:showAsAction="always"-->
+        <!--/>-->
     <item android:id="@+id/explore_action_search"
         android:title="Search"
         android:icon="@drawable/ic_action_search"
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
-    <item android:id="@+id/explore_action_right_space"
-        android:title="Settings"
-        android:icon="@drawable/ic_action_location_on"
-        app:showAsAction="always"
-        />
+    <!--<item android:id="@+id/explore_action_right_space"-->
+        <!--android:title="Settings"-->
+        <!--android:icon="@drawable/ic_action_location_on"-->
+        <!--app:showAsAction="always"-->
+        <!--/>-->
 
     <item android:id="@+id/explore_action_settings"
         android:title="Settings"

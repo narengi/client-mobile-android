@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="5dp">
+    <TextView
+        android:id="@+id/seach_result_id"
+        style="@android:style/TextAppearance.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
+    <TextView
+        android:id="@+id/search_result_item_title"
+        style="@android:style/TextAppearance.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right|center_vertical"
+        android:layout_gravity="right|center_vertical"
+        />
+    <!--<TextView-->
+        <!--android:id="@+id/search_result_item_type"-->
+        <!--style="@android:style/TextAppearance.Small"-->
+        <!--android:singleLine="true"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="right|center_vertical"-->
+        <!--android:layout_gravity="right|center_vertical"-->
+        <!--/>-->
+</LinearLayout>
