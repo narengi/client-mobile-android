@@ -21,17 +21,15 @@
                 <!--<action android:name="android.intent.action.SEARCH"/>-->
             </intent-filter>
 
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.SEARCH"/>-->
+            <!--</intent-filter>-->
 
-            <!--<meta-data android:name="android.app.default_searchable"-->
-                <!--android:value=".SearchableActivity" />-->
             <meta-data android:name="android.app.default_searchable"
                 android:value=".ui.activity.SearchableActivity" />
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+            <!--<meta-data-->
+                <!--android:name="android.app.searchable"-->
+                <!--android:resource="@xml/searchable"/>-->
         </activity>
 
         <activity
@@ -44,6 +42,10 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
+
+            <!--<meta-data-->
+                <!--android:name="android.app.searchable"-->
+                <!--android:resource="@xml/searchable_recents"/>-->
         </activity>
 
         <provider
@@ -52,6 +54,12 @@
             android:enabled="true"
             android:exported="false">
         </provider>
+
+        <provider android:name=".content.SearchRecentQuerySuggestionsProvider"
+            android:authorities="xyz.narengi.android.content.SearchRecentQuerySuggestionsProvider"
+            android:enabled="true"
+            android:exported="false"
+            />
 
         <meta-data
             android:name="android.app.default_searchable"

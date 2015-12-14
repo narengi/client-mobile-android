@@ -1,10 +1,15 @@
 package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +17,26 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import xyz.narengi.android.R;
+import xyz.narengi.android.common.dto.AroundLocation;
+import xyz.narengi.android.common.dto.AroundPlaceAttraction;
+import xyz.narengi.android.common.dto.AroundPlaceCity;
+import xyz.narengi.android.common.dto.AroundPlaceHouse;
+import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 
 /**
  * @author Siavash Mahmoudpour
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
-    private List<Object> objects;
+    private List<AroundLocation> objects;
     private Context context;
 
     // Provide a reference to the views for each data item
@@ -36,7 +52,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RecyclerAdapter(List<Object> objects, Context context) {
+    public RecyclerAdapter(List<AroundLocation> objects, Context context) {
         this.objects = objects;
         this.context = context;
     }
@@ -55,7 +71,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
             float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
 //
-            viewPager.getLayoutParams().height = (int)(dpHeight/3);
+            viewPager.getLayoutParams().height = (int)(dpHeight/2);
 
         ViewHolder holder = new ViewHolder(itemView);
         holder.viewPager = viewPager;
@@ -69,23 +85,33 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         // - replace the contents of the view with that element
 //        holder.mTextView.setText(mDataset[position]);
 
-        Object object = objects.get(position);
+        AroundLocation aroundLocation = objects.get(position);
 
-        String[] rank = new String[] { "1", "2", "3", "4", "5", "6", "7"};
+        String[] imageUrls = null;
+        String title = "";
+        String summary = "";
 
-        String[] country = new String[] { "China", "India", "United States",
-                "Indonesia", "Brazil", "Pakistan", "Nigeria"};
-
-        String[] population = new String[] { "1,354,040,000", "1,210,193,422",
-                "315,761,000", "237,641,326", "193,946,886", "182,912,000",
-                "170,901,000"};
-
-        int[] flag = new int[] { R.drawable.pic_0, R.drawable.pic_1,
-                R.drawable.pic_2, R.drawable.pic_3,
-                R.drawable.pic_4, R.drawable.pic_5, R.drawable.pic_6};
+        if (aroundLocation.getData() != null) {
+            if (aroundLocation.getData() instanceof AroundPlaceCity) {
+                AroundPlaceCity city = (AroundPlaceCity)aroundLocation.getData();
+                imageUrls = city.getImages();
+                title = city.getName();
+                summary = city.getHouseCountText();
+            } else if (aroundLocation.getData() instanceof AroundPlaceAttraction) {
+                AroundPlaceAttraction attraction = (AroundPlaceAttraction)aroundLocation.getData();
+                imageUrls = attraction.getImages();
+                title = attraction.getName();
+                summary = attraction.getAroundHousesText();
+            } else if (aroundLocation.getData() instanceof AroundPlaceHouse) {
+                AroundPlaceHouse house = (AroundPlaceHouse)aroundLocation.getData();
+                imageUrls = house.getImages();
+                title = house.getName();
+                summary = house.getSummary();
+            }
+        }
 
         holder.viewPager.setId(1000+position);
-        ViewPagerAdapter adapter = new ViewPagerAdapter(context, rank, country, population, flag);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(context, aroundLocation, title, summary, imageUrls);
         holder.viewPager.setAdapter(adapter);
 
     }
@@ -98,25 +124,27 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     public class ViewPagerAdapter extends PagerAdapter {
         // Declare Variables
-        Context context;
-        String[] rank;
-        String[] country;
-        String[] population;
-        int[] flag;
-        LayoutInflater inflater;
+        private Context context;
+        private AroundLocation aroundLocation;
+        private String title;
+        private String summary;
+        private String[] imageUrls;
+        private LayoutInflater inflater;
 
-        public ViewPagerAdapter(Context context, String[] rank, String[] country,
-                                String[] population, int[] flag) {
+        public ViewPagerAdapter(Context context, AroundLocation aroundLocation, String title, String summary, String[] imageUrls) {
             this.context = context;
-            this.rank = rank;
-            this.country = country;
-            this.population = population;
-            this.flag = flag;
+            this.aroundLocation = aroundLocation;
+            this.title = title;
+            this.summary = summary;
+            this.imageUrls = imageUrls;
         }
 
         @Override
         public int getCount() {
-            return rank.length;
+            if (imageUrls != null)
+                return imageUrls.length;
+            else
+                return 0;
         }
 
         @Override
@@ -127,34 +155,34 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
 
-            // Declare Variables
-            TextView txtrank;
-            TextView txtcountry;
-            TextView txtpopulation;
-            ImageView imgflag;
+            ImageView imageView;
+            TextView titleTextView;
+            TextView summaryTextView;
+            Bitmap imageBitmap;
 
             inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View itemView = inflater.inflate(R.layout.explore_viewpager_item, container,
                     false);
 
-            // Locate the TextViews in viewpager_item.xml
-//            txtrank = (TextView) itemView.findViewById(R.id.rank);
-//            txtcountry = (TextView) itemView.findViewById(R.id.country);
-//            txtpopulation = (TextView) itemView.findViewById(R.id.population);
-//
-//            // Capture position and set to the TextViews
-//            txtrank.setText(rank[position]);
-//            txtcountry.setText(country[position]);
-//            txtpopulation.setText(population[position]);
+            titleTextView = (TextView) itemView.findViewById(R.id.explore_viewpager_item_title);
+            summaryTextView = (TextView) itemView.findViewById(R.id.explore_viewpager_item_summary);
+            titleTextView.setText(title);
+            summaryTextView.setText(summary);
 
-            // Locate the ImageView in viewpager_item.xml
-            imgflag = (ImageView) itemView.findViewById(R.id.flag);
-            // Capture position and set to the ImageView
-            imgflag.setImageResource(flag[position]);
+            imageView = (ImageView) itemView.findViewById(R.id.explore_viewpager_item_image);
 
-            // Add viewpager_item.xml to ViewPager
-            ((ViewPager) container).addView(itemView);
+            ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(imageUrls[position]);
+            AsyncTask task = imageDownloaderAsyncTask.execute();
+            try {
+                imageBitmap = (Bitmap)task.get();
+                imageView.setImageBitmap(imageBitmap);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            container.addView(itemView);
 
             return itemView;
         }
@@ -162,7 +190,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             // Remove viewpager_item.xml from ViewPager
-            ((ViewPager) container).removeView((RelativeLayout) object);
+            container.removeView((RelativeLayout) object);
 
         }
     }

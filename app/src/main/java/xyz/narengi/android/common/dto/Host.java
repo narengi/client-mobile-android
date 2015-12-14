@@ -1,37 +1,32 @@
 package xyz.narengi.android.common.dto;
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
 /**
  * @author Siavash Mahmoudpour
  */
+@Parcel
 public class Host {
 
-    private Long id;
-    private User user;
-    private List<House> houses;
+//    private String[] Houses;
+    private String Name;
+    private String ImageUrl;
 
-    public Long getId() {
-        return id;
+    public String getName() {
+        return Name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setName(String name) {
+        Name = name;
     }
 
-    public User getUser() {
-        return user;
+    public String getImageUrl() {
+        return ImageUrl;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<House> getHouses() {
-        return houses;
-    }
-
-    public void setHouses(List<House> houses) {
-        this.houses = houses;
+    public void setImageUrl(String imageUrl) {
+        ImageUrl = imageUrl;
     }
 }

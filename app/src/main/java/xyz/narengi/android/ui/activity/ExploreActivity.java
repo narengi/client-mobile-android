@@ -7,10 +7,10 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AroundLocation;
-import xyz.narengi.android.common.dto.SearchResult;
 import xyz.narengi.android.content.SearchSuggestionProvider;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.service.SearchServiceAsyncTask;
 import xyz.narengi.android.ui.adapter.RecyclerAdapter;
 import xyz.narengi.android.ui.adapter.SearchResultsAdapter;
 import xyz.narengi.android.util.SystemUiHider;
@@ -22,6 +22,7 @@ import android.database.MatrixCursor;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -51,8 +52,13 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.quinny898.library.persistentsearch.SearchBox;
+import com.quinny898.library.persistentsearch.SearchResult;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Siavash Mahmoudpour
@@ -89,6 +95,7 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 
     private DrawerLayout drawerLayout;
     private SearchView searchView;
+    private SearchBox searchBox;
     private SearchResultsAdapter mSearchViewAdapter;
 //    public static String[] columns = new String[]{"_id", "FEED_URL", "FEED_ICON", "FEED_SUBSCRIBERS", "FEED_TITLE"};
     public static String[] columns = new String[]{"_id", "FEED_TITLE"};
@@ -98,37 +105,103 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        setupToolbar();
-        setupListView();
+//        setupToolbar();
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        if (toolbar != null) {
+//            setSupportActionBar(toolbar);
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(false);
+                actionBar.setDisplayShowHomeEnabled(false);
+                actionBar.setDisplayShowTitleEnabled(false);
+                actionBar.setDisplayUseLogoEnabled(false);
+            }
+        }
+        setupSearchBox();
 
-        searchAroundLocations();
-
+        AroundLocation[] aroundLocations = searchAroundLocations();
+        setupListView(aroundLocations);
     }
 
-    public void searchAroundLocations() {
+    private void setupSearchBox() {
 
-        String BASE_URL = "http://149.202.20.233:3500";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AroundLocation[]> call = apiEndpoints.getAroundLocations();
-        call.enqueue(new Callback<AroundLocation[]>() {
-            @Override
-            public void onResponse(Response<AroundLocation[]> response, Retrofit retrofit) {
-                int statusCode = response.code();
-                AroundLocation[] aroundLocations = response.body();
-            }
+        searchBox = (SearchBox) findViewById(R.id.searchbox);
+        for(int x = 0; x < 10; x++){
+            SearchResult option = new SearchResult("Result " + Integer.toString(x), getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
+            searchBox.addSearchable(option);
+        }
+        searchBox.setLogoText("My App");
+        searchBox.setMenuListener(new SearchBox.MenuListener(){
 
             @Override
-            public void onFailure(Throwable t) {
-                // Log error here since request failed
-                t.printStackTrace();
-                Log.d("RetrofitService", "onFailure : " + t.getMessage(), t);
+            public void onMenuClick() {
+                //Hamburger has been clicked
+                Toast.makeText(ExploreActivity.this, "Menu click", Toast.LENGTH_LONG).show();
             }
+
         });
+        searchBox.setSearchListener(new SearchBox.SearchListener(){
+
+            @Override
+            public void onSearchOpened() {
+                //Use this to tint the screen
+            }
+
+            @Override
+            public void onSearchClosed() {
+                //Use this to un-tint the screen
+            }
+
+            @Override
+            public void onSearchTermChanged(String s) {
+
+            }
+
+            @Override
+            public void onSearch(String searchTerm) {
+                Toast.makeText(ExploreActivity.this, searchTerm +" Searched", Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void onResultClick(com.quinny898.library.persistentsearch.SearchResult searchResult) {
+
+            }
+
+
+            @Override
+            public void onSearchCleared() {
+
+            }
+
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SearchBox.VOICE_RECOGNITION_CODE && resultCode == RESULT_OK) {
+            ArrayList<String> matches = data
+                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            searchBox.populateEditText(matches.get(0));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public AroundLocation[] searchAroundLocations() {
+
+        SearchServiceAsyncTask searchAsyncTask = new SearchServiceAsyncTask("");
+        Object object = null;
+        try {
+            object = searchAsyncTask.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        if (object != null)
+            return (AroundLocation[])object;
+
+        return null;
     }
 
 //    @Override
@@ -252,12 +325,12 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem searchViewMenuItem = menu.findItem(R.id.explore_action_search);
+        /*MenuItem searchViewMenuItem = menu.findItem(R.id.explore_action_search);
         SearchView mSearchView = (SearchView) MenuItemCompat.getActionView(searchViewMenuItem);
         int searchImgId = android.support.v7.appcompat.R.id.search_mag_icon; // I used the explicit layout ID of searchview's ImageView
         ImageView v = (ImageView) mSearchView.findViewById(searchImgId);
 //        v.setImageResource(R.drawable.ic_action_search);
-        v.setImageDrawable(null);
+        v.setImageDrawable(null);*/
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -280,14 +353,14 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        // Because this activity has set launchMode="singleTop", the system calls this method
-        // to deliver the intent if this activity is currently the foreground activity when
-        // invoked again (when the user executes a search from this activity, we don't create
-        // a new instance of this activity, so the system delivers the search intent here)
-        handleIntent(intent);
-    }
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        // Because this activity has set launchMode="singleTop", the system calls this method
+//        // to deliver the intent if this activity is currently the foreground activity when
+//        // invoked again (when the user executes a search from this activity, we don't create
+//        // a new instance of this activity, so the system delivers the search intent here)
+//        handleIntent(intent);
+//    }
 
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
@@ -298,35 +371,35 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 //            detailIntent.setData(data);
 //            startActivity(detailIntent);
 //            finish();
-            Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-            PopupWindow searchResultPopupWindow = createSearchResultPopup("");
-            searchResultPopupWindow.showAsDropDown(toolbar);
+//            Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+//            PopupWindow searchResultPopupWindow = createSearchResultPopup("");
+//            searchResultPopupWindow.showAsDropDown(toolbar);
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // handles a search query
             String query = intent.getStringExtra(SearchManager.QUERY);
             Toast.makeText(this, "This is query : " + query, Toast.LENGTH_LONG).show();
-            Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-            PopupWindow searchResultPopupWindow = createSearchResultPopup(query);
-            searchResultPopupWindow.showAsDropDown(toolbar);
+//            Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+//            PopupWindow searchResultPopupWindow = createSearchResultPopup(query);
+//            searchResultPopupWindow.showAsDropDown(toolbar);
         }
     }
 
-    @Override
-    public boolean onSearchRequested() {
-//        return super.onSearchRequested();
-        startSearch("testtest", false, null, false);
-        return true;
-    }
+//    @Override
+//    public boolean onSearchRequested() {
+////        return super.onSearchRequested();
+//        startSearch("testtest", false, null, false);
+//        return true;
+//    }
 
-    @Override
-    public void startSearch(String initialQuery, boolean selectInitialQuery, Bundle appSearchData, boolean globalSearch) {
-//        super.startSearch(initialQuery, selectInitialQuery, appSearchData, globalSearch);
-
-        Toast.makeText(this, "This is query : " + initialQuery, Toast.LENGTH_LONG).show();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        PopupWindow searchResultPopupWindow = createSearchResultPopup(initialQuery);
-        searchResultPopupWindow.showAsDropDown(toolbar);
-    }
+//    @Override
+//    public void startSearch(String initialQuery, boolean selectInitialQuery, Bundle appSearchData, boolean globalSearch) {
+////        super.startSearch(initialQuery, selectInitialQuery, appSearchData, globalSearch);
+//
+//        Toast.makeText(this, "This is query : " + initialQuery, Toast.LENGTH_LONG).show();
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+//        PopupWindow searchResultPopupWindow = createSearchResultPopup(initialQuery);
+//        searchResultPopupWindow.showAsDropDown(toolbar);
+//    }
 
     public PopupWindow createSearchResultPopup(String query) {
 
@@ -394,7 +467,8 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
     }
 
     private void setupToolbar() {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        final Toolbar toolbar = null;
 
 
         if (toolbar != null) {
@@ -402,14 +476,14 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 //            AutoCompleteTextView searchView = (AutoCompleteTextView)toolbar.findViewById(R.id.toolbar_action_search);
             searchView = (SearchView)toolbar.findViewById(R.id.toolbar_action_search);
             searchView.setIconified(false);
-//            SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-//            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            final SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
             searchView.setQueryHint(getString(R.string.search_hint));
 
-            searchView.setOnQueryTextListener(this);
-            searchView.setOnSuggestionListener(this);
-            mSearchViewAdapter = new SearchResultsAdapter(this, R.layout.search_result_item, null, columns,null, -1000);
-            searchView.setSuggestionsAdapter(mSearchViewAdapter);
+//            searchView.setOnQueryTextListener(this);
+//            searchView.setOnSuggestionListener(this);
+//            mSearchViewAdapter = new SearchResultsAdapter(this, R.layout.search_result_item, null, columns,null, -1000);
+//            searchView.setSuggestionsAdapter(mSearchViewAdapter);
 
             View searchEditFrame = searchView.findViewById(android.support.v7.appcompat.R.id.search_edit_frame);
             searchEditFrame.setBackgroundColor(getResources().getColor(android.R.color.transparent));
@@ -431,7 +505,7 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
             theTextArea.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             theTextArea.clearFocus();
             theTextArea.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-//            theTextArea.setDropDownAnchor(R.id.toolbar_inner_layout);
+//            theTextArea.setDropDownAnchor(R.id.app_bar);
 
 //            theTextArea.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
 //            theTextArea.setDropDownWidth(theTextArea.getDropDownWidth() + 20);
@@ -474,6 +548,12 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 
             searchView.clearFocus();
             searchView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+//            theTextArea.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    searchView.setQuery("", false);
+//                }
+//            });
 
             ImageView settingsImageView = (ImageView)toolbar.findViewById(R.id.toolbar_action_settings);
             settingsImageView.setOnClickListener(new View.OnClickListener() {
@@ -490,7 +570,7 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         }
 
 //        toolbar.getBackground().setAlpha(100);
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 //        toolbar.inflateMenu(R.menu.explore_menu);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -501,7 +581,7 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         }
     }
 
-    private void setupListView() {
+    private void setupListView(AroundLocation[] aroundLocations) {
 
         RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.scrollRecyclerView);
 
@@ -509,7 +589,7 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        RecyclerAdapter adapter = new RecyclerAdapter(initData(), this);
+        RecyclerAdapter adapter = new RecyclerAdapter(Arrays.asList(aroundLocations), this);
         mRecyclerView.setAdapter(adapter);
     }
 
@@ -530,7 +610,7 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
                 .build();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AroundLocation[]> call = apiEndpoints.getAroundLocations();
+        Call<AroundLocation[]> call = apiEndpoints.getAroundLocations(searchText, "30", "0");
         call.enqueue(new Callback<AroundLocation[]>() {
             @Override
             public void onResponse(Response<AroundLocation[]> response, Retrofit retrofit) {

@@ -7,49 +7,40 @@ import java.util.List;
  */
 public class User {
 
-    private Long id;
-    private String name;
-    private String cellNumber;
-    private String emailAddress;
-    private List<BookRequest> bookRequests;
+    private String ID;
+    private String DisplayName;
+    private String CellNumber;
+    private String Email;
 
-    public Long getId() {
-        return id;
+    public String getID() {
+        return ID;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+        return DisplayName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDisplayName(String displayName) {
+        DisplayName = displayName;
     }
 
     public String getCellNumber() {
-        return cellNumber;
+        return CellNumber;
     }
 
     public void setCellNumber(String cellNumber) {
-        this.cellNumber = cellNumber;
+        CellNumber = cellNumber;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getEmail() {
+        return Email;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public List<BookRequest> getBookRequests() {
-        return bookRequests;
-    }
-
-    public void setBookRequests(List<BookRequest> bookRequests) {
-        this.bookRequests = bookRequests;
+    public void setEmail(String email) {
+        Email = email;
     }
 }

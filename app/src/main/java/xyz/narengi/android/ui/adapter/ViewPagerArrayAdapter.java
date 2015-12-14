@@ -139,7 +139,7 @@ public class ViewPagerArrayAdapter extends RecyclerView.Adapter<ViewPagerArrayAd
 //            txtpopulation.setText(population[position]);
 
             // Locate the ImageView in viewpager_item.xml
-            imgflag = (ImageView) itemView.findViewById(R.id.flag);
+            imgflag = (ImageView) itemView.findViewById(R.id.explore_viewpager_item_image);
             // Capture position and set to the ImageView
             imgflag.setImageResource(flag[position]);
 

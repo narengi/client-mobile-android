@@ -1,12 +1,23 @@
 package xyz.narengi.android.common.dto;
 
+import com.google.gson.annotations.SerializedName;
+
+import org.parceler.Parcel;
+import org.parceler.ParcelPropertyConverter;
+import org.parceler.Parcels;
+import org.parceler.converter.NullableParcelConverter;
+
 /**
  * @author Siavash Mahmoudpour
  */
-public class AroundLocation {
+@Parcel
+public class AroundLocation<T> {
 
+    @SerializedName("Type")
     private String Type;
-    private Object Data;
+    @SerializedName("Data")
+    @ParcelPropertyConverter(ParcelsWrapperConverter.class)
+    private T Data;
 
 
     public String getType() {
@@ -17,11 +28,24 @@ public class AroundLocation {
         this.Type = type;
     }
 
-    public Object getData() {
+    public T getData() {
         return Data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.Data = data;
+    }
+}
+
+class ParcelsWrapperConverter extends NullableParcelConverter<Object> {
+
+    @Override
+    public void nullSafeToParcel(Object input, android.os.Parcel parcel) {
+        parcel.writeParcelable(Parcels.wrap(input), 0);
+    }
+
+    @Override
+    public Object nullSafeFromParcel(android.os.Parcel parcel) {
+        return Parcels.unwrap(parcel.readParcelable(ParcelsWrapperConverter.class.getClassLoader()));
     }
 }

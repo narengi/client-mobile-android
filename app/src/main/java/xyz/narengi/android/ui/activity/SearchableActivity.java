@@ -1,9 +1,12 @@
 package xyz.narengi.android.ui.activity;
 
 import android.app.SearchManager;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import xyz.narengi.android.R;
+import xyz.narengi.android.content.SearchRecentQuerySuggestionsProvider;
 import xyz.narengi.android.content.SearchSuggestionProvider;
 
 /**
@@ -46,6 +50,8 @@ public class SearchableActivity extends ActionBarActivity {
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             // handles a click on a search suggestion; launches activity to show around location detail
 
+            Toast.makeText(this, "A suggestion item clicked", Toast.LENGTH_LONG).show();
+
 //            Intent detailIntent = new Intent(this, DetailActivity.class);
 //            Uri data = intent.getData();
 //            detailIntent.setData(data);
@@ -54,14 +60,28 @@ public class SearchableActivity extends ActionBarActivity {
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // handles a search query
             String query = intent.getStringExtra(SearchManager.QUERY);
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, "");
             Toast.makeText(this, "Searchable Activity, this is query : " + query, Toast.LENGTH_LONG).show();
             showResults(query);
         }
     }
 
-    private void showResults( String query ) {
+    private void showResults(String query) {
 
-        Cursor cursor = managedQuery(SearchSuggestionProvider.CONTENT_URI, null, null,
+        ContentResolver contentResolver = getApplicationContext().getContentResolver();
+
+//        String contentUri = "content://" + SearchSuggestionProvider.AUTHORITY + '/' + SearchManager.SUGGEST_URI_PATH_QUERY;
+        String contentUri = "content://" + SearchSuggestionProvider.AUTHORITY + '/' + SearchManager.SUGGEST_URI_PATH_QUERY;
+        Uri uri = Uri.parse(contentUri);
+
+//        Cursor cursor = contentResolver.query(/*SearchSuggestionProvider.CONTENT_URI*/uri, null, null, new String[] { query }, null);
+
+
+//        Cursor cursor = managedQuery(SearchSuggestionProvider.CONTENT_URI, null, null,
+//                new String[] {query}, null);
+        Cursor cursor = managedQuery(uri, null, null,
                 new String[] {query}, null);
 
         if (cursor == null) {
@@ -73,9 +93,9 @@ public class SearchableActivity extends ActionBarActivity {
                     SearchManager.SUGGEST_COLUMN_TEXT_2 };
 
             // Specify the corresponding layout elements where we want the columns to go
-//            int[] to = new int[] {R.id.search_result_item_title,
-//                    R.id.search_result_item_type};
-            int[] to = new int[] {R.id.search_result_item_title};
+            int[] to = new int[] {R.id.search_result_item_title,
+                    R.id.search_result_item_type};
+//            int[] to = new int[] {R.id.search_result_item_title};
 
             // Create a simple cursor adapter for the definitions and apply them to the ListView
             SimpleCursorAdapter words = new SimpleCursorAdapter(this,
@@ -95,6 +115,8 @@ public class SearchableActivity extends ActionBarActivity {
 //                    startActivity(detailIntent);
                 }
             });
+
+            cursor.close();
         }
     }
 }

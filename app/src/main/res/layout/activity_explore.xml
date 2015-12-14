@@ -52,9 +52,22 @@
                     app:popupTheme="@style/ToolBarStyle"
                     >
 
-                    <include layout="@layout/toolbar_layout"/>
+                    <!--<include layout="@layout/toolbar_layout"/>-->
+
+                    <com.quinny898.library.persistentsearch.SearchBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/searchbox"
+                        app:layout_scrollFlags="scroll|enterAlways"
+                        />
 
                 </android.support.v7.widget.Toolbar>
+
+                <!--<com.quinny898.library.persistentsearch.SearchBox-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/searchbox"-->
+                    <!--/>-->
 
             </android.support.design.widget.AppBarLayout>
 

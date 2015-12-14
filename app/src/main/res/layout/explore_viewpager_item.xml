@@ -3,50 +3,10 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
-    android:padding="1dp" >
-
-    <!--<TextView-->
-        <!--android:id="@+id/ranklabel"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="ranklabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/rank"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_toRightOf="@+id/ranklabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/countrylabel"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/ranklabel"-->
-        <!--android:text="countrylabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/country"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/rank"-->
-        <!--android:layout_toRightOf="@+id/countrylabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/populationlabel"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/countrylabel"-->
-        <!--android:text="populationlabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/population"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/country"-->
-        <!--android:layout_toRightOf="@+id/populationlabel" />-->
+    android:padding="1dp">
 
     <ImageView
-        android:id="@+id/flag"
+        android:id="@+id/explore_viewpager_item_image"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@android:color/background_light"
@@ -54,4 +14,35 @@
         android:scaleType="fitXY"
         />
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_alignLeft="@id/explore_viewpager_item_image"
+        android:layout_alignTop="@id/explore_viewpager_item_image"
+        android:layout_alignRight="@id/explore_viewpager_item_image"
+        android:layout_alignBottom="@id/explore_viewpager_item_image"
+        >
+
+        <TextView
+            android:id="@+id/explore_viewpager_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="48sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/explore_viewpager_item_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="36sp" />
+
+    </LinearLayout>
 </RelativeLayout>

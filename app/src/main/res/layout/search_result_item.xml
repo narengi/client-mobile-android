@@ -18,13 +18,13 @@
         android:gravity="right|center_vertical"
         android:layout_gravity="right|center_vertical"
         />
-    <!--<TextView-->
-        <!--android:id="@+id/search_result_item_type"-->
-        <!--style="@android:style/TextAppearance.Small"-->
-        <!--android:singleLine="true"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="right|center_vertical"-->
-        <!--android:layout_gravity="right|center_vertical"-->
-        <!--/>-->
+    <TextView
+        android:id="@+id/search_result_item_type"
+        style="@android:style/TextAppearance.Small"
+        android:singleLine="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right|center_vertical"
+        android:layout_gravity="right|center_vertical"
+        />
 </LinearLayout>
