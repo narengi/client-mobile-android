@@ -7,12 +7,20 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AroundLocation;
+import xyz.narengi.android.common.dto.AroundPlaceAttraction;
+import xyz.narengi.android.common.dto.AroundPlaceCity;
+import xyz.narengi.android.common.dto.AroundPlaceHouse;
+import xyz.narengi.android.content.AroundLocationDeserializer;
+import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
+import xyz.narengi.android.content.AroundPlaceCityDeserializer;
+import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
 import xyz.narengi.android.content.SearchSuggestionProvider;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.service.SearchServiceAsyncTask;
 import xyz.narengi.android.ui.adapter.RecyclerAdapter;
 import xyz.narengi.android.ui.adapter.SearchResultsAdapter;
+import xyz.narengi.android.ui.widget.CustomSearchView;
 import xyz.narengi.android.util.SystemUiHider;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -21,7 +29,11 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -34,6 +46,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -43,6 +56,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -52,9 +66,13 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.quinny898.library.persistentsearch.SearchBox;
 import com.quinny898.library.persistentsearch.SearchResult;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -93,39 +111,57 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
      */
     private SystemUiHider mSystemUiHider;
 
+    private AroundLocation[] aroundLocations;
+    private List<AroundLocation> aroundLocationList;
+    private RecyclerAdapter recyclerAdapter;
     private DrawerLayout drawerLayout;
-    private SearchView searchView;
+    private CustomSearchView searchView;
     private SearchBox searchBox;
     private SearchResultsAdapter mSearchViewAdapter;
 //    public static String[] columns = new String[]{"_id", "FEED_URL", "FEED_ICON", "FEED_SUBSCRIBERS", "FEED_TITLE"};
     public static String[] columns = new String[]{"_id", "FEED_TITLE"};
+    private boolean loadingMore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-//        setupToolbar();
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        if (toolbar != null) {
-//            setSupportActionBar(toolbar);
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(false);
-                actionBar.setDisplayShowHomeEnabled(false);
-                actionBar.setDisplayShowTitleEnabled(false);
-                actionBar.setDisplayUseLogoEnabled(false);
-            }
-        }
-        setupSearchBox();
+        setupToolbar();
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+//        if (toolbar != null) {
+////            setSupportActionBar(toolbar);
+//            ActionBar actionBar = getSupportActionBar();
+//            if (actionBar != null) {
+//                actionBar.setDisplayHomeAsUpEnabled(false);
+//                actionBar.setDisplayShowHomeEnabled(false);
+//                actionBar.setDisplayShowTitleEnabled(false);
+//                actionBar.setDisplayUseLogoEnabled(false);
+//            }
+//        }
+//        setupSearchBox();
 
-        AroundLocation[] aroundLocations = searchAroundLocations();
-        setupListView(aroundLocations);
+
+        aroundLocationList = new ArrayList<AroundLocation>();
+        setupListView(aroundLocationList);
+
+        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask("");
+        loadDataAsyncTask.execute();
+
+//        Handler handler = new Handler();
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                aroundLocations = searchAroundLocations();
+//                setupListView(aroundLocations);
+//            }
+//        });
     }
 
     private void setupSearchBox() {
 
-        searchBox = (SearchBox) findViewById(R.id.searchbox);
+//        searchBox = (SearchBox) findViewById(R.id.searchbox);
+        searchBox.hideCircularly(this);
         for(int x = 0; x < 10; x++){
             SearchResult option = new SearchResult("Result " + Integer.toString(x), getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
             searchBox.addSearchable(option);
@@ -401,23 +437,23 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 //        searchResultPopupWindow.showAsDropDown(toolbar);
 //    }
 
-    public PopupWindow createSearchResultPopup(String query) {
+    public PopupWindow createSearchResultPopup(String query, Toolbar toolbar) {
 
         // initialize a pop up window type
         PopupWindow popupWindow = new PopupWindow(this);
 
         // the drop down list is a list view
         ListView searchResultListView = getSearchResultListView(query);
+        searchResultListView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
 
-
+        LinearLayout innerLayout = (LinearLayout)toolbar.findViewById(R.id.toolbar_inner_layout);
         // some other visual settings
         popupWindow.setFocusable(true);
-        popupWindow.setWidth(250);
+        popupWindow.setWidth(innerLayout.getWidth());
         popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-
         // set the list view as pop up window content
         popupWindow.setContentView(searchResultListView);
-
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         return popupWindow;
     }
 
@@ -425,8 +461,14 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 
         ListView listView = null;
 
-        Cursor cursor = managedQuery(SearchSuggestionProvider.CONTENT_URI, null, null,
-                new String[]{query}, null);
+        query = "qqq";
+        String contentUri = "content://" + SearchSuggestionProvider.AUTHORITY + '/' + SearchManager.SUGGEST_URI_PATH_QUERY;
+        Uri uri = Uri.parse(contentUri);
+        Cursor cursor = managedQuery(uri, null, null,
+                new String[] {query}, null);
+
+//        Cursor cursor = managedQuery(SearchSuggestionProvider.CONTENT_URI, null, null,
+//                new String[]{query}, null);
 
         if (cursor == null) {
             // There are no results
@@ -437,9 +479,9 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
                     SearchManager.SUGGEST_COLUMN_TEXT_2 };
 
             // Specify the corresponding layout elements where we want the columns to go
-//            int[] to = new int[] {R.id.search_result_item_title,
-//                    R.id.search_result_item_type};
-            int[] to = new int[] {R.id.search_result_item_title};
+            int[] to = new int[] {R.id.search_result_item_title,
+                    R.id.search_result_item_type};
+//            int[] to = new int[] {R.id.search_result_item_title};
 
             listView = new ListView(this);
 
@@ -466,50 +508,15 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         return listView;
     }
 
-    private void setupToolbar() {
-//        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        final Toolbar toolbar = null;
-
+    private void setupToolbar_old() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
 
         if (toolbar != null) {
-            final LinearLayout toolbarInnerLayout = (LinearLayout)toolbar.findViewById(R.id.toolbar_inner_layout);
-//            AutoCompleteTextView searchView = (AutoCompleteTextView)toolbar.findViewById(R.id.toolbar_action_search);
-            searchView = (SearchView)toolbar.findViewById(R.id.toolbar_action_search);
-            searchView.setIconified(false);
-            final SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            searchView.setQueryHint(getString(R.string.search_hint));
+            final LinearLayout toolbarInnerLayout = (LinearLayout) toolbar.findViewById(R.id.toolbar_inner_layout);
+            final AutoCompleteTextView searchView = (AutoCompleteTextView)toolbar.findViewById(R.id.toolbar_action_search);
+            searchView.setDropDownAnchor(R.id.toolbar_inner_layout);
 
-//            searchView.setOnQueryTextListener(this);
-//            searchView.setOnSuggestionListener(this);
-//            mSearchViewAdapter = new SearchResultsAdapter(this, R.layout.search_result_item, null, columns,null, -1000);
-//            searchView.setSuggestionsAdapter(mSearchViewAdapter);
-
-            View searchEditFrame = searchView.findViewById(android.support.v7.appcompat.R.id.search_edit_frame);
-            searchEditFrame.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-
-            TintImageView searchCloseImageButton = (TintImageView)searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
-            searchCloseImageButton.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            searchCloseImageButton.setImageDrawable(null);
-
-            View searchPlate = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
-            searchPlate.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-
-            final SearchView.SearchAutoComplete theTextArea = (SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-            theTextArea.setHeight(searchView.getHeight());
-//            theTextArea.setDropDownHorizontalOffset((int) toolbar.getX());
-//            theTextArea.setTextColor(Color.RED);
-//            theTextArea.setHintTextColor(Color.BLACK);
-            theTextArea.setHint(R.string.search_hint);
-//            theTextArea.setCursorVisible(false);
-            theTextArea.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            theTextArea.clearFocus();
-            theTextArea.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-//            theTextArea.setDropDownAnchor(R.id.app_bar);
-
-//            theTextArea.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-//            theTextArea.setDropDownWidth(theTextArea.getDropDownWidth() + 20);
-            final View dropDownAnchor = searchView.findViewById(theTextArea.getDropDownAnchor());
+            final View dropDownAnchor = searchView.findViewById(searchView.getDropDownAnchor());
             if (dropDownAnchor != null) {
                 dropDownAnchor.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                     @Override
@@ -523,7 +530,7 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 //                        dropDownAnchor.getLocationOnScreen(point);
                         toolbarInnerLayout.getLocationOnScreen(point);
                         // x coordinate of DropDownView
-                        int dropDownPadding = point[0] + theTextArea.getDropDownHorizontalOffset();
+                        int dropDownPadding = point[0] + searchView.getDropDownHorizontalOffset();
 
                         Rect screenSize = new Rect();
                         getWindowManager().getDefaultDisplay().getRectSize(screenSize);
@@ -540,14 +547,153 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 //                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding);
 //                        theTextArea.setDropDownHorizontalOffset(layoutSize.left + (int)metrics.density*dropDownPadding*3);
 //                        theTextArea.setDropDownHorizontalOffset(left);
-                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding/2);
-                        theTextArea.setDropDownWidth(toolbarInnerLayout.getWidth() + dropDownPadding/2);
+
+//                        searchView.setDropDownHorizontalOffset(searchView.getDropDownHorizontalOffset() - dropDownPadding / 2);
+                        searchView.setDropDownWidth(toolbarInnerLayout.getWidth() + dropDownPadding);
+//                        searchView.setDropDownWidth(toolbarInnerLayout.getWidth());
                     }
                 });
             }
 
+            String[] countries = new String[]{"Text 1", "Text 2", "Text 3", "Text 4"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,countries);
+            searchView.setAdapter(adapter);
+
+            searchView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    searchView.showDropDown();
+                }
+            });
+            searchView.setThreshold(1);
+        }
+    }
+
+    private void setupToolbar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+//        final Toolbar toolbar = null;
+
+
+        if (toolbar != null) {
+//            final LinearLayout toolbarInnerLayout = (LinearLayout)toolbar.findViewById(R.id.toolbar_inner_layout);
+//            AutoCompleteTextView searchView = (AutoCompleteTextView)toolbar.findViewById(R.id.toolbar_action_search);
+            searchView = (CustomSearchView)toolbar.findViewById(R.id.toolbar_action_search);
+            searchView.setIconified(false);
+            searchView.setSubmitButtonEnabled(true);
+            final SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            searchView.setQueryHint(getString(R.string.search_hint));
+
+//            searchView.setOnQueryTextListener(this);
+//            searchView.setOnSuggestionListener(this);
+//            mSearchViewAdapter = new SearchResultsAdapter(this, R.layout.search_result_item, null, columns,null, -1000);
+//            searchView.setSuggestionsAdapter(mSearchViewAdapter);
+
+            View searchEditFrame = searchView.findViewById(android.support.v7.appcompat.R.id.search_edit_frame);
+            searchEditFrame.setBackgroundColor(getResources().getColor(android.R.color.white));
+
+//            TintImageView searchCloseImageButton = (TintImageView)searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+//            searchCloseImageButton.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+//            searchCloseImageButton.setImageDrawable(null);
+
+            View searchPlate = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
+            searchPlate.setBackgroundColor(getResources().getColor(android.R.color.white));
+
+            final CustomSearchView.SearchAutoComplete theTextArea = (CustomSearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+            theTextArea.setHeight(searchView.getHeight());
+//            theTextArea.setDropDownHorizontalOffset((int) toolbar.getX());
+//            theTextArea.setTextColor(Color.RED);
+//            theTextArea.setHintTextColor(Color.BLACK);
+            theTextArea.setHint(R.string.search_hint);
+//            theTextArea.setCursorVisible(false);
+            theTextArea.setBackgroundColor(getResources().getColor(android.R.color.white));
+            theTextArea.clearFocus();
+            theTextArea.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+//            theTextArea.setDropDownAnchor(R.id.toolbar_action_search);
+
+//            theTextArea.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+//            theTextArea.setDropDownWidth(theTextArea.getDropDownWidth() + 20);
+            final View dropDownAnchor = searchView.findViewById(theTextArea.getDropDownAnchor());
+//            if (dropDownAnchor != null) {
+            if (2 < 1) {
+                dropDownAnchor.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                               int oldLeft, int oldTop, int oldRight, int oldBottom) {
+
+                        // calculate width of DropdownView
+
+
+                        int point[] = new int[2];
+//                        dropDownAnchor.getLocationOnScreen(point);
+//                        toolbarInnerLayout.getLocationOnScreen(point);
+                        searchView.getLocationOnScreen(point);
+                        // x coordinate of DropDownView
+                        int dropDownPadding = point[0] + theTextArea.getDropDownHorizontalOffset();
+
+                        Rect screenSize = new Rect();
+                        getWindowManager().getDefaultDisplay().getRectSize(screenSize);
+                        // screen width
+                        int screenWidth = screenSize.width();
+
+                        Rect layoutSize = new Rect();
+//                        toolbarInnerLayout.getGlobalVisibleRect(layoutSize);
+                        searchView.getGlobalVisibleRect(layoutSize);
+                        DisplayMetrics metrics = getResources().getDisplayMetrics();
+                        // set DropDownView width
+//                        theTextArea.setDropDownWidth(screenWidth - dropDownPadding * 2);
+//                        theTextArea.setDropDownWidth(toolbarInnerLayout.getWidth() - dropDownPadding);
+//                        theTextArea.setDropDownWidth(right - left);
+//                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding);
+//                        theTextArea.setDropDownHorizontalOffset(layoutSize.left + (int)metrics.density*dropDownPadding*3);
+//                        theTextArea.setDropDownHorizontalOffset(left);
+//                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding + 2);
+//                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding / 2);
+//                        theTextArea.setDropDownWidth(toolbarInnerLayout.getWidth() + dropDownPadding/2);
+//                        theTextArea.setDropDownWidth(toolbarInnerLayout.getWidth() - dropDownPadding);
+                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding);
+                        theTextArea.setDropDownWidth(searchView.getWidth() - dropDownPadding);
+                    }
+                });
+            }
+
+            searchView.setOnMenuClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    final boolean hasText = !TextUtils.isEmpty(theTextArea.getText());
+                    if (hasText || theTextArea.hasFocus()) {
+                        theTextArea.setText("");
+                        searchView.dismissSuggestions();
+                        searchView.clearFocus();
+                    } else {
+                        if (drawerLayout != null) {
+                            if (drawerLayout.isDrawerOpen(GravityCompat.END))
+                                drawerLayout.closeDrawer(GravityCompat.END);
+                            else
+                                drawerLayout.openDrawer(GravityCompat.END);
+                        }
+                    }
+                }
+            });
+
             searchView.clearFocus();
-            searchView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            searchView.setBackgroundColor(getResources().getColor(android.R.color.white));
+
+//            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//                @Override
+//                public boolean onQueryTextSubmit(String query) {
+//                    showSearchResultsPopup(query, toolbarInnerLayout);
+//                    return true;
+//                }
+//
+//                @Override
+//                public boolean onQueryTextChange(String newText) {
+//                    showSearchResultsPopup(newText, toolbarInnerLayout);
+//                    return true;
+//                }
+//            });
+
 //            theTextArea.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
@@ -555,18 +701,18 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 //                }
 //            });
 
-            ImageView settingsImageView = (ImageView)toolbar.findViewById(R.id.toolbar_action_settings);
-            settingsImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (drawerLayout != null) {
-                        if (drawerLayout.isDrawerOpen(GravityCompat.END))
-                            drawerLayout.closeDrawer(GravityCompat.END);
-                        else
-                            drawerLayout.openDrawer(GravityCompat.END);
-                    }
-                }
-            });
+//            ImageView settingsImageView = (ImageView)toolbar.findViewById(R.id.toolbar_action_settings);
+//            settingsImageView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (drawerLayout != null) {
+//                        if (drawerLayout.isDrawerOpen(GravityCompat.END))
+//                            drawerLayout.closeDrawer(GravityCompat.END);
+//                        else
+//                            drawerLayout.openDrawer(GravityCompat.END);
+//                    }
+//                }
+//            });
         }
 
 //        toolbar.getBackground().setAlpha(100);
@@ -581,7 +727,17 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         }
     }
 
-    private void setupListView(AroundLocation[] aroundLocations) {
+    private void showSearchResultsPopup(String query, View toolbarInnerLayout) {
+        int point[] = new int[2];
+        toolbarInnerLayout.getLocationOnScreen(point);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        PopupWindow searchResultPopupWindow = createSearchResultPopup("", toolbar);
+//                    searchResultPopupWindow.showAsDropDown(toolbarInnerLayout, (int)toolbarInnerLayout.getX(), (int)toolbarInnerLayout.getY());
+//                    searchResultPopupWindow.showAsDropDown(toolbarInnerLayout, point[0], point[1]);
+        searchResultPopupWindow.showAsDropDown(toolbarInnerLayout);
+    }
+
+    private void setupListView(List<AroundLocation> aroundLocations) {
 
         RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.scrollRecyclerView);
 
@@ -589,8 +745,8 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        RecyclerAdapter adapter = new RecyclerAdapter(Arrays.asList(aroundLocations), this);
-        mRecyclerView.setAdapter(adapter);
+        recyclerAdapter = new RecyclerAdapter(aroundLocations, this);
+        mRecyclerView.setAdapter(recyclerAdapter);
     }
 
     private List<Object> initData() {
@@ -690,5 +846,78 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         searchView.setQuery(feedName, false);
         searchView.clearFocus();
         return true;
+    }
+
+    private class LoadDataAsyncTask extends AsyncTask {
+
+        private String query;
+        public LoadDataAsyncTask(String query) {
+            this.query = query;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            LinearLayout linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
+            linlaHeaderProgress.setVisibility(View.VISIBLE);
+        }
+
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            String BASE_URL = "http://149.202.20.233:3500";
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(AroundLocation.class, new AroundLocationDeserializer())
+                    .registerTypeAdapter(AroundPlaceCity.class, new AroundPlaceCityDeserializer())
+                    .registerTypeAdapter(AroundPlaceAttraction.class, new AroundPlaceAttractionDeserializer())
+                    .registerTypeAdapter(AroundPlaceHouse.class, new AroundPlaceHouseDeserializer())
+                    .create();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+
+            RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+            Call<AroundLocation[]> call = apiEndpoints.getAroundLocations(query, "30", "0");
+
+            call.enqueue(new Callback<AroundLocation[]>() {
+                @Override
+                public void onResponse(Response<AroundLocation[]> response, Retrofit retrofit) {
+                    int statusCode = response.code();
+                    AroundLocation[] aroundLocations = response.body();
+
+                    if (aroundLocations != null && aroundLocations.length > 0) {
+                        aroundLocationList = Arrays.asList(aroundLocations);
+                        setupListView(aroundLocationList);
+//                        recyclerAdapter.notifyDataSetChanged();
+
+                        System.err.println("Around locations count : " + aroundLocations.length);
+                        Log.d("RetrofitService", "Around locations count : " + aroundLocations.length);
+
+                        loadingMore = false;
+
+                        LinearLayout linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
+                        linlaHeaderProgress.setVisibility(View.GONE);
+
+                    } else
+//                    System.err.println("Around locations is empty");
+                        Log.d("RetrofitService", "Around locations is empty");
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    // Log error here since request failed
+                }
+            });
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+//            loadingMore = false;
+        }
     }
 }

@@ -4,14 +4,8 @@ import android.os.AsyncTask;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
@@ -20,18 +14,20 @@ import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
+import xyz.narengi.android.common.dto.SuggestionsResult;
 import xyz.narengi.android.content.AroundLocationDeserializer;
 import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
 import xyz.narengi.android.content.AroundPlaceCityDeserializer;
 import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
+import xyz.narengi.android.content.SuggestionsResultDeserializer;
 
 /**
  * @author Siavash Mahmoudpour
  */
-public class SearchServiceAsyncTask extends AsyncTask {
+public class SuggestionsServiceAsyncTask extends AsyncTask {
 
     private String query;
-    public SearchServiceAsyncTask(String query) {
+    public SuggestionsServiceAsyncTask(String query) {
         this.query = query;
     }
 
@@ -39,12 +35,15 @@ public class SearchServiceAsyncTask extends AsyncTask {
     protected Object doInBackground(Object[] objects) {
         String BASE_URL = "http://149.202.20.233:3500";
 
+//        Gson gson = new GsonBuilder()
+//                .registerTypeAdapter(AroundLocation.class, new AroundLocationDeserializer())
+//                .registerTypeAdapter(AroundPlaceCity.class, new AroundPlaceCityDeserializer())
+//                .registerTypeAdapter(AroundPlaceAttraction.class, new AroundPlaceAttractionDeserializer())
+//                .registerTypeAdapter(AroundPlaceHouse.class, new AroundPlaceHouseDeserializer())
+//                .create();
+
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(AroundLocation.class, new AroundLocationDeserializer())
-                .registerTypeAdapter(AroundPlaceCity.class, new AroundPlaceCityDeserializer())
-                .registerTypeAdapter(AroundPlaceAttraction.class, new AroundPlaceAttractionDeserializer())
-                .registerTypeAdapter(AroundPlaceHouse.class, new AroundPlaceHouseDeserializer())
-                .create();
+                .registerTypeAdapter(SuggestionsResult.class, new SuggestionsResultDeserializer()).create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -52,12 +51,12 @@ public class SearchServiceAsyncTask extends AsyncTask {
                 .build();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AroundLocation[]> call = apiEndpoints.getAroundLocations(query, "30", "0");
+        Call<SuggestionsResult> call = apiEndpoints.getAroundLocationSuggestions(query, "2", "2", "3");
 
         try {
-            AroundLocation[] aroundLocations = call.execute().body();
-            if (aroundLocations != null)
-                return aroundLocations;
+            SuggestionsResult aroundLocationSuggestionsResult = call.execute().body();
+            if (aroundLocationSuggestionsResult != null)
+                return aroundLocationSuggestionsResult;
         } catch (IOException e) {
             e.printStackTrace();
         }

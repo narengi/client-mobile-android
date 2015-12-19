@@ -16,6 +16,7 @@ public class AroundPlaceHouse {
     private String Rating;
     private String Summary;
     private String CityName;
+    private String FeatureSummray;
     private String URL;
 
 
@@ -81,6 +82,14 @@ public class AroundPlaceHouse {
 
     public void setCityName(String cityName) {
         CityName = cityName;
+    }
+
+    public String getFeatureSummray() {
+        return FeatureSummray;
+    }
+
+    public void setFeatureSummray(String featureSummray) {
+        FeatureSummray = featureSummray;
     }
 
     public String getURL() {

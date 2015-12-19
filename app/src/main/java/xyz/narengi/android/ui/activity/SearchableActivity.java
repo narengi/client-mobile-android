@@ -11,6 +11,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import xyz.narengi.android.R;
 import xyz.narengi.android.content.SearchRecentQuerySuggestionsProvider;
 import xyz.narengi.android.content.SearchSuggestionProvider;
+import xyz.narengi.android.ui.adapter.SuggestionsListAdapter;
 
 /**
  * @author Siavash Mahmoudpour
@@ -25,14 +27,16 @@ import xyz.narengi.android.content.SearchSuggestionProvider;
 public class SearchableActivity extends ActionBarActivity {
 
     private TextView mTextView;
-    private ListView listView;
+//    private ListView listView;
+    private ExpandableListView listView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchable);
 
-        listView = (ListView) findViewById(R.id.list);
+//        listView = (ListView) findViewById(R.id.list);
+        listView = (ExpandableListView) findViewById(R.id.list);
 
         handleIntent(getIntent());
     }
@@ -97,8 +101,13 @@ public class SearchableActivity extends ActionBarActivity {
                     R.id.search_result_item_type};
 //            int[] to = new int[] {R.id.search_result_item_title};
 
+
+            SuggestionsListAdapter suggestionsAdapter = new SuggestionsListAdapter(this, cursor, R.layout.suggestions_header,
+                    from, to, R.layout.search_result_item, from, to);
+            listView.setAdapter(suggestionsAdapter);
+
             // Create a simple cursor adapter for the definitions and apply them to the ListView
-            SimpleCursorAdapter words = new SimpleCursorAdapter(this,
+            /*SimpleCursorAdapter words = new SimpleCursorAdapter(this,
                     R.layout.search_result_item, cursor, from, to);
             listView.setAdapter(words);
 
@@ -114,7 +123,7 @@ public class SearchableActivity extends ActionBarActivity {
 //                    detailIntent.setData(data);
 //                    startActivity(detailIntent);
                 }
-            });
+            });*/
 
             cursor.close();
         }

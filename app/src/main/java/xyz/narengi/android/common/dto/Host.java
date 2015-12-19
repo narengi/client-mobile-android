@@ -11,15 +11,15 @@ import java.util.List;
 public class Host {
 
 //    private String[] Houses;
-    private String Name;
+    private String DisplayName;
     private String ImageUrl;
 
-    public String getName() {
-        return Name;
+    public String getDisplayName() {
+        return DisplayName;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setDisplayName(String name) {
+        DisplayName = name;
     }
 
     public String getImageUrl() {

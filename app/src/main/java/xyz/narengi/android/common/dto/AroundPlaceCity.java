@@ -13,6 +13,7 @@ public class AroundPlaceCity {
     private GeoPoint Position;
     private int HouseCount;
     private String HouseCountText;
+    private String Summary;
     private String URL;
 
 
@@ -54,6 +55,14 @@ public class AroundPlaceCity {
 
     public void setHouseCountText(String houseCountText) {
         HouseCountText = houseCountText;
+    }
+
+    public String getSummary() {
+        return Summary;
+    }
+
+    public void setSummary(String summary) {
+        Summary = summary;
     }
 
     public String getURL() {

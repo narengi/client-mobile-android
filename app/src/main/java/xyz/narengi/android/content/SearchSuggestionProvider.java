@@ -43,8 +43,10 @@ import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.GeoPoint;
 import xyz.narengi.android.common.dto.Host;
 import xyz.narengi.android.common.dto.House;
+import xyz.narengi.android.common.dto.SuggestionsResult;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.SearchServiceAsyncTask;
+import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
 
 public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
 
@@ -175,7 +177,7 @@ public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
                         String[] selectionArgs, String sortOrder) {
 
         //        String query = uri.getLastPathSegment().toLowerCase();
-        String query = "";
+        String query;
         if (selectionArgs != null)
             query = selectionArgs[0];
         else
@@ -191,6 +193,9 @@ public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
             recentCursor = super.query(uri, projection, selection, selectionArgs,
                 sortOrder);
 
+//        if (query == null || query.length() == 0)
+//            return recentCursor;
+
         String[] SEARCH_SUGGEST_COLUMNS = {
                 SearchManager.SUGGEST_COLUMN_FORMAT,
                 SearchManager.SUGGEST_COLUMN_ICON_1,
@@ -202,7 +207,40 @@ public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
 //        MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_id", SearchManager.SUGGEST_COLUMN_TEXT_1, SearchManager.SUGGEST_COLUMN_TEXT_2, SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID});
         MatrixCursor matrixCursor = new MatrixCursor(SEARCH_SUGGEST_COLUMNS);
 //        MatrixCursor matrixCursor = new MatrixCursor(COLUMNS);
-        AroundLocation[] aroundLocations = searchAroundLocations(query);
+
+        SuggestionsResult suggestionsResult = getAroundLocationSuggestions(query);
+        if (suggestionsResult != null) {
+            List<Cursor> cursorList = new ArrayList<Cursor>();
+            int idCol = 0;
+            if (suggestionsResult.getCity() != null) {
+                MatrixCursor cityCursor = new MatrixCursor(SEARCH_SUGGEST_COLUMNS);
+                for (AroundPlaceCity city : suggestionsResult.getCity()) {
+                    cityCursor.addRow(new Object[]{"", null, city.getName(), city.getHouseCountText(), null, ++idCol});
+                }
+                cursorList.add(cityCursor);
+            }
+            if (suggestionsResult.getAttraction() != null) {
+                MatrixCursor attractionCursor = new MatrixCursor(SEARCH_SUGGEST_COLUMNS);
+                for (AroundPlaceAttraction attraction : suggestionsResult.getAttraction()) {
+                    attractionCursor.addRow(new Object[]{"", null, attraction.getName(), attraction.getAroundHousesText(), null, ++idCol});
+                }
+                cursorList.add(attractionCursor);
+            }
+            if (suggestionsResult.getHouse() != null) {
+                MatrixCursor houseCursor = new MatrixCursor(SEARCH_SUGGEST_COLUMNS);
+                for (AroundPlaceHouse house : suggestionsResult.getHouse()) {
+                    houseCursor.addRow(new Object[]{"", null, house.getName(), house.getSummary(), null, ++idCol});
+                }
+                cursorList.add(houseCursor);
+            }
+            Cursor[] cursorArray = new Cursor[cursorList.size()];
+            cursorList.toArray(cursorArray);
+            return new MergeCursor(cursorArray);
+        }
+
+//        AroundLocation[] aroundLocations = searchAroundLocations(query);
+        //TODO : below codes must be removed.
+        AroundLocation[] aroundLocations = null;
         if (aroundLocations != null) {
             for (int i = 0; i < aroundLocations.length; i++) {
                 AroundLocation aroundLocation = aroundLocations[i];
@@ -242,41 +280,64 @@ public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
 //                            SearchManager.SUGGEST_NEVER_MAKE_SHORTCUT });
                 }
             }
-
+        }
             Cursor[] cursors = new Cursor[] { recentCursor, matrixCursor};
             MergeCursor mergeCursor = new MergeCursor(cursors);
+//        return matrixCursor;
+        if (query == null || query.length() == 0)
+            return recentCursor;
+        else
+            return mergeCursor;
 
-            switch (sURIMatcher.match(uri)) {
-                case SEARCH_SUGGEST:
-                    return matrixCursor;
-//                    if (query == null || query.length() == 0)
-//                        return recentCursor;
-//                    else
+//            switch (sURIMatcher.match(uri)) {
+//                case SEARCH_SUGGEST:
+////                    return matrixCursor;
+////                    if (query == null || query.length() == 0)
+////                        return recentCursor;
+////                    else
 //                        return mergeCursor;
-//                    return recentCursor;
-                case SEARCH_AROUND_LOCATIONS:
-                    return matrixCursor;
-//                    if (query == null || query.length() == 0)
-//                        return recentCursor;
-//                    else
+////                    return recentCursor;
+//                case SEARCH_AROUND_LOCATIONS:
+////                    return matrixCursor;
+////                    if (query == null || query.length() == 0)
+////                        return recentCursor;
+////                    else
 //                        return mergeCursor;
-            case GET_AROUND_LOCATION:
-//                return getAroundLocation(uri);
-                throw new IllegalArgumentException("getAroundLocation, Not implemented yet, uri : " + uri);
-                default:
-                    if (query == null || query.length() == 0)
-                        return recentCursor;
-                    else
-                        return mergeCursor;
-//                    throw new IllegalArgumentException("Unknown Uri: " + uri);
-            }
+//            case GET_AROUND_LOCATION:
+////                return getAroundLocation(uri);
+//                throw new IllegalArgumentException("getAroundLocation, Not implemented yet, uri : " + uri);
+//                default:
+////                    if (query == null || query.length() == 0)
+////                        return recentCursor;
+////                    else
+////                        return mergeCursor;
+//                    return mergeCursor;
+////                    return matrixCursor;
+////                    throw new IllegalArgumentException("Unknown Uri: " + uri);
+//            }
 
-        }
+
 
 //        return matrixCursor;
-        return recentCursor;
+//        return recentCursor;
     }
 
+
+    private SuggestionsResult getAroundLocationSuggestions(String query) {
+        SuggestionsServiceAsyncTask suggestionsAsyncTask = new SuggestionsServiceAsyncTask(query);
+        Object object = null;
+        try {
+            object = suggestionsAsyncTask.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        if (object != null)
+            return (SuggestionsResult)object;
+
+        return null;
+    }
 
     public AroundLocation[] searchAroundLocations(String query) {
 

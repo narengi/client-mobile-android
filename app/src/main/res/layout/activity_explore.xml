@@ -19,6 +19,22 @@
         android:layout_height="match_parent"
         tools:context=".ExploreActivity"
         >
+
+        <LinearLayout
+            android:id="@+id/linlaHeaderProgress"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ProgressBar
+                android:id="@+id/pbHeaderProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </ProgressBar>
+        </LinearLayout>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/scrollRecyclerView"
                 android:layout_width="match_parent"
@@ -53,12 +69,17 @@
                     >
 
                     <!--<include layout="@layout/toolbar_layout"/>-->
-
-                    <com.quinny898.library.persistentsearch.SearchBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/searchbox"
-                        app:layout_scrollFlags="scroll|enterAlways"
+                    <xyz.narengi.android.ui.widget.CustomSearchView
+                        android:id="@+id/toolbar_action_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_margin="0dp"
+                        android:paddingRight="4dp"
+                        android:paddingLeft="4dp"
+                        android:queryHint="@string/search_hint"
+                        android:iconifiedByDefault="false"
+                        android:background="@android:color/white"
                         />
 
                 </android.support.v7.widget.Toolbar>

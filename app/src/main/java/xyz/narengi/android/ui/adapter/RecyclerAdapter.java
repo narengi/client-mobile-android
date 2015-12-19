@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -172,16 +174,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
             imageView = (ImageView) itemView.findViewById(R.id.explore_viewpager_item_image);
 
-            ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(imageUrls[position]);
-            AsyncTask task = imageDownloaderAsyncTask.execute();
-            try {
-                imageBitmap = (Bitmap)task.get();
-                imageView.setImageBitmap(imageBitmap);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
+//            Picasso picasso = Picasso.with(context);
+//            picasso.setIndicatorsEnabled(true);
+            Picasso.with(context).load(imageUrls[position]).into(imageView);
+
+//            ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(imageUrls[position]);
+//            AsyncTask task = imageDownloaderAsyncTask.execute();
+//            try {
+//                imageBitmap = (Bitmap)task.get();
+//                imageView.setImageBitmap(imageBitmap);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            } catch (ExecutionException e) {
+//                e.printStackTrace();
+//            }
             container.addView(itemView);
 
             return itemView;
