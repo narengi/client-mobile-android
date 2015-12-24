@@ -11,9 +11,9 @@ public class AroundPlaceCity {
     private String Name;
     private String[] Images;
     private GeoPoint Position;
+    private String Summary;
     private int HouseCount;
     private String HouseCountText;
-    private String Summary;
     private String URL;
 
 

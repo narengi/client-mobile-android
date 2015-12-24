@@ -1,6 +1,5 @@
 package xyz.narengi.android.common.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,58 +7,86 @@ import java.util.List;
  */
 public class City {
 
-    private Long id;
-    private String name;
-    private String phonePrefix;
-    private String province;
-    private List<Attraction> attractions;
-    private List<House> houses;
+    private String Name;
+    private String[] Images;
+    private GeoPoint Position;
+    private String Summary;
+    private int HouseCount;
+    private String HouseCountText;
+    private String URL;
+    private AroundPlaceAttraction[] Attractions;
+    private AroundPlaceHouse[] Houses;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.Name = name;
     }
 
-    public String getPhonePrefix() {
-        return phonePrefix;
+    public String[] getImages() {
+        return Images;
     }
 
-    public void setPhonePrefix(String phonePrefix) {
-        this.phonePrefix = phonePrefix;
+    public void setImages(String[] images) {
+        Images = images;
     }
 
-    public String getProvince() {
-        return province;
+    public GeoPoint getPosition() {
+        return Position;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
+    public void setPosition(GeoPoint position) {
+        Position = position;
     }
 
-    public List<Attraction> getAttractions() {
-        return attractions;
+    public String getSummary() {
+        return Summary;
     }
 
-    public void setAttractions(List<Attraction> attractions) {
-        this.attractions = attractions;
+    public void setSummary(String summary) {
+        Summary = summary;
     }
 
-    public List<House> getHouses() {
-        return houses;
+    public int getHouseCount() {
+        return HouseCount;
     }
 
-    public void setHouses(List<House> houses) {
-        this.houses = houses;
+    public void setHouseCount(int houseCount) {
+        HouseCount = houseCount;
+    }
+
+    public String getHouseCountText() {
+        return HouseCountText;
+    }
+
+    public void setHouseCountText(String houseCountText) {
+        HouseCountText = houseCountText;
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
+    public AroundPlaceAttraction[] getAttractions() {
+        return Attractions;
+    }
+
+    public void setAttractions(AroundPlaceAttraction[] attractions) {
+        Attractions = attractions;
+    }
+
+    public AroundPlaceHouse[] getHouses() {
+        return Houses;
+    }
+
+    public void setHouses(AroundPlaceHouse[] houses) {
+        Houses = houses;
     }
 }

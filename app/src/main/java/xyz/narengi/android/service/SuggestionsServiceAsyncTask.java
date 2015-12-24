@@ -51,7 +51,7 @@ public class SuggestionsServiceAsyncTask extends AsyncTask {
                 .build();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<SuggestionsResult> call = apiEndpoints.getAroundLocationSuggestions(query, "2", "2", "3");
+        Call<SuggestionsResult> call = apiEndpoints.getAroundLocationSuggestions(query, "2", "2", "5");
 
         try {
             SuggestionsResult aroundLocationSuggestionsResult = call.execute().body();

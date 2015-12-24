@@ -1,42 +1,46 @@
 package xyz.narengi.android.common.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Siavash Mahmoudpour
  */
 //@Parcel
 public class SuggestionsResult {
 
-//    @SerializedName("City")
-    private AroundPlaceCity[] City;
+    @SerializedName("House")
+    private AroundPlaceHouse[] house;
 
-//    @SerializedName("Attraction")
-    private AroundPlaceAttraction[] Attraction;
 
-//    @SerializedName("House")
-    private AroundPlaceHouse[] House;
+    @SerializedName("City")
+    private AroundPlaceCity[] city;
+
+    @SerializedName("Attraction")
+    private AroundPlaceAttraction[] attraction;
+
 
 
     public AroundPlaceCity[] getCity() {
-        return City;
+        return city;
     }
 
     public void setCity(AroundPlaceCity[] city) {
-        this.City = city;
+        this.city = city;
     }
 
     public AroundPlaceAttraction[] getAttraction() {
-        return Attraction;
+        return attraction;
     }
 
     public void setAttraction(AroundPlaceAttraction[] attraction) {
-        this.Attraction = attraction;
+        this.attraction = attraction;
     }
 
     public AroundPlaceHouse[] getHouse() {
-        return House;
+        return house;
     }
 
     public void setHouse(AroundPlaceHouse[] house) {
-        this.House = house;
+        this.house = house;
     }
 }

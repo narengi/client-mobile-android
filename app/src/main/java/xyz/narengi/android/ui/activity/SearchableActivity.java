@@ -102,9 +102,19 @@ public class SearchableActivity extends ActionBarActivity {
 //            int[] to = new int[] {R.id.search_result_item_title};
 
 
-            SuggestionsListAdapter suggestionsAdapter = new SuggestionsListAdapter(this, cursor, R.layout.suggestions_header,
-                    from, to, R.layout.search_result_item, from, to);
-            listView.setAdapter(suggestionsAdapter);
+            // Set up our adapter
+            SuggestionsListAdapter mAdapter = new SuggestionsListAdapter(
+                    this, cursor,
+                    android.R.layout.simple_expandable_list_item_1,
+                    new String[] { SearchManager.SUGGEST_COLUMN_TEXT_1 }, // Name for group layouts
+                    new int[] { android.R.id.text1 },
+                    R.layout.search_result_item,//android.R.layout.simple_expandable_list_item_1, //child layout
+                    from, // Number for child layouts
+                    to);
+
+//            SuggestionsListAdapter suggestionsAdapter = new SuggestionsListAdapter(this, cursor, R.layout.suggestions_header,
+//                    from, to, R.layout.search_result_item, from, to);
+            listView.setAdapter(mAdapter);
 
             // Create a simple cursor adapter for the definitions and apply them to the ListView
             /*SimpleCursorAdapter words = new SimpleCursorAdapter(this,

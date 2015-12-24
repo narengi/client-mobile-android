@@ -26,15 +26,15 @@ public class SuggestionsResultDeserializer implements JsonDeserializer<Suggestio
         Gson gson = new GsonBuilder().create();
 
         SuggestionsResult suggestionsResult = new SuggestionsResult();
-        JsonElement cityElement = jsonElement.getAsJsonObject().get("City");
+        JsonElement cityElement = jsonElement.getAsJsonObject().get("city");
         AroundPlaceCity[] cityArray = gson.fromJson(cityElement, AroundPlaceCity[].class);
         suggestionsResult.setCity(cityArray);
 
-        JsonElement attractionElement = jsonElement.getAsJsonObject().get("Attraction");
+        JsonElement attractionElement = jsonElement.getAsJsonObject().get("attraction");
         AroundPlaceAttraction[] attractionArray = gson.fromJson(attractionElement, AroundPlaceAttraction[].class);
         suggestionsResult.setAttraction(attractionArray);
 
-        JsonElement houseElement = jsonElement.getAsJsonObject().get("House");
+        JsonElement houseElement = jsonElement.getAsJsonObject().get("house");
         AroundPlaceHouse[] houseArray = gson.fromJson(houseElement, AroundPlaceHouse[].class);
         suggestionsResult.setHouse(houseArray);
 

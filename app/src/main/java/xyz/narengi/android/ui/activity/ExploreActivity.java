@@ -23,6 +23,7 @@ import xyz.narengi.android.ui.adapter.SearchResultsAdapter;
 import xyz.narengi.android.ui.widget.CustomSearchView;
 import xyz.narengi.android.util.SystemUiHider;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -35,6 +36,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -49,15 +52,18 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -71,6 +77,8 @@ import com.google.gson.GsonBuilder;
 import com.quinny898.library.persistentsearch.SearchBox;
 import com.quinny898.library.persistentsearch.SearchResult;
 import com.squareup.picasso.Picasso;
+
+import org.parceler.guava.collect.Lists;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -575,8 +583,6 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 
 
         if (toolbar != null) {
-//            final LinearLayout toolbarInnerLayout = (LinearLayout)toolbar.findViewById(R.id.toolbar_inner_layout);
-//            AutoCompleteTextView searchView = (AutoCompleteTextView)toolbar.findViewById(R.id.toolbar_action_search);
             searchView = (CustomSearchView)toolbar.findViewById(R.id.toolbar_action_search);
             searchView.setIconified(false);
             searchView.setSubmitButtonEnabled(true);
@@ -586,8 +592,24 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 
 //            searchView.setOnQueryTextListener(this);
 //            searchView.setOnSuggestionListener(this);
+//            String[] from = new String[] {SearchManager.SUGGEST_COLUMN_TEXT_1/*,
+//                    SearchManager.SUGGEST_COLUMN_TEXT_2*/};
+
+            // Specify the corresponding layout elements where we want the columns to go
+//            int[] to = new int[] {R.id.search_result_item_title/*,
+//                    R.id.search_result_item_type*/};
+//
+//            SimpleCursorAdapter suggestionAdapter = new SimpleCursorAdapter(this,
+//                    R.layout.search_result_item,
+//                    null,
+//                    from,
+//                    to,
+//                    0);
+
+
 //            mSearchViewAdapter = new SearchResultsAdapter(this, R.layout.search_result_item, null, columns,null, -1000);
 //            searchView.setSuggestionsAdapter(mSearchViewAdapter);
+//            searchView.setSuggestionsAdapter(suggestionAdapter);
 
             View searchEditFrame = searchView.findViewById(android.support.v7.appcompat.R.id.search_edit_frame);
             searchEditFrame.setBackgroundColor(getResources().getColor(android.R.color.white));
@@ -601,61 +623,23 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 
             final CustomSearchView.SearchAutoComplete theTextArea = (CustomSearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
             theTextArea.setHeight(searchView.getHeight());
-//            theTextArea.setDropDownHorizontalOffset((int) toolbar.getX());
-//            theTextArea.setTextColor(Color.RED);
-//            theTextArea.setHintTextColor(Color.BLACK);
             theTextArea.setHint(R.string.search_hint);
-//            theTextArea.setCursorVisible(false);
             theTextArea.setBackgroundColor(getResources().getColor(android.R.color.white));
             theTextArea.clearFocus();
             theTextArea.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-//            theTextArea.setDropDownAnchor(R.id.toolbar_action_search);
-
-//            theTextArea.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-//            theTextArea.setDropDownWidth(theTextArea.getDropDownWidth() + 20);
-            final View dropDownAnchor = searchView.findViewById(theTextArea.getDropDownAnchor());
-//            if (dropDownAnchor != null) {
-            if (2 < 1) {
-                dropDownAnchor.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                    @Override
-                    public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                                               int oldLeft, int oldTop, int oldRight, int oldBottom) {
-
-                        // calculate width of DropdownView
 
 
-                        int point[] = new int[2];
-//                        dropDownAnchor.getLocationOnScreen(point);
-//                        toolbarInnerLayout.getLocationOnScreen(point);
-                        searchView.getLocationOnScreen(point);
-                        // x coordinate of DropDownView
-                        int dropDownPadding = point[0] + theTextArea.getDropDownHorizontalOffset();
+            /*List<String> items = new ArrayList<String>();
+            items.addAll(Arrays.asList("aaaaa", "bbbbb", "ccccc", "ddddd"));
+            theTextArea.setThreshold(1);
+            theTextArea.setAdapter(new SuggestionAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, items));
+            theTextArea.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    return;
+                }
+            });*/
 
-                        Rect screenSize = new Rect();
-                        getWindowManager().getDefaultDisplay().getRectSize(screenSize);
-                        // screen width
-                        int screenWidth = screenSize.width();
-
-                        Rect layoutSize = new Rect();
-//                        toolbarInnerLayout.getGlobalVisibleRect(layoutSize);
-                        searchView.getGlobalVisibleRect(layoutSize);
-                        DisplayMetrics metrics = getResources().getDisplayMetrics();
-                        // set DropDownView width
-//                        theTextArea.setDropDownWidth(screenWidth - dropDownPadding * 2);
-//                        theTextArea.setDropDownWidth(toolbarInnerLayout.getWidth() - dropDownPadding);
-//                        theTextArea.setDropDownWidth(right - left);
-//                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding);
-//                        theTextArea.setDropDownHorizontalOffset(layoutSize.left + (int)metrics.density*dropDownPadding*3);
-//                        theTextArea.setDropDownHorizontalOffset(left);
-//                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding + 2);
-//                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding / 2);
-//                        theTextArea.setDropDownWidth(toolbarInnerLayout.getWidth() + dropDownPadding/2);
-//                        theTextArea.setDropDownWidth(toolbarInnerLayout.getWidth() - dropDownPadding);
-                        theTextArea.setDropDownHorizontalOffset(theTextArea.getDropDownHorizontalOffset() - dropDownPadding);
-                        theTextArea.setDropDownWidth(searchView.getWidth() - dropDownPadding);
-                    }
-                });
-            }
 
             searchView.setOnMenuClickListener(new View.OnClickListener() {
                 @Override
@@ -679,27 +663,6 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 
             searchView.clearFocus();
             searchView.setBackgroundColor(getResources().getColor(android.R.color.white));
-
-//            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                @Override
-//                public boolean onQueryTextSubmit(String query) {
-//                    showSearchResultsPopup(query, toolbarInnerLayout);
-//                    return true;
-//                }
-//
-//                @Override
-//                public boolean onQueryTextChange(String newText) {
-//                    showSearchResultsPopup(newText, toolbarInnerLayout);
-//                    return true;
-//                }
-//            });
-
-//            theTextArea.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    searchView.setQuery("", false);
-//                }
-//            });
 
 //            ImageView settingsImageView = (ImageView)toolbar.findViewById(R.id.toolbar_action_settings);
 //            settingsImageView.setOnClickListener(new View.OnClickListener() {
@@ -747,6 +710,53 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
 
         recyclerAdapter = new RecyclerAdapter(aroundLocations, this);
         mRecyclerView.setAdapter(recyclerAdapter);
+
+        final GestureDetector mGestureDetector;
+        mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return true;
+            }
+        });
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                View childView = rv.findChildViewUnder(e.getX(), e.getY());
+                if (childView != null && mGestureDetector.onTouchEvent(e)) {
+
+                    int position = rv.getChildAdapterPosition(childView);
+                    if (aroundLocationList != null && aroundLocationList.size() > position) {
+                        AroundLocation aroundLocation = aroundLocationList.get(position);
+                        if (aroundLocation.getType() != null && "City".equals(aroundLocation.getType()) &&
+                                aroundLocation.getData() instanceof AroundPlaceCity) {
+                            openCityDetail((AroundPlaceCity) aroundLocation.getData());
+                            return true;
+                        }
+                    }
+
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
+
+    }
+
+    private void openCityDetail(AroundPlaceCity city) {
+        String cityUrl = city.getURL();
+        Intent intent = new Intent(this, CityActivity.class);
+        intent.putExtra("cityUrl", cityUrl);
+        startActivity(intent);
     }
 
     private List<Object> initData() {
@@ -918,6 +928,70 @@ public class ExploreActivity extends ActionBarActivity implements SearchView.OnQ
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
 //            loadingMore = false;
+        }
+    }
+
+    private class SuggestionAdapter<T> extends ArrayAdapter<T> {
+
+        private List<T> items;
+        private List<T> filteredItems;
+        private ArrayFilter mFilter;
+
+        public SuggestionAdapter(Context context, @LayoutRes int resource, @NonNull List<T> objects) {
+            super(context, resource, Lists.<T>newArrayList());
+            this.items = objects;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public T getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public Filter getFilter() {
+            if (mFilter == null) {
+                mFilter = new ArrayFilter();
+            }
+            return mFilter;
+        }
+
+        public int getCount() {
+            //todo: change to pattern-size
+            return items.size();
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if ((position % 2) == 0 && convertView != null)
+                convertView.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            return convertView;
+        }
+
+        private class ArrayFilter extends Filter {
+            @Override
+            protected Filter.FilterResults performFiltering(CharSequence prefix) {
+                FilterResults results = new FilterResults();
+
+                //custom-filtering of results
+                results.values = items;
+                results.count = items.size();
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredItems = (List<T>) results.values;
+                if (results.count > 0) {
+                    notifyDataSetChanged();
+                } else {
+                    notifyDataSetInvalidated();
+                }
+            }
         }
     }
 }

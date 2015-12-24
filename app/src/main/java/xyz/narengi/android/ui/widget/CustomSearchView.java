@@ -987,7 +987,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
             } else if (v == mVoiceButton) {
                 onVoiceClicked();
             } else if (v == mSearchSrcTextView) {
-                forceSuggestionQuery();
+//                forceSuggestionQuery();
+                setQuery(mSearchSrcTextView.getText().toString());
+                if (mOnQueryChangeListener != null) {
+                    mOnQueryChangeListener.onQueryTextChange("");
+                }
                 mSearchSrcTextView.showDropDown();
             }
         }

@@ -48,6 +48,10 @@
                 <!--android:resource="@xml/searchable_recents"/>-->
         </activity>
 
+        <activity
+            android:name=".ui.activity.CityActivity"
+            android:theme="@style/AppTheme"/>
+
         <provider
             android:name=".content.SearchSuggestionProvider"
             android:authorities="xyz.narengi.android.content.SearchSuggestionProvider"

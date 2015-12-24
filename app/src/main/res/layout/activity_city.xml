@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/city_viewpager"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            />
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/city_dataLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/city_viewpager"
+            android:layout_alignLeft="@id/city_viewpager"
+            android:layout_alignRight="@id/city_viewpager"
+            android:layout_alignTop="@id/city_viewpager"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+
+            <!--<TextView-->
+                <!--android:id="@+id/city_viewpager_item_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:gravity="center"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="48sp"-->
+                <!--android:textStyle="bold" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/city_viewpager_item_house_count"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="24sp"-->
+                <!--android:textStyle="bold"-->
+                <!--/>-->
+
+        </LinearLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/city_wikiLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/city_viewpager"
+            android:layout_margin="0dp"
+            android:orientation="vertical"
+            android:background="@drawable/city_pager_bg"
+            >
+
+            <TextView
+                android:id="@+id/city_viewpager_item_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="48sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/city_viewpager_item_house_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="40dp"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/city_viewpager_item_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right|center_vertical"
+                android:layout_margin="4dp"
+                android:singleLine="false"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                />
+
+            <TextView
+                android:id="@+id/city_viewpager_item_wiki"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:layout_margin="4dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:text="ويکی پديا"
+                />
+            </LinearLayout>
+
+        <com.viewpagerindicator.CirclePageIndicator
+            android:id="@+id/city_pageIndicator"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_alignBottom="@id/city_wikiLayout"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -193,8 +193,8 @@ public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
             recentCursor = super.query(uri, projection, selection, selectionArgs,
                 sortOrder);
 
-//        if (query == null || query.length() == 0)
-//            return recentCursor;
+        if (query == null || query.length() == 0)
+            return recentCursor;
 
         String[] SEARCH_SUGGEST_COLUMNS = {
                 SearchManager.SUGGEST_COLUMN_FORMAT,
@@ -233,9 +233,13 @@ public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
                 }
                 cursorList.add(houseCursor);
             }
-            Cursor[] cursorArray = new Cursor[cursorList.size()];
-            cursorList.toArray(cursorArray);
-            return new MergeCursor(cursorArray);
+            if (cursorList.size() > 0 ) {
+                Cursor[] cursorArray = new Cursor[cursorList.size()];
+                cursorList.toArray(cursorArray);
+                return new MergeCursor(cursorArray);
+            } else {
+                return matrixCursor;
+            }
         }
 
 //        AroundLocation[] aroundLocations = searchAroundLocations(query);
