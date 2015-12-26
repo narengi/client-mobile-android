@@ -7,9 +7,11 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -35,7 +37,7 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public ImageView houseImageView;
-//        public TextView housePriceTextView;
+        public TextView housePriceTextView;
         public FloatingActionButton hostFab;
         public TextView houseTitleTextView;
         public TextView houseFeatureSummary;
@@ -61,7 +63,7 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
                 inflate(R.layout.city_houses_item, parent, false);
 
         ImageView houseImageView = (ImageView)itemView.findViewById(R.id.houses_item_image);
-//        TextView housePriceTextView = (TextView)itemView.findViewById(R.id.houses_item_price);
+        TextView housePriceTextView = (TextView)itemView.findViewById(R.id.houses_item_price);
         FloatingActionButton houseHostFab= (FloatingActionButton)itemView.findViewById(R.id.houses_item_hostFab);
         TextView houseTitleTextView = (TextView)itemView.findViewById(R.id.houses_item_house_title);
         TextView houseFeatureSummaryTextView = (TextView)itemView.findViewById(R.id.houses_item_house_featureSummary);
@@ -70,7 +72,7 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
 
         ViewHolder holder = new ViewHolder(itemView);
         holder.houseImageView = houseImageView;
-//        holder.housePriceTextView = housePriceTextView;
+        holder.housePriceTextView = housePriceTextView;
         holder.hostFab = houseHostFab;
         holder.houseTitleTextView = houseTitleTextView;
         holder.houseFeatureSummary = houseFeatureSummaryTextView;
@@ -90,9 +92,14 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
 
         AroundPlaceHouse house = objects.get(position);
 
-        if (house.getImages() != null && house.getImages().length > 0)
-            Picasso.with(context).load(house.getImages()[0]).into(holder.houseImageView);
-//        holder.housePriceTextView.setText(house.getCost());
+        if (house.getImages() != null && house.getImages().length > 0) {
+            Display display= ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            int width = display.getWidth();
+            int imageWidth = width * 38 / 62;
+            int imageHeight = (imageWidth / 2);
+            Picasso.with(context).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(holder.houseImageView);
+        }
+        holder.housePriceTextView.setText(house.getCost());
 //        if (house.getHost() != null && house.getHost().getImageUrl() != null) {
 //            try {
 //                Bitmap hostImageBitmap = Picasso.with(context).load(house.getHost().getImageUrl()).get();
