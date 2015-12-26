@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="city_wikipedia_caption">ويکی پديا</string>
+
+    <string name="city_attractions_caption">جاذبه های گردشگری:</string>
+    <string name="city_all_attractions_button">مشاهده همه</string>
+
+</resources>

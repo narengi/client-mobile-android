@@ -1,34 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical">-->
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:fitsSystemWindows="true"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/main.appbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:fitsSystemWindows="true"
         >
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/city_viewpager"
+        <!--<android.support.design.widget.CollapsingToolbarLayout-->
+            <!--android:id="@+id/main.collapsing"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
+            <!--android:fitsSystemWindows="true"-->
+            <!--app:contentScrim="?attr/colorPrimary"-->
+            <!--app:expandedTitleMarginStart="48dp"-->
+            <!--app:expandedTitleMarginEnd="64dp"-->
+            <!-->-->
+
+    <!-- View A -->
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            />
+            android:layout_height="wrap_content">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/city_viewpager"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
 
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/city_dataLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_alignBottom="@id/city_viewpager"
-            android:layout_alignLeft="@id/city_viewpager"
-            android:layout_alignRight="@id/city_viewpager"
-            android:layout_alignTop="@id/city_viewpager"
-            android:gravity="center"
-            android:orientation="vertical"
-            >
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/city_dataLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@id/city_viewpager"
+                android:layout_alignLeft="@id/city_viewpager"
+                android:layout_alignRight="@id/city_viewpager"
+                android:layout_alignTop="@id/city_viewpager"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <!--<TextView-->
+                <!--<TextView-->
                 <!--android:id="@+id/city_viewpager_item_title"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"-->
@@ -38,7 +67,7 @@
                 <!--android:textSize="48sp"-->
                 <!--android:textStyle="bold" />-->
 
-            <!--<TextView-->
+                <!--<TextView-->
                 <!--android:id="@+id/city_viewpager_item_house_count"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"-->
@@ -50,71 +79,187 @@
                 <!--android:textStyle="bold"-->
                 <!--/>-->
 
-        </LinearLayout>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/city_wikiLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/city_viewpager"
-            android:layout_margin="0dp"
-            android:orientation="vertical"
-            android:background="@drawable/city_pager_bg"
-            >
-
-            <TextView
-                android:id="@+id/city_viewpager_item_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textColor="@android:color/white"
-                android:textSize="48sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/city_viewpager_item_house_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="40dp"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/city_viewpager_item_summary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="right|center_vertical"
-                android:layout_margin="4dp"
-                android:singleLine="false"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                />
-
-            <TextView
-                android:id="@+id/city_viewpager_item_wiki"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left|center_vertical"
-                android:layout_margin="4dp"
-                android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:text="ويکی پديا"
-                />
             </LinearLayout>
 
-        <com.viewpagerindicator.CirclePageIndicator
-            android:id="@+id/city_pageIndicator"
-            android:layout_height="wrap_content"
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/city_wikiLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/city_viewpager"
+                android:layout_margin="0dp"
+                android:background="@drawable/city_pager_bg"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/city_viewpager_item_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_x_large"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/city_viewpager_item_house_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/city_title_bottom_margin"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_normal"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/city_viewpager_item_summary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:gravity="right|center_vertical"
+                    android:singleLine="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_normal" />
+
+                <TextView
+                    android:id="@+id/city_viewpager_item_wiki"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:gravity="left|center_vertical"
+                    android:singleLine="true"
+                    android:text="@string/city_wikipedia_caption"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_normal"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/city_pageIndicator"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/city_wikiLayout"
+                android:layout_margin="4dp" />
+
+        </RelativeLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/main.toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlways"
+                />
+        <!--</android.support.design.widget.CollapsingToolbarLayout>-->
+    </android.support.design.widget.AppBarLayout>
+
+    <!--<android.support.v4.widget.NestedScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+        <!-->-->
+
+    <!-- View B -->
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/city_detailLayout"
             android:layout_width="fill_parent"
-            android:layout_alignBottom="@id/city_wikiLayout"
-            />
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
 
-    </RelativeLayout>
+            <!-- Attractions header -->
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:orientation="horizontal">
 
-</LinearLayout>
+                <Button
+                    android:id="@+id/city_allAttractionsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_margin="0dp"
+                    android:background="@drawable/button_bg"
+                    android:gravity="center"
+                    android:maxHeight="32dp"
+                    android:paddingBottom="0dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="0dp"
+                    android:singleLine="true"
+                    android:text="@string/city_all_attractions_button"
+                    android:textColor="@android:color/tertiary_text_dark"
+                    android:textSize="@dimen/font_size_small" />
+
+                <TextView
+                    android:id="@+id/city_attractionsCaption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_margin="0dp"
+                    android:gravity="right|center_vertical"
+                    android:text="@string/city_attractions_caption"
+                    android:textColor="@android:color/tertiary_text_dark"
+                    android:textSize="@dimen/font_size_normal"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <!-- Attractions gridview -->
+            <HorizontalScrollView
+                android:id="@+id/city_attractionsHorizontalScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:fillViewport="false"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <GridView
+                        android:id="@+id/city_attractionsGridView"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- House list -->
+            <!--<RelativeLayout-->
+            <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+            <!--android:id="@+id/main_layout"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="match_parent">-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/city_housesRecyclerView"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                />
+            <!--</RelativeLayout>-->
+        </LinearLayout>
+
+    <!--</android.support.v4.widget.NestedScrollView>-->
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_margin="4dp"-->
+        <!--android:src="@drawable/ic_action_location_on"-->
+        <!--app:layout_anchor="@id/main.appbar"-->
+        <!--app:layout_anchorGravity="bottom|right|end"-->
+        <!--/>-->
+
+</android.support.design.widget.CoordinatorLayout>
+
+<!--</LinearLayout>-->
+<!--</ScrollView>-->

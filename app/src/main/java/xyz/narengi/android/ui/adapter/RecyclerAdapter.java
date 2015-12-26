@@ -169,6 +169,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
             titleTextView = (TextView) itemView.findViewById(R.id.explore_viewpager_item_title);
             summaryTextView = (TextView) itemView.findViewById(R.id.explore_viewpager_item_summary);
+
+//            titleTextView.setTextSize(28 * context.getResources().getDisplayMetrics().density);
+//            summaryTextView.setTextSize(22 * context.getResources().getDisplayMetrics().density);
+
             titleTextView.setText(title);
             summaryTextView.setText(summary);
 
