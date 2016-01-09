@@ -10,9 +10,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -69,11 +71,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         ViewPager viewPager = (ViewPager)itemView.findViewById(R.id.viewpager);
 
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-//
-            viewPager.getLayoutParams().height = (int)(dpHeight/2);
+        Display display= ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+//        int width = display.getWidth();
+        int height = display.getHeight();
+
+        viewPager.getLayoutParams().height = (height * 3)/ 7;
 
         ViewHolder holder = new ViewHolder(itemView);
         holder.viewPager = viewPager;
@@ -171,7 +173,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             summaryTextView = (TextView) itemView.findViewById(R.id.explore_viewpager_item_summary);
 
 //            titleTextView.setTextSize(28 * context.getResources().getDisplayMetrics().density);
-            summaryTextView.setTextSize(22 * context.getResources().getDisplayMetrics().density);
+//            summaryTextView.setTextSize(22 * context.getResources().getDisplayMetrics().density);
 
             titleTextView.setText(title);
             summaryTextView.setText(summary);

@@ -2,11 +2,13 @@ package xyz.narengi.android.common.dto;
 
 import org.parceler.Parcel;
 
+import java.io.Serializable;
+
 /**
  * @author Siavash Mahmoudpour
  */
 @Parcel
-public class GeoPoint {
+public class GeoPoint implements Serializable {
 
     private double lat;
     private double lng;

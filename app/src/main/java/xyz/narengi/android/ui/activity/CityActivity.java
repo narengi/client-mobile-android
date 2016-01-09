@@ -1,6 +1,7 @@
 package xyz.narengi.android.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -11,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -26,7 +29,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.HttpUrl;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -40,12 +42,15 @@ import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.R;
+import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.content.CityDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.ui.adapter.AttractionsGridAdapter;
 import xyz.narengi.android.ui.adapter.CityHousesRecyclerAdapter;
+import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
 
 /**
  * @author Siavash Mahmoudpour
@@ -79,11 +84,17 @@ public class CityActivity extends ActionBarActivity {
 
     @Override
     public void onAttachedToWindow() {
-        attractionsScrollView = (HorizontalScrollView) findViewById(R.id.city_attractionsHorizontalScrollView);
+        scrollAttractionsGridRight();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
         scrollAttractionsGridRight();
     }
 
     private void scrollAttractionsGridRight() {
+        attractionsScrollView = (HorizontalScrollView) findViewById(R.id.city_attractionsHorizontalScrollView);
         attractionsScrollView.post(new Runnable() {
             public void run() {
                 attractionsScrollView.fullScroll(ScrollView.FOCUS_RIGHT);
@@ -94,26 +105,20 @@ public class CityActivity extends ActionBarActivity {
     private void setupViewPager() {
         ViewPager viewPager = (ViewPager)findViewById(R.id.city_viewpager);
 
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        float dpHeight = displayMetrics.heightPixels / displayMetrics.scaledDensity;
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-
         Display display= ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        int width = display.getWidth();
         int height = display.getHeight();
 
-//        viewPager.getLayoutParams().height = (int)(dpHeight/2);
         viewPager.getLayoutParams().height = height/2;
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this, null, null, null, null);
+        ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(this, null);
         viewPager.setAdapter(adapter);
 
         CirclePageIndicator pageIndicator = (CirclePageIndicator)findViewById(R.id.city_pageIndicator);
         pageIndicator.setViewPager(viewPager);
     }
 
-    private void setupAttractionsGrid(int size, List<AroundPlaceHouse> attractions) {
-        size = size * 3;
+    private void setupAttractionsGrid(int size, List<AroundPlaceAttraction> attractions) {
+//        size = size * 3;
         gridView = (GridView) findViewById(R.id.city_attractionsGridView);
         gridView.setNumColumns(size);
 
@@ -133,9 +138,9 @@ public class CityActivity extends ActionBarActivity {
         int totalWidth = (int) (width * size * density);
         int singleItemWidth = (int) (width * density);
 
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 totalWidth, LinearLayout.LayoutParams.MATCH_PARENT);
-
         gridView.setLayoutParams(params);
         gridView.setColumnWidth(singleItemWidth);
         gridView.setHorizontalSpacing(2);
@@ -144,9 +149,41 @@ public class CityActivity extends ActionBarActivity {
 
         AttractionsGridAdapter gridAdapter = new AttractionsGridAdapter(this, attractions);
         gridView.setAdapter(gridAdapter);
+
+        /*LinearLayout attractionsLayout = (LinearLayout)findViewById(R.id.city_detailLayout);
+        RelativeLayout attractionsHeaderLayout = (RelativeLayout)findViewById(R.id.city_attractionsHeaderLayout);
+        Button allAttractionsButton = (Button)findViewById(R.id.city_allAttractionsButton);
+        TextView attractionsCaptionTextView = (TextView)findViewById(R.id.city_attractionsCaption);
+        if (attractions == null || attractions.size() == 0) {
+            params = new LinearLayout.LayoutParams(
+                    totalWidth, 0);
+
+//            gridView.setLayoutParams(params);
+            attractionsHeaderLayout.setVisibility(View.GONE);
+            gridView.setVisibility(View.GONE);
+            attractionsLayout.setVisibility(View.GONE);
+            allAttractionsButton.setVisibility(View.GONE);
+            attractionsCaptionTextView.setVisibility(View.GONE);
+        } else {
+//            params = new LinearLayout.LayoutParams(
+//                    totalWidth, LinearLayout.LayoutParams.MATCH_PARENT);
+            attractionsHeaderLayout.setVisibility(View.VISIBLE);
+            gridView.setVisibility(View.VISIBLE);
+            attractionsLayout.setVisibility(View.VISIBLE);
+            allAttractionsButton.setVisibility(View.VISIBLE);
+            attractionsCaptionTextView.setVisibility(View.VISIBLE);
+//            gridView.setLayoutParams(params);
+            gridView.setColumnWidth(singleItemWidth);
+            gridView.setHorizontalSpacing(2);
+            gridView.setStretchMode(GridView.STRETCH_SPACING);
+            gridView.setNumColumns(size);
+        }
+
+        AttractionsGridAdapter gridAdapter = new AttractionsGridAdapter(this, attractions);
+        gridView.setAdapter(gridAdapter);*/
     }
 
-    private void setupHousesList(List<AroundPlaceHouse> houses) {
+    private void setupHousesList(final List<AroundPlaceHouse> houses) {
 
         RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.city_housesRecyclerView);
 
@@ -157,17 +194,56 @@ public class CityActivity extends ActionBarActivity {
         CityHousesRecyclerAdapter recyclerAdapter = new CityHousesRecyclerAdapter(houses, this);
         mRecyclerView.setAdapter(recyclerAdapter);
 
+        final GestureDetector mGestureDetector;
+        mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return true;
+            }
+        });
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                View childView = rv.findChildViewUnder(e.getX(), e.getY());
+                if (childView != null && mGestureDetector.onTouchEvent(e)) {
+
+                    int position = rv.getChildAdapterPosition(childView);
+                    if (houses.size() > position) {
+                        AroundPlaceHouse house = houses.get(position);
+                        openHouseDetail(house);
+                    }
+
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
+    }
+
+    private void openHouseDetail(AroundPlaceHouse house) {
+        String houseUrl = house.getURL();
+        Intent intent = new Intent(this, HouseActivity.class);
+        intent.putExtra("houseUrl", houseUrl);
+        intent.putExtra("house", house);
+        startActivity(intent);
     }
 
     private void getCity(String url) {
-        String BASE_URL = "http://149.202.20.233:3500";
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(City.class, new CityDeserializer()).create();
 
-        HttpUrl httpUrl = HttpUrl.parse(url);
-
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.SERVER_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
@@ -191,7 +267,7 @@ public class CityActivity extends ActionBarActivity {
                     int height = display.getHeight();
                     viewPager.getLayoutParams().height = height/2;
 
-                    ViewPagerAdapter adapter = new ViewPagerAdapter(CityActivity.this, city.getName(), city.getSummary(), city.getHouseCountText(), city.getImages());
+                    ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(CityActivity.this, city.getImages());
                     viewPager.setAdapter(adapter);
 
                     titleTextView = (TextView) findViewById(R.id.city_viewpager_item_title);
@@ -212,22 +288,21 @@ public class CityActivity extends ActionBarActivity {
                     titleTextView.setText(city.getName());
                     houseCountTextView.setText(city.getHouseCountText());
                     summaryTextView.setText(city.getSummary() + "\n" + city.getSummary() + "\n" + city.getSummary() + "\n" + city.getSummary());
-//                    summaryTextView.setText(city.getSummary());
+                    summaryTextView.setText(city.getSummary());
 
-                    if (city.getHouses() != null && city.getHouses().length > 0) {
-                        List<AroundPlaceHouse> list = Arrays.asList(city.getHouses());
-                        List<AroundPlaceHouse> duplicatedList = new ArrayList<AroundPlaceHouse>();
+                    if (city.getAttraction() != null && city.getAttraction().length > 0) {
+                        List<AroundPlaceAttraction> list = Arrays.asList(city.getAttraction());
+                        List<AroundPlaceAttraction> duplicatedList = new ArrayList<AroundPlaceAttraction>();
                         for (int i=0 ; i < 3 ; i++) {
                             duplicatedList.addAll(list);
                         }
-//                        setupAttractionsGrid(city.getHouses().length, Arrays.asList(city.getHouses()));
-                        setupAttractionsGrid(city.getHouses().length, duplicatedList);
-                        setupHousesList(duplicatedList);
+                        setupAttractionsGrid(city.getAttraction().length, Arrays.asList(city.getAttraction()));
+//                        setupAttractionsGrid(city.getHouses().length, duplicatedList);
                     }
 
-//                    if (city.getHouses() != null && city.getHouses().length > 0) {
-//                        setupHousesList(Arrays.asList(city.getHouses()));
-//                    }
+                    if (city.getHouses() != null && city.getHouses().length > 0) {
+                        setupHousesList(Arrays.asList(city.getHouses()));
+                    }
                 }
             }
 
@@ -241,73 +316,4 @@ public class CityActivity extends ActionBarActivity {
     }
 
 
-    private class ViewPagerAdapter extends PagerAdapter {
-        // Declare Variables
-        private Context context;
-        private String title;
-        private String summary;
-        private String houseCountText;
-        private String[] imageUrls;
-        private LayoutInflater inflater;
-
-        public ViewPagerAdapter(Context context, String title, String summary, String houseCountText, String[] imageUrls) {
-            this.context = context;
-            this.title = title;
-            this.summary = summary;
-            this.houseCountText = houseCountText;
-            this.imageUrls = imageUrls;
-        }
-
-        @Override
-        public int getCount() {
-            if (imageUrls != null)
-                return imageUrls.length;
-            else
-                return 0;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == ((RelativeLayout) object);
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-
-            ImageView imageView;
-            Bitmap imageBitmap;
-
-            inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View itemView = inflater.inflate(R.layout.city_viewpager_item, container,
-                    false);
-
-            imageView = (ImageView) itemView.findViewById(R.id.city_viewpager_item_image);
-
-//            Picasso picasso = Picasso.with(context);
-//            picasso.setIndicatorsEnabled(true);
-            Picasso.with(context).load(imageUrls[position]).into(imageView);
-
-//            ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(imageUrls[position]);
-//            AsyncTask task = imageDownloaderAsyncTask.execute();
-//            try {
-//                imageBitmap = (Bitmap)task.get();
-//                imageView.setImageBitmap(imageBitmap);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            }
-            container.addView(itemView);
-
-            return itemView;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            // Remove viewpager_item.xml from ViewPager
-            container.removeView((RelativeLayout) object);
-
-        }
-    }
 }

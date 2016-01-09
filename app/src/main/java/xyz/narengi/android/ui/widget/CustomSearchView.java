@@ -126,17 +126,18 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
     private static final String IME_OPTION_NO_MICROPHONE = "nm";
 
     private final CustomSearchView.SearchAutoComplete mSearchSrcTextView;
-    private final View mSearchEditFrame;
+//    private final View mSearchEditFrame;
+    private final View mSearchBar;
     private final View mSearchPlate;
     private final View mSubmitArea;
-    private final ImageView mSearchButton;
+//    private final ImageView mSearchButton;
     private final ImageView mGoButton;
     private final ImageView mCloseButton;
     private final ImageView mVoiceButton;
     private final View mDropDownAnchor;
 
     /** Icon optionally displayed when the SearchView is collapsed. */
-    private final ImageView mCollapsedIcon;
+//    private final ImageView mCollapsedIcon;
 
     /** Drawable used as an EditText hint. */
     private final Drawable mSearchHintIcon;
@@ -302,30 +303,31 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
                 R.styleable.SearchView_layout, R.layout.custom_search_view);
         inflater.inflate(R.layout.custom_search_view, this, true);
 
+        mSearchBar = findViewById(R.id.custom_search_bar);
         mSearchSrcTextView = (CustomSearchView.SearchAutoComplete) findViewById(R.id.search_src_text);
         mSearchSrcTextView.setSearchView(this);
 
-        mSearchEditFrame = findViewById(R.id.search_edit_frame);
+//        mSearchEditFrame = findViewById(R.id.search_edit_frame);
         mSearchPlate = findViewById(R.id.search_plate);
 
         mSubmitArea = findViewById(R.id.submit_area);
-        mSearchButton = (ImageView) findViewById(R.id.search_button);
+//        mSearchButton = (ImageView) findViewById(R.id.search_button);
         mGoButton = (ImageView) findViewById(R.id.search_go_btn);
         mCloseButton = (ImageView) findViewById(R.id.search_close_btn);
         mVoiceButton = (ImageView) findViewById(R.id.search_voice_btn);
-        mCollapsedIcon = (ImageView) findViewById(R.id.search_mag_icon);
+//        mCollapsedIcon = (ImageView) findViewById(R.id.search_mag_icon);
 
         // Set up icons and backgrounds.
         mSearchPlate.setBackgroundDrawable(a.getDrawable(R.styleable.SearchView_queryBackground));
         mSubmitArea.setBackgroundDrawable(a.getDrawable(R.styleable.SearchView_submitBackground));
-        mSearchButton.setImageDrawable(a.getDrawable(R.styleable.SearchView_searchIcon));
+//        mSearchButton.setImageDrawable(a.getDrawable(R.styleable.SearchView_searchIcon));
 //        mGoButton.setImageDrawable(a.getDrawable(R.styleable.SearchView_goIcon));
 //        mGoButton.setImageDrawable(a.getDrawable(R.drawable.ic_action_menu));
         mGoButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_action_navigation_menu));
 //        mCloseButton.setImageDrawable(a.getDrawable(R.styleable.SearchView_closeIcon));
         mCloseButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_action_location_on));
         mVoiceButton.setImageDrawable(a.getDrawable(R.styleable.SearchView_voiceIcon));
-        mCollapsedIcon.setImageDrawable(a.getDrawable(R.styleable.SearchView_searchIcon));
+//        mCollapsedIcon.setImageDrawable(a.getDrawable(R.styleable.SearchView_searchIcon));
 
         mSearchHintIcon = a.getDrawable(R.styleable.SearchView_searchHintIcon);
 
@@ -334,7 +336,7 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
                 R.layout.abc_search_dropdown_item_icons_2line);
         mSuggestionCommitIconResId = a.getResourceId(R.styleable.SearchView_commitIcon, 0);
 
-        mSearchButton.setOnClickListener(mOnClickListener);
+//        mSearchButton.setOnClickListener(mOnClickListener);
         mCloseButton.setOnClickListener(mOnClickListener);
 //        mGoButton.setOnClickListener(mOnClickListener);
         mVoiceButton.setOnClickListener(mOnClickListener);
@@ -390,15 +392,16 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         mVoiceAppSearchIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         mVoiceAppSearchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        mDropDownAnchor = CustomSearchView.this;
-//        mDropDownAnchor = findViewById(mSearchSrcTextView.getDropDownAnchor());
-//        if (mDropDownAnchor != null) {
+//        mDropDownAnchor = CustomSearchView.this;
+        mDropDownAnchor = findViewById(mSearchSrcTextView.getDropDownAnchor());
+//        mDropDownAnchor = findViewById(R.id.custom_search_bar);
+        if (mDropDownAnchor != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 addOnLayoutChangeListenerToDropDownAnchorSDK11();
             } else {
                 addOnLayoutChangeListenerToDropDownAnchorBase();
             }
-//        }
+        }
 
         updateViewsVisibility(mIconifiedByDefault);
         updateQueryHint();
@@ -849,10 +852,10 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         // Is there text in the query
         final boolean hasText = !TextUtils.isEmpty(mSearchSrcTextView.getText());
 
-        mSearchButton.setVisibility(visCollapsed);
+//        mSearchButton.setVisibility(visCollapsed);
         updateSubmitButton(hasText);
-        mSearchEditFrame.setVisibility(collapsed ? GONE : VISIBLE);
-        mCollapsedIcon.setVisibility(mIconifiedByDefault ? GONE : VISIBLE);
+//        mSearchEditFrame.setVisibility(collapsed ? GONE : VISIBLE);
+//        mCollapsedIcon.setVisibility(mIconifiedByDefault ? GONE : VISIBLE);
 //        updateCloseButton();
         mCloseButton.setVisibility(VISIBLE);
         updateVoiceButton(!hasText);
@@ -978,9 +981,9 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
     private final OnClickListener mOnClickListener = new OnClickListener() {
 
         public void onClick(View v) {
-            if (v == mSearchButton) {
+            /*if (v == mSearchButton) {
                 onSearchClicked();
-            } else if (v == mCloseButton) {
+            } else*/ if (v == mCloseButton) {
                 onCloseClicked();
             } else if (v == mGoButton) {
                 onSubmitQuery();
@@ -1322,6 +1325,116 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
     private void adjustDropDownSizeAndPosition() {
         if (mDropDownAnchor.getWidth() > 1) {
             Resources res = getContext().getResources();
+//            int anchorPadding = mSearchPlate.getPaddingLeft();
+            int anchorPadding = mSearchBar.getPaddingLeft();
+            Rect dropDownPadding = new Rect();
+            final boolean isLayoutRtl = ViewUtils.isLayoutRtl(this);
+            int iconOffset = mIconifiedByDefault
+                    ? res.getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_dropdownitem_icon_width)
+                    + res.getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_dropdownitem_text_padding_left)
+                    : 0;
+            mSearchSrcTextView.getDropDownBackground().getPadding(dropDownPadding);
+            int offset;
+            if (isLayoutRtl) {
+                offset = - dropDownPadding.left;
+            } else {
+                offset = anchorPadding - (dropDownPadding.left + iconOffset);
+            }
+//            mSearchSrcTextView.setDropDownHorizontalOffset(offset);
+            final int width = mDropDownAnchor.getWidth() + dropDownPadding.left
+                    + dropDownPadding.right + iconOffset - anchorPadding;
+//            mSearchSrcTextView.setDropDownWidth(width);
+
+
+//            mSearchSrcTextView.setDropDownWidth(getWidth() + anchorPadding);
+//            mSearchSrcTextView.setDropDownHorizontalOffset(0);
+//            mSearchSrcTextView.setDropDownVerticalOffset(0);
+
+
+
+            int point[] = new int[2];
+            mDropDownAnchor.getLocationOnScreen(point);
+            // x coordinate of DropDownView
+            int dropDownPaddingSize = point[0] + mSearchSrcTextView.getDropDownHorizontalOffset();
+
+            Rect screenSize = new Rect();
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+//            getWindowManager().getDefaultDisplay().getRectSize(screenSize);
+            // screen width
+//            int screenWidth = screenSize.width();
+            int screenWidth = displayMetrics.widthPixels;
+
+//            mSearchSrcTextView.setDropDownWidth(screenWidth - dropDownPaddingSize * 2);
+            mSearchSrcTextView.setDropDownWidth(getWidth());
+//            mSearchSrcTextView.setDropDownHorizontalOffset(mSearchSrcTextView.getDropDownHorizontalOffset() - dropDownPaddingSize);
+            mSearchSrcTextView.setDropDownHorizontalOffset(point[0] - mSearchBar.getPaddingLeft());
+
+        }
+    }
+
+    private void adjustDropDownSizeAndPosition_mine_3() {
+        if (mDropDownAnchor.getWidth() > 1) {
+            Resources res = getContext().getResources();
+//            int anchorPadding = mSearchPlate.getPaddingLeft();
+            int anchorPadding = mSearchBar.getPaddingLeft();
+            Rect dropDownPadding = new Rect();
+            final boolean isLayoutRtl = ViewUtils.isLayoutRtl(this);
+            int iconOffset = mIconifiedByDefault
+                    ? res.getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_dropdownitem_icon_width)
+                    + res.getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_dropdownitem_text_padding_left)
+                    : 0;
+
+//            iconOffset = 0;
+
+            mSearchSrcTextView.getDropDownBackground().getPadding(dropDownPadding);
+            int offset;
+            if (isLayoutRtl) {
+                offset = - dropDownPadding.left;
+            } else {
+                offset = anchorPadding - (dropDownPadding.left + iconOffset);
+            }
+//            mSearchSrcTextView.setDropDownHorizontalOffset(anchorPadding - dropDownPadding.left);
+            mSearchSrcTextView.setDropDownHorizontalOffset(mSearchBar.getLeft() - anchorPadding);
+//            mSearchSrcTextView.setDropDownHorizontalOffset(mSearchSrcTextView.getDropDownHorizontalOffset() - anchorPadding);
+            final int width = mDropDownAnchor.getWidth() + dropDownPadding.left
+                    + dropDownPadding.right + iconOffset/* - anchorPadding*/;
+            mSearchSrcTextView.setDropDownWidth(getWidth()/* + getPaddingLeft() + getPaddingRight()*/);
+        }
+    }
+
+    private void adjustDropDownSizeAndPosition_mine_2() {
+        if (mDropDownAnchor.getWidth() > 1) {
+            Resources res = getContext().getResources();
+            int anchorPadding = mSearchPlate.getPaddingLeft();
+            Rect dropDownPadding = new Rect();
+            final boolean isLayoutRtl = ViewUtils.isLayoutRtl(this);
+            int iconOffset = mIconifiedByDefault
+                    ? res.getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_dropdownitem_icon_width)
+                    + res.getDimensionPixelSize(android.support.v7.appcompat.R.dimen.abc_dropdownitem_text_padding_left)
+                    : 0;
+//            mSearchSrcTextView.getDropDownBackground().getPadding(dropDownPadding);
+//            mSearchSrcTextView.getDropDownBackground().getPadding(dropDownPadding);
+            int offset;
+            if (isLayoutRtl) {
+//                offset = - dropDownPadding.left;
+                offset = - mDropDownAnchor.getPaddingLeft();
+            } else {
+//                offset = anchorPadding - (dropDownPadding.left + iconOffset);
+                offset = anchorPadding - (mDropDownAnchor.getPaddingLeft() + iconOffset);
+            }
+            mSearchSrcTextView.setDropDownHorizontalOffset(offset);
+
+//            final int width = mDropDownAnchor.getWidth() + dropDownPadding.left
+//                    + dropDownPadding.right + iconOffset - anchorPadding;
+            final int width = mDropDownAnchor.getWidth();
+            mSearchSrcTextView.setDropDownWidth(width);
+        }
+    }
+
+    private void adjustDropDownSizeAndPosition_mine_orig() {
+        if (mDropDownAnchor.getWidth() > 1) {
+            Resources res = getContext().getResources();
             int anchorPadding = mSearchPlate.getPaddingLeft();
             Rect dropDownPadding = new Rect();
             final boolean isLayoutRtl = ViewUtils.isLayoutRtl(this);
@@ -1349,10 +1462,19 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
             int dropDownPaddingSize = point[0] + mSearchSrcTextView.getDropDownHorizontalOffset();
             DisplayMetrics metrics = getResources().getDisplayMetrics();
 //            mSearchSrcTextView.setDropDownHorizontalOffset( point[0] - (int)(mSearchSrcTextView.getDropDownHorizontalOffset()*metrics.density));
-            mSearchSrcTextView.setDropDownHorizontalOffset((int)(point[0]) - iconOffset);
+
+
+
+//            mSearchSrcTextView.setDropDownHorizontalOffset((int)(point[0]) - iconOffset);
+//            mSearchSrcTextView.setDropDownHorizontalOffset((int)(point[0]));
+
+//            mSearchSrcTextView.setDropDownHorizontalOffset(offset + getPaddingLeft());
+
 //            mSearchSrcTextView.setDropDownHorizontalOffset(mSearchSrcTextView.getDropDownHorizontalOffset() + dropDownPaddingSize/4);
-            mSearchSrcTextView.setDropDownWidth(width /*+ dropDownPaddingSize/2*/);
+//            mSearchSrcTextView.setDropDownWidth(width /*+ dropDownPaddingSize/2*/);
+
 //            mSearchSrcTextView.setDropDownWidth(getWidth());
+            mSearchSrcTextView.setDropDownWidth(mDropDownAnchor.getWidth() + mDropDownAnchor.getPaddingLeft() + mDropDownAnchor.getPaddingRight());
         }
     }
 

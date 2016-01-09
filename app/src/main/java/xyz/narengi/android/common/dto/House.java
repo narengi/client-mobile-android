@@ -1,109 +1,166 @@
 package xyz.narengi.android.common.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Siavash Mahmoudpour
  */
-public class House {
+public class House implements Serializable {
 
-    private Long id;
-    private String description;
-    private Double latitude;
-    private Double longitude;
-    private String address;
-    private String postalCode;
-    private String phoneNumber;
-    private City city;
-    private Attraction attraction;
-    private Host host;
-    private List<Object> images;
+    private String Name;
+    private String[] Images;
+    private String Cost;
+    private GeoPoint Position;
+    private Host Host;
+    private String Rating;
+    private String Summary;
+    private String CityName;
+    private String URL;
+    private HouseReview[] Reviews;
+    private HouseFeature[] FeatureList;
+    private String FeatureSummray;
+    private String type;
+    private int bedroomCount;
+    private int guestCount;
+    private int bedCount;
+    private String costText;
 
-    public Long getId() {
-        return id;
+
+
+    public String getName() {
+        return Name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setName(String name) {
+        Name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String[] getImages() {
+        return Images;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setImages(String[] images) {
+        Images = images;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public String getCost() {
+        return Cost;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public void setCost(String cost) {
+        Cost = cost;
     }
 
-    public Double getLongitude() {
-        return longitude;
+    public GeoPoint getPosition() {
+        return Position;
     }
 
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setPosition(GeoPoint position) {
+        Position = position;
     }
 
-    public String getAddress() {
-        return address;
+    public xyz.narengi.android.common.dto.Host getHost() {
+        return Host;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setHost(xyz.narengi.android.common.dto.Host host) {
+        Host = host;
     }
 
-    public String getPostalCode() {
-        return postalCode;
+    public String getRating() {
+        return Rating;
     }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    public void setRating(String rating) {
+        Rating = rating;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getSummary() {
+        return Summary;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setSummary(String summary) {
+        Summary = summary;
     }
 
-    public City getCity() {
-        return city;
+    public String getCityName() {
+        return CityName;
     }
 
-    public void setCity(City city) {
-        this.city = city;
+    public void setCityName(String cityName) {
+        CityName = cityName;
     }
 
-    public Attraction getAttraction() {
-        return attraction;
+    public String getURL() {
+        return URL;
     }
 
-    public void setAttraction(Attraction attraction) {
-        this.attraction = attraction;
+    public void setURL(String URL) {
+        this.URL = URL;
     }
 
-    public Host getHost() {
-        return host;
+    public HouseReview[] getReviews() {
+        return Reviews;
     }
 
-    public void setHost(Host host) {
-        this.host = host;
+    public void setReviews(HouseReview[] reviews) {
+        Reviews = reviews;
     }
 
-    public List<Object> getImages() {
-        return images;
+    public HouseFeature[] getFeatureList() {
+        return FeatureList;
     }
 
-    public void setImages(List<Object> images) {
-        this.images = images;
+    public void setFeatureList(HouseFeature[] features) {
+        FeatureList = features;
+    }
+
+    public String getFeatureSummray() {
+        return FeatureSummray;
+    }
+
+    public void setFeatureSummray(String featureSummray) {
+        FeatureSummray = featureSummray;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getBedroomCount() {
+        return bedroomCount;
+    }
+
+    public void setBedroomCount(int bedroomCount) {
+        this.bedroomCount = bedroomCount;
+    }
+
+    public int getGuestCount() {
+        return guestCount;
+    }
+
+    public void setGuestCount(int guestCount) {
+        this.guestCount = guestCount;
+    }
+
+    public int getBedCount() {
+        return bedCount;
+    }
+
+    public void setBedCount(int bedCount) {
+        this.bedCount = bedCount;
+    }
+
+    public String getCostText() {
+        return costText;
+    }
+
+    public void setCostText(String costText) {
+        this.costText = costText;
     }
 }

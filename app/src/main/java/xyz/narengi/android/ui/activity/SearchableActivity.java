@@ -7,17 +7,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import xyz.narengi.android.R;
-import xyz.narengi.android.content.SearchRecentQuerySuggestionsProvider;
 import xyz.narengi.android.content.SearchSuggestionProvider;
 import xyz.narengi.android.ui.adapter.SuggestionsListAdapter;
 
@@ -93,12 +88,12 @@ public class SearchableActivity extends ActionBarActivity {
         } else {
 
             // Specify the columns we want to display in the result
-            String[] from = new String[] { SearchManager.SUGGEST_COLUMN_TEXT_1,
-                    SearchManager.SUGGEST_COLUMN_TEXT_2 };
+            String[] from = new String[] { SearchManager.SUGGEST_COLUMN_TEXT_1/*,
+                    SearchManager.SUGGEST_COLUMN_TEXT_2 */};
 
             // Specify the corresponding layout elements where we want the columns to go
-            int[] to = new int[] {R.id.search_result_item_title,
-                    R.id.search_result_item_type};
+            int[] to = new int[] {R.id.search_result_item_title/*,
+                    R.id.search_result_item_summary*/};
 //            int[] to = new int[] {R.id.search_result_item_title};
 
 

@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,7 +24,6 @@ import java.util.List;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
-import xyz.narengi.android.common.dto.AroundPlaceHouse;
 
 /**
  * @author Siavash Mahmoudpour
@@ -33,9 +31,9 @@ import xyz.narengi.android.common.dto.AroundPlaceHouse;
 public class AttractionsGridAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<AroundPlaceHouse> mAttractions;
+    private List<AroundPlaceAttraction> mAttractions;
 
-    public AttractionsGridAdapter(Context c, List<AroundPlaceHouse> attractions) {
+    public AttractionsGridAdapter(Context c, List<AroundPlaceAttraction> attractions) {
         mContext = c;
         mAttractions = attractions;
     }
@@ -94,7 +92,7 @@ public class AttractionsGridAdapter extends BaseAdapter {
 //            titleTextView.setTextSize(18 * mContext.getResources().getDisplayMetrics().density);
 
             if (mAttractions != null && mAttractions.size() > position) {
-                AroundPlaceHouse attraction = mAttractions.get(position);
+                AroundPlaceAttraction attraction = mAttractions.get(position);
                 titleTextView.setText(attraction.getName());
                 if (attraction.getImages() != null && attraction.getImages().length > 0)
                     Picasso.with(mContext).load(attraction.getImages()[0]).transform(new RoundedTransformation(15, 2)).into(imageView);

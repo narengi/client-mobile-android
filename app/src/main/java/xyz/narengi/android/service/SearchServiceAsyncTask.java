@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
+import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
@@ -37,7 +38,6 @@ public class SearchServiceAsyncTask extends AsyncTask {
 
     @Override
     protected Object doInBackground(Object[] objects) {
-        String BASE_URL = "http://149.202.20.233:3500";
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(AroundLocation.class, new AroundLocationDeserializer())
@@ -47,7 +47,7 @@ public class SearchServiceAsyncTask extends AsyncTask {
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.SERVER_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 

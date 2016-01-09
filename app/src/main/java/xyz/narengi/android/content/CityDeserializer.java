@@ -10,11 +10,9 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
-import xyz.narengi.android.common.dto.AroundPlaceCity;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.common.dto.GeoPoint;
-import xyz.narengi.android.common.dto.SuggestionsResult;
 
 /**
  * @author Siavash Mahmoudpour
@@ -56,9 +54,9 @@ public class CityDeserializer implements JsonDeserializer<City> {
         String url = urlElement.getAsString();
         city.setURL(url);
 
-        JsonElement attractionsElement = jsonElement.getAsJsonObject().get("Attractions");
+        JsonElement attractionsElement = jsonElement.getAsJsonObject().get("Attraction");
         AroundPlaceAttraction[] attractions = gson.fromJson(attractionsElement, AroundPlaceAttraction[].class);
-        city.setAttractions(attractions);
+        city.setAttraction(attractions);
 
         JsonElement housesElement = jsonElement.getAsJsonObject().get("Houses");
         AroundPlaceHouse[] houses = gson.fromJson(housesElement, AroundPlaceHouse[].class);

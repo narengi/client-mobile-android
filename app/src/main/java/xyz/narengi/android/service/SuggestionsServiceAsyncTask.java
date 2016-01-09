@@ -10,6 +10,7 @@ import java.io.IOException;
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
+import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
@@ -33,20 +34,12 @@ public class SuggestionsServiceAsyncTask extends AsyncTask {
 
     @Override
     protected Object doInBackground(Object[] objects) {
-        String BASE_URL = "http://149.202.20.233:3500";
-
-//        Gson gson = new GsonBuilder()
-//                .registerTypeAdapter(AroundLocation.class, new AroundLocationDeserializer())
-//                .registerTypeAdapter(AroundPlaceCity.class, new AroundPlaceCityDeserializer())
-//                .registerTypeAdapter(AroundPlaceAttraction.class, new AroundPlaceAttractionDeserializer())
-//                .registerTypeAdapter(AroundPlaceHouse.class, new AroundPlaceHouseDeserializer())
-//                .create();
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(SuggestionsResult.class, new SuggestionsResultDeserializer()).create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.SERVER_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 

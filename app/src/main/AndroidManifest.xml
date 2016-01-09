@@ -12,62 +12,71 @@
         <activity
             android:name=".ui.activity.ExploreActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTop"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-                <!--<action android:name="android.intent.action.SEARCH"/>-->
+                <!-- <action android:name="android.intent.action.SEARCH"/> -->
             </intent-filter>
 
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.SEARCH"/>-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.SEARCH"/> -->
+            <!-- </intent-filter> -->
 
-            <meta-data android:name="android.app.default_searchable"
+            <meta-data
+                android:name="android.app.default_searchable"
                 android:value=".ui.activity.SearchableActivity" />
-            <!--<meta-data-->
-                <!--android:name="android.app.searchable"-->
-                <!--android:resource="@xml/searchable"/>-->
+            <!-- <meta-data -->
+            <!-- android:name="android.app.searchable" -->
+            <!-- android:resource="@xml/searchable"/> -->
         </activity>
-
         <activity
             android:name=".ui.activity.SearchableActivity"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme" >
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+                android:resource="@xml/searchable" />
 
-            <!--<meta-data-->
-                <!--android:name="android.app.searchable"-->
-                <!--android:resource="@xml/searchable_recents"/>-->
+            <!-- <meta-data -->
+            <!-- android:name="android.app.searchable" -->
+            <!-- android:resource="@xml/searchable_recents"/> -->
         </activity>
-
         <activity
             android:name=".ui.activity.CityActivity"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.activity.HouseActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".ui.activity.HouseFeaturesActivity"
+            android:theme="@style/Theme.Transparent"
+            />
 
         <provider
             android:name=".content.SearchSuggestionProvider"
             android:authorities="xyz.narengi.android.content.SearchSuggestionProvider"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false" >
         </provider>
-
-        <provider android:name=".content.SearchRecentQuerySuggestionsProvider"
+        <provider
+            android:name=".content.SearchRecentQuerySuggestionsProvider"
             android:authorities="xyz.narengi.android.content.SearchRecentQuerySuggestionsProvider"
             android:enabled="true"
-            android:exported="false"
-            />
+            android:exported="false" />
 
         <meta-data
             android:name="android.app.default_searchable"
-            android:value=".ui.activity.SearchableActivity"/>
+            android:value=".ui.activity.SearchableActivity" />
+
     </application>
 
 </manifest>

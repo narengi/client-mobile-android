@@ -1,26 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="fill_parent"-->
+    <!--android:padding="5dp"-->
+    <!--android:background="@android:color/transparent"-->
+    <!-->-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/city_attractionsHeaderLayout"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:padding="5dp"
-    android:background="@android:color/transparent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:orientation="horizontal"
+    android:background="@android:color/white"
     >
+
+    <!--<TextView-->
+        <!--android:id="@+id/search_result_item_title"-->
+        <!--style="@android:style/TextAppearance.Medium"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="right|center_vertical"-->
+        <!--android:layout_gravity="right|center_vertical"-->
+        <!--/>-->
+    <!--<TextView-->
+        <!--android:id="@+id/search_result_item_summary"-->
+        <!--style="@android:style/TextAppearance.Small"-->
+        <!--android:singleLine="true"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="right|center_vertical"-->
+        <!--android:layout_gravity="right|center_vertical"-->
+        <!--/>-->
+
+    <!--<android.support.v7.internal.widget.TintImageView-->
+    <ImageButton
+        android:id="@+id/search_result_item_icon"
+        style="?attr/actionButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_alignParentRight="true"
+        android:contentDescription=""
+        android:focusable="false"
+        android:src="@android:drawable/ic_menu_recent_history"
+        />
+
     <TextView
         android:id="@+id/search_result_item_title"
         style="@android:style/TextAppearance.Medium"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="right|center_vertical"
+        android:layout_toLeftOf="@id/search_result_item_icon"
         android:layout_gravity="right|center_vertical"
-        />
-    <TextView
-        android:id="@+id/search_result_item_type"
-        style="@android:style/TextAppearance.Small"
-        android:singleLine="true"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:gravity="right|center_vertical"
-        android:layout_gravity="right|center_vertical"
+        android:padding="8dp"
+        android:textSize="@dimen/font_size_small"
+        android:textStyle="bold"
         />
-</LinearLayout>
+
+</RelativeLayout>
+<!--</LinearLayout>-->

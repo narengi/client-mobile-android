@@ -86,7 +86,7 @@
                 android:layout_marginBottom="0dp"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="48dp"
                 android:orientation="vertical"
                 android:padding="0dp">
                 <!-- title -->
@@ -122,7 +122,7 @@
 
                 <View
                     android:layout_width="fill_parent"
-                    android:layout_height="1px"
+                    android:layout_height="1dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
@@ -139,6 +139,7 @@
                         android:id="@+id/houses_item_house_ratingBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:max="4"
                         android:numStars="4"
                         android:stepSize="1.0"
@@ -149,6 +150,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:src="@drawable/ic_action_location_on"
                         android:background="@android:color/transparent"
                         />

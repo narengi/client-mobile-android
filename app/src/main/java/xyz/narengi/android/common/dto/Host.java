@@ -2,13 +2,14 @@ package xyz.narengi.android.common.dto;
 
 import org.parceler.Parcel;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Siavash Mahmoudpour
  */
 @Parcel
-public class Host {
+public class Host implements Serializable {
 
     private String ID;
     private String DisplayName;

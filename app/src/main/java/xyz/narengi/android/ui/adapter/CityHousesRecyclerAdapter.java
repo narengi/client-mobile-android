@@ -2,9 +2,17 @@ package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
@@ -20,9 +28,11 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
+import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 
 /**
  * @author Siavash Mahmoudpour
@@ -100,15 +110,40 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
             Picasso.with(context).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(holder.houseImageView);
         }
         holder.housePriceTextView.setText(house.getCost());
-//        if (house.getHost() != null && house.getHost().getImageUrl() != null) {
-//            try {
+        if (house.getHost() != null && house.getHost().getImageUrl() != null) {
+            try {
 //                Bitmap hostImageBitmap = Picasso.with(context).load(house.getHost().getImageUrl()).get();
-//                if (hostImageBitmap != null)
+                ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, house.getHost().getImageUrl());
+//                Bitmap hostImageBitmap = Picasso.with(context).load(house.getHost().getImageUrl()).get();
+                AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
+
+                Bitmap hostImageBitmap = (Bitmap)asyncTask.get();
+                if (hostImageBitmap != null) {
+
+                    Bitmap circleBitmap = Bitmap.createBitmap(hostImageBitmap.getWidth(), hostImageBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+                    BitmapShader shader = new BitmapShader (hostImageBitmap,  Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+                    Paint paint = new Paint();
+                    paint.setShader(shader);
+                    paint.setAntiAlias(true);
+                    Canvas c = new Canvas(circleBitmap);
+                    c.drawCircle(hostImageBitmap.getWidth() / 2, hostImageBitmap.getHeight() / 2, hostImageBitmap.getWidth() / 2, paint);
+
+//                    holder.hostFab.setBackgroundDrawable(new BitmapDrawable(getRoundedRectBitmap(circleBitmap)));
+//                    holder.hostFab.setImageBitmap(circleBitmap);
+                    holder.hostFab.setImageBitmap(hostImageBitmap);
+                }
+//                    holder.hostFab.setBackgroundDrawable(new BitmapDrawable(getRoundedRectBitmap(hostImageBitmap)));
+//                    holder.hostFab.setBackgroundDrawable(new BitmapDrawable(hostImageBitmap));
 //                    holder.hostFab.setImageBitmap(hostImageBitmap);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
 
         holder.houseTitleTextView.setText(house.getName());
         holder.houseFeatureSummary.setText(house.getFeatureSummray());
@@ -118,5 +153,29 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
     @Override
     public int getItemCount() {
         return objects.size();
+    }
+
+
+    public Bitmap getRoundedRectBitmap(Bitmap bitmap) {
+        Bitmap result = null;
+        try {
+            result = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+
+            int color = 0xff424242;
+            Paint paint = new Paint();
+            Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+            paint.setAntiAlias(true);
+            canvas.drawARGB(0, 0, 0, 0);
+            paint.setColor(color);
+            canvas.drawCircle(50, 50, 50, paint);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        } catch (NullPointerException e) {
+        } catch (OutOfMemoryError o) {
+        }
+        return result;
     }
 }

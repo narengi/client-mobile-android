@@ -12,5 +12,20 @@
     <string name="drawer_menu_profile">پروفايل</string>
     <string name="drawer_menu_map">نمايش نقشه</string>
 
+    <string-array name="search_history_array">
+        <item>تهران</item>
+        <item>تبريز</item>
+        <item>رشت</item>
+        <item>آمل</item>
+    </string-array>
+
+    <string-array name="search_suggestion_titles_array">
+        <item>شهر</item>
+        <item>جاذبه</item>
+        <item>اقامتگاه</item>
+    </string-array>
+    <string name="title_activity_house_features">HouseFeaturesActivity</string>
+
+    <string name="action_settings">Settings</string>
 
 </resources>

@@ -8,6 +8,7 @@ import retrofit.http.Query;
 import retrofit.http.Url;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.City;
+import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.SearchResult;
 import xyz.narengi.android.common.dto.SuggestionsResult;
 
@@ -28,4 +29,7 @@ public interface RetrofitApiEndpoints {
 //    @GET("/api/v1/cities/3")
     @GET
     Call<City> getCity(@Url String url);
+
+    @GET
+    Call<House> getHouse(@Url String url);
 }

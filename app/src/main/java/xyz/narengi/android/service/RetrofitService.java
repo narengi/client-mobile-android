@@ -7,6 +7,7 @@ import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
+import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.SearchResult;
 
@@ -17,12 +18,10 @@ public class RetrofitService {
 
     private static RetrofitService instance;
     private Retrofit retrofit;
-    public static final String BASE_URL = "http://149.202.20.233:3500/api/v1/";
-
 
     public RetrofitService() {
         retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.SERVER_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }

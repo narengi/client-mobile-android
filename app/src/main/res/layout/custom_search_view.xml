@@ -18,53 +18,57 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/search_bar"
+    android:id="@+id/custom_search_bar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="0dp"
+    android:layout_margin="0dp"
+    android:background="@android:color/white"
+    >
 
     <!-- This is actually used for the badge icon *or* the badge label (or neither) -->
-    <TextView
-        android:id="@+id/search_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="2dip"
-        android:drawablePadding="0dip"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="?android:attr/textColorPrimary"
-        android:visibility="gone" />
+    <!--<TextView-->
+        <!--android:id="@+id/search_badge"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:layout_marginBottom="2dip"-->
+        <!--android:drawablePadding="0dip"-->
+        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+        <!--android:textColor="?android:attr/textColorPrimary"-->
+        <!--android:visibility="gone" />-->
 
-    <android.support.v7.internal.widget.TintImageView
-        android:id="@+id/search_button"
-        style="?attr/actionButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:focusable="true"
-        android:contentDescription="@string/abc_searchview_description_search" />
+    <!--<android.support.v7.internal.widget.TintImageView-->
+        <!--android:id="@+id/search_button"-->
+        <!--style="?attr/actionButtonStyle"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:focusable="true"-->
+        <!--android:contentDescription="@string/abc_searchview_description_search" />-->
 
-    <LinearLayout
-        android:id="@+id/search_edit_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="4dip"
-        android:layout_marginBottom="4dip"
-        android:layout_marginLeft="8dip"
-        android:layout_marginRight="8dip"
-        android:orientation="horizontal"
-        android:layoutDirection="locale">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/search_edit_frame"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:layout_marginTop="4dip"-->
+        <!--android:layout_marginBottom="4dip"-->
+        <!--android:layout_marginLeft="8dip"-->
+        <!--android:layout_marginRight="8dip"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layoutDirection="locale">-->
 
-        <android.support.v7.internal.widget.TintImageView
-            android:id="@+id/search_mag_icon"
-            android:layout_width="@dimen/abc_dropdownitem_icon_width"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside"
-            android:layout_gravity="center_vertical"
-            android:visibility="gone"
-            style="@style/RtlOverlay.Widget.AppCompat.SearchView.MagIcon" />
+        <!--<android.support.v7.internal.widget.TintImageView-->
+            <!--android:id="@+id/search_mag_icon"-->
+            <!--android:layout_width="@dimen/abc_dropdownitem_icon_width"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:visibility="gone"-->
+            <!--style="@style/RtlOverlay.Widget.AppCompat.SearchView.MagIcon" />-->
 
         <!-- Inner layout contains the app icon, button(s) and EditText -->
         <LinearLayout
@@ -73,7 +77,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="0dp"
+            android:background="@android:color/white"
+            >
 
             <android.support.v7.internal.widget.TintImageView
                 android:id="@+id/search_close_btn"
@@ -82,9 +89,12 @@
                 android:paddingLeft="8dip"
                 android:paddingRight="8dip"
                 android:layout_gravity="center_vertical"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/white"
                 android:focusable="true"
                 android:contentDescription="@string/abc_searchview_description_clear" />
+            <!--android:paddingLeft="8dip"-->
+            <!--android:paddingRight="8dip"-->
+            <!--android:background="?attr/selectableItemBackgroundBorderless"-->
 
             <view class="xyz.narengi.android.ui.widget.CustomSearchView$SearchAutoComplete"
                 android:id="@+id/search_src_text"
@@ -93,17 +103,22 @@
                 android:layout_weight="1"
                 android:minWidth="@dimen/abc_search_view_text_min_width"
                 android:layout_gravity="bottom"
-                android:paddingLeft="@dimen/abc_dropdownitem_text_padding_left"
-                android:paddingRight="@dimen/abc_dropdownitem_text_padding_right"
+                android:gravity="right|center_vertical"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:background="@null"
+                android:background="@android:color/white"
                 android:inputType="text|textAutoComplete|textNoSuggestions"
                 android:imeOptions="actionSearch"
+                android:hint="@string/search_hint"
+                android:queryHint="@string/search_hint"
                 android:dropDownHeight="wrap_content"
-                android:dropDownAnchor="@id/search_edit_frame"
+                android:dropDownAnchor="@id/custom_search_bar"
                 android:dropDownVerticalOffset="0dip"
                 android:dropDownHorizontalOffset="0dip" />
+            <!--android:dropDownAnchor="@id/search_edit_frame"-->
+
+            <!--android:paddingLeft="@dimen/abc_dropdownitem_text_padding_left"-->
+            <!--android:paddingRight="@dimen/abc_dropdownitem_text_padding_right"-->
 
         </LinearLayout>
 
@@ -111,7 +126,9 @@
             android:id="@+id/submit_area"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            >
 
             <android.support.v7.internal.widget.TintImageView
                 android:id="@+id/search_go_btn"
@@ -120,9 +137,10 @@
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="16dip"
                 android:paddingRight="16dip"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/white"
                 android:focusable="true"
                 android:contentDescription="@string/abc_searchview_description_submit" />
+            <!--android:background="?attr/selectableItemBackgroundBorderless"-->
 
             <android.support.v7.internal.widget.TintImageView
                 android:id="@+id/search_voice_btn"
@@ -131,10 +149,12 @@
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="16dip"
                 android:paddingRight="16dip"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/white"
                 android:visibility="gone"
                 android:focusable="true"
                 android:contentDescription="@string/abc_searchview_description_voice" />
+
+            <!--android:background="?attr/selectableItemBackgroundBorderless"-->
         </LinearLayout>
-    </LinearLayout>
+    <!--</LinearLayout>-->
 </LinearLayout>

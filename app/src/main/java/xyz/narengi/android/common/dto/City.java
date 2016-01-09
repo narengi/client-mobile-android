@@ -1,7 +1,5 @@
 package xyz.narengi.android.common.dto;
 
-import java.util.List;
-
 /**
  * @author Siavash Mahmoudpour
  */
@@ -14,7 +12,7 @@ public class City {
     private int HouseCount;
     private String HouseCountText;
     private String URL;
-    private AroundPlaceAttraction[] Attractions;
+    private AroundPlaceAttraction[] Attraction;
     private AroundPlaceHouse[] Houses;
 
 
@@ -74,12 +72,12 @@ public class City {
         this.URL = URL;
     }
 
-    public AroundPlaceAttraction[] getAttractions() {
-        return Attractions;
+    public AroundPlaceAttraction[] getAttraction() {
+        return Attraction;
     }
 
-    public void setAttractions(AroundPlaceAttraction[] attractions) {
-        Attractions = attractions;
+    public void setAttraction(AroundPlaceAttraction[] attraction) {
+        Attraction = attraction;
     }
 
     public AroundPlaceHouse[] getHouses() {
