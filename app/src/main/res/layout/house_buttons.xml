@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/house_hostProfileButton"
+        style="@android:style/TextAppearance.Medium"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="right|center_vertical"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:drawableRight="@android:drawable/ic_menu_recent_history"
+        android:drawablePadding="4dp"
+        android:text="@string/house_host_profile_button"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_margin="0dp"
+        android:background="@android:color/darker_gray"
+        />
+
+    <Button
+        android:id="@+id/house_hostContactButton"
+        style="@android:style/TextAppearance.Medium"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="right|center_vertical"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:drawableRight="@android:drawable/ic_menu_call"
+        android:drawablePadding="4dp"
+        android:text="@string/house_host_contact_button"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_margin="0dp"
+        android:background="@android:color/darker_gray"
+        />
+
+    <Button
+        android:id="@+id/house_extraServicesButton"
+        style="@android:style/TextAppearance.Medium"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="right|center_vertical"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:drawableRight="@android:drawable/ic_menu_edit"
+        android:drawablePadding="4dp"
+        android:text="@string/house_extra_services_button"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_margin="0dp"
+        android:background="@android:color/darker_gray"
+        />
+
+    <Button
+        android:id="@+id/house_termsButton"
+        style="@android:style/TextAppearance.Medium"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="right|center_vertical"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:drawableRight="@android:drawable/ic_menu_info_details"
+        android:drawablePadding="4dp"
+        android:text="@string/house_terms_button"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_margin="0dp"
+        android:background="@android:color/darker_gray"
+        />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="80dp" />
+
+</LinearLayout>

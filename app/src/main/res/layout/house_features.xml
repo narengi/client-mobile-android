@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/house_featuresLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#EBE9E9"
+    android:orientation="horizontal"
+    android:weightSum="10">
+
+</LinearLayout>

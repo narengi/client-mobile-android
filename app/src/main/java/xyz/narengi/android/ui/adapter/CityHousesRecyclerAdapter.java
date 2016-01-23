@@ -88,7 +88,7 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
         holder.houseFeatureSummary = houseFeatureSummaryTextView;
         holder.houseRatingBar = houseRatingBar;
         Drawable drawable = holder.houseRatingBar.getProgressDrawable();
-        drawable.setColorFilter(Color.parseColor("#FFFDEC00"), PorterDuff.Mode.SRC_ATOP);
+        drawable.setColorFilter(context.getResources().getColor(R.color.rating_bar_yelloh), PorterDuff.Mode.SRC_ATOP);
 
         return holder;
     }

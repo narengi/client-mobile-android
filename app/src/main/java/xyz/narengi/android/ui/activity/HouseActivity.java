@@ -2,26 +2,36 @@ package xyz.narengi.android.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -29,6 +39,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +64,11 @@ import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.content.HouseDeserializer;
 import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.ui.adapter.HouseContentRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
+import xyz.narengi.android.ui.adapter.RecyclerAdapter;
+import xyz.narengi.android.ui.widget.HouseLinearLayoutManager;
+import xyz.narengi.android.ui.widget.MyLinearLayoutManager;
 
 /**
  * @author Siavash Mahmoudpour
@@ -64,9 +79,10 @@ public class HouseActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_house);
-//        setupToolbar();
+        setupToolbar();
 //        setupViewPager();
 
+        showProgress();
         if (getIntent() != null && getIntent().getStringExtra("houseUrl") != null) {
             String houseUrl = getIntent().getStringExtra("houseUrl");
             getHouse(houseUrl);
@@ -94,20 +110,42 @@ public class HouseActivity extends ActionBarActivity {
 //        setupToolbar();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+//            Toast.makeText(this, "Back button pressed", Toast.LENGTH_LONG).show();
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.house_toolbar);
 
-//        setSupportActionBar(toolbar);
-//        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setDisplayHomeAsUpEnabled(false);
-//            actionBar.setDisplayShowHomeEnabled(false);
-//            actionBar.setDisplayShowTitleEnabled(false);
-//            actionBar.setDisplayUseLogoEnabled(false);
-//            actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        }
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
+        toolbar.setNavigationIcon(backButtonDrawable);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
-        final NestedScrollView contentScrollView = (NestedScrollView)findViewById(R.id.house_contentScrollView);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayUseLogoEnabled(false);
+            actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        /*final NestedScrollView contentScrollView = (NestedScrollView)findViewById(R.id.house_contentScrollView);
 //        LinearLayout contentLayout = (LinearLayout)findViewById(R.id.house_titleInfoLayout);
 
         ViewTreeObserver observer = contentScrollView.getViewTreeObserver();
@@ -126,11 +164,27 @@ public class HouseActivity extends ActionBarActivity {
 //                contentScrollView.getViewTreeObserver().removeGlobalOnLayoutListener(
 //                        this);
             }
-        });
+        });*/
 
     }
 
-//    private void setHouse(AroundPlaceHouse house) {
+    private void showProgress() {
+        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.house_progressLayout);
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.house_progressBar);
+
+        progressBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgress() {
+        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.house_progressLayout);
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.house_progressBar);
+
+        progressBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
+    }
+
+    private void setHouse(House house) {
 //        String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=";
 //        if (house.getPosition() != null) {
 //            house.getPosition().setLat(35.710139);
@@ -145,52 +199,63 @@ public class HouseActivity extends ActionBarActivity {
 //            mapUrl = mapUrl + latLngString;
 //            getHouseMapImage(mapUrl);
 //        }
-//
-//        if (house.getImages() != null && house.getImages().length > 0) {
-//            setupImageViewPager(house.getImages());
-//        }
-//
-//        setupTitleInfoLayout(house);
-//
-//        if (house.getHost() != null && house.getHost().getImageUrl() != null)
-//            setupHostFab(house.getHost().getImageUrl());
-//
-//        setupSpecsLayout();
-//        setDescription(house);
-//        setupFeaturesLayout();
-//    }
-
-
-    private void setHouse(House house) {
-        String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=";
-        if (house.getPosition() != null) {
-            house.getPosition().setLat(35.710139);
-            house.getPosition().setLng(51.418049);
-            String latLngString = String.valueOf(house.getPosition().getLat()) + "," + String.valueOf(house.getPosition().getLng());
-            mapUrl = mapUrl + latLngString;
-            mapUrl = mapUrl + "&zoom=14&size=";
-            Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-            int width = display.getWidth();
-            mapUrl = mapUrl + String.valueOf(width) + "x" + String.valueOf(120);
-            mapUrl = mapUrl + "&markers=color:red%7Clabel:C%7C";
-            mapUrl = mapUrl + latLngString;
-            getHouseMapImage(mapUrl);
-        }
 
         if (house.getImages() != null && house.getImages().length > 0) {
             setupImageViewPager(house.getImages());
         }
 
-        setupTitleInfoLayout(house);
+//        setupTitleInfoLayout(house);
+        TextView priceTextView = (TextView)findViewById(R.id.house_price);
+        priceTextView.setVisibility(View.VISIBLE);
+        priceTextView.setText(house.getCost());
 
+        FloatingActionButton houseHostFab= (FloatingActionButton)findViewById(R.id.house_hostFab);
+        houseHostFab.setVisibility(View.VISIBLE);
         if (house.getHost() != null && house.getHost().getImageUrl() != null)
             setupHostFab(house.getHost().getImageUrl());
 
-        setupSpecsLayout(house);
-        setDescription(house);
-        setupFeaturesLayout(house);
+//        setupSpecsLayout(house);
+//        setDescription(house);
+//        setupFeaturesLayout(house);
+
+        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.house_contentRecyclerView);
+
+        // use a linear layout manager
+//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+//        MyLinearLayoutManager mLayoutManager = new MyLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false, getScreenHeight(this), 0);
+        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+//        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        HouseContentRecyclerAdapter recyclerAdapter = new HouseContentRecyclerAdapter(this, house);
+        mRecyclerView.setAdapter(recyclerAdapter);
+//        mRecyclerView.setHasFixedSize(false);
+//        mRecyclerView.setNestedScrollingEnabled(true);
+
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.house_collapse_toolbar);
+        collapsingToolbarLayout.setTitle(house.getName());
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+
+//        collapsingToolbarLayout.setContentScrimColor(getResources().getColor(android.R.color.holo_orange_dark));
+//        collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(android.R.color.holo_orange_light));
 
 //        setupToolbar();
+    }
+
+    private int getScreenHeight(Context context) {
+        int measuredHeight;
+        Point size = new Point();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            wm.getDefaultDisplay().getSize(size);
+            measuredHeight = size.y;
+        } else {
+            Display d = wm.getDefaultDisplay();
+            measuredHeight = d.getHeight();
+        }
+
+        return measuredHeight;
     }
 
     private void setupImageViewPager(String[] images) {
@@ -238,7 +303,6 @@ public class HouseActivity extends ActionBarActivity {
     private void setupHostFab(String imageUrl) {
 
         FloatingActionButton houseHostFab= (FloatingActionButton)findViewById(R.id.house_hostFab);
-
         try {
             ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(this, imageUrl);
             AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
@@ -256,6 +320,9 @@ public class HouseActivity extends ActionBarActivity {
                 c.drawCircle(hostImageBitmap.getWidth() / 2, hostImageBitmap.getHeight() / 2, hostImageBitmap.getWidth() / 2, paint);
 
                 houseHostFab.setImageBitmap(hostImageBitmap);
+
+//                houseHostFab.setRippleColor(getResources().getColor(android.R.color.holo_orange_dark));
+//                houseHostFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.holo_orange_dark)));
             }
 
         } catch (InterruptedException e) {
@@ -438,6 +505,7 @@ public class HouseActivity extends ActionBarActivity {
             @Override
             public void onResponse(Response<House> response, Retrofit retrofit) {
 //                int statusCode = response.code();
+                hideProgress();
                 House house = response.body();
                 if (house != null) {
 
@@ -452,6 +520,8 @@ public class HouseActivity extends ActionBarActivity {
                 // Log error here since request failed
                 t.printStackTrace();
                 Log.d("HouseActivity", "getHouse onFailure : " + t.getMessage(), t);
+                hideProgress();
+                Toast.makeText(HouseActivity.this, "Error getting house data!", Toast.LENGTH_LONG).show();
             }
         });
     }

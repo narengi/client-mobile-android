@@ -10,6 +10,8 @@ public class HouseReview implements Serializable {
     private String Message;
     private String date;
     private String reviewer;
+    private int rate;
+    private String ImageUrl;
 
 
     public String getMessage() {
@@ -34,5 +36,21 @@ public class HouseReview implements Serializable {
 
     public void setReviewer(String reviewer) {
         this.reviewer = reviewer;
+    }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    public String getImageUrl() {
+        return ImageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        ImageUrl = imageUrl;
     }
 }

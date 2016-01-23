@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -66,10 +67,10 @@ public class SuggestionsExpandableListAdapter extends BaseExpandableListAdapter 
             TextView titleTextView = (TextView) convertView
                     .findViewById(R.id.search_result_item_title);
 
-            ImageButton imageView = (ImageButton) convertView
+//            ImageButton imageView = (ImageButton) convertView
+//                    .findViewById(R.id.search_result_item_icon);
+            ImageView imageView = (ImageView) convertView
                     .findViewById(R.id.search_result_item_icon);
-//            TextView summaryTextView = (TextView) convertView
-//                    .findViewById(R.id.search_result_item_summary);
 
             if (childObject instanceof AroundPlaceHouse) {
                 AroundPlaceHouse house = (AroundPlaceHouse)childObject;
@@ -155,4 +156,6 @@ public class SuggestionsExpandableListAdapter extends BaseExpandableListAdapter 
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
+
 }

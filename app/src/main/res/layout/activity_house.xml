@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="0dp"
+    android:padding="0dp"
+    >
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,366 +12,142 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/transparent"
-    tools:context=".HouseActivity">
+    android:layout_alignParentTop="true"
+    android:layout_margin="0dp"
+    android:padding="0dp"
+    tools:context=".HouseActivity"
+    android:fitsSystemWindows="true"
+    >
 
-    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_margin="0dp"-->
-        <!--android:padding="0dp"-->
-        <!--android:background="@android:color/transparent"-->
-        <!-->-->
+    <LinearLayout
+        android:id="@+id/house_progressLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@android:color/transparent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/house_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            >
+        </ProgressBar>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/house_contentRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/htab_appbar"
+        android:id="@+id/house_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="false"
+        android:fitsSystemWindows="true"
         android:gravity="top|center_horizontal"
         android:elevation="0dp"
         app:elevation="0dp"
         android:layout_marginTop="0dp"
         android:paddingTop="0dp"
-        app:layout_collapseMode="pin"
         android:background="@android:color/transparent"
         >
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/htab_collapse_toolbar"
+            android:id="@+id/house_collapse_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="false"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="48dp"
-            app:expandedTitleMarginEnd="64dp"
+            android:layout_margin="0dp"
+            android:padding="0dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:layout_collapseMode="pin"
             >
+
+            <!-- View A -->
+            <!-- house image -->
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/house_imageLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:padding="0dp"
+                app:layout_collapseMode="parallax"
+                app:layout_scrollFlags="scroll|enterAlways"
+                >
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/house_imageViewpager"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0dp"
+                    android:padding="0dp"
+                    />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/house_priceLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:padding="0dp"
+                    android:layout_alignBottom="@id/house_imageViewpager"
+                    android:layout_alignLeft="@id/house_imageViewpager"
+                    android:layout_alignRight="@id/house_imageViewpager"
+                    android:layout_alignTop="@id/house_imageViewpager"
+                    android:gravity="right|bottom"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/house_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|bottom"
+                        android:gravity="right|bottom"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="20dp"
+                        android:paddingRight="8dp"
+                        android:paddingLeft="8dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textSize="@dimen/font_size_normal"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:background="@android:color/holo_orange_dark"
+                        android:visibility="invisible"
+                        />
+                </LinearLayout>
+                <com.viewpagerindicator.CirclePageIndicator
+                    android:id="@+id/house_imagePageIndicator"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/house_priceLayout"
+                    android:layout_margin="4dp" />
+
+            </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/house_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:minHeight="120dp"
-                android:background="@android:color/transparent"
-                android:fitsSystemWindows="false"
-                android:layout_gravity="top|center_horizontal"
-                android:gravity="top|center_horizontal"
+                android:layout_height="?attr/actionBarSize"
+                android:minHeight="?attr/actionBarSize"
+                android:layout_margin="0dp"
+                android:padding="0dp"
                 app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                android:paddingTop="20dp"
-                android:paddingBottom="0dp"
-                app:titleMarginTop="20dp"
                 android:elevation="0dp"
-                style="@style/ToolBarStyle"
-                app:popupTheme="@style/ToolBarStyle"
-                app:backgroundTint="@color/transparent_state_list"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 />
-        <!--app:layout_collapseMode="pin"-->
-    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_margin="0dp"-->
-        <!--android:padding="0dp"-->
-        <!--android:background="@android:color/transparent"-->
-        <!-->-->
-
-        <!-- View A -->
-        <!-- house image -->
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/house_imageLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            app:layout_collapseMode="pin"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            >
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/house_imageViewpager"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                />
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/house_priceLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/house_imageViewpager"
-                android:layout_alignLeft="@id/house_imageViewpager"
-                android:layout_alignRight="@id/house_imageViewpager"
-                android:layout_alignTop="@id/house_imageViewpager"
-                android:gravity="right|bottom"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/house_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
-                    android:gravity="right|bottom"
-                    android:layout_marginRight="0dp"
-                    android:layout_marginLeft="0dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="20dp"
-                    android:paddingRight="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp"
-                    android:textSize="@dimen/font_size_normal"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold"
-                    android:background="@android:color/holo_orange_dark"
-                    />
-            </LinearLayout>
-            <com.viewpagerindicator.CirclePageIndicator
-                android:id="@+id/house_imagePageIndicator"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/house_priceLayout"
-                android:layout_margin="4dp" />
-
-        </RelativeLayout>
-
-        <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@+id/htab_toolbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="?attr/actionBarSize"-->
-            <!--android:gravity="top"-->
-            <!--android:minHeight="?attr/actionBarSize"-->
-            <!--app:layout_collapseMode="pin"-->
-            <!--app:layout_scrollFlags="scroll|enterAlways"-->
-            <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
-            <!--app:titleMarginTop="13dp" />-->
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
         <!-- View B -->
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/house_contentScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-        <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/house_bottomLayout"-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-        <!--android:layout_marginRight="0dp"-->
-        <!--android:layout_marginLeft="0dp"-->
-        <!--android:layout_marginBottom="0dp"-->
-        <!--android:layout_marginTop="10dp"-->
-        <!--android:padding="0dp"-->
-        <!--android:background="@android:color/transparent"-->
-        <!-->-->
 
-        <!-- Title info layout -->
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/house_titleInfoLayout"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginBottom="0dp"
-            android:layout_marginTop="4dp"
-            android:padding="0dp"
-            >
-
-            <TextView
-                android:id="@+id/house_city"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
-                android:gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
-                android:paddingRight="0dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="0dp"
-                android:textSize="@dimen/font_size_normal"
-                android:textStyle="bold"
-                android:textColor="@android:color/holo_orange_dark"
-                android:background="@android:color/transparent"
-                />
-
-            <TextView
-                android:id="@+id/house_summary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
-                android:gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
-                android:paddingRight="0dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="0dp"
-                android:textSize="@dimen/font_size_large"
-                android:textStyle="bold"
-                android:textColor="@color/green_dark"
-                android:background="@android:color/transparent"
-                />
-
-            <!-- Rating layout -->
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/house_ratingLayout"
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|bottom"
-                android:gravity="right|center_vertical"
-                >
-
-                <TextView
-                    android:id="@+id/house_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:gravity="left|center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:paddingRight="0dp"
-                    android:paddingLeft="8dp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="0dp"
-                    android:textSize="@dimen/font_size_small"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/darker_gray"
-                    android:background="@android:color/transparent"
-                    />
-
-                <RatingBar
-                    android:id="@+id/house_ratingBar"
-                    style="?android:attr/ratingBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:max="4"
-                    android:numStars="4"
-                    android:stepSize="1.0"
-                    android:rating="2.0"
-                    />
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/house_mapImage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp"
-                android:padding="0dp"
-                android:cropToPadding="true"
-                android:scaleType="fitXY"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true"
-                />
-
-            <!-- Specs layout -->
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/house_specsLayout"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="8"
-                android:background="#E7E6E6"
-                >
-
-                <TextView
-                    android:id="@+id/house_bedCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:layout_margin="8dp"
-                    android:padding="4dp"
-                    android:textSize="@dimen/font_size_normal"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"
-                    />
-
-                <TextView
-                    android:id="@+id/house_guestCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:layout_margin="8dp"
-                    android:padding="4dp"
-                    android:textSize="@dimen/font_size_normal"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"
-                    />
-
-                <TextView
-                    android:id="@+id/house_bedroomCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:layout_margin="8dp"
-                    android:padding="4dp"
-                    android:textSize="@dimen/font_size_normal"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"
-                    />
-
-                <TextView
-                    android:id="@+id/house_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:layout_margin="8dp"
-                    android:padding="4dp"
-                    android:textSize="@dimen/font_size_normal"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"
-                    />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/house_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="right|center_vertical"
-                android:layout_margin="10dp"
-                android:padding="0dp"
-                android:singleLine="false"
-                android:textSize="@dimen/font_size_small"
-                android:textColor="@android:color/tertiary_text_dark"
-                android:textStyle="bold"
-                android:background="@android:color/transparent"
-                />
-
-            <!-- Features layout -->
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/house_featuresLayout"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="10"
-                android:background="#EBE9E9"
-                >
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!--</LinearLayout>-->
-    </android.support.v4.widget.NestedScrollView>
 
     <!--</LinearLayout>-->
     <android.support.design.widget.FloatingActionButton
@@ -376,9 +158,29 @@
         android:scaleType="center"
         android:clickable="true"
         android:background="@drawable/fab_bg"
-        app:layout_anchor="@id/house_imageLayout"
+        app:layout_anchor="@id/house_appbar"
         app:layout_anchorGravity="bottom|left|start"
         app:backgroundTint="@android:color/transparent"
         app:backgroundTintMode="src_over"
+        android:visibility="invisible"
         />
+
 </android.support.design.widget.CoordinatorLayout>
+
+    <Button
+        android:id="@+id/house_bookButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="0dp"
+        android:gravity="center"
+        android:text="@string/house_book_button"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_size_normal"
+        android:background="@color/green_dark"
+        />
+
+</RelativeLayout>
