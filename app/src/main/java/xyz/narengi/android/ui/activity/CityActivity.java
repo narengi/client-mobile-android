@@ -2,26 +2,32 @@ package xyz.narengi.android.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -29,7 +35,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -48,6 +53,7 @@ import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.content.CityDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.ui.widget.MyLinearLayoutManager;
 import xyz.narengi.android.ui.adapter.AttractionsGridAdapter;
 import xyz.narengi.android.ui.adapter.CityHousesRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
@@ -80,17 +86,56 @@ public class CityActivity extends ActionBarActivity {
 
 //        setupAttractionsGrid(0, new ArrayList<AroundPlaceHouse>());
         setupHousesList(new ArrayList<AroundPlaceHouse>());
+        setupToolbar();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+//            Toast.makeText(this, "Back button pressed", Toast.LENGTH_LONG).show();
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setupToolbar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.city_toolbar);
+
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
+        toolbar.setNavigationIcon(backButtonDrawable);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayUseLogoEnabled(false);
+            actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 
     @Override
     public void onAttachedToWindow() {
         scrollAttractionsGridRight();
+        scrollContentToStart();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         scrollAttractionsGridRight();
+        scrollContentToStart();
     }
 
     private void scrollAttractionsGridRight() {
@@ -100,6 +145,23 @@ public class CityActivity extends ActionBarActivity {
                 attractionsScrollView.fullScroll(ScrollView.FOCUS_RIGHT);
             }
         });
+    }
+
+    private void scrollContentToStart() {
+        final NestedScrollView contentScrollView = (NestedScrollView) findViewById(R.id.city_contentScrollView);
+        contentScrollView.post(new Runnable() {
+            public void run() {
+                contentScrollView.scrollTo(0, 0);
+            }
+        });
+
+//        CoordinatorLayout coordinatorLayout = (CoordinatorLayout)findViewById(R.id.city_coordinatorLayout);
+//        AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.city_appbar);
+//        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+//        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+//        if (behavior != null) {
+//            behavior.onNestedFling(coordinatorLayout, appBarLayout, null, 0, 10000, true);
+//        }
     }
 
     private void setupViewPager() {
@@ -150,45 +212,83 @@ public class CityActivity extends ActionBarActivity {
         AttractionsGridAdapter gridAdapter = new AttractionsGridAdapter(this, attractions);
         gridView.setAdapter(gridAdapter);
 
-        /*LinearLayout attractionsLayout = (LinearLayout)findViewById(R.id.city_detailLayout);
+    }
+
+    private void showAttractionViews() {
+
+        gridView = (GridView) findViewById(R.id.city_attractionsGridView);
+        LinearLayout attractionsLayout = (LinearLayout)findViewById(R.id.city_attractionsLayout);
         RelativeLayout attractionsHeaderLayout = (RelativeLayout)findViewById(R.id.city_attractionsHeaderLayout);
         Button allAttractionsButton = (Button)findViewById(R.id.city_allAttractionsButton);
         TextView attractionsCaptionTextView = (TextView)findViewById(R.id.city_attractionsCaption);
-        if (attractions == null || attractions.size() == 0) {
-            params = new LinearLayout.LayoutParams(
-                    totalWidth, 0);
+        HorizontalScrollView attractionsScrollView = (HorizontalScrollView)findViewById(R.id.city_attractionsHorizontalScrollView);
+        View attractionsFooterView = findViewById(R.id.city_attractionsFooter);
 
-//            gridView.setLayoutParams(params);
-            attractionsHeaderLayout.setVisibility(View.GONE);
-            gridView.setVisibility(View.GONE);
-            attractionsLayout.setVisibility(View.GONE);
-            allAttractionsButton.setVisibility(View.GONE);
-            attractionsCaptionTextView.setVisibility(View.GONE);
+        attractionsLayout.setVisibility(View.VISIBLE);
+        attractionsHeaderLayout.setVisibility(View.VISIBLE);
+        allAttractionsButton.setVisibility(View.VISIBLE);
+        attractionsCaptionTextView.setVisibility(View.VISIBLE);
+        attractionsScrollView.setVisibility(View.VISIBLE);
+        gridView.setVisibility(View.VISIBLE);
+        attractionsFooterView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideAttractionViews() {
+        gridView = (GridView) findViewById(R.id.city_attractionsGridView);
+        LinearLayout attractionsLayout = (LinearLayout)findViewById(R.id.city_attractionsLayout);
+        RelativeLayout attractionsHeaderLayout = (RelativeLayout)findViewById(R.id.city_attractionsHeaderLayout);
+        Button allAttractionsButton = (Button)findViewById(R.id.city_allAttractionsButton);
+        TextView attractionsCaptionTextView = (TextView)findViewById(R.id.city_attractionsCaption);
+        HorizontalScrollView attractionsScrollView = (HorizontalScrollView)findViewById(R.id.city_attractionsHorizontalScrollView);
+        View attractionsFooterView = findViewById(R.id.city_attractionsFooter);
+
+        attractionsLayout.setVisibility(View.INVISIBLE);
+        attractionsHeaderLayout.setVisibility(View.INVISIBLE);
+        allAttractionsButton.setVisibility(View.INVISIBLE);
+        attractionsCaptionTextView.setVisibility(View.INVISIBLE);
+        attractionsScrollView.setVisibility(View.INVISIBLE);
+        gridView.setVisibility(View.INVISIBLE);
+        attractionsFooterView.setVisibility(View.INVISIBLE);
+    }
+
+    private int getScreenHeight(Context context) {
+        int measuredHeight;
+        Point size = new Point();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            wm.getDefaultDisplay().getSize(size);
+            measuredHeight = size.y;
         } else {
-//            params = new LinearLayout.LayoutParams(
-//                    totalWidth, LinearLayout.LayoutParams.MATCH_PARENT);
-            attractionsHeaderLayout.setVisibility(View.VISIBLE);
-            gridView.setVisibility(View.VISIBLE);
-            attractionsLayout.setVisibility(View.VISIBLE);
-            allAttractionsButton.setVisibility(View.VISIBLE);
-            attractionsCaptionTextView.setVisibility(View.VISIBLE);
-//            gridView.setLayoutParams(params);
-            gridView.setColumnWidth(singleItemWidth);
-            gridView.setHorizontalSpacing(2);
-            gridView.setStretchMode(GridView.STRETCH_SPACING);
-            gridView.setNumColumns(size);
+            Display d = wm.getDefaultDisplay();
+            measuredHeight = d.getHeight();
         }
 
-        AttractionsGridAdapter gridAdapter = new AttractionsGridAdapter(this, attractions);
-        gridView.setAdapter(gridAdapter);*/
+        return measuredHeight;
     }
 
     private void setupHousesList(final List<AroundPlaceHouse> houses) {
 
         RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.city_housesRecyclerView);
 
+        LinearLayout attractionsLayout = (LinearLayout)findViewById(R.id.city_attractionsLayout);
+        int attractionsLayoutHeight;
+        attractionsLayoutHeight = attractionsLayout.getMeasuredHeight();
+        if (attractionsLayoutHeight <= 0)
+            attractionsLayoutHeight = attractionsLayout.getHeight();
+
+        TextView housesCaptionTextView = (TextView)findViewById(R.id.city_housesCaption);
+        int housesCaptionHeight;
+        housesCaptionHeight = housesCaptionTextView.getMeasuredHeight();
+        if (housesCaptionHeight <= 0)
+            housesCaptionHeight = housesCaptionTextView.getHeight();
+        housesCaptionHeight = housesCaptionHeight * 3;
+
+
+        int housesHeaderHeight = (attractionsLayoutHeight + housesCaptionHeight) * 3;
         // use a linear layout manager
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        MyLinearLayoutManager mLayoutManager = new MyLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false, getScreenHeight(this), housesHeaderHeight);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         CityHousesRecyclerAdapter recyclerAdapter = new CityHousesRecyclerAdapter(houses, this);
@@ -228,6 +328,9 @@ public class CityActivity extends ActionBarActivity {
 
             }
         });
+
+        mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView.setHasFixedSize(false);
     }
 
     private void openHouseDetail(AroundPlaceHouse house) {
@@ -291,18 +394,32 @@ public class CityActivity extends ActionBarActivity {
                     summaryTextView.setText(city.getSummary());
 
                     if (city.getAttraction() != null && city.getAttraction().length > 0) {
-                        List<AroundPlaceAttraction> list = Arrays.asList(city.getAttraction());
-                        List<AroundPlaceAttraction> duplicatedList = new ArrayList<AroundPlaceAttraction>();
-                        for (int i=0 ; i < 3 ; i++) {
-                            duplicatedList.addAll(list);
-                        }
+                        showAttractionViews();
+//                        List<AroundPlaceAttraction> list = Arrays.asList(city.getAttraction());
+//                        List<AroundPlaceAttraction> duplicatedList = new ArrayList<AroundPlaceAttraction>();
+//                        for (int i=0 ; i < 3 ; i++) {
+//                            duplicatedList.addAll(list);
+//                        }
                         setupAttractionsGrid(city.getAttraction().length, Arrays.asList(city.getAttraction()));
 //                        setupAttractionsGrid(city.getHouses().length, duplicatedList);
+                    } else {
+                        hideAttractionViews();
                     }
 
                     if (city.getHouses() != null && city.getHouses().length > 0) {
                         setupHousesList(Arrays.asList(city.getHouses()));
                     }
+
+                    CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.city_collapse_toolbar);
+                    collapsingToolbarLayout.setTitle(city.getName());
+                    collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+
+//                    collapsingToolbarLayout.setContentScrimColor(getResources().getColor(android.R.color.holo_orange_dark));
+//                    collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(android.R.color.holo_orange_light));
+
+//                    setupToolbar();
+
+                    scrollContentToStart();
                 }
             }
 

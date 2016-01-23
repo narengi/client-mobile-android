@@ -41,7 +41,7 @@
             android:layout_weight="0"
             android:layout_gravity="left|center_vertical"
             android:background="@android:color/white"
-            android:src="@drawable/ic_action_location_on" />
+            android:src="@android:drawable/ic_menu_mylocation" />
 
         <!--<AutoCompleteTextView-->
         <!--android:id="@+id/toolbar_action_search"-->
@@ -60,7 +60,8 @@
         <!--android:background="@android:color/transparent"-->
         <!--/>-->
 
-        <EditText
+        <!--<EditText-->
+        <xyz.narengi.android.ui.widget.CustomEditText
             android:id="@+id/toolbar_action_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -142,10 +143,11 @@
         android:layout_gravity="top|center_horizontal"
         android:background="@android:color/white"
         android:groupIndicator="@android:color/transparent"
-        android:scrollingCache="false"
-        android:fastScrollEnabled="false"
-        android:nestedScrollingEnabled="false"
-        android:smoothScrollbar="false"
         />
+
+    <!--android:scrollingCache="false"-->
+    <!--android:fastScrollEnabled="false"-->
+    <!--android:nestedScrollingEnabled="false"-->
+    <!--android:smoothScrollbar="false"-->
 
 </LinearLayout>

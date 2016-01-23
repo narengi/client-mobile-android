@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/house_specsLayout"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="8"
+    android:background="#E7E6E6"
+    >
+
+    <TextView
+        android:id="@+id/house_bedCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:textSize="@dimen/font_size_normal"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        />
+
+    <TextView
+        android:id="@+id/house_guestCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:textSize="@dimen/font_size_normal"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        />
+
+    <TextView
+        android:id="@+id/house_bedroomCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:textSize="@dimen/font_size_normal"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        />
+
+    <TextView
+        android:id="@+id/house_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:textSize="@dimen/font_size_normal"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        />
+</LinearLayout>

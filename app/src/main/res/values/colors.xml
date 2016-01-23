@@ -2,5 +2,6 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="green_dark">#288b2c</color>
+    <color name="rating_bar_yelloh">#FFFDEC00</color>
 
 </resources>
