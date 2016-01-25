@@ -16,11 +16,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,9 +31,11 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -53,6 +57,7 @@ import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.content.CityDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.ui.adapter.CityContentRecyclerAdapter;
 import xyz.narengi.android.ui.widget.MyLinearLayoutManager;
 import xyz.narengi.android.ui.adapter.AttractionsGridAdapter;
 import xyz.narengi.android.ui.adapter.CityHousesRecyclerAdapter;
@@ -69,6 +74,7 @@ public class CityActivity extends ActionBarActivity {
     TextView wikiTextView;
     GridView gridView;
     HorizontalScrollView attractionsScrollView;
+    private LinearLayout attractionsLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +82,7 @@ public class CityActivity extends ActionBarActivity {
         setContentView(R.layout.activity_city);
         setupViewPager();
 
+        showProgress();
         if (getIntent() != null && getIntent().getStringExtra("cityUrl") != null) {
             String cityUrl = getIntent().getStringExtra("cityUrl");
             getCity(cityUrl);
@@ -85,7 +92,8 @@ public class CityActivity extends ActionBarActivity {
         wikiTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_action_wikipedia), null);
 
 //        setupAttractionsGrid(0, new ArrayList<AroundPlaceHouse>());
-        setupHousesList(new ArrayList<AroundPlaceHouse>());
+
+//        setupHousesList(new ArrayList<AroundPlaceHouse>());
         setupToolbar();
     }
 
@@ -98,6 +106,67 @@ public class CityActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupContentRecyclerView(final City city) {
+        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.city_housesRecyclerView);
+
+        // use a linear layout manager
+//        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+//        MyLinearLayoutManager mLayoutManager = new MyLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false, getScreenHeight(this), 0);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        CityContentRecyclerAdapter recyclerAdapter = new CityContentRecyclerAdapter(this, city);
+        mRecyclerView.setAdapter(recyclerAdapter);
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setNestedScrollingEnabled(false);
+
+        final GestureDetector mGestureDetector;
+        mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return true;
+            }
+        });
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+
+                if (city == null || city.getHouses() == null || city.getHouses().length == 0)
+                    return false;
+
+                View childView = rv.findChildViewUnder(e.getX(), e.getY());
+                if (childView != null && mGestureDetector.onTouchEvent(e)) {
+
+                    int index = -1;
+                    int position = rv.getChildAdapterPosition(childView);
+
+                    if (city.getAttraction() != null && city.getAttraction().length > 0) {
+                        index = position - 2;
+                    } else {
+                        index = position - 1;
+                    }
+
+                    if (index >= 0 && city.getHouses() != null && city.getHouses().length > index) {
+                        AroundPlaceHouse house = city.getHouses()[index];
+                        openHouseDetail(house);
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
     }
 
     private void setupToolbar() {
@@ -125,6 +194,22 @@ public class CityActivity extends ActionBarActivity {
         }
     }
 
+    private void showProgress() {
+        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.city_progressLayout);
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.city_progressBar);
+
+        progressBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgress() {
+        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.city_progressLayout);
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.city_progressBar);
+
+        progressBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
+    }
+
     @Override
     public void onAttachedToWindow() {
         scrollAttractionsGridRight();
@@ -139,21 +224,21 @@ public class CityActivity extends ActionBarActivity {
     }
 
     private void scrollAttractionsGridRight() {
-        attractionsScrollView = (HorizontalScrollView) findViewById(R.id.city_attractionsHorizontalScrollView);
-        attractionsScrollView.post(new Runnable() {
-            public void run() {
-                attractionsScrollView.fullScroll(ScrollView.FOCUS_RIGHT);
-            }
-        });
+//        attractionsScrollView = (HorizontalScrollView) findViewById(R.id.city_attractionsHorizontalScrollView);
+//        attractionsScrollView.post(new Runnable() {
+//            public void run() {
+//                attractionsScrollView.fullScroll(ScrollView.FOCUS_RIGHT);
+//            }
+//        });
     }
 
     private void scrollContentToStart() {
-        final NestedScrollView contentScrollView = (NestedScrollView) findViewById(R.id.city_contentScrollView);
-        contentScrollView.post(new Runnable() {
-            public void run() {
-                contentScrollView.scrollTo(0, 0);
-            }
-        });
+//        final NestedScrollView contentScrollView = (NestedScrollView) findViewById(R.id.city_contentScrollView);
+//        contentScrollView.post(new Runnable() {
+//            public void run() {
+//                contentScrollView.scrollTo(0, 0);
+//            }
+//        });
 
 //        CoordinatorLayout coordinatorLayout = (CoordinatorLayout)findViewById(R.id.city_coordinatorLayout);
 //        AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.city_appbar);
@@ -181,7 +266,12 @@ public class CityActivity extends ActionBarActivity {
 
     private void setupAttractionsGrid(int size, List<AroundPlaceAttraction> attractions) {
 //        size = size * 3;
-        gridView = (GridView) findViewById(R.id.city_attractionsGridView);
+
+        //city_attractionsLayout
+        LayoutInflater inflater = LayoutInflater.from(this);
+        attractionsLayout = (LinearLayout)inflater.inflate(R.layout.city_attractions, null);
+
+        gridView = (GridView) attractionsLayout.findViewById(R.id.city_attractionsGridView);
         gridView.setNumColumns(size);
 
         // Calculated single Item Layout Width for each grid element ....
@@ -294,6 +384,10 @@ public class CityActivity extends ActionBarActivity {
         CityHousesRecyclerAdapter recyclerAdapter = new CityHousesRecyclerAdapter(houses, this);
         mRecyclerView.setAdapter(recyclerAdapter);
 
+        if (this.attractionsLayout != null) {
+
+        }
+
         final GestureDetector mGestureDetector;
         mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -357,6 +451,7 @@ public class CityActivity extends ActionBarActivity {
             @Override
             public void onResponse(Response<City> response, Retrofit retrofit) {
 //                int statusCode = response.code();
+                hideProgress();
                 City city = response.body();
                 if (city != null) {
                     ViewPager viewPager = (ViewPager)findViewById(R.id.city_viewpager);
@@ -393,22 +488,19 @@ public class CityActivity extends ActionBarActivity {
                     summaryTextView.setText(city.getSummary() + "\n" + city.getSummary() + "\n" + city.getSummary() + "\n" + city.getSummary());
                     summaryTextView.setText(city.getSummary());
 
-                    if (city.getAttraction() != null && city.getAttraction().length > 0) {
-                        showAttractionViews();
-//                        List<AroundPlaceAttraction> list = Arrays.asList(city.getAttraction());
-//                        List<AroundPlaceAttraction> duplicatedList = new ArrayList<AroundPlaceAttraction>();
-//                        for (int i=0 ; i < 3 ; i++) {
-//                            duplicatedList.addAll(list);
-//                        }
-                        setupAttractionsGrid(city.getAttraction().length, Arrays.asList(city.getAttraction()));
-//                        setupAttractionsGrid(city.getHouses().length, duplicatedList);
-                    } else {
-                        hideAttractionViews();
-                    }
 
-                    if (city.getHouses() != null && city.getHouses().length > 0) {
-                        setupHousesList(Arrays.asList(city.getHouses()));
-                    }
+                    setupContentRecyclerView(city);
+
+//                    if (city.getAttraction() != null && city.getAttraction().length > 0) {
+//                        showAttractionViews();
+//                        setupAttractionsGrid(city.getAttraction().length, Arrays.asList(city.getAttraction()));
+//                    } else {
+//                        hideAttractionViews();
+//                    }
+//
+//                    if (city.getHouses() != null && city.getHouses().length > 0) {
+//                        setupHousesList(Arrays.asList(city.getHouses()));
+//                    }
 
                     CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.city_collapse_toolbar);
                     collapsingToolbarLayout.setTitle(city.getName());
@@ -428,6 +520,8 @@ public class CityActivity extends ActionBarActivity {
                 // Log error here since request failed
                 t.printStackTrace();
                 Log.d("CityActivity", "getCity onFailure : " + t.getMessage(), t);
+                hideProgress();
+                Toast.makeText(CityActivity.this, "Error getting city data!", Toast.LENGTH_LONG).show();
             }
         });
     }
