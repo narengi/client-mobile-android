@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_profile_job_caption">شغل :</string>
+    <string name="host_profile_reviews_caption">نظرات مهمانان</string>
+    <string name="host_profile_houses_caption">اقامتگاه ها</string>
+</resources>

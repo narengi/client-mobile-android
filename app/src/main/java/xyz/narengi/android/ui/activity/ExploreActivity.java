@@ -20,6 +20,7 @@ import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
 import xyz.narengi.android.ui.adapter.RecyclerAdapter;
 import xyz.narengi.android.ui.adapter.SuggestionsExpandableListAdapter;
+import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -42,6 +44,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -74,9 +77,12 @@ public class ExploreActivity extends ActionBarActivity {
     private EditText searchEditText;
     private View.OnFocusChangeListener searchOnFocusChangeListener;
     private boolean loadingMore;
-    private ExpandableListView searchResultListView;
-    private ExpandableListView searchHistoryListView;
+//    private ExpandableListView searchResultListView;
+//    private ExpandableListView searchHistoryListView;
+    private RecyclerView searchResultListView;
+    private RecyclerView searchHistoryListView;
     private TextWatcher searchTextWatcher;
+    private RecyclerView.OnItemTouchListener suggestionsOnItemTouchListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +113,100 @@ public class ExploreActivity extends ActionBarActivity {
         progressBarLayout.setVisibility(View.GONE);
     }
 
-    private void showSearchHistoryListView() {
+    private void showSearchHistoryRecyclerView() {
+        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.toolbar_main_layout);
+        toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                closeSearchSuggestions();
+                return false;
+            }
+        });
+
+        searchHistoryListView = (RecyclerView)findViewById(R.id.search_results_list);
+
+        final String[] historyItems = getResources().getStringArray(R.array.search_history_array);
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        searchHistoryListView.setLayoutManager(mLayoutManager);
+
+        SuggestionsRecyclerAdapter recyclerAdapter = new SuggestionsRecyclerAdapter(this, historyItems);
+        searchHistoryListView.setAdapter(recyclerAdapter);
+
+        final GestureDetector mGestureDetector;
+        mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return true;
+            }
+
+//            @Override
+//            public boolean onDown(MotionEvent e) {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onDoubleTap(MotionEvent e) {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onDoubleTapEvent(MotionEvent e) {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onSingleTapConfirmed(MotionEvent e) {
+//                return true;
+//            }
+        });
+
+        if (suggestionsOnItemTouchListener != null)
+            searchHistoryListView.removeOnItemTouchListener(suggestionsOnItemTouchListener);
+
+        suggestionsOnItemTouchListener = new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent e) {
+
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
+
+                View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                int position = recyclerView.getChildAdapterPosition(childView);
+
+                if (childView == null) {
+                    closeSearchSuggestions();
+                } else {
+                    if (position >= 0 && mGestureDetector.onTouchEvent(e)) {
+                        if (historyItems != null && historyItems.length > position) {
+                            Object item = historyItems[position];
+                            if (item != null) {
+                                searchEditText.setText(item.toString());
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        };
+
+        searchHistoryListView.addOnItemTouchListener(suggestionsOnItemTouchListener);
+
+        searchHistoryListView.setVisibility(View.VISIBLE);
+        searchHistoryListView.invalidate();
+    }
+
+    /*private void showSearchHistoryListView() {
 
         searchHistoryListView = (ExpandableListView)findViewById(R.id.search_results_list);
 
@@ -162,7 +261,7 @@ public class ExploreActivity extends ActionBarActivity {
 
         searchHistoryListView.setVisibility(View.VISIBLE);
         searchHistoryListView.invalidate();
-    }
+    }*/
 
     private SuggestionsResult getAroundLocationSuggestions(String query) {
         SuggestionsServiceAsyncTask suggestionsAsyncTask = new SuggestionsServiceAsyncTask(query);
@@ -180,7 +279,115 @@ public class ExploreActivity extends ActionBarActivity {
         return null;
     }
 
-    private void showSearchResultListView(String query) {
+    private void showSearchResultRecyclerView(String query) {
+
+        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.toolbar_main_layout);
+        toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                closeSearchSuggestions();
+                return false;
+            }
+        });
+
+        final List suggestions = new ArrayList();
+
+        SuggestionsResult suggestionsResult = getAroundLocationSuggestions(query);
+        if (suggestionsResult != null) {
+
+            if (suggestionsResult.getCity() != null && suggestionsResult.getCity().length > 0) {
+                suggestions.addAll(Arrays.asList(suggestionsResult.getCity()));
+            }
+            if (suggestionsResult.getAttraction() != null && suggestionsResult.getAttraction().length > 0) {
+                suggestions.addAll(Arrays.asList(suggestionsResult.getAttraction()));
+            }
+            if (suggestionsResult.getHouse() != null && suggestionsResult.getHouse().length > 0) {
+                suggestions.addAll(Arrays.asList(suggestionsResult.getHouse()));
+            }
+        }
+
+        searchResultListView = (RecyclerView)findViewById(R.id.search_results_list);
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        searchResultListView.setLayoutManager(mLayoutManager);
+
+        SuggestionsRecyclerAdapter recyclerAdapter = new SuggestionsRecyclerAdapter(this, suggestions.toArray());
+        searchResultListView.setAdapter(recyclerAdapter);
+
+        final GestureDetector mGestureDetector;
+        mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return true;
+            }
+        });
+
+        if (suggestionsOnItemTouchListener != null)
+            searchResultListView.removeOnItemTouchListener(suggestionsOnItemTouchListener);
+        suggestionsOnItemTouchListener = new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent e) {
+
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
+
+                View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                int position = recyclerView.getChildAdapterPosition(childView);
+
+                if (childView == null) {
+                    closeSearchSuggestions();
+                } else {
+                    if (position >= 0 && mGestureDetector.onTouchEvent(e)) {
+                        if (suggestions.size() > position) {
+
+                            Object suggestion = suggestions.get(position);
+                            if (suggestion instanceof AroundPlaceCity) {
+                                openCityDetail((AroundPlaceCity) suggestion);
+                            } else if (suggestion instanceof AroundPlaceAttraction) {
+
+                            } else if (suggestion instanceof AroundPlaceHouse) {
+                                openHouseDetail((AroundPlaceHouse) suggestion);
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        };
+
+        searchResultListView.addOnItemTouchListener(suggestionsOnItemTouchListener);
+
+        searchResultListView.setVisibility(View.VISIBLE);
+        searchResultListView.invalidate();
+
+        /*ViewGroup vg = searchResultListView;
+        int totalHeight = 0;
+        for (int i = 0; i < searchResultListView.getAdapter().getCount(); i++) {
+            View listItem = searchResultListView.getAdapter().getView(i, null, vg);
+            if (listItem != null) {
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+        }
+
+        ViewGroup.LayoutParams par = searchResultListView.getLayoutParams();
+        par.height = totalHeight + (searchResultListView.getDividerHeight() * (searchResultListView.getAdapter().getCount() - 1));
+        searchResultListView.setLayoutParams(par);
+        searchResultListView.requestLayout();*/
+    }
+
+    /*private void showSearchResultListView(String query) {
 
         final String[] searchHeaderItems = getResources().getStringArray(R.array.search_suggestion_titles_array);
 
@@ -241,7 +448,22 @@ public class ExploreActivity extends ActionBarActivity {
 
         searchResultListView.setVisibility(View.VISIBLE);
         searchResultListView.invalidate();
-    }
+
+        ViewGroup vg = searchResultListView;
+        int totalHeight = 0;
+        for (int i = 0; i < searchResultListView.getAdapter().getCount(); i++) {
+            View listItem = searchResultListView.getAdapter().getView(i, null, vg);
+            if (listItem != null) {
+//                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+        }
+
+        ViewGroup.LayoutParams par = searchResultListView.getLayoutParams();
+        par.height = totalHeight + (searchResultListView.getDividerHeight() * (searchResultListView.getAdapter().getCount() - 1));
+        searchResultListView.setLayoutParams(par);
+        searchResultListView.requestLayout();
+    }*/
 
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -273,21 +495,24 @@ public class ExploreActivity extends ActionBarActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                showSearchHistoryListView();
+                                showSearchHistoryRecyclerView();
+                                updateToolbarScrollFlags(false);
                             }
 
                         }, 5);
                     } else {
 
-                        searchEditText.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                searchEditText.setSelection(1);
-                                searchEditText.extendSelection(0);
-                                searchEditText.setSelection(0);
-//                                searchEditText.setSelection(s.length(), s.length());
-                            }
-                        }, 6);
+//                        searchEditText.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                searchEditText.setSelection(1);
+//                                searchEditText.extendSelection(0);
+//                                searchEditText.setSelection(0);
+////                                searchEditText.setSelection(s.length(), s.length());
+//                            }
+//                        }, 6);
+
+
 //                        handler.postDelayed(new Runnable() {
 //                            @Override
 //                            public void run() {
@@ -299,7 +524,8 @@ public class ExploreActivity extends ActionBarActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                showSearchResultListView(searchEditText.getText().toString());
+                                showSearchResultRecyclerView(searchEditText.getText().toString());
+                                updateToolbarScrollFlags(false);
                             }
                         }, 5);
                     }
@@ -316,7 +542,8 @@ public class ExploreActivity extends ActionBarActivity {
                             handler.postAtFrontOfQueue(new Runnable() {
                                 @Override
                                 public void run() {
-                                    showSearchHistoryListView();
+                                    showSearchHistoryRecyclerView();
+                                    updateToolbarScrollFlags(false);
                                 }
 
                             });
@@ -324,7 +551,8 @@ public class ExploreActivity extends ActionBarActivity {
                             handler.postAtFrontOfQueue(new Runnable() {
                                 @Override
                                 public void run() {
-                                    showSearchResultListView(searchEditText.getText().toString());
+                                    showSearchResultRecyclerView(searchEditText.getText().toString());
+                                    updateToolbarScrollFlags(false);
                                 }
                             });
                         }
@@ -365,6 +593,25 @@ public class ExploreActivity extends ActionBarActivity {
         }
     }
 
+    private void updateToolbarScrollFlags(boolean canScroll) {
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        if (toolbar == null)
+            return;
+
+        AppBarLayout.LayoutParams params =
+                (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+
+        if (canScroll) {
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+                    | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        } else {
+            params.setScrollFlags(0);
+        }
+
+        toolbar.setLayoutParams(params);
+    }
+
     private void searchMapButtonOnClick() {
         final boolean hasText = !TextUtils.isEmpty(searchEditText.getText().toString());
         if (hasText) {
@@ -382,24 +629,21 @@ public class ExploreActivity extends ActionBarActivity {
         final ImageButton mapImageButton = (ImageButton)findViewById(R.id.toolbar_action_map);
 
         final boolean hasText = !TextUtils.isEmpty(searchEditText.getText().toString());
-        ExpandableListView listView = (ExpandableListView)findViewById(R.id.search_results_list);
+        RecyclerView listView = (RecyclerView)findViewById(R.id.search_results_list);
         if (hasText || searchEditText.hasFocus() || listView.getVisibility() == View.VISIBLE) {
             searchEditText.setOnFocusChangeListener(null);
             searchEditText.removeTextChangedListener(searchTextWatcher);
             searchEditText.setText("");
-//                        searchEditText.dismissDropDown();
             searchEditText.clearFocus();
             settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_navigation_menu));
-//            mapImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_on));
             mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
-
-
 
             listView.setVisibility(View.INVISIBLE);
             listView.invalidate();
 
             searchEditText.setOnFocusChangeListener(searchOnFocusChangeListener);
             searchEditText.addTextChangedListener(searchTextWatcher);
+            updateToolbarScrollFlags(true);
         } else {
             if (drawerLayout != null) {
                 if (drawerLayout.isDrawerOpen(GravityCompat.END))
@@ -411,6 +655,27 @@ public class ExploreActivity extends ActionBarActivity {
 
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
+    }
+
+    private void closeSearchSuggestions() {
+        final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.toolbar_action_settings);
+        final ImageButton mapImageButton = (ImageButton)findViewById(R.id.toolbar_action_map);
+
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.search_results_list);
+        searchEditText.setOnFocusChangeListener(null);
+        searchEditText.removeTextChangedListener(searchTextWatcher);
+        searchEditText.setText("");
+        searchEditText.clearFocus();
+        settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_navigation_menu));
+        mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
+
+        recyclerView.setVisibility(View.INVISIBLE);
+        recyclerView.invalidate();
+
+        searchEditText.setOnFocusChangeListener(searchOnFocusChangeListener);
+        searchEditText.addTextChangedListener(searchTextWatcher);
+
+        updateToolbarScrollFlags(true);
     }
 
     private void setupListView(List<AroundLocation> aroundLocations) {
@@ -432,9 +697,20 @@ public class ExploreActivity extends ActionBarActivity {
             }
         });
 
+//        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                closeSearchSuggestions();
+//                return true;
+//            }
+//        });
+
         mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+
+                closeSearchSuggestions();
+
                 View childView = rv.findChildViewUnder(e.getX(), e.getY());
                 if (childView != null && mGestureDetector.onTouchEvent(e)) {
 
@@ -458,7 +734,6 @@ public class ExploreActivity extends ActionBarActivity {
 
             @Override
             public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
             }
 
             @Override

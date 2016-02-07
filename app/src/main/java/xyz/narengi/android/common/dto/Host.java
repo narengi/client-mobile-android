@@ -11,21 +11,10 @@ import java.util.List;
 @Parcel
 public class Host implements Serializable {
 
-    private String ID;
     private String DisplayName;
-    private String CellNumber;
-    private String Email;
+    private String HostURL;
     private String ImageUrl;
-    private String[] Houses;
 
-
-    public String getID() {
-        return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
 
     public String getDisplayName() {
         return DisplayName;
@@ -35,20 +24,12 @@ public class Host implements Serializable {
         DisplayName = displayName;
     }
 
-    public String getCellNumber() {
-        return CellNumber;
+    public String getHostURL() {
+        return HostURL;
     }
 
-    public void setCellNumber(String cellNumber) {
-        CellNumber = cellNumber;
-    }
-
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String email) {
-        Email = email;
+    public void setHostURL(String hostURL) {
+        HostURL = hostURL;
     }
 
     public String getImageUrl() {
@@ -59,11 +40,4 @@ public class Host implements Serializable {
         ImageUrl = imageUrl;
     }
 
-    public String[] getHouses() {
-        return Houses;
-    }
-
-    public void setHouses(String[] houses) {
-        Houses = houses;
-    }
 }

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="xyz.narengi.android" >
+    package="xyz.narengi.android">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:supportsRtl="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activity.ExploreActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +37,7 @@
         <activity
             android:name=".ui.activity.SearchableActivity"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -56,18 +56,15 @@
         <activity
             android:name=".ui.activity.HouseActivity"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".ui.activity.HouseFeaturesActivity"
-            android:theme="@style/Theme.Transparent"
-            />
+            android:theme="@style/Theme.Transparent" />
 
         <provider
             android:name=".content.SearchSuggestionProvider"
             android:authorities="xyz.narengi.android.content.SearchSuggestionProvider"
             android:enabled="true"
-            android:exported="false" >
-        </provider>
+            android:exported="false"></provider>
         <provider
             android:name=".content.SearchRecentQuerySuggestionsProvider"
             android:authorities="xyz.narengi.android.content.SearchRecentQuerySuggestionsProvider"
@@ -78,6 +75,10 @@
             android:name="android.app.default_searchable"
             android:value=".ui.activity.SearchableActivity" />
 
+        <activity
+            android:name=".ui.activity.HostActivity"
+            android:label="@string/title_activity_host"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
