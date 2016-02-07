@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.WindowCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -58,7 +59,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.City;
+import xyz.narengi.android.common.dto.Host;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.content.HouseDeserializer;
@@ -184,7 +185,7 @@ public class HouseActivity extends ActionBarActivity {
         progressBarLayout.setVisibility(View.GONE);
     }
 
-    private void setHouse(House house) {
+    private void setHouse(final House house) {
 //        String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=";
 //        if (house.getPosition() != null) {
 //            house.getPosition().setLat(35.710139);
@@ -211,6 +212,14 @@ public class HouseActivity extends ActionBarActivity {
 
         FloatingActionButton houseHostFab= (FloatingActionButton)findViewById(R.id.house_hostFab);
         houseHostFab.setVisibility(View.VISIBLE);
+        houseHostFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                house.getHost().setImageUrl(house.getImages()[0]);
+                if (house.getHost() != null && house.getHost().getHostURL() != null)
+                    openHostActivity(house.getHost().getHostURL());
+            }
+        });
         if (house.getHost() != null && house.getHost().getImageUrl() != null)
             setupHostFab(house.getHost().getImageUrl());
 
@@ -221,9 +230,9 @@ public class HouseActivity extends ActionBarActivity {
         RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.house_contentRecyclerView);
 
         // use a linear layout manager
-//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
 //        MyLinearLayoutManager mLayoutManager = new MyLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false, getScreenHeight(this), 0);
-        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+//        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
 //        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -240,6 +249,13 @@ public class HouseActivity extends ActionBarActivity {
 //        collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(android.R.color.holo_orange_light));
 
 //        setupToolbar();
+    }
+
+    private void openHostActivity(String hostUrl) {
+        Intent intent = new Intent(this, HostActivity.class);
+
+        intent.putExtra("hostUrl", hostUrl);
+        startActivity(intent);
     }
 
     private int getScreenHeight(Context context) {
@@ -491,7 +507,7 @@ public class HouseActivity extends ActionBarActivity {
         url = url + "?filter[review]=5&filter[feature]=10000";
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(City.class, new HouseDeserializer()).create();
+                .registerTypeAdapter(House.class, new HouseDeserializer()).create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.SERVER_BASE_URL)

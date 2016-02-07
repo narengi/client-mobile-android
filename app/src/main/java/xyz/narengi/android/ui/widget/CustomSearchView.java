@@ -47,9 +47,9 @@ import android.os.ResultReceiver;
 import android.speech.RecognizerIntent;
 import android.support.v4.view.KeyEventCompat;
 import android.support.v4.widget.CursorAdapter;
-import android.support.v7.internal.widget.TintManager;
-import android.support.v7.internal.widget.TintTypedArray;
-import android.support.v7.internal.widget.ViewUtils;
+//import android.support.v7.internal.widget.TintManager;
+//import android.support.v7.internal.widget.TintTypedArray;
+//import android.support.v7.internal.widget.ViewUtils;
 import android.support.v7.view.CollapsibleActionView;
 import android.text.Editable;
 import android.text.InputType;
@@ -82,7 +82,11 @@ import java.util.WeakHashMap;
 
 import xyz.narengi.android.R;
 
-import static xyz.narengi.android.ui.widget.SuggestionsAdapter.getColumnString;
+//import static xyz.narengi.android.ui.widget.SuggestionsAdapter.getColumnString;
+
+public class CustomSearchView {
+
+}
 
 /**
  * A widget that provides a user interface for the user to enter a search query and submit a request
@@ -113,6 +117,7 @@ import static xyz.narengi.android.ui.widget.SuggestionsAdapter.getColumnString;
  *
  * @see android.support.v4.view.MenuItemCompat#SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
  */
+/*
 public class CustomSearchView extends LinearLayoutCompat implements CollapsibleActionView {
 
     private static final boolean DBG = false;
@@ -120,9 +125,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
 
     private static final boolean IS_AT_LEAST_FROYO = Build.VERSION.SDK_INT >= 8;
 
-    /**
+    */
+/**
      * Private constant for removing the microphone in the keyboard.
-     */
+     *//*
+
     private static final String IME_OPTION_NO_MICROPHONE = "nm";
 
     private final CustomSearchView.SearchAutoComplete mSearchSrcTextView;
@@ -136,10 +143,14 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
     private final ImageView mVoiceButton;
     private final View mDropDownAnchor;
 
-    /** Icon optionally displayed when the SearchView is collapsed. */
+    */
+/** Icon optionally displayed when the SearchView is collapsed. *//*
+
 //    private final ImageView mCollapsedIcon;
 
-    /** Drawable used as an EditText hint. */
+    */
+/** Drawable used as an EditText hint. *//*
+
     private final Drawable mSearchHintIcon;
 
     // Resources used by SuggestionsAdapter to display suggestions.
@@ -179,10 +190,12 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
 
     static final AutoCompleteTextViewReflector HIDDEN_METHOD_INVOKER = new AutoCompleteTextViewReflector();
 
-    /*
+    */
+/*
      * SearchView can be set expanded before the IME is ready to be shown during
      * initial UI setup. The show operation is asynchronous to account for this.
-     */
+     *//*
+
     private Runnable mShowImeRunnable = new Runnable() {
         public void run() {
             InputMethodManager imm = (InputMethodManager)
@@ -213,12 +226,15 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
     private final WeakHashMap<String, Drawable.ConstantState> mOutsideDrawablesCache =
             new WeakHashMap<String, Drawable.ConstantState>();
 
-    /**
+    */
+/**
      * Callbacks for changes to the query text.
-     */
+     *//*
+
     public interface OnQueryTextListener {
 
-        /**
+        */
+/**
          * Called when the user submits the query. This could be due to a key press on the
          * keyboard or due to pressing a submit button.
          * The listener can override the standard behavior by returning true
@@ -229,54 +245,65 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
          *
          * @return true if the query has been handled by the listener, false to let the
          * SearchView perform the default action.
-         */
+         *//*
+
         boolean onQueryTextSubmit(String query);
 
-        /**
+        */
+/**
          * Called when the query text is changed by the user.
          *
          * @param newText the new content of the query text field.
          *
          * @return false if the SearchView should perform the default action of showing any
          * suggestions if available, true if the action was handled by the listener.
-         */
+         *//*
+
         boolean onQueryTextChange(String newText);
     }
 
     public interface OnCloseListener {
 
-        /**
+        */
+/**
          * The user is attempting to close the SearchView.
          *
          * @return true if the listener wants to override the default behavior of clearing the
          * text field and dismissing it, false otherwise.
-         */
+         *//*
+
         boolean onClose();
     }
 
-    /**
+    */
+/**
      * Callback interface for selection events on suggestions. These callbacks
      * are only relevant when a SearchableInfo has been specified by {@link #setSearchableInfo}.
-     */
+     *//*
+
     public interface OnSuggestionListener {
 
-        /**
+        */
+/**
          * Called when a suggestion was selected by navigating to it.
          * @param position the absolute position in the list of suggestions.
          *
          * @return true if the listener handles the event and wants to override the default
          * behavior of possibly rewriting the query based on the selected item, false otherwise.
-         */
+         *//*
+
         boolean onSuggestionSelect(int position);
 
-        /**
+        */
+/**
          * Called when a suggestion was clicked.
          * @param position the absolute position of the clicked item in the list of suggestions.
          *
          * @return true if the listener handles the event and wants to override the default
          * behavior of launching any intent or submitting a search query specified on that item.
          * Return false otherwise.
-         */
+         *//*
+
         boolean onSuggestionClick(int position);
     }
 
@@ -440,14 +467,16 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         return mSuggestionCommitIconResId;
     }
 
-    /**
+    */
+/**
      * Sets the SearchableInfo for this SearchView. Properties in the SearchableInfo are used
      * to display labels, hints, suggestions, create intents for launching search results screens
      * and controlling other affordances such as a voice button.
      *
      * @param searchable a SearchableInfo can be retrieved from the SearchManager, for a specific
      * activity or a global search provider.
-     */
+     *//*
+
     public void setSearchableInfo(SearchableInfo searchable) {
         mSearchable = searchable;
         if (mSearchable != null) {
@@ -467,53 +496,65 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         updateViewsVisibility(isIconified());
     }
 
-    /**
+    */
+/**
      * Sets the APP_DATA for legacy SearchDialog use.
      * @param appSearchData bundle provided by the app when launching the search dialog
      * @hide
-     */
+     *//*
+
     public void setAppSearchData(Bundle appSearchData) {
         mAppSearchData = appSearchData;
     }
 
-    /**
+    */
+/**
      * Sets the IME options on the query text field.
      *
      * @see TextView#setImeOptions(int)
      * @param imeOptions the options to set on the query text field
-     */
+     *//*
+
     public void setImeOptions(int imeOptions) {
         mSearchSrcTextView.setImeOptions(imeOptions);
     }
 
-    /**
+    */
+/**
      * Returns the IME options set on the query text field.
      * @return the ime options
      * @see TextView#setImeOptions(int)
-     */
+     *//*
+
     public int getImeOptions() {
         return mSearchSrcTextView.getImeOptions();
     }
 
-    /**
+    */
+/**
      * Sets the input type on the query text field.
      *
      * @see TextView#setInputType(int)
      * @param inputType the input type to set on the query text field
-     */
+     *//*
+
     public void setInputType(int inputType) {
         mSearchSrcTextView.setInputType(inputType);
     }
 
-    /**
+    */
+/**
      * Returns the input type set on the query text field.
      * @return the input type
-     */
+     *//*
+
     public int getInputType() {
         return mSearchSrcTextView.getInputType();
     }
 
-    /** @hide */
+    */
+/** @hide *//*
+
     @Override
     public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
         // Don't accept focus if in the middle of clearing focus
@@ -532,7 +573,9 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     }
 
-    /** @hide */
+    */
+/** @hide *//*
+
     @Override
     public void clearFocus() {
         mClearingFocus = true;
@@ -542,72 +585,86 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         mClearingFocus = false;
     }
 
-    /**
+    */
+/**
      * Sets a listener for user actions within the SearchView.
      *
      * @param listener the listener object that receives callbacks when the user performs
      * actions in the SearchView such as clicking on buttons or typing a query.
-     */
+     *//*
+
     public void setOnQueryTextListener(OnQueryTextListener listener) {
         mOnQueryChangeListener = listener;
     }
 
-    /**
+    */
+/**
      * Sets a listener to inform when the user closes the SearchView.
      *
      * @param listener the listener to call when the user closes the SearchView.
-     */
+     *//*
+
     public void setOnCloseListener(OnCloseListener listener) {
         mOnCloseListener = listener;
     }
 
-    /**
+    */
+/**
      * Sets a listener to inform when the focus of the query text field changes.
      *
      * @param listener the listener to inform of focus changes.
-     */
+     *//*
+
     public void setOnQueryTextFocusChangeListener(OnFocusChangeListener listener) {
         mOnQueryTextFocusChangeListener = listener;
     }
 
-    /**
+    */
+/**
      * Sets a listener to inform when a suggestion is focused or clicked.
      *
      * @param listener the listener to inform of suggestion selection events.
-     */
+     *//*
+
     public void setOnSuggestionListener(OnSuggestionListener listener) {
         mOnSuggestionListener = listener;
     }
 
-    /**
+    */
+/**
      * Sets a listener to inform when the search button is pressed. This is only
      * relevant when the text field is not visible by default. Calling {@link #setIconified
      * setIconified(false)} can also cause this listener to be informed.
      *
      * @param listener the listener to inform when the search button is clicked or
      * the text field is programmatically de-iconified.
-     */
+     *//*
+
     public void setOnSearchClickListener(OnClickListener listener) {
         mOnSearchClickListener = listener;
     }
 
-    /**
+    */
+/**
      * Returns the query string currently in the text field.
      *
      * @return the query string
-     */
+     *//*
+
     public CharSequence getQuery() {
         return mSearchSrcTextView.getText();
     }
 
-    /**
+    */
+/**
      * Sets a query string in the text field and optionally submits the query as well.
      *
      * @param query the query string. This replaces any query text already present in the
      * text field.
      * @param submit whether to submit the query right now or only update the contents of
      * text field.
-     */
+     *//*
+
     public void setQuery(CharSequence query, boolean submit) {
         mSearchSrcTextView.setText(query);
         if (query != null) {
@@ -621,7 +678,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     }
 
-    /**
+    */
+/**
      * Sets the hint text to display in the query text field. This overrides
      * any hint specified in the {@link SearchableInfo}.
      * <p>
@@ -629,13 +687,15 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
      * from being displayed.
      *
      * @param hint the hint text to display or {@code null} to clear
-     */
+     *//*
+
     public void setQueryHint(CharSequence hint) {
         mQueryHint = hint;
         updateQueryHint();
     }
 
-    /**
+    */
+/**
      * Returns the hint text that will be displayed in the query text field.
      * <p>
      * The displayed query hint is chosen in the following order:
@@ -649,7 +709,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
      * </ol>
      *
      * @return the displayed query hint text, or {@code null} if none set
-     */
+     *//*
+
     public CharSequence getQueryHint() {
         final CharSequence hint;
         if (mQueryHint != null) {
@@ -662,7 +723,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         return hint;
     }
 
-    /**
+    */
+/**
      * Sets the default or resting state of the search field. If true, a single search icon is
      * shown by default and expands to show the text field and other buttons when pressed. Also,
      * if the default state is iconified, then it collapses to that state when the close button
@@ -671,7 +733,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
      * <p>The default value is true.</p>
      *
      * @param iconified whether the search field should be iconified by default
-     */
+     *//*
+
     public void setIconifiedByDefault(boolean iconified) {
         if (mIconifiedByDefault == iconified) return;
         mIconifiedByDefault = iconified;
@@ -679,15 +742,18 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         updateQueryHint();
     }
 
-    /**
+    */
+/**
      * Returns the default iconified state of the search field.
      * @return
-     */
+     *//*
+
     public boolean isIconfiedByDefault() {
         return mIconifiedByDefault;
     }
 
-    /**
+    */
+/**
      * Iconifies or expands the SearchView. Any query text is cleared when iconified. This is
      * a temporary state and does not override the default iconified state set by
      * {@link #setIconifiedByDefault(boolean)}. If the default state is iconified, then
@@ -696,7 +762,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
      *
      * @param iconify a true value will collapse the SearchView to an icon, while a false will
      * expand it.
-     */
+     *//*
+
     public void setIconified(boolean iconify) {
         if (iconify) {
             onCloseClicked();
@@ -705,39 +772,46 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     }
 
-    /**
+    */
+/**
      * Returns the current iconified state of the SearchView.
      *
      * @return true if the SearchView is currently iconified, false if the search field is
      * fully visible.
-     */
+     *//*
+
     public boolean isIconified() {
         return mIconified;
     }
 
-    /**
+    */
+/**
      * Enables showing a submit button when the query is non-empty. In cases where the SearchView
      * is being used to filter the contents of the current activity and doesn't launch a separate
      * results activity, then the submit button should be disabled.
      *
      * @param enabled true to show a submit button for submitting queries, false if a submit
      * button is not required.
-     */
+     *//*
+
     public void setSubmitButtonEnabled(boolean enabled) {
         mSubmitButtonEnabled = enabled;
         updateViewsVisibility(isIconified());
     }
 
-    /**
+    */
+/**
      * Returns whether the submit button is enabled when necessary or never displayed.
      *
      * @return whether the submit button is enabled automatically when necessary
-     */
+     *//*
+
     public boolean isSubmitButtonEnabled() {
         return mSubmitButtonEnabled;
     }
 
-    /**
+    */
+/**
      * Specifies if a query refinement button should be displayed alongside each suggestion
      * or if it should depend on the flags set in the individual items retrieved from the
      * suggestions provider. Clicking on the query refinement button will replace the text
@@ -750,7 +824,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
      *
      * @see SearchManager#SUGGEST_COLUMN_FLAGS
      * @see SearchManager#FLAG_QUERY_REFINEMENT
-     */
+     *//*
+
     public void setQueryRefinementEnabled(boolean enable) {
         mQueryRefinement = enable;
         if (mSuggestionsAdapter instanceof SuggestionsAdapter) {
@@ -759,48 +834,58 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     }
 
-    /**
+    */
+/**
      * Returns whether query refinement is enabled for all items or only specific ones.
      * @return true if enabled for all items, false otherwise.
-     */
+     *//*
+
     public boolean isQueryRefinementEnabled() {
         return mQueryRefinement;
     }
 
-    /**
+    */
+/**
      * You can set a custom adapter if you wish. Otherwise the default adapter is used to
      * display the suggestions from the suggestions provider associated with the SearchableInfo.
      *
      * @see #setSearchableInfo(SearchableInfo)
-     */
+     *//*
+
     public void setSuggestionsAdapter(CursorAdapter adapter) {
         mSuggestionsAdapter = adapter;
 
         mSearchSrcTextView.setAdapter(mSuggestionsAdapter);
     }
 
-    /**
+    */
+/**
      * Returns the adapter used for suggestions, if any.
      * @return the suggestions adapter
-     */
+     *//*
+
     public CursorAdapter getSuggestionsAdapter() {
         return mSuggestionsAdapter;
     }
 
-    /**
+    */
+/**
      * Makes the view at most this many pixels wide
-     */
+     *//*
+
     public void setMaxWidth(int maxpixels) {
         mMaxWidth = maxpixels;
 
         requestLayout();
     }
 
-    /**
+    */
+/**
      * Gets the specified maximum width in pixels, if set. Returns zero if
      * no maximum width was specified.
      * @return the maximum width of the view
-     */
+     *//*
+
     public int getMaxWidth() {
         return mMaxWidth;
     }
@@ -917,12 +1002,14 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         final boolean hasText = !TextUtils.isEmpty(mSearchSrcTextView.getText());
         // Should we show the close button? It is not shown if there's no focus,
         // field is not iconified by default and there is no text in it.
-        /*final boolean showClose = hasText || (mIconifiedByDefault && !mExpandedInActionView);
+        */
+/*final boolean showClose = hasText || (mIconifiedByDefault && !mExpandedInActionView);
         mCloseButton.setVisibility(showClose ? VISIBLE : GONE);
         final Drawable closeButtonImg = mCloseButton.getDrawable();
         if (closeButtonImg != null){
             closeButtonImg.setState(hasText ? ENABLED_STATE_SET : EMPTY_STATE_SET);
-        }*/
+        }*//*
+
 
         if (hasText || mSearchSrcTextView.hasFocus()) {
             mCloseButton.setVisibility(VISIBLE);
@@ -970,20 +1057,26 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     }
 
-    /**
+    */
+/**
      * Called by the SuggestionsAdapter
      * @hide
-     */
-    /* package */void onQueryRefine(CharSequence queryText) {
+     *//*
+
+    */
+/* package *//*
+void onQueryRefine(CharSequence queryText) {
         setQuery(queryText);
     }
 
     private final OnClickListener mOnClickListener = new OnClickListener() {
 
         public void onClick(View v) {
-            /*if (v == mSearchButton) {
+            */
+/*if (v == mSearchButton) {
                 onSearchClicked();
-            } else*/ if (v == mCloseButton) {
+            } else*//*
+ if (v == mCloseButton) {
                 onCloseClicked();
             } else if (v == mGoButton) {
                 onSubmitQuery();
@@ -1000,11 +1093,13 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     };
 
-    /**
+    */
+/**
      * React to the user typing "enter" or other hardwired keys while typing in
      * the search box. This handles these special keys while the edit box has
      * focus.
-     */
+     *//*
+
     View.OnKeyListener mTextKeyListener = new View.OnKeyListener() {
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             // guard against possible race conditions
@@ -1042,11 +1137,13 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     };
 
-    /**
+    */
+/**
      * React to the user typing while in the suggestions list. First, check for
      * action keys. If not handled, try refocusing regular characters into the
      * EditText.
-     */
+     *//*
+
     private boolean onSuggestionsKey(View v, int keyCode, KeyEvent event) {
         // guard against possible race conditions (late arrival after dismiss)
         if (mSearchable == null) {
@@ -1112,9 +1209,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         mSearchSrcTextView.setHint(getDecoratedHint(hint == null ? "" : hint));
     }
 
-    /**
+    */
+/**
      * Updates the auto-complete text view.
-     */
+     *//*
+
     @TargetApi(Build.VERSION_CODES.FROYO)
     private void updateSearchAutoComplete() {
         mSearchSrcTextView.setThreshold(mSearchable.getSuggestThreshold());
@@ -1153,12 +1252,14 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     }
 
-    /**
+    */
+/**
      * Update the visibility of the voice button.  There are actually two voice search modes,
      * either of which will activate the button.
      * @param empty whether the search query text field is empty. If it is, then the other
      * criteria apply to make the voice button visible.
-     */
+     *//*
+
     private void updateVoiceButton(boolean empty) {
         int visibility = GONE;
         if (mVoiceButtonEnabled && !isIconified() && empty) {
@@ -1170,9 +1271,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
 
     private final OnEditorActionListener mOnEditorActionListener = new OnEditorActionListener() {
 
-        /**
+        */
+/**
          * Called when the input method default action key is pressed.
-         */
+         *//*
+
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             onSubmitQuery();
             return true;
@@ -1216,7 +1319,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
     private void onCloseClicked() {
         CharSequence text = mSearchSrcTextView.getText();
         if (TextUtils.isEmpty(text)) {
-            /*if (mIconifiedByDefault) {
+            */
+/*if (mIconifiedByDefault) {
                 // If the app doesn't override the close behavior
                 if (mOnCloseListener == null || !mOnCloseListener.onClose()) {
                     // hide the keyboard and remove focus
@@ -1224,7 +1328,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
                     // collapse the search field
                     updateViewsVisibility(true);
                 }
-            }*/
+            }*//*
+
 //            clearFocus();
             if (!mSearchSrcTextView.hasFocus()) {
                 Toast.makeText(getContext(), "This should be map!", Toast.LENGTH_LONG).show();
@@ -1295,9 +1400,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         postUpdateFocusedState();
     }
 
-    /**
+    */
+/**
      * {@inheritDoc}
-     */
+     *//*
+
     @Override
     public void onActionViewCollapsed() {
         setQuery("", false);
@@ -1307,9 +1414,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         mExpandedInActionView = false;
     }
 
-    /**
+    */
+/**
      * {@inheritDoc}
-     */
+     *//*
+
     @Override
     public void onActionViewExpanded() {
         if (mExpandedInActionView) return;
@@ -1398,8 +1507,12 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
             mSearchSrcTextView.setDropDownHorizontalOffset(mSearchBar.getLeft() - anchorPadding);
 //            mSearchSrcTextView.setDropDownHorizontalOffset(mSearchSrcTextView.getDropDownHorizontalOffset() - anchorPadding);
             final int width = mDropDownAnchor.getWidth() + dropDownPadding.left
-                    + dropDownPadding.right + iconOffset/* - anchorPadding*/;
-            mSearchSrcTextView.setDropDownWidth(getWidth()/* + getPaddingLeft() + getPaddingRight()*/);
+                    + dropDownPadding.right + iconOffset*/
+/* - anchorPadding*//*
+;
+            mSearchSrcTextView.setDropDownWidth(getWidth()*/
+/* + getPaddingLeft() + getPaddingRight()*//*
+);
         }
     }
 
@@ -1471,7 +1584,9 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
 //            mSearchSrcTextView.setDropDownHorizontalOffset(offset + getPaddingLeft());
 
 //            mSearchSrcTextView.setDropDownHorizontalOffset(mSearchSrcTextView.getDropDownHorizontalOffset() + dropDownPaddingSize/4);
-//            mSearchSrcTextView.setDropDownWidth(width /*+ dropDownPaddingSize/2*/);
+//            mSearchSrcTextView.setDropDownWidth(width */
+/*+ dropDownPaddingSize/2*//*
+);
 
 //            mSearchSrcTextView.setDropDownWidth(getWidth());
             mSearchSrcTextView.setDropDownWidth(mDropDownAnchor.getWidth() + mDropDownAnchor.getPaddingLeft() + mDropDownAnchor.getPaddingRight());
@@ -1500,9 +1615,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
 
     private final OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
 
-        /**
+        */
+/**
          * Implements OnItemClickListener
-         */
+         *//*
+
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (DBG) Log.d(LOG_TAG, "onItemClick() position " + position);
             onItemClicked(position, KeyEvent.KEYCODE_UNKNOWN, null);
@@ -1511,26 +1628,32 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
 
     private final OnItemSelectedListener mOnItemSelectedListener = new OnItemSelectedListener() {
 
-        /**
+        */
+/**
          * Implements OnItemSelectedListener
-         */
+         *//*
+
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (DBG) Log.d(LOG_TAG, "onItemSelected() position " + position);
             CustomSearchView.this.onItemSelected(position);
         }
 
-        /**
+        */
+/**
          * Implements OnItemSelectedListener
-         */
+         *//*
+
         public void onNothingSelected(AdapterView<?> parent) {
             if (DBG)
                 Log.d(LOG_TAG, "onNothingSelected()");
         }
     };
 
-    /**
+    */
+/**
      * Query rewriting.
-     */
+     *//*
+
     private void rewriteQueryFromSuggestion(int position) {
         CharSequence oldQuery = mSearchSrcTextView.getText();
         Cursor c = mSuggestionsAdapter.getCursor();
@@ -1554,7 +1677,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     }
 
-    /**
+    */
+/**
      * Launches an intent based on a suggestion.
      *
      * @param position The index of the suggestion to create the intent from.
@@ -1563,7 +1687,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
      * @param actionMsg The message for the action key that was pressed,
      *        or <code>null</code> if none.
      * @return true if a successful launch, false if could not (e.g. bad position).
-     */
+     *//*
+
     private boolean launchSuggestion(int position, int actionKey, String actionMsg) {
         Cursor c = mSuggestionsAdapter.getCursor();
         if ((c != null) && c.moveToPosition(position)) {
@@ -1578,9 +1703,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         return false;
     }
 
-    /**
+    */
+/**
      * Launches an intent, including any special intent handling.
-     */
+     *//*
+
     private void launchIntent(Intent intent) {
         if (intent == null) {
             return;
@@ -1594,9 +1721,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     }
 
-    /**
+    */
+/**
      * Sets the text in the query box, without updating the suggestions.
-     */
+     *//*
+
     private void setQuery(CharSequence query) {
         mSearchSrcTextView.setText(query);
         // Move the cursor to the end
@@ -1609,7 +1738,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         getContext().startActivity(intent);
     }
 
-    /**
+    */
+/**
      * Constructs an intent from the given information and the search dialog state.
      *
      * @param action Intent action.
@@ -1621,7 +1751,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
      * @param actionMsg The message for the action key that was pressed,
      *        or <code>null</code> if none.
      * @return The intent.
-     */
+     *//*
+
     private Intent createIntent(String action, Uri data, String extraData, String query,
                                 int actionKey, String actionMsg) {
         // Now build the Intent
@@ -1653,9 +1784,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         return intent;
     }
 
-    /**
+    */
+/**
      * Create and return an Intent that can launch the voice search activity for web search.
-     */
+     *//*
+
     @TargetApi(Build.VERSION_CODES.FROYO)
     private Intent createVoiceWebSearchIntent(Intent baseIntent, SearchableInfo searchable) {
         Intent voiceIntent = new Intent(baseIntent);
@@ -1665,13 +1798,15 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         return voiceIntent;
     }
 
-    /**
+    */
+/**
      * Create and return an Intent that can launch the voice search activity, perform a specific
      * voice transcription, and forward the results to the searchable activity.
      *
      * @param baseIntent The voice app search intent to start from
      * @return A completely-configured intent ready to send to the voice search activity
-     */
+     *//*
+
     @TargetApi(Build.VERSION_CODES.FROYO)
     private Intent createVoiceAppSearchIntent(Intent baseIntent, SearchableInfo searchable) {
         ComponentName searchActivity = searchable.getSearchActivity();
@@ -1733,7 +1868,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         return voiceIntent;
     }
 
-    /**
+    */
+/**
      * When a particular suggestion has been selected, perform the various lookups required
      * to use the suggestion.  This includes checking the cursor for suggestion-specific data,
      * and/or falling back to the XML for defaults;  It also creates REST style Uri data when
@@ -1745,7 +1881,8 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
      * @param actionMsg The message for the action key that was pressed,
      *        or <code>null</code> if none.
      * @return An intent for the suggestion at the cursor's position.
-     */
+     *//*
+
     private Intent createIntentFromSuggestion(Cursor c, int actionKey, String actionMsg) {
         try {
             // use specific action if supplied, or default action if supplied, or fixed default
@@ -1799,9 +1936,11 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
                 == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    /**
+    */
+/**
      * Callback to watch the text field for empty/non-empty
-     */
+     *//*
+
     private TextWatcher mTextWatcher = new TextWatcher() {
 
         public void beforeTextChanged(CharSequence s, int start, int before, int after) { }
@@ -1815,10 +1954,12 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
         }
     };
 
-    /**
+    */
+/**
      * Local subclass for AutoCompleteTextView.
      * @hide
-     */
+     *//*
+
     public static class SearchAutoComplete extends AppCompatAutoCompleteTextView {
 
         private int mThreshold;
@@ -1847,35 +1988,43 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
             mThreshold = threshold;
         }
 
-        /**
+        */
+/**
          * Returns true if the text field is empty, or contains only whitespace.
-         */
+         *//*
+
         private boolean isEmpty() {
             return TextUtils.getTrimmedLength(getText()) == 0;
         }
 
-        /**
+        */
+/**
          * We override this method to avoid replacing the query box text when a
          * suggestion is clicked.
-         */
+         *//*
+
         @Override
         protected void replaceText(CharSequence text) {
         }
 
-        /**
+        */
+/**
          * We override this method to avoid an extra onItemClick being called on
          * the drop-down's OnItemClickListener by
          * {@link AutoCompleteTextView#onKeyUp(int, KeyEvent)} when an item is
          * clicked with the trackball.
-         */
+         *//*
+
         @Override
         public void performCompletion() {
         }
 
-        /**
+        */
+/**
          * We override this method to be sure and show the soft keyboard if
          * appropriate when the TextView has focus.
-         */
+         *//*
+
         @Override
         public void onWindowFocusChanged(boolean hasWindowFocus) {
             super.onWindowFocusChanged(hasWindowFocus);
@@ -1898,10 +2047,12 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
             mSearchView.onTextFocusChanged();
         }
 
-        /**
+        */
+/**
          * We override this method so that we can allow a threshold of zero,
          * which ACTV does not.
-         */
+         *//*
+
         @Override
         public boolean enoughToFilter() {
             return mThreshold <= 0 || super.enoughToFilter();
@@ -2010,4 +2161,4 @@ public class CustomSearchView extends LinearLayoutCompat implements CollapsibleA
             imm.showSoftInput(view, flags);
         }
     }
-}
+}*/

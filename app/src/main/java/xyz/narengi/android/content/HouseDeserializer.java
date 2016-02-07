@@ -90,11 +90,6 @@ public class HouseDeserializer implements JsonDeserializer<House> {
         int bedCount = bedCountElement.getAsInt();
         house.setBedCount(bedCount);
 
-        JsonElement costTextElement = jsonElement.getAsJsonObject().get("costText");
-        String costText = costTextElement.getAsString();
-        house.setCostText(costText);
-
-
         return house;
     }
 }

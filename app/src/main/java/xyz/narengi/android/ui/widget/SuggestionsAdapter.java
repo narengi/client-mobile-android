@@ -88,6 +88,9 @@ import java.util.WeakHashMap;
  * Provides the contents for the suggestion drop-down list.in {@link SearchView}.
  * @hide
  */
+class SuggestionsAdapter {}
+
+/*
 class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickListener {
 
     private static final boolean DBG = false;
@@ -125,8 +128,12 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
 
     public SuggestionsAdapter(Context context, CustomSearchView searchView, SearchableInfo searchable,
                               WeakHashMap<String, Drawable.ConstantState> outsideDrawablesCache) {
-        super(context, searchView.getSuggestionRowLayout(), null /* no initial cursor */,
-                true /* auto-requery */);
+        super(context, searchView.getSuggestionRowLayout(), null */
+/* no initial cursor *//*
+,
+                true */
+/* auto-requery *//*
+);
         mSearchManager = (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
         mSearchView = searchView;
         mSearchable = searchable;
@@ -138,7 +145,8 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         mOutsideDrawablesCache = outsideDrawablesCache;
     }
 
-    /**
+    */
+/**
      * Enables query refinement for all suggestions. This means that an additional icon
      * will be shown for each entry. When clicked, the suggested text on that line will be
      * copied to the query text field.
@@ -146,41 +154,50 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
      *
      * @param refineWhat which queries to refine. Possible values are {@link #REFINE_NONE},
      * {@link #REFINE_BY_ENTRY}, and {@link #REFINE_ALL}.
-     */
+     *//*
+
     public void setQueryRefinement(int refineWhat) {
         mQueryRefinement = refineWhat;
     }
 
-    /**
+    */
+/**
      * Returns the current query refinement preference.
      * @return value of query refinement preference
-     */
+     *//*
+
     public int getQueryRefinement() {
         return mQueryRefinement;
     }
 
-    /**
+    */
+/**
      * Overridden to always return <code>false</code>, since we cannot be sure that
      * suggestion sources return stable IDs.
-     */
+     *//*
+
     @Override
     public boolean hasStableIds() {
         return false;
     }
 
-    /**
+    */
+/**
      * Use the search suggestions provider to obtain a live cursor.  This will be called
      * in a worker thread, so it's OK if the query is slow (e.g. round trip for suggestions).
      * The results will be processed in the UI thread and changeCursor() will be called.
-     */
+     *//*
+
     @Override
     public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
         if (DBG) Log.d(LOG_TAG, "runQueryOnBackgroundThread(" + constraint + ")");
         String query = (constraint == null) ? "" : constraint.toString();
-        /**
+        */
+/**
          * for in app search we show the progress spinner until the cursor is returned with
          * the results.
-         */
+         *//*
+
         Cursor cursor = null;
         if (mSearchView.getVisibility() != View.VISIBLE
                 || mSearchView.getWindowVisibility() != View.VISIBLE) {
@@ -240,9 +257,11 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         // If cursor is null or is done, stop the spinner
     }
 
-    /**
+    */
+/**
      * Cache columns.
-     */
+     *//*
+
     @Override
     public void changeCursor(Cursor c) {
         if (DBG) Log.d(LOG_TAG, "changeCursor(" + c + ")");
@@ -269,9 +288,11 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         }
     }
 
-    /**
+    */
+/**
      * Tags the view with cached child view look-ups.
-     */
+     *//*
+
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         final View v = super.newView(context, cursor, parent);
@@ -283,10 +304,12 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         return v;
     }
 
-    /**
+    */
+/**
      * Cache of the child views of drop-drown list items, to avoid looking up the children
      * each time the contents of a list item are changed.
-     */
+     *//*
+
     private final static class ChildViewCache {
         public final TextView mText1;
         public final TextView mText2;
@@ -410,10 +433,12 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         return getDrawableFromResourceValue(value);
     }
 
-    /**
+    */
+/**
      * Sets the drawable in an image view, makes sure the view is only visible if there
      * is a drawable.
-     */
+     *//*
+
     private void setViewDrawable(ImageView v, Drawable drawable, int nullVisibility) {
         // Set the icon even if the drawable is null, since we need to clear any
         // previous icon.
@@ -434,14 +459,16 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         }
     }
 
-    /**
+    */
+/**
      * Gets the text to show in the query field when a suggestion is selected.
      *
      * @param cursor The Cursor to read the suggestion data from. The Cursor should already
      *        be moved to the suggestion that is to be read from.
      * @return The text to show, or <code>null</code> if the query should not be
      *         changed when selecting this suggestion.
-     */
+     *//*
+
     @Override
     public CharSequence convertToString(Cursor cursor) {
         if (cursor == null) {
@@ -470,12 +497,14 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         return null;
     }
 
-    /**
+    */
+/**
      * This method is overridden purely to provide a bit of protection against
      * flaky content providers.
      *
      * @see android.widget.ListAdapter#getView(int, View, ViewGroup)
-     */
+     *//*
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
@@ -493,7 +522,8 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         }
     }
 
-    /**
+    */
+/**
      * Gets a drawable given a value provided by a suggestion provider.
      *
      * This value could be just the string value of a resource id
@@ -511,7 +541,8 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
      *        "android.resource://com.android.alarmclock/2130837524",
      *        or "content://contacts/photos/253".
      * @return a Drawable, or null if none found
-     */
+     *//*
+
     private Drawable getDrawableFromResourceValue(String drawableId) {
         if (drawableId == null || drawableId.length() == 0 || "0".equals(drawableId)) {
             return null;
@@ -549,11 +580,13 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         }
     }
 
-    /**
+    */
+/**
      * Gets a drawable by URI, without using the cache.
      *
      * @return A drawable, or {@code null} if the drawable could not be loaded.
-     */
+     *//*
+
     private Drawable getDrawable(Uri uri) {
         try {
             String scheme = uri.getScheme();
@@ -603,13 +636,15 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         }
     }
 
-    /**
+    */
+/**
      * Gets the left-hand side icon that will be used for the current suggestion
      * if the suggestion contains an icon column but no icon or a broken icon.
      *
      * @param cursor A cursor positioned at the current suggestion.
      * @return A non-null drawable.
-     */
+     *//*
+
     private Drawable getDefaultIcon1(Cursor cursor) {
         // Check the component that gave us the suggestion
         Drawable drawable = getActivityIconWithCache(mSearchable.getSearchActivity());
@@ -621,14 +656,16 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         return mContext.getPackageManager().getDefaultActivityIcon();
     }
 
-    /**
+    */
+/**
      * Gets the activity or application icon for an activity.
      * Uses the local icon cache for fast repeated lookups.
      *
      * @param component Name of an activity.
      * @return A drawable, or {@code null} if neither the activity nor the application
      *         has an icon set.
-     */
+     *//*
+
     private Drawable getActivityIconWithCache(ComponentName component) {
         // First check the icon cache
         String componentIconKey = component.flattenToShortString();
@@ -645,13 +682,15 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         return drawable;
     }
 
-    /**
+    */
+/**
      * Gets the activity or application icon for an activity.
      *
      * @param component Name of an activity.
      * @return A drawable, or {@code null} if neither the acitivy or the application
      *         have an icon set.
-     */
+     *//*
+
     private Drawable getActivityIcon(ComponentName component) {
         PackageManager pm = mContext.getPackageManager();
         final ActivityInfo activityInfo;
@@ -673,14 +712,16 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         return drawable;
     }
 
-    /**
+    */
+/**
      * Gets the value of a string column by name.
      *
      * @param cursor Cursor to read the value from.
      * @param columnName The name of the column to read.
      * @return The value of the given column, or <code>null</null>
      *         if the cursor does not contain the given column.
-     */
+     *//*
+
     public static String getColumnString(Cursor cursor, String columnName) {
         int col = cursor.getColumnIndex(columnName);
         return getStringOrNull(cursor, col);
@@ -700,10 +741,12 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         }
     }
 
-    /**
+    */
+/**
      * Import of hidden method: ContentResolver.getResourceId(Uri).
      * Modified to return a drawable, rather than a hidden type.
-     */
+     *//*
+
     Drawable getDrawableFromResourceUri(Uri uri) throws FileNotFoundException {
         String authority = uri.getAuthority();
         Resources r;
@@ -739,9 +782,11 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         return r.getDrawable(id);
     }
 
-    /**
+    */
+/**
      * Import of hidden method: SearchManager.getSuggestions(SearchableInfo, String, int).
-     */
+     *//*
+
     Cursor getSearchManagerSuggestions(SearchableInfo searchable, String query, int limit) {
         if (searchable == null) {
             return null;
@@ -786,4 +831,4 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
         // finally, make the query
         return mContext.getContentResolver().query(uri, null, selection, selArgs, null);
     }
-}
+}*/
