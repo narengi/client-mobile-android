@@ -18,6 +18,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -52,11 +53,21 @@ public class HostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_host);
         setupToolbar();
 
-//        showProgress();
+        showProgress();
         if (getIntent() != null && getIntent().getStringExtra("hostUrl") != null) {
             String hostUrl = getIntent().getStringExtra("hostUrl");
             getHost(hostUrl);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void getHost(String url) {
@@ -76,7 +87,7 @@ public class HostActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<HostProfile> response, Retrofit retrofit) {
 //                int statusCode = response.code();
-//                hideProgress();
+                hideProgress();
                 HostProfile hostProfile = response.body();
                 if (hostProfile != null) {
                     setHost(hostProfile);
@@ -148,8 +159,8 @@ public class HostActivity extends AppCompatActivity {
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.house_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.house_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.host_progressLayout);
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.host_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -158,8 +169,8 @@ public class HostActivity extends AppCompatActivity {
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.house_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.house_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.host_progressLayout);
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.host_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.GONE);

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="xyz.narengi.android.ui.activity.SearchResultActivity">
+
+
+    <LinearLayout
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:id="@+id/search_result_progressLayout"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:background="@android:color/transparent"
+            android:id="@+id/search_result_progressBar"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/search_result_recyclerView"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical" />
+
+    <android.support.design.widget.AppBarLayout
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        android:fitsSystemWindows="false"
+        android:gravity="top|center_horizontal"
+        android:id="@+id/search_result_appBarLayout"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_width="match_parent"
+        android:paddingTop="0dp"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            style="@style/ToolBarStyle"
+            android:background="@android:color/holo_blue_bright"
+            android:elevation="0dp"
+            android:fitsSystemWindows="false"
+            android:gravity="top|center_horizontal"
+            android:id="@+id/search_result_toolbar"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:paddingBottom="0dp"
+            android:paddingTop="0dp"
+            app:backgroundTint="@color/transparent_state_list"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ToolBarStyle"
+            app:titleMarginTop="0dp" />
+
+        <include layout="@layout/search_result_toolbar_layout" />
+
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.design.widget.CoordinatorLayout>

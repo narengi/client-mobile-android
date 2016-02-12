@@ -1,6 +1,7 @@
 package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -31,9 +33,11 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import xyz.narengi.android.R;
+import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.service.ImageDownloaderAsyncTask;
+import xyz.narengi.android.ui.activity.AttractionActivity;
 
 /**
  * @author Siavash Mahmoudpour
@@ -212,6 +216,13 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         viewHolder.houseFeatureSummary.setText(house.getFeatureSummray());
     }
 
+    private void openAttractionDetail(AroundPlaceAttraction attraction) {
+        String attractionUrl = attraction.getURL();
+        Intent intent = new Intent(context, AttractionActivity.class);
+        intent.putExtra("attractionUrl", attractionUrl);
+        context.startActivity(intent);
+    }
+
     public class AttractionsViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public HorizontalScrollView horizontalScrollView;
@@ -222,6 +233,16 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 
             horizontalScrollView = (HorizontalScrollView)view.findViewById(R.id.city_attractionsHorizontalScrollView);
             attractionsGridView = (GridView)view.findViewById(R.id.city_attractionsGridView);
+
+            attractionsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (city.getAttraction() != null && city.getAttraction().length > i) {
+                        AroundPlaceAttraction attraction = city.getAttraction()[i];
+                        openAttractionDetail(attraction);
+                    }
+                }
+            });
         }
     }
 

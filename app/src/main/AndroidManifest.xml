@@ -64,7 +64,7 @@
             android:name=".content.SearchSuggestionProvider"
             android:authorities="xyz.narengi.android.content.SearchSuggestionProvider"
             android:enabled="true"
-            android:exported="false"></provider>
+            android:exported="false" />
         <provider
             android:name=".content.SearchRecentQuerySuggestionsProvider"
             android:authorities="xyz.narengi.android.content.SearchRecentQuerySuggestionsProvider"
@@ -78,7 +78,9 @@
         <activity
             android:name=".ui.activity.HostActivity"
             android:label="@string/title_activity_host"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ui.activity.SearchResultActivity" />
+        <activity android:name=".ui.activity.AttractionActivity"></activity>
     </application>
 
 </manifest>

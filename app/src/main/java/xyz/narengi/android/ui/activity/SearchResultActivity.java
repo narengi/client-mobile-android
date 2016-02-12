@@ -67,24 +67,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 
 /**
  * @author Siavash Mahmoudpour
  */
-public class ExploreActivity extends ActionBarActivity {
+public class SearchResultActivity extends ActionBarActivity {
 
     private AroundLocation[] aroundLocations;
     private List<AroundLocation> aroundLocationList;
     private RecyclerAdapter recyclerAdapter;
-    private DrawerLayout drawerLayout;
     private EditText searchEditText;
     private View.OnFocusChangeListener searchOnFocusChangeListener;
     private boolean loadingMore;
-//    private ExpandableListView searchResultListView;
-//    private ExpandableListView searchHistoryListView;
     private RecyclerView searchResultListView;
     private RecyclerView searchHistoryListView;
     private TextWatcher searchTextWatcher;
@@ -93,43 +89,48 @@ public class ExploreActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_explore);
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        setupToolbar();
+        setContentView(R.layout.activity_search_result);
+
+        String query = "";
+        if (getIntent() != null && getIntent().getStringExtra("query") != null) {
+            query = getIntent().getStringExtra("query");
+        }
+
+        setupToolbar(query);
         aroundLocationList = new ArrayList<AroundLocation>();
         setupListView(aroundLocationList);
 
-        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask("");
+        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(query);
         loadDataAsyncTask.execute();
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.explore_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.explore_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.search_result_progressLayout);
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.search_result_progressBar);
 
         progressBar.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.explore_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.explore_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.search_result_progressLayout);
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.search_result_progressBar);
 
         progressBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
     }
 
     private void showSearchHistoryRecyclerView() {
-        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.toolbar_main_layout);
+        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.search_result_toolbar_main_layout);
         toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                closeSearchSuggestions();
+                closeSearchSuggestions(searchEditText.getText().toString());
                 return false;
             }
         });
 
-        searchHistoryListView = (RecyclerView)findViewById(R.id.search_results_list);
+        searchHistoryListView = (RecyclerView)findViewById(R.id.search_result_suggestionsRecyclerView);
 
         SharedPreferences preferences = getSharedPreferences("suggestions", 0);
         String history = preferences.getString("searchHistory", "");
@@ -153,8 +154,6 @@ public class ExploreActivity extends ActionBarActivity {
         if (historyItems == null || historyItems.length == 0)
             return;
 
-//        final String[] historyItems = getResources().getStringArray(R.array.search_history_array);
-
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         searchHistoryListView.setLayoutManager(mLayoutManager);
 
@@ -168,25 +167,6 @@ public class ExploreActivity extends ActionBarActivity {
                 return true;
             }
 
-//            @Override
-//            public boolean onDown(MotionEvent e) {
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onDoubleTap(MotionEvent e) {
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onDoubleTapEvent(MotionEvent e) {
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onSingleTapConfirmed(MotionEvent e) {
-//                return true;
-//            }
         });
 
         if (suggestionsOnItemTouchListener != null)
@@ -203,14 +183,20 @@ public class ExploreActivity extends ActionBarActivity {
                 int position = recyclerView.getChildAdapterPosition(childView);
 
                 if (childView == null) {
-                    closeSearchSuggestions();
+                    closeSearchSuggestions(searchEditText.getText().toString());
                 } else {
                     if (position >= 0 && mGestureDetector.onTouchEvent(e)) {
-                        if (historyItems != null && historyItems.length > position) {
+                        if (historyItems.length > position) {
                             Object item = historyItems[position];
                             if (item != null) {
+                                closeSearchSuggestions(item.toString());
+                                aroundLocationList = new ArrayList<AroundLocation>();
+                                setupListView(aroundLocationList);
+                                showProgress();
+                                LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(item.toString());
+                                loadDataAsyncTask.execute();
 //                                searchEditText.setText(item.toString());
-                                openSearchResult(item.toString());
+//                                openSearchResult(item.toString());
                             }
                         }
                     }
@@ -235,63 +221,6 @@ public class ExploreActivity extends ActionBarActivity {
         searchHistoryListView.invalidate();
     }
 
-    /*private void showSearchHistoryListView() {
-
-        searchHistoryListView = (ExpandableListView)findViewById(R.id.search_results_list);
-
-        final String[] historyItems = getResources().getStringArray(R.array.search_history_array);
-
-        final ArrayList<String> headerItemsList = new ArrayList<String>();
-        headerItemsList.add("");
-
-        final HashMap<String, List<Object>> childItemsHashMap = new HashMap<String, List<Object>>();
-        List historyItemsList = Arrays.asList(historyItems);
-
-        childItemsHashMap.put(headerItemsList.get(0), historyItemsList);
-
-        SuggestionsExpandableListAdapter listAdapter = new SuggestionsExpandableListAdapter(this,
-                headerItemsList, childItemsHashMap);
-
-        searchHistoryListView.setAdapter(listAdapter);
-
-        searchHistoryListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long id) {
-
-                if (headerItemsList.size() > groupPosition) {
-                    String headerItem = headerItemsList.get(groupPosition);
-                    List childList = childItemsHashMap.get(headerItem);
-                    if (childList != null && childList.size() > childPosition) {
-                        Object child = childList.get(childPosition);
-                        if (child != null && child instanceof String) {
-                            searchEditText.setText(child.toString());
-                        }
-                    }
-                }
-
-                return false;
-            }
-        });
-
-//        searchHistoryListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-
-
-        // Define the on-click listener for the list items
-//        searchHistoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if (historyItems.length > position) {
-//                    String historyItem = historyItems[position];
-//                    searchEditText.setText(historyItem);
-//                }
-//            }
-//        });
-
-        searchHistoryListView.setVisibility(View.VISIBLE);
-        searchHistoryListView.invalidate();
-    }*/
-
     private SuggestionsResult getAroundLocationSuggestions(String query) {
         SuggestionsServiceAsyncTask suggestionsAsyncTask = new SuggestionsServiceAsyncTask(query);
         Object object = null;
@@ -310,11 +239,11 @@ public class ExploreActivity extends ActionBarActivity {
 
     private void showSearchResultRecyclerView(String query) {
 
-        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.toolbar_main_layout);
+        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.search_result_toolbar_main_layout);
         toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                closeSearchSuggestions();
+                closeSearchSuggestions(searchEditText.getText().toString());
                 return false;
             }
         });
@@ -335,7 +264,7 @@ public class ExploreActivity extends ActionBarActivity {
             }
         }
 
-        searchResultListView = (RecyclerView)findViewById(R.id.search_results_list);
+        searchResultListView = (RecyclerView)findViewById(R.id.search_result_suggestionsRecyclerView);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         searchResultListView.setLayoutManager(mLayoutManager);
@@ -364,7 +293,7 @@ public class ExploreActivity extends ActionBarActivity {
                 int position = recyclerView.getChildAdapterPosition(childView);
 
                 if (childView == null) {
-                    closeSearchSuggestions();
+                    closeSearchSuggestions(searchEditText.getText().toString());
                 } else {
                     if (position >= 0 && mGestureDetector.onTouchEvent(e)) {
                         if (suggestions.size() > position) {
@@ -399,100 +328,7 @@ public class ExploreActivity extends ActionBarActivity {
 
         searchResultListView.setVisibility(View.VISIBLE);
         searchResultListView.invalidate();
-
-        /*ViewGroup vg = searchResultListView;
-        int totalHeight = 0;
-        for (int i = 0; i < searchResultListView.getAdapter().getCount(); i++) {
-            View listItem = searchResultListView.getAdapter().getView(i, null, vg);
-            if (listItem != null) {
-                listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight();
-            }
-        }
-
-        ViewGroup.LayoutParams par = searchResultListView.getLayoutParams();
-        par.height = totalHeight + (searchResultListView.getDividerHeight() * (searchResultListView.getAdapter().getCount() - 1));
-        searchResultListView.setLayoutParams(par);
-        searchResultListView.requestLayout();*/
     }
-
-    /*private void showSearchResultListView(String query) {
-
-        final String[] searchHeaderItems = getResources().getStringArray(R.array.search_suggestion_titles_array);
-
-        final List<String> headerItemsList = new ArrayList<String>();
-
-        final HashMap<String, List<Object>> childItemsHashMap = new HashMap<String, List<Object>>();
-
-        SuggestionsResult suggestionsResult = getAroundLocationSuggestions(query);
-        if (suggestionsResult != null) {
-
-            if (suggestionsResult.getCity() != null && suggestionsResult.getCity().length > 0) {
-                headerItemsList.add(searchHeaderItems[0]);
-                List cities = Arrays.asList(suggestionsResult.getCity());
-                childItemsHashMap.put(searchHeaderItems[0], cities);
-            }
-            if (suggestionsResult.getAttraction() != null && suggestionsResult.getAttraction().length > 0) {
-                headerItemsList.add(searchHeaderItems[1]);
-                List attractions = Arrays.asList(suggestionsResult.getAttraction());
-                childItemsHashMap.put(searchHeaderItems[1], attractions);
-            }
-            if (suggestionsResult.getHouse() != null && suggestionsResult.getHouse().length > 0) {
-                headerItemsList.add(searchHeaderItems[2]);
-                List houses = Arrays.asList(suggestionsResult.getHouse());
-                childItemsHashMap.put(searchHeaderItems[2], houses);
-            }
-        }
-
-        searchResultListView = (ExpandableListView)findViewById(R.id.search_results_list);
-
-        SuggestionsExpandableListAdapter listAdapter = new SuggestionsExpandableListAdapter(this,
-                headerItemsList, childItemsHashMap);
-
-        searchResultListView.setAdapter(listAdapter);
-//        searchResultListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-
-        searchResultListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long id) {
-
-                if (headerItemsList.size() > groupPosition) {
-                    String headerItem = headerItemsList.get(groupPosition);
-                    List childList = childItemsHashMap.get(headerItem);
-                    if (childList != null && childList.size() > childPosition) {
-                        Object child = childList.get(childPosition);
-                        if (child instanceof AroundPlaceCity) {
-                            openCityDetail((AroundPlaceCity) child);
-                        } else if (child instanceof AroundPlaceAttraction) {
-
-                        } else if (child instanceof AroundPlaceHouse) {
-                            openHouseDetail((AroundPlaceHouse) child);
-                        }
-                    }
-                }
-
-                return false;
-            }
-        });
-
-        searchResultListView.setVisibility(View.VISIBLE);
-        searchResultListView.invalidate();
-
-        ViewGroup vg = searchResultListView;
-        int totalHeight = 0;
-        for (int i = 0; i < searchResultListView.getAdapter().getCount(); i++) {
-            View listItem = searchResultListView.getAdapter().getView(i, null, vg);
-            if (listItem != null) {
-//                listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight();
-            }
-        }
-
-        ViewGroup.LayoutParams par = searchResultListView.getLayoutParams();
-        par.height = totalHeight + (searchResultListView.getDividerHeight() * (searchResultListView.getAdapter().getCount() - 1));
-        searchResultListView.setLayoutParams(par);
-        searchResultListView.requestLayout();
-    }*/
 
     private void storeSearchQuery(String query) {
         SharedPreferences preferences = getSharedPreferences("suggestions", 0);
@@ -526,14 +362,15 @@ public class ExploreActivity extends ActionBarActivity {
         editor.commit();
     }
 
-    private void setupToolbar() {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+    private void setupToolbar(String query) {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.search_result_toolbar);
 
         if (toolbar != null) {
-            final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.toolbar_action_settings);
-            final ImageButton mapImageButton = (ImageButton)findViewById(R.id.toolbar_action_map);
-            searchEditText = (EditText)findViewById(R.id.toolbar_action_search);
+            final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_settings);
+            final ImageButton mapImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_map);
+            searchEditText = (EditText)findViewById(R.id.search_result_toolbar_action_search);
             searchEditText.setHint(R.string.search_hint);
+            searchEditText.setText(query);
 
             final Handler handler = new Handler();
 
@@ -563,25 +400,6 @@ public class ExploreActivity extends ActionBarActivity {
                         }, 5);
                     } else {
 
-//                        searchEditText.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                searchEditText.setSelection(1);
-//                                searchEditText.extendSelection(0);
-//                                searchEditText.setSelection(0);
-////                                searchEditText.setSelection(s.length(), s.length());
-//                            }
-//                        }, 6);
-
-
-//                        handler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                searchEditText.setSelection(s.length(), s.length());
-//                            }
-//                        }, 5);
-//                        searchEditText.setSelection(0);
-//                        searchEditText.moveCursorToVisibleOffset();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -621,6 +439,8 @@ public class ExploreActivity extends ActionBarActivity {
 
                         settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_back));
                         mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel));
+                    } else {
+                        mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_dialog_map));
                     }
                 }
             };
@@ -634,7 +454,12 @@ public class ExploreActivity extends ActionBarActivity {
                         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
                         storeSearchQuery(searchEditText.getText().toString());
-                        openSearchResult(searchEditText.getText().toString());
+                        closeSearchSuggestions(searchEditText.getText().toString());
+                        aroundLocationList = new ArrayList<AroundLocation>();
+                        setupListView(aroundLocationList);
+                        showProgress();
+                        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(searchEditText.getText().toString());
+                        loadDataAsyncTask.execute();
                         return true;
                     }
                     return false;
@@ -668,15 +493,9 @@ public class ExploreActivity extends ActionBarActivity {
         }
     }
 
-    private void openSearchResult(String query) {
-        Intent intent = new Intent(this, SearchResultActivity.class);
-        intent.putExtra("query", query);
-        startActivity(intent);
-    }
-
     private void updateToolbarScrollFlags(boolean canScroll) {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.search_result_toolbar);
         if (toolbar == null)
             return;
 
@@ -695,60 +514,65 @@ public class ExploreActivity extends ActionBarActivity {
 
     private void searchMapButtonOnClick() {
         final boolean hasText = !TextUtils.isEmpty(searchEditText.getText().toString());
-        if (hasText) {
+
+        if (searchEditText.hasFocus()) {
             searchEditText.setText("");
         } else {
-            if (!searchEditText.hasFocus()) {
-                Toast.makeText(ExploreActivity.this, "Map icon clicked!", Toast.LENGTH_LONG).show();
-            }
+            Toast.makeText(SearchResultActivity.this, "Map icon clicked!", Toast.LENGTH_LONG).show();
         }
+
+//        if (hasText) {
+//            searchEditText.setText("");
+//        } else {
+//            if (!searchEditText.hasFocus()) {
+//                Toast.makeText(SearchResultActivity.this, "Map icon clicked!", Toast.LENGTH_LONG).show();
+//            }
+//        }
     }
 
     private void searchMenuButtonOnClick() {
 
-        final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.toolbar_action_settings);
-        final ImageButton mapImageButton = (ImageButton)findViewById(R.id.toolbar_action_map);
+//        final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_settings);
+//        final ImageButton mapImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_map);
+//
+//        final boolean hasText = !TextUtils.isEmpty(searchEditText.getText().toString());
+//        RecyclerView listView = (RecyclerView)findViewById(R.id.search_result_suggestionsRecyclerView);
+//        if (hasText || searchEditText.hasFocus() || listView.getVisibility() == View.VISIBLE) {
+//            searchEditText.setOnFocusChangeListener(null);
+//            searchEditText.removeTextChangedListener(searchTextWatcher);
+//            searchEditText.setText("");
+//            searchEditText.clearFocus();
+//            settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_navigation_menu));
+//            mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
+//
+//            listView.setVisibility(View.INVISIBLE);
+//            listView.invalidate();
+//
+//            searchEditText.setOnFocusChangeListener(searchOnFocusChangeListener);
+//            searchEditText.addTextChangedListener(searchTextWatcher);
+//            updateToolbarScrollFlags(true);
+//        }
+//
+//        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
 
-        final boolean hasText = !TextUtils.isEmpty(searchEditText.getText().toString());
-        RecyclerView listView = (RecyclerView)findViewById(R.id.search_results_list);
-        if (hasText || searchEditText.hasFocus() || listView.getVisibility() == View.VISIBLE) {
-            searchEditText.setOnFocusChangeListener(null);
-            searchEditText.removeTextChangedListener(searchTextWatcher);
-            searchEditText.setText("");
-            searchEditText.clearFocus();
-            settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_navigation_menu));
-            mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
-
-            listView.setVisibility(View.INVISIBLE);
-            listView.invalidate();
-
-            searchEditText.setOnFocusChangeListener(searchOnFocusChangeListener);
-            searchEditText.addTextChangedListener(searchTextWatcher);
-            updateToolbarScrollFlags(true);
-        } else {
-            if (drawerLayout != null) {
-                if (drawerLayout.isDrawerOpen(GravityCompat.END))
-                    drawerLayout.closeDrawer(GravityCompat.END);
-                else
-                    drawerLayout.openDrawer(GravityCompat.END);
-            }
-        }
-
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
+        onBackPressed();
     }
 
-    private void closeSearchSuggestions() {
-        final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.toolbar_action_settings);
-        final ImageButton mapImageButton = (ImageButton)findViewById(R.id.toolbar_action_map);
+    private void closeSearchSuggestions(String newQuery) {
+//        final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_settings);
+        final ImageButton mapImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_map);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.search_results_list);
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.search_result_suggestionsRecyclerView);
         searchEditText.setOnFocusChangeListener(null);
         searchEditText.removeTextChangedListener(searchTextWatcher);
-        searchEditText.setText("");
+        if (newQuery != null)
+            searchEditText.setText(newQuery);
+        else
+            searchEditText.setText("");
         searchEditText.clearFocus();
-        settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_navigation_menu));
-        mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
+//        settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_navigation_menu));
+        mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_dialog_map));
 
         recyclerView.setVisibility(View.INVISIBLE);
         recyclerView.invalidate();
@@ -761,7 +585,7 @@ public class ExploreActivity extends ActionBarActivity {
 
     private void setupListView(List<AroundLocation> aroundLocations) {
 
-        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.scrollRecyclerView);
+        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.search_result_recyclerView);
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -778,19 +602,11 @@ public class ExploreActivity extends ActionBarActivity {
             }
         });
 
-//        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                closeSearchSuggestions();
-//                return true;
-//            }
-//        });
-
         mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
 
-                closeSearchSuggestions();
+                closeSearchSuggestions(searchEditText.getText().toString());
 
                 View childView = rv.findChildViewUnder(e.getX(), e.getY());
                 if (childView != null && mGestureDetector.onTouchEvent(e)) {
@@ -833,7 +649,7 @@ public class ExploreActivity extends ActionBarActivity {
         String cityUrl = city.getURL();
         Intent intent = new Intent(this, CityActivity.class);
         intent.putExtra("cityUrl", cityUrl);
-        closeSearchSuggestions();
+        closeSearchSuggestions("");
         startActivity(intent);
     }
 
@@ -841,7 +657,7 @@ public class ExploreActivity extends ActionBarActivity {
         String attractionUrl = attraction.getURL();
         Intent intent = new Intent(this, AttractionActivity.class);
         intent.putExtra("attractionUrl", attractionUrl);
-        closeSearchSuggestions();
+        closeSearchSuggestions("");
         startActivity(intent);
     }
 
@@ -849,8 +665,7 @@ public class ExploreActivity extends ActionBarActivity {
         String houseUrl = house.getURL();
         Intent intent = new Intent(this, HouseActivity.class);
         intent.putExtra("houseUrl", houseUrl);
-        intent.putExtra("house", house);
-        closeSearchSuggestions();
+        closeSearchSuggestions("");
         startActivity(intent);
     }
 

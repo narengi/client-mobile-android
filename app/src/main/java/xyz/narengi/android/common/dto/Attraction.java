@@ -7,76 +7,85 @@ import java.util.List;
  */
 public class Attraction {
 
-    private Long id;
-    private String name;
-    private String summary;
-    private Double latitude;
-    private Double longitude;
-    private City city;
-    private List<House> houses;
-    private List<Object> images;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private String Name;
+    private String[] Images;
+    private String CityName;
+    private String AroundHousesText;
+    private String[] AroundHouses;
+    private GeoPoint Position;
+    private String URL;
+    private String HousesUrl;
+    private AroundPlaceHouse[] Houses;
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        Name = name;
     }
 
-    public String getSummary() {
-        return summary;
+    public String[] getImages() {
+        return Images;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setImages(String[] images) {
+        Images = images;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public String getCityName() {
+        return CityName;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public void setCityName(String cityName) {
+        CityName = cityName;
     }
 
-    public Double getLongitude() {
-        return longitude;
+    public String getAroundHousesText() {
+        return AroundHousesText;
     }
 
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setAroundHousesText(String aroundHousesText) {
+        AroundHousesText = aroundHousesText;
     }
 
-    public City getCity() {
-        return city;
+    public String[] getAroundHouses() {
+        return AroundHouses;
     }
 
-    public void setCity(City city) {
-        this.city = city;
+    public void setAroundHouses(String[] aroundHouses) {
+        AroundHouses = aroundHouses;
     }
 
-    public List<House> getHouses() {
-        return houses;
+    public GeoPoint getPosition() {
+        return Position;
     }
 
-    public void setHouses(List<House> houses) {
-        this.houses = houses;
+    public void setPosition(GeoPoint position) {
+        Position = position;
     }
 
-    public List<Object> getImages() {
-        return images;
+    public String getURL() {
+        return URL;
     }
 
-    public void setImages(List<Object> images) {
-        this.images = images;
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
+    public String getHousesUrl() {
+        return HousesUrl;
+    }
+
+    public void setHousesUrl(String housesUrl) {
+        HousesUrl = housesUrl;
+    }
+
+    public AroundPlaceHouse[] getHouses() {
+        return Houses;
+    }
+
+    public void setHouses(AroundPlaceHouse[] houses) {
+        Houses = houses;
     }
 }
