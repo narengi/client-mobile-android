@@ -98,7 +98,7 @@
                     app:backgroundTint="@color/transparent_state_list"
                     />
                     <!--android:layout_height="?attr/actionBarSize"-->
-                    <include layout="@layout/toolbar_layout"/>
+                    <include layout="@layout/explore_toolbar_layout"/>
 
                     <!--<xyz.narengi.android.ui.widget.CustomSearchView-->
                         <!--android:id="@+id/toolbar_action_search"-->

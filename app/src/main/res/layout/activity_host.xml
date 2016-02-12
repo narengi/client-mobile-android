@@ -7,6 +7,24 @@
     android:fitsSystemWindows="true"
     tools:context="xyz.narengi.android.ui.activity.HostActivity">
 
+    <LinearLayout
+        android:id="@+id/host_progressLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@android:color/transparent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/host_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            >
+        </ProgressBar>
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/host_contentRecyclerView"
         android:layout_width="match_parent"

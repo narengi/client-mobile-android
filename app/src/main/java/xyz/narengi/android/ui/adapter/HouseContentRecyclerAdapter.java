@@ -26,6 +26,7 @@ import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.common.dto.HouseReview;
+import xyz.narengi.android.ui.activity.HostActivity;
 import xyz.narengi.android.ui.activity.HouseFeaturesActivity;
 import xyz.narengi.android.ui.widget.HouseLinearLayoutManager;
 import xyz.narengi.android.ui.widget.LineDividerItemDecoration;
@@ -343,6 +344,13 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         //TODO : initialize on click listeners
     }
 
+    private void openHostActivity(String hostUrl) {
+        Intent intent = new Intent(context, HostActivity.class);
+
+        intent.putExtra("hostUrl", hostUrl);
+        context.startActivity(intent);
+    }
+
     public class TitleInfoViewHolder extends RecyclerView.ViewHolder {
 
 //        public TextView priceTextView;
@@ -474,6 +482,13 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             hostContactButton = (Button)view.findViewById(R.id.house_hostContactButton);
             extraServicesButton = (Button)view.findViewById(R.id.house_extraServicesButton);
             termsButton = (Button)view.findViewById(R.id.house_termsButton);
+
+            hostProfileButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    openHostActivity(house.getHost().getHostURL());
+                }
+            });
         }
     }
 }

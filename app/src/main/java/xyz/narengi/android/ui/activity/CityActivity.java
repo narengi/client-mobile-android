@@ -431,7 +431,6 @@ public class CityActivity extends ActionBarActivity {
         String houseUrl = house.getURL();
         Intent intent = new Intent(this, HouseActivity.class);
         intent.putExtra("houseUrl", houseUrl);
-        intent.putExtra("house", house);
         startActivity(intent);
     }
 

@@ -7,6 +7,7 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.Url;
 import xyz.narengi.android.common.dto.AroundLocation;
+import xyz.narengi.android.common.dto.Attraction;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.common.dto.HostProfile;
 import xyz.narengi.android.common.dto.House;
@@ -36,4 +37,7 @@ public interface RetrofitApiEndpoints {
 
     @GET
     Call<HostProfile> getHostProfile(@Url String url);
+
+    @GET
+    Call<Attraction> getAttraction(@Url String url);
 }

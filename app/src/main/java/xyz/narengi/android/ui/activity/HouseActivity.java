@@ -253,7 +253,6 @@ public class HouseActivity extends ActionBarActivity {
 
     private void openHostActivity(String hostUrl) {
         Intent intent = new Intent(this, HostActivity.class);
-
         intent.putExtra("hostUrl", hostUrl);
         startActivity(intent);
     }

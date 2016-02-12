@@ -39,14 +39,10 @@ public class HostHousesRecyclerAdapter extends RecyclerView.Adapter<HostHousesRe
     private House[] objects;
     private Context context;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
     public class HousesViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public ImageView houseImageView;
         public TextView housePriceTextView;
-        public FloatingActionButton hostFab;
         public TextView houseTitleTextView;
         public TextView houseFeatureSummary;
         public RatingBar houseRatingBar;
@@ -54,17 +50,41 @@ public class HostHousesRecyclerAdapter extends RecyclerView.Adapter<HostHousesRe
         public HousesViewHolder(View view) {
             super(view);
 
-            houseImageView = (ImageView)itemView.findViewById(R.id.houses_item_image);
-            housePriceTextView = (TextView)itemView.findViewById(R.id.houses_item_price);
-            hostFab= (FloatingActionButton)itemView.findViewById(R.id.houses_item_hostFab);
-            houseTitleTextView = (TextView)itemView.findViewById(R.id.houses_item_house_title);
-            houseFeatureSummary = (TextView)itemView.findViewById(R.id.houses_item_house_featureSummary);
-            houseRatingBar = (RatingBar)itemView.findViewById(R.id.houses_item_house_ratingBar);
+            houseImageView = (ImageView)itemView.findViewById(R.id.host_houses_item_image);
+            housePriceTextView = (TextView)itemView.findViewById(R.id.host_houses_item_price);
+            houseTitleTextView = (TextView)itemView.findViewById(R.id.host_houses_item_title);
+            houseFeatureSummary = (TextView)itemView.findViewById(R.id.host_houses_item_featureSummary);
+            houseRatingBar = (RatingBar)itemView.findViewById(R.id.host_houses_item_ratingBar);
 
             Drawable drawable = houseRatingBar.getProgressDrawable();
             drawable.setColorFilter(context.getResources().getColor(R.color.rating_bar_yelloh), PorterDuff.Mode.SRC_ATOP);
         }
     }
+
+    // Provide a reference to the views for each data item
+//    public class HousesViewHolder extends RecyclerView.ViewHolder {
+//        // each data item is just a string in this case
+//        public ImageView houseImageView;
+//        public TextView housePriceTextView;
+//        public FloatingActionButton hostFab;
+//        public TextView houseTitleTextView;
+//        public TextView houseFeatureSummary;
+//        public RatingBar houseRatingBar;
+//
+//        public HousesViewHolder(View view) {
+//            super(view);
+//
+//            houseImageView = (ImageView)itemView.findViewById(R.id.houses_item_image);
+//            housePriceTextView = (TextView)itemView.findViewById(R.id.houses_item_price);
+//            hostFab= (FloatingActionButton)itemView.findViewById(R.id.houses_item_hostFab);
+//            houseTitleTextView = (TextView)itemView.findViewById(R.id.houses_item_house_title);
+//            houseFeatureSummary = (TextView)itemView.findViewById(R.id.houses_item_house_featureSummary);
+//            houseRatingBar = (RatingBar)itemView.findViewById(R.id.houses_item_house_ratingBar);
+//
+//            Drawable drawable = houseRatingBar.getProgressDrawable();
+//            drawable.setColorFilter(context.getResources().getColor(R.color.rating_bar_yelloh), PorterDuff.Mode.SRC_ATOP);
+//        }
+//    }
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public HostHousesRecyclerAdapter(Context context, House[] objects) {
@@ -80,7 +100,7 @@ public class HostHousesRecyclerAdapter extends RecyclerView.Adapter<HostHousesRe
         HousesViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.city_houses_item, parent, false);
+        View view = inflater.inflate(R.layout.host_houses_item, parent, false);
         viewHolder = new HousesViewHolder(view);
 
         return viewHolder;
@@ -103,42 +123,11 @@ public class HostHousesRecyclerAdapter extends RecyclerView.Adapter<HostHousesRe
             Picasso.with(context).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
         }
         viewHolder.housePriceTextView.setText(house.getCost());
-        if (house.getHost() != null && house.getHost().getImageUrl() != null) {
-            try {
-//                Bitmap hostImageBitmap = Picasso.with(context).load(house.getHost().getImageUrl()).get();
-                ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, house.getHost().getImageUrl());
-//                Bitmap hostImageBitmap = Picasso.with(context).load(house.getHost().getImageUrl()).get();
-                AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
-
-                Bitmap hostImageBitmap = (Bitmap)asyncTask.get();
-                if (hostImageBitmap != null) {
-
-                    Bitmap circleBitmap = Bitmap.createBitmap(hostImageBitmap.getWidth(), hostImageBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-
-                    BitmapShader shader = new BitmapShader (hostImageBitmap,  Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-                    Paint paint = new Paint();
-                    paint.setShader(shader);
-                    paint.setAntiAlias(true);
-                    Canvas c = new Canvas(circleBitmap);
-                    c.drawCircle(hostImageBitmap.getWidth() / 2, hostImageBitmap.getHeight() / 2, hostImageBitmap.getWidth() / 2, paint);
-
-//                    viewHolder.hostFab.setBackgroundDrawable(new BitmapDrawable(getRoundedRectBitmap(circleBitmap)));
-//                    viewHolder.hostFab.setImageBitmap(circleBitmap);
-                    viewHolder.hostFab.setImageBitmap(hostImageBitmap);
-                }
-//                    viewHolder.hostFab.setBackgroundDrawable(new BitmapDrawable(getRoundedRectBitmap(hostImageBitmap)));
-//                    viewHolder.hostFab.setBackgroundDrawable(new BitmapDrawable(hostImageBitmap));
-//                    viewHolder.hostFab.setImageBitmap(hostImageBitmap);
-
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
 
         viewHolder.houseTitleTextView.setText(house.getName());
+        Drawable drawable = context.getResources().getDrawable(android.R.drawable.ic_menu_compass);
+        drawable.setColorFilter(context.getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
+        viewHolder.houseTitleTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
         viewHolder.houseFeatureSummary.setText(house.getFeatureSummray());
     }
 

@@ -1,11 +1,15 @@
 package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,8 +19,10 @@ import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HostProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseReview;
+import xyz.narengi.android.ui.widget.HostHousesLinearLayoutManager;
 import xyz.narengi.android.ui.widget.HouseLinearLayoutManager;
 import xyz.narengi.android.ui.widget.LineDividerItemDecoration;
+import xyz.narengi.android.ui.widget.MyLinearLayoutManager;
 
 /**
  * @author Siavash Mahmoudpour
@@ -145,9 +151,27 @@ public class HostContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         viewHolder.userReviewsRecyclerView.addItemDecoration(new LineDividerItemDecoration(context.getResources()));
     }
 
+    private int getScreenHeight(Context context) {
+        int measuredHeight;
+        Point size = new Point();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            wm.getDefaultDisplay().getSize(size);
+            measuredHeight = size.y;
+        } else {
+            Display d = wm.getDefaultDisplay();
+            measuredHeight = d.getHeight();
+        }
+
+        return measuredHeight;
+    }
+
     private void setupHousesLayout(HostHousesViewHolder viewHolder) {
 
-        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+//        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+//        MyLinearLayoutManager mLayoutManager = new MyLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false, getScreenHeight(context), 0);
+        HostHousesLinearLayoutManager mLayoutManager = new HostHousesLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false, getScreenHeight(context));
 //        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         viewHolder.userHousesRecyclerView.setLayoutManager(mLayoutManager);
 
