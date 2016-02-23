@@ -2,7 +2,6 @@ package xyz.narengi.android.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -20,22 +19,17 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.WindowCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -59,7 +53,6 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.Host;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.content.HouseDeserializer;
@@ -67,9 +60,6 @@ import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.ui.adapter.HouseContentRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
-import xyz.narengi.android.ui.adapter.RecyclerAdapter;
-import xyz.narengi.android.ui.widget.HouseLinearLayoutManager;
-import xyz.narengi.android.ui.widget.MyLinearLayoutManager;
 
 /**
  * @author Siavash Mahmoudpour

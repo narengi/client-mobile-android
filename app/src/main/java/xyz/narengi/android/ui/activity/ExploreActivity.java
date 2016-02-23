@@ -31,6 +31,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -44,6 +45,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,11 +98,45 @@ public class ExploreActivity extends ActionBarActivity {
         setContentView(R.layout.activity_explore);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         setupToolbar();
+        setupNavigationView();
         aroundLocationList = new ArrayList<AroundLocation>();
         setupListView(aroundLocationList);
 
         LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask("");
         loadDataAsyncTask.execute();
+    }
+
+    private void setupNavigationView() {
+        NavigationView navigationView = (NavigationView)findViewById(R.id.explore_navigationView);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                //Checking if the item is in checked state or not, if not make it in checked state
+                if (menuItem.isChecked())
+                    menuItem.setChecked(false);
+                else
+                    menuItem.setChecked(true);
+
+                //Closing drawer on item click
+                drawerLayout.closeDrawers();
+
+                switch (menuItem.getItemId()) {
+
+                    case R.id.navigation_item_login_register:
+                        openSignInSignUp();
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void openSignInSignUp() {
+        Intent intent = new Intent(this, SignInSignUpActivity.class);
+        startActivity(intent);
     }
 
     private void showProgress() {
