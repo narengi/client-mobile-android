@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- SignIn, signUp -->
+    <string name="login_title_1">به خانه خود</string>
+    <string name="login_title_2">خوش آمديد.</string>
+
+    <string name="login_email_hint">آدرس ايمیل</string>
+    <string name="login_password_hint">کلمه عبور</string>
+
+    <string name="login_button">ورود</string>
+    <string name="register_button">ثبت نام</string>
+
+    <string name="login_reset_password_caption">کلمه عبور خود را فراموش کرده ايد؟</string>
+    <string name="login_reset_password_button">آن را بازنشانی کنيد</string>
+
+    <string name="profile_skip_update_button">فعلا نه</string>
+    <string name="profile_complete_button">تکميل پروفايل کاربری</string>
+    <string name="profile_registration_success_title">شما با موفقيت عضو نارنگی شديد.</string>
+    <string name="profile_registration_success_message">برای استفاده از خدمات و امکانات نارنگی می بايست پروفايل کاربری خود را کامل کنيد. پيشنهادمی کنيم همين حالا اقدام به تکميل نماييد.</string>
+
+    <!-- Edit profile -->
+    <string name="edit_profile_page_title">ويرايش پروفايل</string>
+    <string name="edit_profile_add_image">افزودن تصوير پروفايل</string>
+    <string name="edit_profile_name_hint">نام</string>
+    <string name="edit_profile_family_hint">نام خانوادگی</string>
+    <string name="edit_profile_gender_hint">جنسيت</string>
+    <string name="edit_profile_birth_date_hint">تاريخ تولد</string>
+    <string name="edit_profile_email_hint">ايميل</string>
+    <string name="edit_profile_mobile_number_hint">تلفن همراه</string>
+    <string name="edit_profile_short_bio_hint">معرفی کوتاه از من…</string>
+
+    <string-array name="gender_array">
+        <item>مرد</item>
+        <item>زن</item>
+    </string-array>
+
+    <string name="edit_profile_save_menu">ذخيره</string>
+
+    <!-- Mobile input -->
+    <string name="mobile_input_page_title">دريافت تلفن همراه</string>
+    <string name="mobile_input_caption">شماره تلفن همراه خود را وارد کنيد.</string>
+    <string name="mobile_input_mobile_caption">تلفن همراه</string>
+    <string name="mobile_input_mobile_hint">۰۹*********</string>
+    <string name="mobile_input_send_button">تاييد شماره تلفن همراه</string>
+
+    <!-- Mobile verification -->
+    <string name="mobile_verification_page_title">تاييد تلفن همراه</string>
+    <string name="mobile_verification_caption">کد ۴ رقمی ارسال شده را اينجا وارد کنيد.</string>
+    <string name="mobile_verification_resend_caption">در صورت دريافت نکردن پيامک، عليات را دوباره تکرار نماييد.</string>
+    <string name="mobile_verification_send_button">ارسال</string>
+</resources>

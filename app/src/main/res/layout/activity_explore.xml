@@ -129,6 +129,7 @@
 
 
     <android.support.design.widget.NavigationView
+        android:id="@+id/explore_navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
