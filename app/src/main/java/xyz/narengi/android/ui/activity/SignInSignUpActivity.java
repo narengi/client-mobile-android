@@ -29,6 +29,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,11 +44,13 @@ import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AccountProfile;
+import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.Credential;
+import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.content.AroundLocationDeserializer;
 import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
 import xyz.narengi.android.content.AroundPlaceCityDeserializer;
@@ -60,7 +63,7 @@ import xyz.narengi.android.ui.fragment.SignUpFragment;
 /**
  * @author Siavash Mahmoudpour
  */
-public class SignInSignUpActivity extends AppCompatActivity implements SignUpFragment.OnRegisterButtonClickListener {
+public class SignInSignUpActivity extends AppCompatActivity implements SignUpFragment.OnRegisterButtonClickListener, SignInFragment.OnLoginButtonClickListener {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -148,8 +151,55 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 //        }
     }
 
-    private void login() {
+    private void login(String email, String password) {
+        Credential credential = new Credential();
 
+        credential.setUsername(email);
+        credential.setPassword(password);
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.SERVER_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+        Call<AccountProfile> call = apiEndpoints.login(credential);
+
+        call.enqueue(new Callback<AccountProfile>() {
+            @Override
+            public void onResponse(Response<AccountProfile> response, Retrofit retrofit) {
+                int statusCode = response.code();
+                AccountProfile accountProfile = response.body();
+                if (accountProfile != null && accountProfile.getToken() != null) {
+                    loginUser(accountProfile);
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            String failureMessage = response.errorBody().string();
+                            Toast.makeText(SignInSignUpActivity.this, "Login failure, status code : " + String.valueOf(statusCode) + "\n" + failureMessage, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                if (statusCode != 200) {
+                    Toast.makeText(SignInSignUpActivity.this, "Login failure, status code : " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
+                    //Failure
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void register(String email, String password) {
@@ -195,6 +245,67 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         });
     }
 
+    private void loginUser(AccountProfile accountProfile) {
+        SharedPreferences preferences = getSharedPreferences("profile", 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("accessToken", accountProfile.getToken().getToken());
+        editor.putString("username", accountProfile.getToken().getUsername());
+        editor.commit();
+
+        if (accountProfile.getProfile() != null) {
+            Profile profile = accountProfile.getProfile();
+            String displayName = "";
+            if (profile.getFirstName() != null)
+                displayName += profile.getFirstName();
+            if (profile.getLastName() != null)
+                displayName += " " + profile.getLastName();
+
+            editor.putString("displayName", displayName);
+
+            boolean isPictureUploaded = true;
+            if (profile.getStatus() != null && profile.getStatus().getFields() != null) {
+                for (String field : profile.getStatus().getFields()) {
+                    if (field.equalsIgnoreCase("picture")) {
+                        isPictureUploaded = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isPictureUploaded) {
+                //TODO : get profile picture form server.
+            }
+        }
+
+        finish();
+
+        /*if (accountProfile.getProfile() != null && accountProfile.getProfile().getStatus() != null &&
+                accountProfile.getProfile().getStatus().getCompleted() == 100) {
+            //TODO : finish();
+        } else {
+            if (accountProfile.getVerification() == null || accountProfile.getVerification().length == 0) {
+                //TODO : open mobile verification
+            } else {
+                AccountVerification mobileVerification = null;
+                for (AccountVerification verification : accountProfile.getVerification()) {
+                    if (verification.getVerificationType() != null && verification.getVerificationType().equalsIgnoreCase("SMS")) {
+                        mobileVerification = verification;
+                        break;
+                    }
+                }
+
+                if (mobileVerification != null && mobileVerification.isVerified()) {
+                    //TODO : open edit profile
+                } else {
+                    //TODO : open mobile verification
+                }
+            }
+        }
+
+        Intent intent = new Intent(this, MobileInputActivity.class);
+        startActivityForResult(intent, 101);*/
+    }
+
     private void createUser(AccountProfile accountProfile) {
         SharedPreferences preferences = getSharedPreferences("profile", 0);
         SharedPreferences.Editor editor = preferences.edit();
@@ -218,6 +329,11 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     @Override
     public void onRegisterButtonPressed(String email, String password) {
         register(email, password);
+    }
+
+    @Override
+    public void onLoginButtonPressed(String email, String password) {
+        login(email, password);
     }
 
 

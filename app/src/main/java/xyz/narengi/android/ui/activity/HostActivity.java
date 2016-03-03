@@ -127,6 +127,12 @@ public class HostActivity extends AppCompatActivity {
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            actionBar.setTitle("");
+            actionBar.setWindowTitle("");
+            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.host_collapse_toolbar);
+            collapsingToolbarLayout.setTitle("");
+            collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         }
     }
 

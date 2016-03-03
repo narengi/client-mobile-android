@@ -1,14 +1,17 @@
 package xyz.narengi.android.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +22,10 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -27,12 +34,14 @@ import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AccountProfile;
+import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.ui.adapter.SpinnerArrayAdapter;
+import xyz.narengi.android.util.SecurityUtils;
 
 /**
  * @author Siavash Mahmoudpour
@@ -47,7 +56,7 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
         setupToolbar();
         initViews();
-//        getProfile();
+        getProfile();
     }
 
     @Override
@@ -165,8 +174,8 @@ public class EditProfileActivity extends AppCompatActivity {
             profile = new Profile();
         }
 
-        EditText nameEditText = (EditText) findViewById(R.id.edit_profile_name);
-        EditText familyEditText = (EditText) findViewById(R.id.edit_profile_family);
+        final EditText nameEditText = (EditText) findViewById(R.id.edit_profile_name);
+        final EditText familyEditText = (EditText) findViewById(R.id.edit_profile_family);
         Spinner genderSpinner = (Spinner) findViewById(R.id.edit_profile_gender);
         EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
         EditText emailEditText = (EditText) findViewById(R.id.edit_profile_email);
@@ -175,10 +184,16 @@ public class EditProfileActivity extends AppCompatActivity {
 
         profile.setFirstName(nameEditText.getText().toString());
         profile.setLastName(familyEditText.getText().toString());
+        if (genderSpinner.getSelectedItemPosition() == 0) {
+            profile.setGender("Male");
+        } else {
+            profile.setGender("Female");
+        }
 
-        profile.setBirthDate(birthDateEditText.getText().toString());
-//        profile.setFirstName(nameEditText.getText().toString());
-//        profile.setCe(nameEditText.getText().toString());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = dateFormat.format(new Date());
+//        profile.setBirthDate(birthDateEditText.getText().toString());
+        profile.setBirthDate(dateString);
         profile.setBio(bioEditText.getText().toString());
 
         final SharedPreferences preferences = getSharedPreferences("profile", 0);
@@ -206,15 +221,25 @@ public class EditProfileActivity extends AppCompatActivity {
                 .build();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.getProfile(authorizationJson);
+        Call call = apiEndpoints.updateProfile(authorizationJson, profile);
 
-        call.enqueue(new Callback<AccountProfile>() {
+        call.enqueue(new Callback() {
             @Override
-            public void onResponse(Response<AccountProfile> response, Retrofit retrofit) {
+            public void onResponse(Response response, Retrofit retrofit) {
                 int statusCode = response.code();
-                AccountProfile accountProfile = response.body();
-                if (accountProfile != null && accountProfile.getProfile() != null) {
-                    setProfile(accountProfile);
+                if (statusCode == 201 || statusCode == 204) {
+                    saveDisplayName(nameEditText.getText().toString(), familyEditText.getText().toString());
+                    SecurityUtils.getInstance(EditProfileActivity.this).setUpdateUserTitleNeeded(true);
+                    showUpdateProfileResultDialog(null, true);
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            Toast.makeText(EditProfileActivity.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+                            showUpdateProfileResultDialog(response.errorBody().string(), false);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -223,6 +248,42 @@ public class EditProfileActivity extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
+    }
+
+    private void saveDisplayName(String name, String family) {
+        String displayName = "";
+        if (name != null)
+            displayName += name;
+        if (family != null)
+            displayName += " " + family;
+
+        SharedPreferences preferences = getSharedPreferences("profile", 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("displayName", displayName);
+    }
+
+    private void showUpdateProfileResultDialog(String message, final boolean isSuccessful) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Update Profile Result");
+        if (message != null) {
+            builder.setMessage(message);
+        } else {
+            builder.setMessage("Profile updated successfully!");
+        }
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (isSuccessful) {
+                    setResult(102);
+                    finish();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     private void setProfile(AccountProfile accountProfile) {
@@ -236,8 +297,18 @@ public class EditProfileActivity extends AppCompatActivity {
         EditText mobileNoEditText = (EditText) findViewById(R.id.edit_profile_mobileNumber);
         EditText bioEditText = (EditText) findViewById(R.id.edit_profile_bio);
 
-        emailEditText.setText(accountProfile.getEmail());
-        mobileNoEditText.setText(accountProfile.getCellNumber());
+        if (accountProfile.getVerification() != null && accountProfile.getVerification().length > 0) {
+            for (AccountVerification verification : accountProfile.getVerification()) {
+                if (verification.getVerificationType() != null) {
+                    if (verification.getVerificationType().equals("SMS")) {
+                        mobileNoEditText.setText(verification.getHandle());
+                    } else if (verification.getVerificationType().equals("Email")) {
+                        emailEditText.setText(verification.getHandle());
+                    }
+                }
+            }
+        }
+
         if (accountProfile.getProfile().getFirstName() != null)
             nameEditText.setText(accountProfile.getProfile().getFirstName());
         if (accountProfile.getProfile().getLastName() != null)
@@ -246,5 +317,13 @@ public class EditProfileActivity extends AppCompatActivity {
             birthDateEditText.setText(accountProfile.getProfile().getBirthDate());
         if (accountProfile.getProfile().getBio() != null)
             bioEditText.setText(accountProfile.getProfile().getBio());
+
+        if (accountProfile.getProfile().getGender() != null) {
+            if (accountProfile.getProfile().getGender().equals("Male")) {
+                genderSpinner.setSelection(0);
+            } else {
+                genderSpinner.setSelection(1);
+            }
+        }
     }
 }

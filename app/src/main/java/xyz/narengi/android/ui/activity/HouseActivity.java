@@ -134,6 +134,12 @@ public class HouseActivity extends ActionBarActivity {
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            actionBar.setTitle("");
+            actionBar.setWindowTitle("");
+            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.house_collapse_toolbar);
+            collapsingToolbarLayout.setTitle("");
+            collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         }
 
         /*final NestedScrollView contentScrollView = (NestedScrollView)findViewById(R.id.house_contentScrollView);
@@ -309,7 +315,18 @@ public class HouseActivity extends ActionBarActivity {
 
         FloatingActionButton houseHostFab= (FloatingActionButton)findViewById(R.id.house_hostFab);
         try {
-            ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(this, imageUrl);
+            int width=0 , height=0;
+            if (houseHostFab != null) {
+                if (houseHostFab.getWidth() > 0 && houseHostFab.getHeight() > 0) {
+                    width = houseHostFab.getWidth();
+                    height = houseHostFab.getHeight();
+                } else if (houseHostFab.getLayoutParams() != null) {
+                    width = houseHostFab.getLayoutParams().width;
+                    height = houseHostFab.getLayoutParams().height;
+                }
+            }
+            ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(this, imageUrl,
+                    width, height);
             AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
 
             Bitmap hostImageBitmap = (Bitmap)asyncTask.get();
@@ -317,7 +334,7 @@ public class HouseActivity extends ActionBarActivity {
 
                 Bitmap circleBitmap = Bitmap.createBitmap(hostImageBitmap.getWidth(), hostImageBitmap.getHeight(), Bitmap.Config.ARGB_8888);
 
-                BitmapShader shader = new BitmapShader (hostImageBitmap,  Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+                BitmapShader shader = new BitmapShader (hostImageBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
                 Paint paint = new Paint();
                 paint.setShader(shader);
                 paint.setAntiAlias(true);

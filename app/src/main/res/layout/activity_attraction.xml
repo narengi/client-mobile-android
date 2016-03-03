@@ -59,6 +59,9 @@
             app:layout_collapseMode="parallax"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp"
+            app:collapsedTitleGravity="left|center_vertical"
+            app:collapsedTitleTextAppearance="?android:attr/textAppearanceLarge"
+            app:expandedTitleTextAppearance="@android:color/transparent"
             >
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
