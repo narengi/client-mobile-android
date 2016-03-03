@@ -21,6 +21,7 @@ import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
 import xyz.narengi.android.ui.adapter.RecyclerAdapter;
 import xyz.narengi.android.ui.adapter.SuggestionsExpandableListAdapter;
 import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
+import xyz.narengi.android.util.SecurityUtils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -106,8 +108,64 @@ public class ExploreActivity extends ActionBarActivity {
         loadDataAsyncTask.execute();
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (SecurityUtils.getInstance(this).isUpdateUserTitleNeeded()) {
+            NavigationView navigationView = (NavigationView)findViewById(R.id.explore_navigationView);
+
+            View headerView = navigationView.getHeaderView(0);
+            TextView titleTextView = (TextView)headerView.findViewById(R.id.drawer_header_title);
+            SharedPreferences preferences = getSharedPreferences("profile", 0);
+            String title = preferences.getString("displayName", "");
+            if (title.length() > 0) {
+                titleTextView.setText(title);
+            }
+            SecurityUtils.getInstance(this).setUpdateUserTitleNeeded(false);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (drawerLayout != null) {
+            if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                drawerLayout.closeDrawer(GravityCompat.END);
+                return;
+            } else {
+                RecyclerView recyclerView = (RecyclerView)findViewById(R.id.search_results_list);
+                if (recyclerView.getVisibility() == View.VISIBLE ) {
+                    closeSearchSuggestions(false);
+                    return;
+                } else {
+                    super.onBackPressed();
+                }
+            }
+        }
+
+        super.onBackPressed();
+    }
+
+
+
     private void setupNavigationView() {
         NavigationView navigationView = (NavigationView)findViewById(R.id.explore_navigationView);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView titleTextView = (TextView)headerView.findViewById(R.id.drawer_header_title);
+        SharedPreferences preferences = getSharedPreferences("profile", 0);
+        String title = preferences.getString("displayName", "");
+        if (title.length() > 0) {
+            titleTextView.setText(title);
+        }
+
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(ExploreActivity.this, "Profile clicked", Toast.LENGTH_LONG).show();
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -160,7 +218,7 @@ public class ExploreActivity extends ActionBarActivity {
         toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                closeSearchSuggestions();
+                closeSearchSuggestions(false);
                 return false;
             }
         });
@@ -239,14 +297,14 @@ public class ExploreActivity extends ActionBarActivity {
                 int position = recyclerView.getChildAdapterPosition(childView);
 
                 if (childView == null) {
-                    closeSearchSuggestions();
+                    closeSearchSuggestions(false);
                 } else {
                     if (position >= 0 && mGestureDetector.onTouchEvent(e)) {
-                        if (historyItems != null && historyItems.length > position) {
-                            Object item = historyItems[position];
-                            if (item != null) {
+                        if (historyItems.length > position) {
+                            String item = historyItems[position];
+                            if (item != null && item.length() > 0) {
 //                                searchEditText.setText(item.toString());
-                                openSearchResult(item.toString());
+                                openSearchResult(item);
                             }
                         }
                     }
@@ -350,7 +408,7 @@ public class ExploreActivity extends ActionBarActivity {
         toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                closeSearchSuggestions();
+                closeSearchSuggestions(false);
                 return false;
             }
         });
@@ -400,7 +458,7 @@ public class ExploreActivity extends ActionBarActivity {
                 int position = recyclerView.getChildAdapterPosition(childView);
 
                 if (childView == null) {
-                    closeSearchSuggestions();
+                    closeSearchSuggestions(false);
                 } else {
                     if (position >= 0 && mGestureDetector.onTouchEvent(e)) {
                         if (suggestions.size() > position) {
@@ -543,7 +601,8 @@ public class ExploreActivity extends ActionBarActivity {
         List<String> tokenList = new ArrayList<String>();
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
-            tokenList.add(token);
+            if (token != null && !token.equalsIgnoreCase(query))
+                tokenList.add(token);
         }
 
         if (tokenList.size() > 0) {
@@ -667,11 +726,13 @@ public class ExploreActivity extends ActionBarActivity {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
-                        storeSearchQuery(searchEditText.getText().toString());
-                        openSearchResult(searchEditText.getText().toString());
-                        return true;
+//                        if (searchEditText.getText().toString().length() > 0) {
+                            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
+                            storeSearchQuery(searchEditText.getText().toString());
+                            openSearchResult(searchEditText.getText().toString());
+//                        }
+                            return true;
                     }
                     return false;
                 }
@@ -705,9 +766,11 @@ public class ExploreActivity extends ActionBarActivity {
     }
 
     private void openSearchResult(String query) {
-        Intent intent = new Intent(this, SearchResultActivity.class);
-        intent.putExtra("query", query);
-        startActivity(intent);
+        if (query != null && query.length() > 0) {
+            Intent intent = new Intent(this, SearchResultActivity.class);
+            intent.putExtra("query", query);
+            startActivity(intent);
+        }
     }
 
     private void updateToolbarScrollFlags(boolean canScroll) {
@@ -716,8 +779,8 @@ public class ExploreActivity extends ActionBarActivity {
         if (toolbar == null)
             return;
 
-        AppBarLayout.LayoutParams params =
-                (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.explore_collapsing_toolbar);
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbar.getLayoutParams();
 
         if (canScroll) {
             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
@@ -726,7 +789,19 @@ public class ExploreActivity extends ActionBarActivity {
             params.setScrollFlags(0);
         }
 
-        toolbar.setLayoutParams(params);
+        collapsingToolbar.setLayoutParams(params);
+
+//        AppBarLayout.LayoutParams params =
+//                (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+//
+//        if (canScroll) {
+//            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+//                    | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+//        } else {
+//            params.setScrollFlags(0);
+//        }
+//
+//        toolbar.setLayoutParams(params);
     }
 
     private void searchMapButtonOnClick() {
@@ -774,23 +849,29 @@ public class ExploreActivity extends ActionBarActivity {
         inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
     }
 
-    private void closeSearchSuggestions() {
+    private void closeSearchSuggestions(boolean shouldClearText) {
         final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.toolbar_action_settings);
         final ImageButton mapImageButton = (ImageButton)findViewById(R.id.toolbar_action_map);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.search_results_list);
-        searchEditText.setOnFocusChangeListener(null);
-        searchEditText.removeTextChangedListener(searchTextWatcher);
-        searchEditText.setText("");
-        searchEditText.clearFocus();
+        if (shouldClearText) {
+            searchEditText.setOnFocusChangeListener(null);
+            searchEditText.removeTextChangedListener(searchTextWatcher);
+            searchEditText.setText("");
+            searchEditText.clearFocus();
+            searchEditText.setOnFocusChangeListener(searchOnFocusChangeListener);
+            searchEditText.addTextChangedListener(searchTextWatcher);
+        } else {
+            searchEditText.clearFocus();
+        }
+
         settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_navigation_menu));
         mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
 
         recyclerView.setVisibility(View.INVISIBLE);
         recyclerView.invalidate();
 
-        searchEditText.setOnFocusChangeListener(searchOnFocusChangeListener);
-        searchEditText.addTextChangedListener(searchTextWatcher);
+
 
         updateToolbarScrollFlags(true);
     }
@@ -826,7 +907,7 @@ public class ExploreActivity extends ActionBarActivity {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
 
-                closeSearchSuggestions();
+                closeSearchSuggestions(false);
 
                 View childView = rv.findChildViewUnder(e.getX(), e.getY());
                 if (childView != null && mGestureDetector.onTouchEvent(e)) {
@@ -869,7 +950,7 @@ public class ExploreActivity extends ActionBarActivity {
         String cityUrl = city.getURL();
         Intent intent = new Intent(this, CityActivity.class);
         intent.putExtra("cityUrl", cityUrl);
-        closeSearchSuggestions();
+        closeSearchSuggestions(true);
         startActivity(intent);
     }
 
@@ -877,7 +958,7 @@ public class ExploreActivity extends ActionBarActivity {
         String attractionUrl = attraction.getURL();
         Intent intent = new Intent(this, AttractionActivity.class);
         intent.putExtra("attractionUrl", attractionUrl);
-        closeSearchSuggestions();
+        closeSearchSuggestions(true);
         startActivity(intent);
     }
 
@@ -886,7 +967,7 @@ public class ExploreActivity extends ActionBarActivity {
         Intent intent = new Intent(this, HouseActivity.class);
         intent.putExtra("houseUrl", houseUrl);
         intent.putExtra("house", house);
-        closeSearchSuggestions();
+        closeSearchSuggestions(true);
         startActivity(intent);
     }
 

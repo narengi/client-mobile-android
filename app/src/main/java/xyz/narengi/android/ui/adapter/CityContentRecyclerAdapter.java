@@ -185,7 +185,18 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         if (house.getHost() != null && house.getHost().getImageUrl() != null) {
             try {
 //                Bitmap hostImageBitmap = Picasso.with(context).load(house.getHost().getImageUrl()).get();
-                ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, house.getHost().getImageUrl());
+                int width=0 , height=0;
+                if (viewHolder.hostFab != null) {
+                    if (viewHolder.hostFab.getWidth() > 0 && viewHolder.hostFab.getHeight() > 0) {
+                        width = viewHolder.hostFab.getWidth();
+                        height = viewHolder.hostFab.getHeight();
+                    } else if (viewHolder.hostFab.getLayoutParams() != null) {
+                        width = viewHolder.hostFab.getLayoutParams().width;
+                        height = viewHolder.hostFab.getLayoutParams().height;
+                    }
+                }
+                ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, house.getHost().getImageUrl(),
+                        width, height);
 //                Bitmap hostImageBitmap = Picasso.with(context).load(house.getHost().getImageUrl()).get();
                 AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
 

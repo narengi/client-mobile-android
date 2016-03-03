@@ -43,7 +43,7 @@ public class AttractionDeserializer implements JsonDeserializer<Attraction> {
         attraction.setAroundHousesText(aroundHousesText);
 
         JsonElement aroundHousesElement = jsonElement.getAsJsonObject().get("AroundHouses");
-        String[] aroundHouses = gson.fromJson(aroundHousesElement, String[].class);
+        AroundPlaceHouse[] aroundHouses = gson.fromJson(aroundHousesElement, AroundPlaceHouse[].class);
         attraction.setAroundHouses(aroundHouses);
 
         JsonElement positionElement = jsonElement.getAsJsonObject().get("Position");

@@ -1,129 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activity.ExploreActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ExploreActivity"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/explore_progressLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="@android:color/transparent"
             android:visibility="gone">
 
             <ProgressBar
                 android:id="@+id/explore_progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                >
-            </ProgressBar>
+                android:background="@android:color/transparent" />
         </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/scrollRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical"
-                />
-            <android.support.design.widget.AppBarLayout
-                android:id="@+id/appBarLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="false"
-                android:gravity="top|center_horizontal"
-                android:elevation="0dp"
-                app:elevation="0dp"
-                android:layout_marginTop="0dp"
-                android:paddingTop="0dp"
-                android:background="@android:color/transparent"
-                >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/scrollRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-                <!--<android.support.design.widget.CollapsingToolbarLayout-->
-                    <!--android:id="@+id/explore_collapsingToolbar"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="?attr/actionBarSize"-->
-                    <!--app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
-                    <!--android:fitsSystemWindows="false"-->
-                    <!--app:contentScrim="@android:color/holo_blue_bright"-->
-                    <!--android:background="@android:color/transparent"-->
-                    <!--app:expandedTitleMarginStart="8dp"-->
-                    <!--app:expandedTitleMarginEnd="8dp"-->
-                    <!-->-->
-                    <!--app:contentScrim="?attr/colorPrimary"-->
-                <!--<android.support.v7.widget.Toolbar-->
-                    <!--android:id="@+id/app_bar"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
-                    <!--app:layout_collapseMode="pin"-->
-                    <!--app:layout_scrollFlags="scroll|enterAlways"-->
-                    <!--android:background="@android:color/transparent"-->
-                    <!-->-->
-                    <!--android:layout_height="?attr/actionBarSize"-->
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:fitsSystemWindows="true"
+            android:padding="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/explore_collapsing_toolbar"
+                style="@style/ToolBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:fitsSystemWindows="true"
+                android:padding="0dp"
+                app:backgroundTint="@color/transparent_state_list"
+                app:contentScrim="@android:color/transparent"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ToolBarStyle">
+
+                <!--<android.support.design.widget.AppBarLayout-->
+                <!--android:id="@+id/appBarLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:fitsSystemWindows="true"-->
+                <!--android:padding="20dp"-->
+                <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+                <!--android:elevation="0dp"-->
+                <!--app:elevation="0dp"-->
+                <!--android:background="@android:color/transparent"-->
+                <!-->-->
+
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/app_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@android:color/holo_blue_bright"
-                    android:fitsSystemWindows="false"
-                    android:layout_gravity="top|center_horizontal"
-                    android:gravity="top|center_horizontal"
-                    app:layout_scrollFlags="scroll|enterAlways"
-                    android:paddingTop="0dp"
-                    android:paddingBottom="0dp"
-                    app:titleMarginTop="0dp"
-                    android:elevation="0dp"
                     style="@style/ToolBarStyle"
-                    app:popupTheme="@style/ToolBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    android:elevation="0dp"
+                    android:padding="0dp"
                     app:backgroundTint="@color/transparent_state_list"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:popupTheme="@style/ToolBarStyle"
                     />
-                    <!--android:layout_height="?attr/actionBarSize"-->
-                    <include layout="@layout/explore_toolbar_layout"/>
 
-                    <!--<xyz.narengi.android.ui.widget.CustomSearchView-->
-                        <!--android:id="@+id/toolbar_action_search"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:gravity="center"-->
-                        <!--android:layout_margin="0dp"-->
-                        <!--android:paddingRight="0dp"-->
-                        <!--android:paddingLeft="0dp"-->
-                        <!--android:queryHint="@string/search_hint"-->
-                        <!--android:iconifiedByDefault="false"-->
-                        <!--android:background="@android:color/white"-->
-                        <!--/>-->
-
+                <include layout="@layout/explore_toolbar_layout" />
+                <!--<FrameLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
+                <!--<include layout="@layout/explore_toolbar_layout"/>-->
+                <!--</FrameLayout>-->
                 <!--</android.support.v7.widget.Toolbar>-->
-
-                <!--<com.quinny898.library.persistentsearch.SearchBox-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:id="@+id/searchbox"-->
-                    <!--/>-->
-                    <!--</android.support.v7.widget.Toolbar>-->
-                <!--</android.support.design.widget.CollapsingToolbarLayout>-->
-            </android.support.design.widget.AppBarLayout>
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 
@@ -136,4 +104,3 @@
         app:headerLayout="@layout/drawer_header"
         app:menu="@menu/drawer" />
 </android.support.v4.widget.DrawerLayout>
-</RelativeLayout>

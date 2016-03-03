@@ -62,7 +62,7 @@ public class Profile {
         this.status = status;
     }
 
-    class Status {
+    public class Status {
         private int completed;
         private String[] fields;
 

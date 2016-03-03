@@ -104,7 +104,19 @@ public class AttractionContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         viewHolder.housePriceTextView.setText(house.getCost());
         if (house.getHost() != null && house.getHost().getImageUrl() != null) {
             try {
-                ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, house.getHost().getImageUrl());
+                int width=0 , height=0;
+                if (viewHolder.hostFab != null) {
+                    if (viewHolder.hostFab.getWidth() > 0 && viewHolder.hostFab.getHeight() > 0) {
+                        width = viewHolder.hostFab.getWidth();
+                        height = viewHolder.hostFab.getHeight();
+                    } else if (viewHolder.hostFab.getLayoutParams() != null) {
+                        width = viewHolder.hostFab.getLayoutParams().width;
+                        height = viewHolder.hostFab.getLayoutParams().height;
+                    }
+                }
+
+                ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, house.getHost().getImageUrl(),
+                        width, height);
                 AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
 
                 Bitmap hostImageBitmap = (Bitmap)asyncTask.get();

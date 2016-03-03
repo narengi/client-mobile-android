@@ -67,4 +67,7 @@ public interface RetrofitApiEndpoints {
     @PUT("/api/v1/user-profiles")
     Call<AccountProfile> updateProfile(@Header("authorization") String authorization,
                                        @Body Profile profile);
+
+    @POST("/api/v1/accounts/login")
+    Call<AccountProfile> login(@Body Credential credential);
 }

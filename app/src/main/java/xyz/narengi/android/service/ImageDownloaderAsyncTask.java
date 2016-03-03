@@ -21,12 +21,15 @@ import xyz.narengi.android.content.RoundedTransformation;
  */
 public class ImageDownloaderAsyncTask extends AsyncTask {
 
-    private String imageUrl;
     private Context context;
+    private String imageUrl;
+    private int width, height;
 
-    public ImageDownloaderAsyncTask(Context context, String imageUrl) {
+    public ImageDownloaderAsyncTask(Context context, String imageUrl, int width, int height) {
         this.context = context;
         this.imageUrl = imageUrl;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -37,7 +40,17 @@ public class ImageDownloaderAsyncTask extends AsyncTask {
     private Bitmap getImageBitmap(String url) {
 //        Bitmap bm = null;
         try {
-            return Picasso.with(context).load(imageUrl).transform(new RoundedTransformation(50, 4)).resize(90, 90).centerCrop().get();
+
+            final float scale = context.getResources().getDisplayMetrics().density;
+            int pixels = (int) (64 * scale);
+
+//            if (width > 0 && height > 0) {
+            if (pixels > 0) {
+                return Picasso.with(context).load(imageUrl).transform(new RoundedTransformation(pixels / 2, 4)).resize(pixels, pixels).centerCrop().get();
+            } else {
+                return Picasso.with(context).load(imageUrl).transform(new RoundedTransformation(50, 4)).resize(100, 100).centerCrop().get();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

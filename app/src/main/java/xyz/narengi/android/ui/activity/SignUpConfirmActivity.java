@@ -40,6 +40,15 @@ public class SignUpConfirmActivity extends AppCompatActivity implements View.OnC
         close();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 103 || resultCode == 103) {
+            close();
+        }
+    }
+
     private void close() {
         setResult(102);
         finish();
@@ -66,6 +75,6 @@ public class SignUpConfirmActivity extends AppCompatActivity implements View.OnC
 
     private void openEditProfile() {
         Intent intent = new Intent(this, EditProfileActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 103);
     }
 }

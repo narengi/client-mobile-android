@@ -11,7 +11,7 @@ public class Attraction {
     private String[] Images;
     private String CityName;
     private String AroundHousesText;
-    private String[] AroundHouses;
+    private AroundPlaceHouse[] AroundHouses;
     private GeoPoint Position;
     private String URL;
     private String HousesUrl;
@@ -49,11 +49,11 @@ public class Attraction {
         AroundHousesText = aroundHousesText;
     }
 
-    public String[] getAroundHouses() {
+    public AroundPlaceHouse[] getAroundHouses() {
         return AroundHouses;
     }
 
-    public void setAroundHouses(String[] aroundHouses) {
+    public void setAroundHouses(AroundPlaceHouse[] aroundHouses) {
         AroundHouses = aroundHouses;
     }
 

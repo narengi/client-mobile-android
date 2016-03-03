@@ -51,7 +51,7 @@
             android:layout_weight="1"
             android:gravity="right|center_vertical"
             android:hint="@string/login_password_hint"
-            android:inputType="textVisiblePassword"
+            android:inputType="textPassword"
             android:imeOptions="actionDone"
             android:layout_margin="10dp"
             android:singleLine="true"

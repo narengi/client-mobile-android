@@ -95,10 +95,10 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-//        holder.mTextView.setText(mDataset[position]);
+//        viewHolder.mTextView.setText(mDataset[position]);
 
         AroundPlaceHouse house = objects.get(position);
 
@@ -107,13 +107,24 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
             int width = display.getWidth();
             int imageWidth = width * 38 / 62;
             int imageHeight = (imageWidth / 2);
-            Picasso.with(context).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(holder.houseImageView);
+            Picasso.with(context).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
         }
-        holder.housePriceTextView.setText(house.getCost());
+        viewHolder.housePriceTextView.setText(house.getCost());
         if (house.getHost() != null && house.getHost().getImageUrl() != null) {
             try {
 //                Bitmap hostImageBitmap = Picasso.with(context).load(house.getHost().getImageUrl()).get();
-                ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, house.getHost().getImageUrl());
+                int width=0 , height=0;
+                if (viewHolder.hostFab != null) {
+                    if (viewHolder.hostFab.getWidth() > 0 && viewHolder.hostFab.getHeight() > 0) {
+                        width = viewHolder.hostFab.getWidth();
+                        height = viewHolder.hostFab.getHeight();
+                    } else if (viewHolder.hostFab.getLayoutParams() != null) {
+                        width = viewHolder.hostFab.getLayoutParams().width;
+                        height = viewHolder.hostFab.getLayoutParams().height;
+                    }
+                }
+                ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, house.getHost().getImageUrl(),
+                        width, height);
 //                Bitmap hostImageBitmap = Picasso.with(context).load(house.getHost().getImageUrl()).get();
                 AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
 
@@ -129,13 +140,13 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
                     Canvas c = new Canvas(circleBitmap);
                     c.drawCircle(hostImageBitmap.getWidth() / 2, hostImageBitmap.getHeight() / 2, hostImageBitmap.getWidth() / 2, paint);
 
-//                    holder.hostFab.setBackgroundDrawable(new BitmapDrawable(getRoundedRectBitmap(circleBitmap)));
-//                    holder.hostFab.setImageBitmap(circleBitmap);
-                    holder.hostFab.setImageBitmap(hostImageBitmap);
+//                    viewHolder.hostFab.setBackgroundDrawable(new BitmapDrawable(getRoundedRectBitmap(circleBitmap)));
+//                    viewHolder.hostFab.setImageBitmap(circleBitmap);
+                    viewHolder.hostFab.setImageBitmap(hostImageBitmap);
                 }
-//                    holder.hostFab.setBackgroundDrawable(new BitmapDrawable(getRoundedRectBitmap(hostImageBitmap)));
-//                    holder.hostFab.setBackgroundDrawable(new BitmapDrawable(hostImageBitmap));
-//                    holder.hostFab.setImageBitmap(hostImageBitmap);
+//                    viewHolder.hostFab.setBackgroundDrawable(new BitmapDrawable(getRoundedRectBitmap(hostImageBitmap)));
+//                    viewHolder.hostFab.setBackgroundDrawable(new BitmapDrawable(hostImageBitmap));
+//                    viewHolder.hostFab.setImageBitmap(hostImageBitmap);
 
 
             } catch (InterruptedException e) {
@@ -145,8 +156,8 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
             }
         }
 
-        holder.houseTitleTextView.setText(house.getName());
-        holder.houseFeatureSummary.setText(house.getFeatureSummray());
+        viewHolder.houseTitleTextView.setText(house.getName());
+        viewHolder.houseFeatureSummary.setText(house.getFeatureSummray());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

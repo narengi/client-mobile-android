@@ -56,7 +56,6 @@
         android:layout_marginTop="0dp"
         android:paddingTop="0dp"
         android:background="@android:color/transparent"
-        android:theme="@style/AppTheme.AppBarOverlay"
         >
 
 
@@ -70,6 +69,9 @@
             app:layout_collapseMode="parallax"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp"
+            app:collapsedTitleGravity="left|center_vertical"
+            app:collapsedTitleTextAppearance="?android:attr/textAppearanceLarge"
+            app:expandedTitleTextAppearance="@android:color/transparent"
             >
 
             <!-- View A -->
@@ -158,15 +160,20 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/house_hostFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_margin="8dp"
         android:scaleType="center"
         android:clickable="true"
+        android:background="@android:color/white"
+        app:fabSize="normal"
+        android:padding="2dp"
+        app:borderWidth="2dp"
         app:layout_anchor="@id/house_appbar"
         app:layout_anchorGravity="bottom|left|start"
         app:backgroundTint="@android:color/transparent"
-        app:backgroundTintMode="src_over"
+        app:elevation="1px"
+        app:rippleColor="@android:color/transparent"
         android:visibility="invisible"
         />
 
@@ -178,7 +185,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginLeft="0dp"
         android:gravity="center"

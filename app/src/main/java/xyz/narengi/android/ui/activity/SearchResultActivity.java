@@ -31,6 +31,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -83,6 +84,7 @@ public class SearchResultActivity extends ActionBarActivity {
     private boolean loadingMore;
     private RecyclerView searchResultListView;
     private RecyclerView searchHistoryListView;
+    private boolean isShowingSuggestions = false;
     private TextWatcher searchTextWatcher;
     private RecyclerView.OnItemTouchListener suggestionsOnItemTouchListener;
 
@@ -102,6 +104,19 @@ public class SearchResultActivity extends ActionBarActivity {
 
         LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(query);
         loadDataAsyncTask.execute();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.search_result_suggestionsRecyclerView);
+//        if (recyclerView.getVisibility() == View.VISIBLE ) {
+        if (isShowingSuggestions) {
+            closeSearchSuggestions(searchEditText.getText().toString());
+            return;
+        } else {
+            super.onBackPressed();
+        }
+        super.onBackPressed();
     }
 
     private void showProgress() {
@@ -219,6 +234,7 @@ public class SearchResultActivity extends ActionBarActivity {
 
         searchHistoryListView.setVisibility(View.VISIBLE);
         searchHistoryListView.invalidate();
+        isShowingSuggestions = true;
     }
 
     private SuggestionsResult getAroundLocationSuggestions(String query) {
@@ -328,6 +344,7 @@ public class SearchResultActivity extends ActionBarActivity {
 
         searchResultListView.setVisibility(View.VISIBLE);
         searchResultListView.invalidate();
+        isShowingSuggestions = true;
     }
 
     private void storeSearchQuery(String query) {
@@ -343,7 +360,8 @@ public class SearchResultActivity extends ActionBarActivity {
         List<String> tokenList = new ArrayList<String>();
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
-            tokenList.add(token);
+            if (token != null && !token.equalsIgnoreCase(query))
+                tokenList.add(token);
         }
 
         if (tokenList.size() > 0) {
@@ -451,16 +469,19 @@ public class SearchResultActivity extends ActionBarActivity {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
-                        storeSearchQuery(searchEditText.getText().toString());
-                        closeSearchSuggestions(searchEditText.getText().toString());
-                        aroundLocationList = new ArrayList<AroundLocation>();
-                        setupListView(aroundLocationList);
-                        showProgress();
-                        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(searchEditText.getText().toString());
-                        loadDataAsyncTask.execute();
-                        return true;
+                        if (searchEditText.getText().toString().length() > 0) {
+                            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
+                            storeSearchQuery(searchEditText.getText().toString());
+                            closeSearchSuggestions(searchEditText.getText().toString());
+                            aroundLocationList = new ArrayList<AroundLocation>();
+                            setupListView(aroundLocationList);
+                            showProgress();
+                            LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(searchEditText.getText().toString());
+                            loadDataAsyncTask.execute();
+                            isShowingSuggestions = false;
+                            return true;
+                        }
                     }
                     return false;
                 }
@@ -499,8 +520,8 @@ public class SearchResultActivity extends ActionBarActivity {
         if (toolbar == null)
             return;
 
-        AppBarLayout.LayoutParams params =
-                (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.search_result_collapsing_toolbar);
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbar.getLayoutParams();
 
         if (canScroll) {
             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
@@ -509,7 +530,7 @@ public class SearchResultActivity extends ActionBarActivity {
             params.setScrollFlags(0);
         }
 
-        toolbar.setLayoutParams(params);
+        collapsingToolbar.setLayoutParams(params);
     }
 
     private void searchMapButtonOnClick() {
@@ -556,6 +577,7 @@ public class SearchResultActivity extends ActionBarActivity {
 //        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
 
+        isShowingSuggestions = false;
         onBackPressed();
     }
 
@@ -581,6 +603,7 @@ public class SearchResultActivity extends ActionBarActivity {
         searchEditText.addTextChangedListener(searchTextWatcher);
 
         updateToolbarScrollFlags(true);
+        isShowingSuggestions = false;
     }
 
     private void setupListView(List<AroundLocation> aroundLocations) {

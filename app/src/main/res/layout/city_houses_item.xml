@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="20dp"
+    android:padding="0dp"
     android:background="@android:color/darker_gray"
     card_view:cardCornerRadius="4dp">
 
@@ -14,6 +15,8 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="0dp"
+            android:padding="0dp"
             android:background="@android:color/transparent">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,7 +35,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="1dp">
+                android:layout_margin="0dp"
+                android:padding="0dp">
 
                 <ImageView
                     android:id="@+id/houses_item_image"
@@ -40,11 +44,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="0dp"
                     android:padding="0dp"
-                    android:cropToPadding="true"
                     android:scaleType="fitXY"
                     android:gravity="center"
                     android:layout_gravity="top|center_horizontal"
-                    android:adjustViewBounds="true"
                     />
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -140,6 +142,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:foregroundGravity="center_vertical"
+                        android:layout_margin="8dp"
+                        android:padding="0dp"
                         android:max="4"
                         android:numStars="4"
                         android:stepSize="1.0"
@@ -151,6 +156,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:layout_margin="8dp"
+                        android:foregroundGravity="center"
                         android:src="@drawable/ic_action_location_on"
                         android:background="@android:color/transparent"
                         />
@@ -162,16 +169,20 @@
             </LinearLayout>
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/houses_item_hostFab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:layout_margin="8dp"
                 android:scaleType="center"
                 android:clickable="true"
-                android:background="@drawable/fab_bg"
+                android:background="@android:color/white"
+                app:fabSize="normal"
+                android:padding="2dp"
+                app:borderWidth="2dp"
                 app:layout_anchor="@id/houses_item_imageLayout"
                 app:layout_anchorGravity="bottom|right|end"
                 app:backgroundTint="@android:color/transparent"
-                app:backgroundTintMode="src_over"
+                app:elevation="1px"
+                app:rippleColor="@android:color/transparent"
                 />
 
         </android.support.design.widget.CoordinatorLayout>
