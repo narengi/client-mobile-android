@@ -12,7 +12,7 @@ public class City {
     private int HouseCount;
     private String HouseCountText;
     private String URL;
-    private AroundPlaceAttraction[] Attraction;
+    private AroundPlaceAttraction[] Attractions;
     private AroundPlaceHouse[] Houses;
 
 
@@ -72,12 +72,12 @@ public class City {
         this.URL = URL;
     }
 
-    public AroundPlaceAttraction[] getAttraction() {
-        return Attraction;
+    public AroundPlaceAttraction[] getAttractions() {
+        return Attractions;
     }
 
-    public void setAttraction(AroundPlaceAttraction[] attraction) {
-        Attraction = attraction;
+    public void setAttractions(AroundPlaceAttraction[] attractions) {
+        Attractions = attractions;
     }
 
     public AroundPlaceHouse[] getHouses() {

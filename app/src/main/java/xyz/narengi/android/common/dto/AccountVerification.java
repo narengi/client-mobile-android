@@ -1,9 +1,11 @@
 package xyz.narengi.android.common.dto;
 
+import java.io.Serializable;
+
 /**
  * @author Siavash Mahmoudpour
  */
-public class AccountVerification {
+public class AccountVerification implements Serializable {
 
     private String verificationType;
     private String requestDate;

@@ -33,7 +33,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/scrollRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -101,6 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/drawer" />
+        app:itemTextAppearance="?android:attr/textAppearanceLarge"
+        app:itemTextColor="@color/orange_light"
+        />
 </android.support.v4.widget.DrawerLayout>

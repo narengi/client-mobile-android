@@ -11,11 +11,14 @@ import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
+import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.SuggestionsResult;
 import xyz.narengi.android.content.AroundLocationDeserializer;
 import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
 import xyz.narengi.android.content.AroundPlaceCityDeserializer;
 import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
+import xyz.narengi.android.content.RoundedTransformation;
+import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
 import xyz.narengi.android.ui.adapter.RecyclerAdapter;
@@ -26,7 +29,12 @@ import xyz.narengi.android.util.SecurityUtils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +48,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -58,6 +67,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -66,7 +76,13 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -87,7 +103,7 @@ public class ExploreActivity extends ActionBarActivity {
     private EditText searchEditText;
     private View.OnFocusChangeListener searchOnFocusChangeListener;
     private boolean loadingMore;
-//    private ExpandableListView searchResultListView;
+    //    private ExpandableListView searchResultListView;
 //    private ExpandableListView searchHistoryListView;
     private RecyclerView searchResultListView;
     private RecyclerView searchHistoryListView;
@@ -98,9 +114,20 @@ public class ExploreActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         setupToolbar();
-        setupNavigationView();
+
+        final SharedPreferences preferences = getSharedPreferences("profile", 0);
+        String accessToken = preferences.getString("accessToken", "");
+        String username = preferences.getString("username", "");
+        if (accessToken.length() > 0 && username.length() > 0) {
+            System.err.println("\n\n\naccessToken : " + accessToken);
+            System.err.println("\n\nusername : " + username + "\n\n");
+            setupNavigationView(true);
+        } else {
+            setupNavigationView(false);
+        }
+
         aroundLocationList = new ArrayList<AroundLocation>();
         setupListView(aroundLocationList);
 
@@ -111,18 +138,18 @@ public class ExploreActivity extends ActionBarActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (SecurityUtils.getInstance(this).isUpdateUserTitleNeeded()) {
-            NavigationView navigationView = (NavigationView)findViewById(R.id.explore_navigationView);
-
-            View headerView = navigationView.getHeaderView(0);
-            TextView titleTextView = (TextView)headerView.findViewById(R.id.drawer_header_title);
-            SharedPreferences preferences = getSharedPreferences("profile", 0);
-            String title = preferences.getString("displayName", "");
-            if (title.length() > 0) {
-                titleTextView.setText(title);
-            }
-            SecurityUtils.getInstance(this).setUpdateUserTitleNeeded(false);
-        }
+//        if (SecurityUtils.getInstance(this).isUpdateUserTitleNeeded()) {
+//            NavigationView navigationView = (NavigationView)findViewById(R.id.explore_navigationView);
+//
+//            View headerView = navigationView.getHeaderView(0);
+//            TextView titleTextView = (TextView)headerView.findViewById(R.id.drawer_header_title);
+//            SharedPreferences preferences = getSharedPreferences("profile", 0);
+//            String title = preferences.getString("displayName", "");
+//            if (title.length() > 0) {
+//                titleTextView.setText(title);
+//            }
+//            SecurityUtils.getInstance(this).setUpdateUserTitleNeeded(false);
+//        }
     }
 
     @Override
@@ -133,8 +160,8 @@ public class ExploreActivity extends ActionBarActivity {
                 drawerLayout.closeDrawer(GravityCompat.END);
                 return;
             } else {
-                RecyclerView recyclerView = (RecyclerView)findViewById(R.id.search_results_list);
-                if (recyclerView.getVisibility() == View.VISIBLE ) {
+                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.search_results_list);
+                if (recyclerView.getVisibility() == View.VISIBLE) {
                     closeSearchSuggestions(false);
                     return;
                 } else {
@@ -146,13 +173,212 @@ public class ExploreActivity extends ActionBarActivity {
         super.onBackPressed();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == 301) {
+            if (resultCode == 302) {
+                //user registered, update menu and open sign up confirm
+                setupNavigationView(true);
+                openSignUpConfirm();
+            } else if (resultCode == 303) {
+                //user logged in, update menu
+                setupNavigationView(true);
+            }
+        }
+
+        if (resultCode == 401) {
+            setupNavigationView(true);
+            Intent intent = new Intent(this, ViewProfileActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void openSignUpConfirm() {
+        Intent intent = new Intent(this, SignUpConfirmActivity.class);
+        startActivityForResult(intent, 101);
+    }
+
+    private void setupNavigationView(boolean loggedIn) {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.explore_navigationView);
+        View oldHeaderView = navigationView.getHeaderView(0);
+        if (oldHeaderView != null)
+            navigationView.removeHeaderView(oldHeaderView);
+
+        if (navigationView.getMenu() != null)
+            navigationView.getMenu().clear();
+
+        if (loggedIn) {
+
+            navigationView.inflateMenu(R.menu.drawer_logged_in);
+            navigationView.inflateHeaderView(R.layout.drawer_header_logged_in);//TODO : change this header layout
+
+
+            View headerView = navigationView.getHeaderView(0);
+
+//            ViewGroup.LayoutParams params = headerView.getLayoutParams();
+//            if (params != null && navigationView.getLayoutParams() != null)
+//                params.height = navigationView.getLayoutParams().width * 9 / 16;
+
+            TextView titleTextView = (TextView) headerView.findViewById(R.id.drawer_header_userTitle);
+            SharedPreferences preferences = getSharedPreferences("profile", 0);
+            String title = preferences.getString("displayName", "");
+            if (title.length() > 0) {
+                titleTextView.setText(title);
+            }
+
+            final ImageView userImageView = (ImageView) headerView.findViewById(R.id.drawer_header_userPicture);
+            Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    getProfilePicture(userImageView);
+                }
+            });
+
+            headerView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    openViewProfile();
+                }
+            });
+
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                    //Checking if the item is in checked state or not, if not make it in checked state
+                    if (menuItem.isChecked())
+                        menuItem.setChecked(false);
+                    else
+                        menuItem.setChecked(true);
+
+                    //Closing drawer on item click
+                    drawerLayout.closeDrawers();
+
+                    switch (menuItem.getItemId()) {
+
+                        case R.id.navigation_item_logout:
+                            logout();
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
+
+        } else {
+            navigationView.inflateMenu(R.menu.drawer);
+            navigationView.inflateHeaderView(R.layout.drawer_header);
+
+
+            View headerView = navigationView.getHeaderView(0);
+
+//            ViewGroup.LayoutParams params = headerView.getLayoutParams();
+//            if (params != null && navigationView.getLayoutParams() != null)
+//                params.height = navigationView.getLayoutParams().width * 9 / 16;
+
+            TextView titleTextView = (TextView) headerView.findViewById(R.id.drawer_header_welcomeMessage);
+            titleTextView.setText(getString(R.string.drawer_welcome_message));
+
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                    //Checking if the item is in checked state or not, if not make it in checked state
+                    if (menuItem.isChecked())
+                        menuItem.setChecked(false);
+                    else
+                        menuItem.setChecked(true);
+
+                    //Closing drawer on item click
+                    drawerLayout.closeDrawers();
+
+                    switch (menuItem.getItemId()) {
+
+                        case R.id.navigation_item_login_register:
+                            openSignInSignUp();
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
+
+        }
+    }
+
+    private void getProfilePicture(ImageView profileImageView) {
+
+        final SharedPreferences preferences = getSharedPreferences("profile", 0);
+        String accessToken = preferences.getString("accessToken", "");
+        String username = preferences.getString("username", "");
+
+        Authorization authorization = new Authorization();
+        authorization.setUsername(username);
+        authorization.setToken(accessToken);
+
+        Gson gson = new GsonBuilder().create();
+
+        String authorizationJson = gson.toJson(authorization);
+        if (authorizationJson != null) {
+            authorizationJson = authorizationJson.replace("{", "");
+            authorizationJson = authorizationJson.replace("}", "");
+        }
+
+        Bitmap bitmap;
+
+        String imageUrl = Constants.SERVER_BASE_URL + "/api/v1/user-profiles/picture";
+
+        ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(this, authorizationJson, imageUrl);
+        AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
+
+        try {
+            bitmap = (Bitmap) asyncTask.get();
+
+            if (bitmap != null) {
+                Bitmap circleBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+                BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+                Paint paint = new Paint();
+                paint.setShader(shader);
+                paint.setAntiAlias(true);
+                Canvas c = new Canvas(circleBitmap);
+                c.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
+
+                profileImageView.setImageBitmap(bitmap);
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void logout() {
+
+        SharedPreferences preferences = getSharedPreferences("profile", 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
+
+        setupNavigationView(false);
+    }
+
+    private void openViewProfile() {
+        Intent intent = new Intent(this, ViewProfileActivity.class);
+        startActivityForResult(intent, 104);
+    }
 
     private void setupNavigationView() {
-        NavigationView navigationView = (NavigationView)findViewById(R.id.explore_navigationView);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.explore_navigationView);
 
         View headerView = navigationView.getHeaderView(0);
-        TextView titleTextView = (TextView)headerView.findViewById(R.id.drawer_header_title);
+        TextView titleTextView = (TextView) headerView.findViewById(R.id.drawer_header_userTitle);
         SharedPreferences preferences = getSharedPreferences("profile", 0);
         String title = preferences.getString("displayName", "");
         if (title.length() > 0) {
@@ -194,27 +420,27 @@ public class ExploreActivity extends ActionBarActivity {
 
     private void openSignInSignUp() {
         Intent intent = new Intent(this, SignInSignUpActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 301);
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.explore_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.explore_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.explore_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.explore_progressBar);
 
         progressBar.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.explore_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.explore_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.explore_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.explore_progressBar);
 
         progressBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
     }
 
     private void showSearchHistoryRecyclerView() {
-        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.toolbar_main_layout);
+        LinearLayout toolbarInnerLayout = (LinearLayout) findViewById(R.id.toolbar_main_layout);
         toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -223,7 +449,7 @@ public class ExploreActivity extends ActionBarActivity {
             }
         });
 
-        searchHistoryListView = (RecyclerView)findViewById(R.id.search_results_list);
+        searchHistoryListView = (RecyclerView) findViewById(R.id.search_results_list);
 
         SharedPreferences preferences = getSharedPreferences("suggestions", 0);
         String history = preferences.getString("searchHistory", "");
@@ -397,14 +623,14 @@ public class ExploreActivity extends ActionBarActivity {
             e.printStackTrace();
         }
         if (object != null)
-            return (SuggestionsResult)object;
+            return (SuggestionsResult) object;
 
         return null;
     }
 
     private void showSearchResultRecyclerView(String query) {
 
-        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.toolbar_main_layout);
+        LinearLayout toolbarInnerLayout = (LinearLayout) findViewById(R.id.toolbar_main_layout);
         toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -429,7 +655,7 @@ public class ExploreActivity extends ActionBarActivity {
             }
         }
 
-        searchResultListView = (RecyclerView)findViewById(R.id.search_results_list);
+        searchResultListView = (RecyclerView) findViewById(R.id.search_results_list);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         searchResultListView.setLayoutManager(mLayoutManager);
@@ -526,9 +752,9 @@ public class ExploreActivity extends ActionBarActivity {
                 List cities = Arrays.asList(suggestionsResult.getCity());
                 childItemsHashMap.put(searchHeaderItems[0], cities);
             }
-            if (suggestionsResult.getAttraction() != null && suggestionsResult.getAttraction().length > 0) {
+            if (suggestionsResult.getAttractions() != null && suggestionsResult.getAttractions().length > 0) {
                 headerItemsList.add(searchHeaderItems[1]);
-                List attractions = Arrays.asList(suggestionsResult.getAttraction());
+                List attractions = Arrays.asList(suggestionsResult.getAttractions());
                 childItemsHashMap.put(searchHeaderItems[1], attractions);
             }
             if (suggestionsResult.getHouse() != null && suggestionsResult.getHouse().length > 0) {
@@ -609,7 +835,7 @@ public class ExploreActivity extends ActionBarActivity {
             builder.append(",");
 
             int count = Math.min(3, tokenList.size());
-            for (int i=0 ; i < count ; i++) {
+            for (int i = 0; i < count; i++) {
                 builder.append(tokenList.get(i));
 
                 if (i < (count - 1))
@@ -625,9 +851,9 @@ public class ExploreActivity extends ActionBarActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
 
         if (toolbar != null) {
-            final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.toolbar_action_settings);
-            final ImageButton mapImageButton = (ImageButton)findViewById(R.id.toolbar_action_map);
-            searchEditText = (EditText)findViewById(R.id.toolbar_action_search);
+            final ImageButton settingsImageButton = (ImageButton) findViewById(R.id.toolbar_action_settings);
+            final ImageButton mapImageButton = (ImageButton) findViewById(R.id.toolbar_action_map);
+            searchEditText = (EditText) findViewById(R.id.toolbar_action_search);
             searchEditText.setHint(R.string.search_hint);
 
             final Handler handler = new Handler();
@@ -727,12 +953,12 @@ public class ExploreActivity extends ActionBarActivity {
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 //                        if (searchEditText.getText().toString().length() > 0) {
-                            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
-                            storeSearchQuery(searchEditText.getText().toString());
-                            openSearchResult(searchEditText.getText().toString());
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
+                        storeSearchQuery(searchEditText.getText().toString());
+                        openSearchResult(searchEditText.getText().toString());
 //                        }
-                            return true;
+                        return true;
                     }
                     return false;
                 }
@@ -817,12 +1043,14 @@ public class ExploreActivity extends ActionBarActivity {
 
     private void searchMenuButtonOnClick() {
 
-        final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.toolbar_action_settings);
-        final ImageButton mapImageButton = (ImageButton)findViewById(R.id.toolbar_action_map);
+        final ImageButton settingsImageButton = (ImageButton) findViewById(R.id.toolbar_action_settings);
+        final ImageButton mapImageButton = (ImageButton) findViewById(R.id.toolbar_action_map);
 
         final boolean hasText = !TextUtils.isEmpty(searchEditText.getText().toString());
-        RecyclerView listView = (RecyclerView)findViewById(R.id.search_results_list);
-        if (hasText || searchEditText.hasFocus() || listView.getVisibility() == View.VISIBLE) {
+        RecyclerView listView = (RecyclerView) findViewById(R.id.search_results_list);
+        if (hasText || searchEditText.hasFocus() ||
+                (listView.getAdapter() != null && listView.getLayoutManager() != null && listView.getLayoutParams() != null &&
+                listView.getLayoutParams().height > 0)) {
             searchEditText.setOnFocusChangeListener(null);
             searchEditText.removeTextChangedListener(searchTextWatcher);
             searchEditText.setText("");
@@ -850,10 +1078,10 @@ public class ExploreActivity extends ActionBarActivity {
     }
 
     private void closeSearchSuggestions(boolean shouldClearText) {
-        final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.toolbar_action_settings);
-        final ImageButton mapImageButton = (ImageButton)findViewById(R.id.toolbar_action_map);
+        final ImageButton settingsImageButton = (ImageButton) findViewById(R.id.toolbar_action_settings);
+        final ImageButton mapImageButton = (ImageButton) findViewById(R.id.toolbar_action_map);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.search_results_list);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.search_results_list);
         if (shouldClearText) {
             searchEditText.setOnFocusChangeListener(null);
             searchEditText.removeTextChangedListener(searchTextWatcher);
@@ -872,16 +1100,16 @@ public class ExploreActivity extends ActionBarActivity {
         recyclerView.invalidate();
 
 
-
         updateToolbarScrollFlags(true);
     }
 
     private void setupListView(List<AroundLocation> aroundLocations) {
 
-        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.scrollRecyclerView);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.scrollRecyclerView);
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+//        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         recyclerAdapter = new RecyclerAdapter(aroundLocations, this);
@@ -979,6 +1207,7 @@ public class ExploreActivity extends ActionBarActivity {
     private class LoadDataAsyncTask extends AsyncTask {
 
         private String query;
+
         public LoadDataAsyncTask(String query) {
             this.query = query;
         }

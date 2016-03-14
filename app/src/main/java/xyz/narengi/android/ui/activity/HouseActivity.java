@@ -115,7 +115,7 @@ public class HouseActivity extends ActionBarActivity {
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.house_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -253,22 +253,6 @@ public class HouseActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    private int getScreenHeight(Context context) {
-        int measuredHeight;
-        Point size = new Point();
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            wm.getDefaultDisplay().getSize(size);
-            measuredHeight = size.y;
-        } else {
-            Display d = wm.getDefaultDisplay();
-            measuredHeight = d.getHeight();
-        }
-
-        return measuredHeight;
-    }
-
     private void setupImageViewPager(String[] images) {
 
 //        RelativeLayout viewPagerLayout = (RelativeLayout)findViewById(R.id.house_imageLayout);
@@ -284,31 +268,6 @@ public class HouseActivity extends ActionBarActivity {
 
         CirclePageIndicator pageIndicator = (CirclePageIndicator)findViewById(R.id.house_imagePageIndicator);
         pageIndicator.setViewPager(viewPager);
-    }
-
-    private void getHouseMapImage(String mapUrl) {
-
-        ImageView mapImageView = (ImageView)findViewById(R.id.house_mapImage);
-        Picasso.with(this).load(mapUrl).into(mapImageView);
-    }
-
-    private void setupTitleInfoLayout(House house) {
-
-        TextView priceTextView = (TextView)findViewById(R.id.house_price);
-        TextView cityTextView = (TextView)findViewById(R.id.house_city);
-        TextView summaryTextView = (TextView)findViewById(R.id.house_summary);
-        TextView ratingTextView = (TextView)findViewById(R.id.house_rating);
-
-        priceTextView.setText(house.getCost());
-        cityTextView.setText(house.getCityName());
-        summaryTextView.setText(house.getSummary());
-//        ratingDescriptionTextView.setText(getString(R.string.house_rating_description, house.getRating()));
-        ratingTextView.setText("(" + house.getRating() + " رای" + ")");
-
-
-        RatingBar houseRatingBar = (RatingBar)findViewById(R.id.house_ratingBar);
-        Drawable drawable = houseRatingBar.getProgressDrawable();
-        drawable.setColorFilter(Color.parseColor("#FFFDEC00"), PorterDuff.Mode.SRC_ATOP);
     }
 
     private void setupHostFab(String imageUrl) {
@@ -354,166 +313,13 @@ public class HouseActivity extends ActionBarActivity {
         }
     }
 
-    private void setupSpecsLayout(House house) {
-
-        TextView bedCountTextView = (TextView)findViewById(R.id.house_bedCount);
-        TextView guestCountTextView = (TextView)findViewById(R.id.house_guestCount);
-        TextView bedroomCountTextView = (TextView)findViewById(R.id.house_bedroomCount);
-        TextView typeTextView = (TextView)findViewById(R.id.house_type);
-
-        bedCountTextView.setText(getString(R.string.house_bed_count, house.getBedCount()));
-        guestCountTextView.setText(getString(R.string.house_guest_count, house.getGuestCount()));
-        bedroomCountTextView.setText(getString(R.string.house_bedroom_count, house.getBedroomCount()));
-
-        if (house.getType() != null) {
-            if (house.getType().equals("apartment")) {
-                typeTextView.setText(getString(R.string.house_type_apartment));
-            } else if (house.getType().equals("villa")) {
-                typeTextView.setText(getString(R.string.house_type_villa));
-            } else if (house.getType().equals("house")) {
-                typeTextView.setText(getString(R.string.house_type_house));
-            } else {
-                typeTextView.setText(getString(R.string.house_type_house));
-            }
-        } else {
-            typeTextView.setText(getString(R.string.house_type_house));
-        }
-
-        bedCountTextView.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_action_maps_hotel), null, null);
-        guestCountTextView.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_action_social_person_outline), null, null);
-        bedroomCountTextView.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_action_maps_store_mall_directory), null, null);
-        typeTextView.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_action_action_account_balance), null, null);
-    }
-
-    private void setDescription(House house) {
-
-        String description = house.getName() + ", " + house.getSummary() + ", " + house.getFeatureSummray();
-        description += description;
-
-        TextView descriptionTextView = (TextView)findViewById(R.id.house_description);
-        descriptionTextView.setText(description);
-    }
-
-    private void setupFeaturesLayout(final House house) {
-
-        if (house.getFeatureList() != null) {
-
-            LinearLayout featuresLayout = (LinearLayout)findViewById(R.id.house_featuresLayout);
-
-            if (house.getFeatureList().length <= 5) {
-
-                float layoutWeight = featuresLayout.getWeightSum() / house.getFeatureList().length;
-                for (HouseFeature houseFeature:house.getFeatureList()) {
-                    TextView featureTextView = createHouseFeatureTextView(houseFeature, layoutWeight);
-                    featuresLayout.addView(featureTextView);
-                }
-            } else {
-
-                float layoutWeight = featuresLayout.getWeightSum() / 5;
-
-                int extraFeatures = house.getFeatureList().length - 4;
-                String buttonText = String.valueOf(extraFeatures) + "+";
-                Button moreFeaturesButton = createMoreFeaturesButton(buttonText, layoutWeight);
-                featuresLayout.addView(moreFeaturesButton);
-
-                moreFeaturesButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(HouseActivity.this, HouseFeaturesActivity.class);
-                        intent.putExtra("house", house);
-                        startActivity(intent);
-                    }
-                });
-
-                for (int i=0 ; i < 4 ; i++) {
-
-                    HouseFeature houseFeature = house.getFeatureList()[i];
-                    TextView featureTextView = createHouseFeatureTextView(houseFeature, layoutWeight);
-                    featuresLayout.addView(featureTextView);
-                }
-            }
-        }
-    }
-
-    private TextView createHouseFeatureTextView(HouseFeature houseFeature, float layoutWeight) {
-
-        TextView featureTextView = new TextView(this);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, layoutWeight);
-        params.gravity = Gravity.CENTER_VERTICAL;
-        params.setMargins(8, 8, 8, 8);
-
-        featureTextView.setPadding(4, 4, 4, 4);
-        featureTextView.setTextAppearance(this, android.R.style.TextAppearance_Small);
-//        featureTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(R.dimen.font_size_small));
-        featureTextView.setTextColor(Color.BLACK);
-        featureTextView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        featureTextView.setGravity(Gravity.CENTER);
-        featureTextView.setTypeface(featureTextView.getTypeface(), Typeface.BOLD);
-        featureTextView.setText(houseFeature.getName());
-        featureTextView.setLayoutParams(params);
-
-        if (houseFeature.getType() != null) {
-            switch (houseFeature.getType()) {
-                case "furniture":
-                    Drawable drawable = getResources().getDrawable(android.R.drawable.ic_menu_call);
-                    drawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark),PorterDuff.Mode.SRC_ATOP);
-                    featureTextView.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-                    break;
-                case "oven":
-                    drawable = getResources().getDrawable(android.R.drawable.ic_menu_mylocation);
-                    drawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark),PorterDuff.Mode.SRC_ATOP);
-                    featureTextView.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-                    break;
-                case "internet":
-                    drawable = getResources().getDrawable(android.R.drawable.ic_menu_camera);
-                    drawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark),PorterDuff.Mode.SRC_ATOP);
-                    featureTextView.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-                    break;
-                default:
-                    drawable = getResources().getDrawable(android.R.drawable.ic_menu_agenda);
-                    drawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark),PorterDuff.Mode.SRC_ATOP);
-                    featureTextView.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-                    break;
-            }
-        } else {
-            Drawable drawable = getResources().getDrawable(android.R.drawable.ic_dialog_email);
-            drawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark),PorterDuff.Mode.SRC_ATOP);
-            featureTextView.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-        }
-
-        return featureTextView;
-    }
-
-    private Button createMoreFeaturesButton(String text, float layoutWeight) {
-
-        Button moreFeaturesButton = new Button(this);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, layoutWeight);
-        params.gravity = Gravity.CENTER_VERTICAL;
-        params.setMargins(8, 8, 8, 8);
-
-        moreFeaturesButton.setPadding(4, 4, 4, 4);
-//        moreFeaturesButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(R.dimen.font_size_normal));
-        moreFeaturesButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-        moreFeaturesButton.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
-        moreFeaturesButton.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        moreFeaturesButton.setGravity(Gravity.CENTER);
-        moreFeaturesButton.setTypeface(moreFeaturesButton.getTypeface(), Typeface.BOLD);
-        moreFeaturesButton.setText(text);
-        moreFeaturesButton.setLayoutParams(params);
-
-        return moreFeaturesButton;
-    }
-
     private void getHouse(String url) {
 
         url = url + "?filter[review]=5&filter[feature]=10000";
 
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(House.class, new HouseDeserializer()).create();
+//        Gson gson = new GsonBuilder()
+//                .registerTypeAdapter(House.class, new HouseDeserializer()).create();
+        Gson gson = new GsonBuilder().create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.SERVER_BASE_URL)

@@ -1,17 +1,25 @@
 package xyz.narengi.android.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -65,7 +73,7 @@ public class MobileInputActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 102 || resultCode == 102) {
+        if (requestCode == 102 || resultCode == 102 || resultCode == 101) {
             setResult(101);
             finish();
         }
@@ -74,7 +82,7 @@ public class MobileInputActivity extends AppCompatActivity {
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.mobile_input_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -99,6 +107,7 @@ public class MobileInputActivity extends AppCompatActivity {
     private void initViews() {
         Button sendButton = (Button)findViewById(R.id.mobile_input_sendButton);
         final EditText mobileNoEditText = (EditText)findViewById(R.id.mobile_input_mobileNumber);
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +115,7 @@ public class MobileInputActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void requestVerification(String mobileNo) {
         final RequestVerification requestVerification = new RequestVerification();

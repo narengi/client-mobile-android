@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/houses_item_card_view"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="20dp"
@@ -139,6 +139,7 @@
 
                     <RatingBar
                         android:id="@+id/houses_item_house_ratingBar"
+                        style="?android:attr/ratingBarStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"

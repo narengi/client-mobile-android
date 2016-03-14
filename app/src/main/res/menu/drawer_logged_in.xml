@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_inbox"
+            android:checked="false"
+            android:icon="@drawable/ic_action_inbox"
+            android:title="@string/drawer_menu_inbox"/>
+        <item
+            android:id="@+id/navigation_item_favorites"
+            android:checked="false"
+            android:icon="@drawable/ic_action_favorite_list"
+            android:title="@string/drawer_menu_favorites"/>
+        <item
+            android:id="@+id/navigation_item_hosting"
+            android:checked="false"
+            android:icon="@drawable/ic_action_hosting"
+            android:title="@string/drawer_menu_hosting"/>
+
+        <item
+            android:id="@+id/navigation_item_aboutUs"
+            android:checked="false"
+            android:icon="@drawable/ic_action_about_narengi"
+            android:title="@string/drawer_menu_about_us"/>
+
+        <item
+            android:id="@+id/navigation_item_logout"
+            android:checked="false"
+            android:icon="@drawable/ic_action_login_signup"
+            android:title="@string/drawer_menu_logout"/>
+    </group>
+</menu>

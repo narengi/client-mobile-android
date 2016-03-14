@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/house_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:gravity="right|center_vertical"
         android:layout_margin="10dp"
+        android:background="@android:color/transparent"
+        android:gravity="right|center_vertical"
         android:padding="0dp"
         android:singleLine="false"
-        android:textSize="@dimen/font_size_small"
         android:textColor="@android:color/tertiary_text_dark"
-        android:textStyle="bold"
-        android:background="@android:color/transparent"
-        />
+        android:textSize="@dimen/font_size_small"
+        android:textStyle="bold" />
 
 </LinearLayout>

@@ -1,12 +1,18 @@
 package xyz.narengi.android.service;
 
+import com.squareup.okhttp.RequestBody;
+
+import java.util.Map;
+
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Header;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.Url;
@@ -19,6 +25,7 @@ import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.HostProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.Profile;
+import xyz.narengi.android.common.dto.ProvinceCity;
 import xyz.narengi.android.common.dto.RequestVerification;
 import xyz.narengi.android.common.dto.SearchResult;
 import xyz.narengi.android.common.dto.SuggestionsResult;
@@ -70,4 +77,17 @@ public interface RetrofitApiEndpoints {
 
     @POST("/api/v1/accounts/login")
     Call<AccountProfile> login(@Body Credential credential);
+
+//    @Multipart
+    @POST("/api/v1/user-profiles/picture")
+    Call<AccountProfile> uploadProfilePicture(@Header("authorization") String authorization, @Body RequestBody picture);
+//    Call<AccountProfile> uploadProfilePicture(@Header("authorization") String authorization, @Part("picture") RequestBody picture);
+
+    @GET("/api/v1/basic-info/provinces")
+    Call<Map<String,ProvinceCity[]>> getProvinces();
+
+    @POST("/api/v1/accounts/verifications/request/{type}")
+    Call<AccountVerification> requestIdVerification(@Header("authorization") String authorization, @Path("type") String type,
+                                                    @Body RequestBody picture);
+
 }

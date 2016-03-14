@@ -19,7 +19,7 @@
         android:gravity="center"
         android:padding="0dp"
         android:scaleType="center"
-        android:src="@drawable/sample_7"
+        android:src="@drawable/signup_successful"
         />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

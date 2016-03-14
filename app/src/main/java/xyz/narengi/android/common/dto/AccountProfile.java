@@ -1,11 +1,12 @@
 package xyz.narengi.android.common.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Siavash Mahmoudpour
  */
-public class AccountProfile {
+public class AccountProfile implements Serializable {
 
     private String registrationSource;
     private String cellNumber;

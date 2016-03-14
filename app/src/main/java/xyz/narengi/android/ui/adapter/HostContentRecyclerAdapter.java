@@ -140,8 +140,8 @@ public class HostContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 
         // use a linear layout manager
 //        CustomLinearLayoutManager mLayoutManager = new CustomLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+//        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
 //        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         viewHolder.userReviewsRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -171,8 +171,8 @@ public class HostContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 
 //        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
 //        MyLinearLayoutManager mLayoutManager = new MyLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false, getScreenHeight(context), 0);
-        HostHousesLinearLayoutManager mLayoutManager = new HostHousesLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false, getScreenHeight(context));
-//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+//        HostHousesLinearLayoutManager mLayoutManager = new HostHousesLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false, getScreenHeight(context));
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         viewHolder.userHousesRecyclerView.setLayoutManager(mLayoutManager);
 
         ArrayList<House> duplicatedHouseList = new ArrayList<House>();
@@ -253,8 +253,8 @@ public class HostContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
             review.setMessage("اين یک کامنت صرفا تستی می باشد. همين دیگه! مگه قرار بود چی باشه ها !؟ ای بابا ول مون کن داداش چی ميگی تو!");
 
 //            CustomLinearLayoutManager mLayoutManager = new CustomLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-            HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-//            LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+//            HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
 //            StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
             userReviewsRecyclerView.setLayoutManager(mLayoutManager);
 

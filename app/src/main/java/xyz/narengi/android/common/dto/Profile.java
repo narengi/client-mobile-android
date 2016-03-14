@@ -1,15 +1,18 @@
 package xyz.narengi.android.common.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Siavash Mahmoudpour
  */
-public class Profile {
+public class Profile implements Serializable {
 
     private String gender;
     private String firstName;
     private String lastName;
+    private String province;
+    private String city;
     private String birthDate;
     private String bio;
     private Status status;
@@ -38,6 +41,22 @@ public class Profile {
         this.lastName = lastName;
     }
 
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getBirthDate() {
         return birthDate;
     }
@@ -62,7 +81,7 @@ public class Profile {
         this.status = status;
     }
 
-    public class Status {
+    public class Status implements Serializable {
         private int completed;
         private String[] fields;
 

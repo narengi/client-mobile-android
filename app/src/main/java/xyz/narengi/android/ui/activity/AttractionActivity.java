@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.viewpagerindicator.CirclePageIndicator;
+import com.viewpagerindicator   .CirclePageIndicator;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -131,7 +131,7 @@ public class AttractionActivity extends ActionBarActivity {
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.attraction_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -245,7 +245,7 @@ public class AttractionActivity extends ActionBarActivity {
             public void onFailure(Throwable t) {
                 // Log error here since request failed
                 t.printStackTrace();
-                Log.d("AttractionActivity", "getAttraction onFailure : " + t.getMessage(), t);
+                Log.d("AttractionActivity", "getAttractions onFailure : " + t.getMessage(), t);
                 hideProgress();
                 Toast.makeText(AttractionActivity.this, "Error getting attraction data!", Toast.LENGTH_LONG).show();
             }

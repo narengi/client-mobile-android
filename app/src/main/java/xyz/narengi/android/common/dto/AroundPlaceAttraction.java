@@ -13,7 +13,7 @@ public class AroundPlaceAttraction {
     private GeoPoint Position;
     private String CityName;
     private String AroundHousesText;
-    private String[] AroundHouses;
+    private AroundPlaceHouse[] AroundHouses;
     private String URL;
 
 
@@ -57,11 +57,11 @@ public class AroundPlaceAttraction {
         AroundHousesText = aroundHousesText;
     }
 
-    public String[] getAroundHouses() {
+    public AroundPlaceHouse[] getAroundHouses() {
         return AroundHouses;
     }
 
-    public void setAroundHouses(String[] aroundHouses) {
+    public void setAroundHouses(AroundPlaceHouse[] aroundHouses) {
         AroundHouses = aroundHouses;
     }
 

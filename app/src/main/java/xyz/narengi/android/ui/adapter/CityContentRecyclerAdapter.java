@@ -99,7 +99,7 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         int itemCount = 1;
         if (city == null)
             return 0;
-        if (city.getAttraction() != null && city.getAttraction().length > 0)
+        if (city.getAttractions() != null && city.getAttractions().length > 0)
             itemCount++;
         if (city.getHouses() != null && city.getHouses().length > 0)
             itemCount += city.getHouses().length;
@@ -110,7 +110,7 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemViewType(int position) {
 
-        if (city.getAttraction() != null && city.getAttraction().length > 0) {
+        if (city.getAttractions() != null && city.getAttractions().length > 0) {
             switch (position) {
                 case 0:
                     return 0;
@@ -132,7 +132,7 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
     private void setupAttractionsGrid(AttractionsViewHolder viewHolder) {
 //        size = size * 3;
 
-        int size = city.getAttraction().length;
+        int size = city.getAttractions().length;
         viewHolder.attractionsGridView.setNumColumns(size);
 
         // Calculated single Item Layout Width for each grid element ....
@@ -160,14 +160,14 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         viewHolder.attractionsGridView.setStretchMode(GridView.STRETCH_SPACING);
         viewHolder.attractionsGridView.setNumColumns(size);
 
-        AttractionsGridAdapter gridAdapter = new AttractionsGridAdapter(context, Arrays.asList(city.getAttraction()));
+        AttractionsGridAdapter gridAdapter = new AttractionsGridAdapter(context, Arrays.asList(city.getAttractions()));
         viewHolder.attractionsGridView.setAdapter(gridAdapter);
     }
 
     private void setupHouse(HouseViewHolder viewHolder, int position) {
 
         int index;
-        if (city.getAttraction() != null && city.getAttraction().length > 0)
+        if (city.getAttractions() != null && city.getAttractions().length > 0)
             index = position - 2;
         else
             index = position - 1;
@@ -248,8 +248,8 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
             attractionsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (city.getAttraction() != null && city.getAttraction().length > i) {
-                        AroundPlaceAttraction attraction = city.getAttraction()[i];
+                    if (city.getAttractions() != null && city.getAttractions().length > i) {
+                        AroundPlaceAttraction attraction = city.getAttractions()[i];
                         openAttractionDetail(attraction);
                     }
                 }

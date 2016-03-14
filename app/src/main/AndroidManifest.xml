@@ -4,6 +4,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,19 +19,18 @@
         <activity
             android:name=".ui.activity.SignInSignUpActivity"
             android:label=""
-            android:theme="@style/AppTheme">
-        </activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.ExploreActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
+            android:label=""
             android:launchMode="singleTop"
             android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-             <intent-filter>
-                 <action android:name="android.intent.action.MAIN" />
-                 <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.SEARCH"/> -->
@@ -92,11 +98,36 @@
             android:name=".ui.activity.EditProfileActivity"
             android:label="@string/edit_profile_page_title"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.activity.MobileInputActivity"
+        <activity
+            android:name=".ui.activity.MobileInputActivity"
             android:label="@string/mobile_input_page_title"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.activity.MobileVerificationActivity"
+        <activity
+            android:name=".ui.activity.MobileVerificationActivity"
             android:label="@string/mobile_verification_page_title"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.activity.ViewProfileActivity"
+            android:label="@string/view_profile_page_title"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+        <activity
+            android:name=".ui.activity.VerificationIntroActivity"
+            android:label="@string/verification_intro_page_title"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.activity.VerificationViewActivity"
+            android:label="@string/verification_view_page_title"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.activity.IdentityCardActivity"
+            android:label="@string/identity_card_page_title"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ui.activity.VerificationConfirmActivity"
+            android:label="@string/verification_confirm_page_title"
             android:theme="@style/AppTheme" />
     </application>
 

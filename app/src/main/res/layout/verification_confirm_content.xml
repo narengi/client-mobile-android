@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/verification_confirm_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="100dp"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:gravity="center"
+            android:padding="0dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_action_homepage_aroundme" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="50dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:singleLine="false"
+            android:text="@string/verification_confirm_message_one"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/green"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:singleLine="false"
+        android:text="@string/verification_confirm_message_two"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/text_gray_light" />
+
+</LinearLayout>
