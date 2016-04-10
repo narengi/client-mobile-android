@@ -1,11 +1,16 @@
 package xyz.narengi.android.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,10 +21,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -100,7 +112,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -159,7 +171,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -211,7 +223,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -261,6 +273,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
                 displayName += " " + profile.getLastName();
 
             editor.putString("displayName", displayName);
+            editor.commit();
 
             boolean isPictureUploaded = true;
             if (profile.getStatus() != null && profile.getStatus().getFields() != null) {
@@ -277,6 +290,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
             }
         }
 
+        setResult(303);
         finish();
 
         /*if (accountProfile.getProfile() != null && accountProfile.getProfile().getStatus() != null &&
@@ -313,8 +327,11 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         editor.putString("username", accountProfile.getToken().getUsername());
         editor.commit();
 
-        Intent intent = new Intent(this, MobileInputActivity.class);
-        startActivityForResult(intent, 101);
+        setResult(302);
+        finish();
+
+//        Intent intent = new Intent(this, SignUpConfirmActivity.class);
+//        startActivityForResult(intent, 101);
     }
 
     @Override
@@ -329,6 +346,36 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     @Override
     public void onRegisterButtonPressed(String email, String password) {
         register(email, password);
+
+//        Snackbar snack = Snackbar.make(findViewById(android.R.id.content), "Registration Successful!", Snackbar.LENGTH_LONG);
+//        View view = snack.getView();
+//        FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
+//        params.gravity = Gravity.CENTER;
+//        params.rightMargin = 100;
+//        params.leftMargin = 100;
+//        view.setLayoutParams(params);
+//        snack.show();
+
+
+//        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "", Snackbar.LENGTH_LONG);
+//        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+//        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
+//        textView.setVisibility(View.INVISIBLE);
+//
+//        LayoutInflater inflater = LayoutInflater.from(this);
+//        View snackView = inflater.inflate(R.layout.dialog_sign_up_success, null);
+//        layout.setGravity(Gravity.CENTER);
+//
+//        layout.addView(snackView, 0);
+//
+//        FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)layout.getLayoutParams();
+//        params.gravity = Gravity.CENTER;
+//        params.rightMargin = 100;
+//        params.leftMargin = 100;
+//        layout.setLayoutParams(params);
+//        layout.setBackgroundResource(R.drawable.snackbar_bg);
+//
+//        snackbar.show();
     }
 
     @Override

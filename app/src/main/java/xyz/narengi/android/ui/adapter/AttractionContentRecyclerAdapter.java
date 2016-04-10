@@ -59,7 +59,6 @@ public class AttractionContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         }
 
         return viewHolder;
-
     }
 
     @Override
@@ -73,7 +72,6 @@ public class AttractionContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                 setupHouses(specsViewHolder, position - 1);
                 break;
         }
-
     }
 
     @Override

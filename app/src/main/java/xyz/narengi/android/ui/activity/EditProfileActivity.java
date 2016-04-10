@@ -1,31 +1,70 @@
 package xyz.narengi.android.ui.activity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.soundcloud.android.crop.Crop;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
+import ir.smartlab.persindatepicker.PersianDatePicker;
+import ir.smartlab.persindatepicker.util.PersianCalendar;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -38,6 +77,7 @@ import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.Profile;
+import xyz.narengi.android.common.dto.ProvinceCity;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.ui.adapter.SpinnerArrayAdapter;
@@ -48,14 +88,32 @@ import xyz.narengi.android.util.SecurityUtils;
  */
 public class EditProfileActivity extends AppCompatActivity {
 
+    private static final String TAG = EditProfileActivity.class.getName();
     private AccountProfile accountProfile;
+    static final int REQUEST_IMAGE_CAPTURE = 2001;
+    private ImageView profileImageView;
+    protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 1001;
+    protected static final int REQUEST_STORAGE_WRITE_ACCESS_PERMISSION = 1002;
+    private static final int REQUEST_SELECT_PICTURE = 0x01;
+    private static final String SAMPLE_CROPPED_IMAGE_NAME = "SampleCropImage.jpeg";
+    private Uri mDestinationUri;
+    private Date selectedBirthDate;
+    private Map<String,ProvinceCity[]> provincesMap;
+
+    private AlertDialog mAlertDialog;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        mDestinationUri = Uri.fromFile(new File(getCacheDir(), SAMPLE_CROPPED_IMAGE_NAME));
+
         setupToolbar();
         initViews();
+        getProvinces();
+        getProfilePicture();
         getProfile();
     }
 
@@ -76,17 +134,222 @@ public class EditProfileActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         } else if (id == R.id.edit_profile_save) {
-            Toast.makeText(this, "Saved, hehe...", Toast.LENGTH_LONG).show();
             updateProfile();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(102);
+        finish();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+//            Bitmap photo = (Bitmap) data.getExtras().get("data");
+//            profileImageView.setImageBitmap(photo);
+//        }
+
+
+//        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+//            final Uri resultUri = UCrop.getOutput(data);
+//            handleCropResult(data);
+//        } else if (resultCode == UCrop.RESULT_ERROR) {
+//            final Throwable cropError = UCrop.getError(data);
+//            handleCropResult(data);
+//        }
+
+        if (requestCode == 102 || resultCode == 102) {
+            setResult(102);
+            finish();
+        } else {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == REQUEST_SELECT_PICTURE || requestCode == REQUEST_IMAGE_CAPTURE) {
+                    final Uri selectedUri = data.getData();
+                    if (selectedUri != null) {
+                        startCropActivity(data.getData());
+                    } else {
+                        Toast.makeText(EditProfileActivity.this, "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (requestCode == Crop.REQUEST_CROP) {
+                    handleCropResult(data);
+                }
+            } else {
+                handleCropError(data);
+            }
+        }
+
+//        if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
+//            handleCropResult(data);
+//        }
+
+        /*if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_SELECT_PICTURE) {
+                final Uri selectedUri = data.getData();
+                if (selectedUri != null) {
+                    startCropActivity(data.getData());
+                } else {
+                    Toast.makeText(EditProfileActivity.this, "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
+                }
+            } else if (requestCode == UCrop.REQUEST_CROP) {
+                handleCropResult(data);
+            }
+        }
+        if (resultCode == UCrop.RESULT_ERROR) {
+            handleCropError(data);
+        }*/
+    }
+
+    /**
+     * In most cases you need only to set crop aspect ration and max size for resulting image.
+     *
+     * @param uCrop - ucrop builder instance
+     * @return - ucrop builder instance
+     */
+    private UCrop basisConfig(@NonNull UCrop uCrop) {
+//        switch (mRadioGroupAspectRatio.getCheckedRadioButtonId()) {
+//            case R.id.radio_origin:
+//                uCrop = uCrop.useSourceImageAspectRatio();
+//                break;
+//            case R.id.radio_square:
+//                uCrop = uCrop.withAspectRatio(1, 1);
+//                break;
+//            case R.id.radio_dynamic:
+//                // do nothing
+//                break;
+//            default:
+//                try {
+//                    float ratioX = Float.valueOf(mEditTextRatioX.getText().toString().trim());
+//                    float ratioY = Float.valueOf(mEditTextRatioY.getText().toString().trim());
+//                    if (ratioX > 0 && ratioY > 0) {
+//                        uCrop = uCrop.withAspectRatio(ratioX, ratioY);
+//                    }
+//                } catch (NumberFormatException e) {
+//                    Log.e(TAG, "Number please", e);
+//                }
+//                break;
+//        }
+//
+//        if (mCheckBoxMaxSize.isChecked()) {
+//            try {
+//                int maxWidth = Integer.valueOf(mEditTextMaxWidth.getText().toString().trim());
+//                int maxHeight = Integer.valueOf(mEditTextMaxHeight.getText().toString().trim());
+//                if (maxWidth > 0 && maxHeight > 0) {
+//                    uCrop = uCrop.withMaxResultSize(maxWidth, maxHeight);
+//                }
+//            } catch (NumberFormatException e) {
+//                Log.e(TAG, "Number please", e);
+//            }
+//        }
+
+
+//        uCrop = uCrop.withAspectRatio(1, 1);
+        uCrop = uCrop.useSourceImageAspectRatio();
+
+        return uCrop;
+    }
+
+    /**
+     * Sometimes you want to adjust more options, it's done via {@link com.yalantis.ucrop.UCrop.Options} class.
+     *
+     * @param uCrop - ucrop builder instance
+     * @return - ucrop builder instance
+     */
+    private UCrop advancedConfig(@NonNull UCrop uCrop) {
+        UCrop.Options options = new UCrop.Options();
+
+//        switch (mRadioGroupCompressionSettings.getCheckedRadioButtonId()) {
+//            case R.id.radio_png:
+//                options.setCompressionFormat(Bitmap.CompressFormat.PNG);
+//                break;
+//            case R.id.radio_webp:
+//                options.setCompressionFormat(Bitmap.CompressFormat.WEBP);
+//                break;
+//            case R.id.radio_jpeg:
+//            default:
+//                options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+//                break;
+//        }
+//        options.setCompressionQuality(mSeekBarQuality.getProgress());
+
+
+
+        /*
+        If you want to configure how gestures work for all UCropActivity tabs
+        options.setAllowedGestures(UCropActivity.SCALE, UCropActivity.ROTATE, UCropActivity.ALL);
+        * */
+
+        /*
+        This sets max size for bitmap that will be decoded from source Uri.
+        More size - more memory allocation, default implementation uses screen diagonal.
+        options.setMaxBitmapSize(640);
+        * */
+
+
+       /*
+        Tune everything (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧
+        options.setMaxScaleMultiplier(5);
+        options.setImageToCropBoundsAnimDuration(666);
+        options.setDimmedLayerColor(Color.CYAN);
+        options.setOvalDimmedLayer(true);
+        options.setShowCropFrame(false);
+        options.setCropGridStrokeWidth(20);
+        options.setCropGridColor(Color.GREEN);
+        options.setCropGridColumnCount(2);
+        options.setCropGridRowCount(1);
+        // Color palette
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.your_color_res));
+        options.setStatusBarColor(ContextCompat.getColor(this, R.color.your_color_res));
+        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.your_color_res));
+		options.setToolbarTitleTextColor(ContextCompat.getColor(this, R.color.your_color_res));
+       */
+
+        return uCrop.withOptions(options);
+    }
+
+    private void startCropActivity(@NonNull Uri uri) {
+//        UCrop uCrop = UCrop.of(uri, mDestinationUri);
+//        uCrop = basisConfig(uCrop);
+//        uCrop.start(this);
+
+        Crop.of(uri, mDestinationUri).asSquare().start(this, Crop.REQUEST_CROP);
+
+//        UCrop.of(uri, mDestinationUri)
+//                .withAspectRatio(16, 9)
+//                .withMaxResultSize(getScreenWidth(this), getScreenWidth(this))
+//                .start(this);
+    }
+
+    private void handleCropResult(@NonNull Intent result) {
+//        final Uri resultUri = UCrop.getOutput(result);
+        final Uri resultUri = Crop.getOutput(result);
+        if (resultUri != null) {
+//            ResultActivity.startWithUri(this, resultUri);
+            setCapturedImage(resultUri);
+        } else {
+            Toast.makeText(this, "toast_cannot_retrieve_cropped_image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    private void handleCropError(@NonNull Intent result) {
+//        final Throwable cropError = UCrop.getError(result);
+        Toast.makeText(this, "Error getting image.", Toast.LENGTH_SHORT).show();
+//        final Throwable cropError = Crop.getError(result);
+//        if (cropError != null) {
+//            Log.e(TAG, "handleCropError: ", cropError);
+//            Toast.makeText(this, cropError.getMessage(), Toast.LENGTH_LONG).show();
+//        } else {
+//            Toast.makeText(this, "toast_unexpected_error", Toast.LENGTH_SHORT).show();
+//        }
+    }
+
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.edit_profile_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -110,6 +373,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void initViews() {
 
+        profileImageView = (ImageView)findViewById(R.id.edit_profile_image);
+
         Spinner genderSpinner = (Spinner) findViewById(R.id.edit_profile_gender);
         String[] genderArray = getResources().getStringArray(R.array.gender_array);
 
@@ -118,6 +383,301 @@ public class EditProfileActivity extends AppCompatActivity {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(arrayAdapter);
         genderSpinner.setPromptId(R.string.edit_profile_gender_hint);
+
+        EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
+        birthDateEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBirthDateDialog();
+            }
+        });
+
+        Button addImageButton = (Button)findViewById(R.id.edit_profile_addPhotoButton);
+        addImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                dispatchTakePictureIntent();
+                selectImage();
+            }
+        });
+    }
+
+    private void showBirthDateDialog() {
+        LayoutInflater inflater = getLayoutInflater();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = inflater.inflate(R.layout.dialog_birth_date, null);
+
+        final PersianDatePicker birthDatePicker = (PersianDatePicker) view.findViewById(R.id.edit_profile_birthDatePicker);
+        birthDatePicker.setDisplayDate(new Date());
+
+        builder.setView(view);
+
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
+                birthDateEditText.setText(birthDatePicker.getDisplayPersianDate().getPersianShortDate());
+                selectedBirthDate = birthDatePicker.getDisplayDate();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    private void setCapturedImage(Uri resultUri) {
+
+        // Get the dimensions of the View
+        int targetW = profileImageView.getWidth();
+        int targetH = profileImageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(resultUri.getPath(), bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        if (targetW > 0 && targetH > 0) {
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+            bmOptions.inSampleSize = scaleFactor;
+
+        }
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(resultUri.getPath(), bmOptions);
+        profileImageView.setImageBitmap(bitmap);
+
+
+//        profileImageView.setImageURI(resultUri);
+        uploadProfilePicture(resultUri);
+
+
+//            profileImageView.setImageBitmap(photo);
+
+//        final BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inJustDecodeBounds = true;
+//        BitmapFactory.decodeFile(new File(getIntent().getData().getPath()).getAbsolutePath(), options);
+    }
+
+    private void selectImage() {
+        final CharSequence[] items = getResources().getStringArray(R.array.profile_capture_photo_array);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                switch (item) {
+                    case 0:
+                        dispatchTakePictureIntent();
+                        break;
+                    case 1:
+                        pickFromGallery();
+                        break;
+                    case 2:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        });
+
+//        builder.show();
+
+        AlertDialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    private void dispatchTakePictureIntent() {
+//
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    private void pickFromGallery() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN // Permission was added in API Level 16
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+//                    getString(R.string.permission_read_storage_rationale),
+                    "permission_read_storage_rationale",
+                    REQUEST_STORAGE_READ_ACCESS_PERMISSION);
+        } else {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+//            startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), REQUEST_SELECT_PICTURE);
+            startActivityForResult(Intent.createChooser(intent, "label_select_picture"), REQUEST_SELECT_PICTURE);
+        }
+    }
+
+    /**
+     * Requests given permission.
+     * If the permission has been denied previously, a Dialog will prompt the user to grant the
+     * permission, otherwise it is requested directly.
+     */
+    protected void requestPermission(final String permission, String rationale, final int requestCode) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+//            showAlertDialog(getString(R.string.permission_title_rationale), rationale,
+            showAlertDialog("permission_title_rationale", rationale,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(EditProfileActivity.this,
+                                    new String[]{permission}, requestCode);
+                        }
+                    }, "Ok", null, "Cancel");
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
+        }
+    }
+
+    /**
+     * This method shows dialog with given title & message.
+     * Also there is an option to pass onClickListener for positive & negative button.
+     *
+     * @param title                         - dialog title
+     * @param message                       - dialog message
+     * @param onPositiveButtonClickListener - listener for positive button
+     * @param positiveText                  - positive button text
+     * @param onNegativeButtonClickListener - listener for negative button
+     * @param negativeText                  - negative button text
+     */
+    protected void showAlertDialog(@Nullable String title, @Nullable String message,
+                                   @Nullable DialogInterface.OnClickListener onPositiveButtonClickListener,
+                                   @NonNull String positiveText,
+                                   @Nullable DialogInterface.OnClickListener onNegativeButtonClickListener,
+                                   @NonNull String negativeText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(positiveText, onPositiveButtonClickListener);
+        builder.setNegativeButton(negativeText, onNegativeButtonClickListener);
+        mAlertDialog = builder.show();
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_STORAGE_READ_ACCESS_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    pickFromGallery();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void getProfilePicture() {
+
+        final SharedPreferences preferences = getSharedPreferences("profile", 0);
+        String accessToken = preferences.getString("accessToken", "");
+        String username = preferences.getString("username", "");
+
+        Authorization authorization = new Authorization();
+        authorization.setUsername(username);
+        authorization.setToken(accessToken);
+
+        Gson gson = new GsonBuilder().create();
+
+        String authorizationJson = gson.toJson(authorization);
+        if (authorizationJson != null) {
+            authorizationJson = authorizationJson.replace("{", "");
+            authorizationJson = authorizationJson.replace("}", "");
+        }
+
+        final String authorizationJsonHeader = authorizationJson;
+        OkHttpClient picassoClient = new OkHttpClient();
+
+        picassoClient.networkInterceptors().add(new Interceptor() {
+
+            @Override
+            public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder()
+                        .addHeader("authorization", authorizationJsonHeader)
+                        .build();
+                return chain.proceed(newRequest);
+            }
+        });
+
+        Picasso picasso = new Picasso.Builder(this).downloader(new OkHttpDownloader(picassoClient)).build();
+        picasso.load(Constants.SERVER_BASE_URL + "/api/v1/user-profiles/picture").into(profileImageView);
+    }
+
+    private void getProvinces() {
+
+        Gson gson = new GsonBuilder().create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.SERVER_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+        Call<Map<String,ProvinceCity[]>> call = apiEndpoints.getProvinces();
+
+        call.enqueue(new Callback<Map<String, ProvinceCity[]>>() {
+            @Override
+            public void onResponse(Response<Map<String, ProvinceCity[]>> response, Retrofit retrofit) {
+                int statusCode = response.code();
+                provincesMap = response.body();
+                if (provincesMap != null && !provincesMap.isEmpty()) {
+                    initProvinceSpinner(provincesMap);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void initProvinceSpinner(final Map<String,ProvinceCity[]> provincesMap) {
+        Spinner provinceSpinner = (Spinner) findViewById(R.id.edit_profile_province);
+        final Spinner citySpinner = (Spinner) findViewById(R.id.edit_profile_city);
+        final String[] provinceArray = new String[provincesMap.keySet().size()];
+        provincesMap.keySet().toArray(provinceArray);
+
+        SpinnerArrayAdapter<CharSequence> provinceArrayAdapter = new SpinnerArrayAdapter<CharSequence>(this,
+                android.R.layout.simple_spinner_item, provinceArray);
+        provinceArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        provinceSpinner.setAdapter(provinceArrayAdapter);
+        provinceSpinner.setPromptId(R.string.edit_profile_province_hint);
+
+        provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                if (provinceArray.length > position) {
+                    String province = provinceArray[position];
+                    ProvinceCity[] cityArray = provincesMap.get(province);
+                    if (cityArray != null && cityArray.length > 0) {
+                        SpinnerArrayAdapter<ProvinceCity> cityArrayAdapter = new SpinnerArrayAdapter<ProvinceCity>(EditProfileActivity.this,
+                                android.R.layout.simple_spinner_item, cityArray);
+                        cityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        citySpinner.setAdapter(cityArrayAdapter);
+                        citySpinner.setPromptId(R.string.edit_profile_city_hint);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void getProfile() {
@@ -131,7 +691,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
         String authorizationJson = gson.toJson(authorization);
@@ -154,12 +714,83 @@ public class EditProfileActivity extends AppCompatActivity {
                 int statusCode = response.code();
                 AccountProfile accountProfile = response.body();
                 if (accountProfile != null && accountProfile.getProfile() != null) {
+                    /*if (accountProfile.getProfile().getBirthDate() == null ||
+                            accountProfile.getProfile().getBirthDate().length() == 0) {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                        Date date = new Date();
+                        String dateString = dateFormat.format(date);
+                        accountProfile.getProfile().setBirthDate(dateString);
+
+                    }*/
                     setProfile(accountProfile);
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void uploadProfilePicture(Uri resultUri) {
+        final SharedPreferences preferences = getSharedPreferences("profile", 0);
+        String accessToken = preferences.getString("accessToken", "");
+        String username = preferences.getString("username", "");
+
+        Authorization authorization = new Authorization();
+        authorization.setUsername(username);
+        authorization.setToken(accessToken);
+
+        Gson gson = new GsonBuilder().create();
+
+        String authorizationJson = gson.toJson(authorization);
+        if (authorizationJson != null) {
+            authorizationJson = authorizationJson.replace("{", "");
+            authorizationJson = authorizationJson.replace("}", "");
+        }
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.SERVER_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        File file = new File(resultUri.getPath());
+//        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+
+
+        RequestBody photoRequestBody = RequestBody.create(MediaType.parse("application/image"), file);
+        RequestBody requestBody = new MultipartBuilder()
+                .type(MultipartBuilder.FORM)
+                .addFormDataPart("picture", file.getName(), photoRequestBody)
+                .build();
+
+        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+        Call<AccountProfile> call = apiEndpoints.uploadProfilePicture(authorizationJson, requestBody);
+
+        call.enqueue(new Callback<AccountProfile>() {
+            @Override
+            public void onResponse(Response<AccountProfile> response, Retrofit retrofit) {
+                int statusCode = response.code();
+                Toast.makeText(EditProfileActivity.this, "Status : " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
+                if (statusCode == 201 || statusCode == 204) {
+                    Toast.makeText(EditProfileActivity.this, "Upload image success... :  " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
+
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            Toast.makeText(EditProfileActivity.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+                            showUpdateProfileResultDialog(response.errorBody().string(), false);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(EditProfileActivity.this, "Upload image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }
         });
@@ -178,8 +809,8 @@ public class EditProfileActivity extends AppCompatActivity {
         final EditText familyEditText = (EditText) findViewById(R.id.edit_profile_family);
         Spinner genderSpinner = (Spinner) findViewById(R.id.edit_profile_gender);
         EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
-        EditText emailEditText = (EditText) findViewById(R.id.edit_profile_email);
-        EditText mobileNoEditText = (EditText) findViewById(R.id.edit_profile_mobileNumber);
+        Spinner provinceSpinner = (Spinner) findViewById(R.id.edit_profile_province);
+        Spinner citySpinner = (Spinner) findViewById(R.id.edit_profile_city);
         EditText bioEditText = (EditText) findViewById(R.id.edit_profile_bio);
 
         profile.setFirstName(nameEditText.getText().toString());
@@ -190,10 +821,18 @@ public class EditProfileActivity extends AppCompatActivity {
             profile.setGender("Female");
         }
 
+        if (provinceSpinner.getSelectedItem() != null && provinceSpinner.getSelectedItem().toString() != null)
+            profile.setProvince(provinceSpinner.getSelectedItem().toString());
+        if (citySpinner.getSelectedItem() != null && citySpinner.getSelectedItem().toString() != null)
+            profile.setCity(citySpinner.getSelectedItem().toString());
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = dateFormat.format(new Date());
-//        profile.setBirthDate(birthDateEditText.getText().toString());
-        profile.setBirthDate(dateString);
+//        String dateString = dateFormat.format(new Date());
+        if (selectedBirthDate != null) {
+            String dateString = dateFormat.format(selectedBirthDate);
+            profile.setBirthDate(dateString);
+        }
+
         profile.setBio(bioEditText.getText().toString());
 
         final SharedPreferences preferences = getSharedPreferences("profile", 0);
@@ -206,7 +845,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
         String authorizationJson = gson.toJson(authorization);
@@ -260,30 +899,85 @@ public class EditProfileActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("profile", 0);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("displayName", displayName);
+        editor.commit();
     }
 
     private void showUpdateProfileResultDialog(String message, final boolean isSuccessful) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//        builder.setTitle("Update Profile Result");
+//        if (message != null) {
+//            builder.setMessage(message);
+//        } else {
+//            builder.setMessage("Profile updated successfully!");
+//        }
+//
+//        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//                if (isSuccessful) {
+//                    setResult(102);
+//                    finish();
+//                }
+//            }
+//        });
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.setCanceledOnTouchOutside(false);
+//        dialog.show();
 
-        builder.setTitle("Update Profile Result");
-        if (message != null) {
-            builder.setMessage(message);
-        } else {
-            builder.setMessage("Profile updated successfully!");
+
+        Toast toast = new Toast(getApplicationContext());
+        View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params != null) {
+            int width = (getScreenWidth(this) * 3 / 5);
+            params.width = width;
+            params.height = width;
+            view.setLayoutParams(params);
         }
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                if (isSuccessful) {
-                    setResult(102);
-                    finish();
-                }
-            }
-        });
+        toast.setView(view);
+        toast.setDuration(Toast.LENGTH_LONG);
 
-        AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
+        int margin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        toast.setGravity(Gravity.CENTER, 0, margin);
+        toast.show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+//                openViewProfile();
+                setResult(401);
+                finish();
+                //??? finish this, and go to explore activity, and start view profile activity from there ???
+            }
+        }, 3000);
+    }
+
+    private void openViewProfile() {
+
+        if (getIntent() != null && getIntent().getBooleanExtra("openedFromViewProfile", false)) {
+            finish();
+        } else {
+            Intent intent = new Intent(this, ViewProfileActivity.class);
+            startActivityForResult(intent, 104);
+        }
+    }
+
+    private int getScreenWidth(Context context) {
+        int measuredWidth;
+        Point size = new Point();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            wm.getDefaultDisplay().getSize(size);
+            measuredWidth = size.x;
+        } else {
+            Display d = wm.getDefaultDisplay();
+            measuredWidth = d.getHeight();
+        }
+
+        return measuredWidth;
     }
 
     private void setProfile(AccountProfile accountProfile) {
@@ -292,29 +986,70 @@ public class EditProfileActivity extends AppCompatActivity {
         EditText nameEditText = (EditText) findViewById(R.id.edit_profile_name);
         EditText familyEditText = (EditText) findViewById(R.id.edit_profile_family);
         Spinner genderSpinner = (Spinner) findViewById(R.id.edit_profile_gender);
-        EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
-        EditText emailEditText = (EditText) findViewById(R.id.edit_profile_email);
-        EditText mobileNoEditText = (EditText) findViewById(R.id.edit_profile_mobileNumber);
-        EditText bioEditText = (EditText) findViewById(R.id.edit_profile_bio);
-
-        if (accountProfile.getVerification() != null && accountProfile.getVerification().length > 0) {
-            for (AccountVerification verification : accountProfile.getVerification()) {
-                if (verification.getVerificationType() != null) {
-                    if (verification.getVerificationType().equals("SMS")) {
-                        mobileNoEditText.setText(verification.getHandle());
-                    } else if (verification.getVerificationType().equals("Email")) {
-                        emailEditText.setText(verification.getHandle());
-                    }
+        if (accountProfile.getProfile().getBirthDate() != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            try {
+                Date birthDate = dateFormat.parse(accountProfile.getProfile().getBirthDate());
+                if (birthDate != null) {
+                    selectedBirthDate = birthDate;
+                    EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
+                    PersianCalendar calendar = new PersianCalendar(birthDate.getTime());
+                    birthDateEditText.setText(calendar.getPersianShortDate());
                 }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         }
+        Spinner provinceSpinner = (Spinner) findViewById(R.id.edit_profile_province);
+        Spinner citySpinner = (Spinner) findViewById(R.id.edit_profile_city);
+        EditText bioEditText = (EditText) findViewById(R.id.edit_profile_bio);
+
+//        if (accountProfile.getVerification() != null && accountProfile.getVerification().length > 0) {
+//            for (AccountVerification verification : accountProfile.getVerification()) {
+//                if (verification.getVerificationType() != null) {
+//                    if (verification.getVerificationType().equals("SMS")) {
+//                        citySpinner.setText(verification.getHandle());
+//                    } else if (verification.getVerificationType().equals("Email")) {
+//                        provinceSpinner.setText(verification.getHandle());
+//                    }
+//                }
+//            }
+//        }
 
         if (accountProfile.getProfile().getFirstName() != null)
             nameEditText.setText(accountProfile.getProfile().getFirstName());
         if (accountProfile.getProfile().getLastName() != null)
             familyEditText.setText(accountProfile.getProfile().getLastName());
-        if (accountProfile.getProfile().getBirthDate() != null)
-            birthDateEditText.setText(accountProfile.getProfile().getBirthDate());
+
+        if (provincesMap != null && !provincesMap.isEmpty()) {
+            ProvinceCity[] cityArray = null;
+
+            if (accountProfile.getProfile().getProvince() != null && accountProfile.getProfile().getProvince().length() > 0) {
+                if (provincesMap.containsKey(accountProfile.getProfile().getProvince())) {
+                    final String[] provinceArray = new String[provincesMap.keySet().size()];
+                    provincesMap.keySet().toArray(provinceArray);
+                    for (int i=0 ; i < provinceArray.length ; i++) {
+                        if (accountProfile.getProfile().getProvince().equalsIgnoreCase(provinceArray[i])) {
+                            provinceSpinner.setSelection(i);
+                            cityArray = provincesMap.get(accountProfile.getProfile().getProvince());
+                        }
+                    }
+                }
+            }
+
+            if (cityArray != null && accountProfile.getProfile().getCity() != null &&
+                    accountProfile.getProfile().getCity().length() > 0) {
+                for (int i=0 ; i < cityArray.length ; i++) {
+                    ProvinceCity provinceCity = cityArray[i];
+                    if (accountProfile.getProfile().getCity().equalsIgnoreCase(provinceCity.getCity())) {
+                        citySpinner.setSelection(i);
+                    }
+                }
+            }
+        }
+
+//        if (accountProfile.getProfile().getBirthDate() != null)
+//            birthDatePicker.setText(accountProfile.getProfile().getBirthDate());
         if (accountProfile.getProfile().getBio() != null)
             bioEditText.setText(accountProfile.getProfile().getBio());
 
@@ -325,5 +1060,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 genderSpinner.setSelection(1);
             }
         }
+
+        //TODO : set province and city values.
     }
 }

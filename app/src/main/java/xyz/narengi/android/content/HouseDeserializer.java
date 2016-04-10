@@ -62,9 +62,9 @@ public class HouseDeserializer implements JsonDeserializer<House> {
         String url = urlElement.getAsString();
         house.setURL(url);
 
-        JsonElement featureSummaryElement = jsonElement.getAsJsonObject().get("FeatureSummray");
+        JsonElement featureSummaryElement = jsonElement.getAsJsonObject().get("featureSummary");
         String featureSummary = featureSummaryElement.getAsString();
-        house.setFeatureSummray(featureSummary);
+        house.setFeatureSummary(featureSummary);
 
         JsonElement reviewsElement = jsonElement.getAsJsonObject().get("Reviews");
         HouseReview[] reviews = gson.fromJson(reviewsElement, HouseReview[].class);
@@ -78,17 +78,17 @@ public class HouseDeserializer implements JsonDeserializer<House> {
         String type = typeElement.getAsString();
         house.setType(type);
 
-        JsonElement bedroomCountElement = jsonElement.getAsJsonObject().get("bedroomCount");
-        int bedroomCount = bedroomCountElement.getAsInt();
-        house.setBedroomCount(bedroomCount);
-
-        JsonElement guestCountElement = jsonElement.getAsJsonObject().get("guestCount");
-        int guestCount = guestCountElement.getAsInt();
-        house.setGuestCount(guestCount);
-
-        JsonElement bedCountElement = jsonElement.getAsJsonObject().get("bedCount");
-        int bedCount = bedCountElement.getAsInt();
-        house.setBedCount(bedCount);
+//        JsonElement bedroomCountElement = jsonElement.getAsJsonObject().get("bedroomCount");
+//        int bedroomCount = bedroomCountElement.getAsInt();
+//        house.setBedroomCount(bedroomCount);
+//
+//        JsonElement guestCountElement = jsonElement.getAsJsonObject().get("guestCount");
+//        int guestCount = guestCountElement.getAsInt();
+//        house.setGuestCount(guestCount);
+//
+//        JsonElement bedCountElement = jsonElement.getAsJsonObject().get("bedCount");
+//        int bedCount = bedCountElement.getAsInt();
+//        house.setBedCount(bedCount);
 
         return house;
     }

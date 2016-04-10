@@ -108,7 +108,7 @@ public class HostActivity extends AppCompatActivity {
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.host_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -182,7 +182,6 @@ public class HostActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             progressBarLayout.setVisibility(View.GONE);
         }
-
     }
 
 }

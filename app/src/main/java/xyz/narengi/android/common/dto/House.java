@@ -1,7 +1,6 @@
 package xyz.narengi.android.common.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author Siavash Mahmoudpour
@@ -19,13 +18,16 @@ public class House implements Serializable {
     private String URL;
     private HouseReview[] Reviews;
     private HouseFeature[] FeatureList;
-    private String FeatureSummray;
-    private String type;
-    private int bedroomCount;
-    private int guestCount;
-    private int bedCount;
-    private String costText;
-
+    private String Type;
+    private String featureSummary;
+    private String ReviewsURL;
+    private String FeatureListURL;
+    private int reviewsCount;
+    private HousePrice Price;
+    private HouseSpec Spec;
+    private HouseExtraService[] ExtraServices;
+    private String bookingUrl;
+    private Commission Commission;
 
 
     public String getName() {
@@ -112,55 +114,108 @@ public class House implements Serializable {
         return FeatureList;
     }
 
-    public void setFeatureList(HouseFeature[] features) {
-        FeatureList = features;
-    }
-
-    public String getFeatureSummray() {
-        return FeatureSummray;
-    }
-
-    public void setFeatureSummray(String featureSummray) {
-        FeatureSummray = featureSummray;
+    public void setFeatureList(HouseFeature[] featureList) {
+        FeatureList = featureList;
     }
 
     public String getType() {
-        return type;
+        return Type;
     }
 
     public void setType(String type) {
-        this.type = type;
+        Type = type;
     }
 
-    public int getBedroomCount() {
-        return bedroomCount;
+    public String getFeatureSummary() {
+        return featureSummary;
     }
 
-    public void setBedroomCount(int bedroomCount) {
-        this.bedroomCount = bedroomCount;
+    public void setFeatureSummary(String featureSummary) {
+        this.featureSummary = featureSummary;
     }
 
-    public int getGuestCount() {
-        return guestCount;
+    public String getReviewsURL() {
+        return ReviewsURL;
     }
 
-    public void setGuestCount(int guestCount) {
-        this.guestCount = guestCount;
+    public void setReviewsURL(String reviewsURL) {
+        ReviewsURL = reviewsURL;
     }
 
-    public int getBedCount() {
-        return bedCount;
+    public String getFeatureListURL() {
+        return FeatureListURL;
     }
 
-    public void setBedCount(int bedCount) {
-        this.bedCount = bedCount;
+    public void setFeatureListURL(String featureListURL) {
+        FeatureListURL = featureListURL;
     }
 
-    public String getCostText() {
-        return costText;
+    public int getReviewsCount() {
+        return reviewsCount;
     }
 
-    public void setCostText(String costText) {
-        this.costText = costText;
+    public void setReviewsCount(int reviewsCount) {
+        this.reviewsCount = reviewsCount;
+    }
+
+    public HousePrice getPrice() {
+        return Price;
+    }
+
+    public void setPrice(HousePrice price) {
+        Price = price;
+    }
+
+    public HouseSpec getSpec() {
+        return Spec;
+    }
+
+    public void setSpec(HouseSpec spec) {
+        Spec = spec;
+    }
+
+    public HouseExtraService[] getExtraServices() {
+        return ExtraServices;
+    }
+
+    public void setExtraServices(HouseExtraService[] extraServices) {
+        ExtraServices = extraServices;
+    }
+
+    public String getBookingUrl() {
+        return bookingUrl;
+    }
+
+    public void setBookingUrl(String bookingUrl) {
+        this.bookingUrl = bookingUrl;
+    }
+
+    public House.Commission getCommission() {
+        return Commission;
+    }
+
+    public void setCommission(House.Commission commission) {
+        Commission = commission;
+    }
+
+    public class Commission implements Serializable {
+        private double rate;
+        private double fee;
+
+        public double getRate() {
+            return rate;
+        }
+
+        public void setRate(double rate) {
+            this.rate = rate;
+        }
+
+        public double getFee() {
+            return fee;
+        }
+
+        public void setFee(double fee) {
+            this.fee = fee;
+        }
     }
 }

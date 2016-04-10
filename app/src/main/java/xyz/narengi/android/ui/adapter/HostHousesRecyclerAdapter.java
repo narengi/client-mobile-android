@@ -2,16 +2,12 @@ package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -24,13 +20,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.House;
-import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 
 /**
  * @author Siavash Mahmoudpour
@@ -128,7 +119,7 @@ public class HostHousesRecyclerAdapter extends RecyclerView.Adapter<HostHousesRe
         Drawable drawable = context.getResources().getDrawable(android.R.drawable.ic_menu_compass);
         drawable.setColorFilter(context.getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         viewHolder.houseTitleTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
-        viewHolder.houseFeatureSummary.setText(house.getFeatureSummray());
+        viewHolder.houseFeatureSummary.setText(house.getFeatureSummary());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

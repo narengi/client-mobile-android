@@ -1,18 +1,27 @@
 package xyz.narengi.android.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -56,7 +65,10 @@ public class MobileVerificationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 102 || resultCode == 102) {
+        if (resultCode == 101) {
+            setResult(101);
+            finish();
+        } else if (requestCode == 102 || resultCode == 102) {
             finish();
         }
     }
@@ -64,7 +76,7 @@ public class MobileVerificationActivity extends AppCompatActivity {
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.mobile_verification_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -89,6 +101,7 @@ public class MobileVerificationActivity extends AppCompatActivity {
     private void initViews() {
         Button sendButton = (Button)findViewById(R.id.mobile_verification_sendButton);
         final EditText codeEditText = (EditText)findViewById(R.id.mobile_verification_verificationCode);
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,7 +122,7 @@ public class MobileVerificationActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
         String authorizationJson = gson.toJson(authorization);
@@ -131,11 +144,11 @@ public class MobileVerificationActivity extends AppCompatActivity {
             public void onResponse(Response<AccountVerification> response, Retrofit retrofit) {
                 int statusCode = response.code();
                 AccountVerification accountVerification = response.body();
-                if (accountVerification != null && accountVerification.getCode() != null) {
+                if (accountVerification != null && accountVerification.isVerified()) {
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("mobileVerified", true);
                     editor.commit();
-                    openSignUpConfirm();
+                    showResultDialog("", true);
                 }
             }
 
@@ -146,8 +159,60 @@ public class MobileVerificationActivity extends AppCompatActivity {
         });
     }
 
-    private void openSignUpConfirm() {
-        Intent intent = new Intent(this, SignUpConfirmActivity.class);
+    private int getScreenWidth(Context context) {
+        int measuredWidth;
+        Point size = new Point();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            wm.getDefaultDisplay().getSize(size);
+            measuredWidth = size.x;
+        } else {
+            Display d = wm.getDefaultDisplay();
+            measuredWidth = d.getHeight();
+        }
+
+        return measuredWidth;
+    }
+
+    private void showResultDialog(String message, final boolean isSuccessful) {
+
+        final View contentView = findViewById(android.R.id.content);
+        contentView.setBackgroundColor(getResources().getColor(android.R.color.black));
+        contentView.getBackground().setAlpha(80);
+
+        Toast toast = new Toast(getApplicationContext());
+        View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
+
+        TextView messageTextView = (TextView)view.findViewById(R.id.success_dialog_message);
+        messageTextView.setText(R.string.mobile_verification_success_message);
+
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params != null) {
+            int width = (getScreenWidth(this) * 3 / 5);
+            params.width = width;
+            params.height = width;
+            view.setLayoutParams(params);
+        }
+
+        toast.setView(view);
+        toast.setDuration(Toast.LENGTH_LONG);
+
+        int margin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        toast.setGravity(Gravity.CENTER, 0, margin);
+        toast.show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                openIdentityCard();
+            }
+        }, 3000);
+    }
+
+    private void openIdentityCard() {
+        Intent intent = new Intent(this, IdentityCardActivity.class);
         startActivityForResult(intent, 102);
     }
+
 }

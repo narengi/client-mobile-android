@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Narengi</string>
+    <string name="app_name">نارنگی</string>
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -11,7 +11,14 @@
     <string name="drawer_menu_login_register">عضويت/ورود</string>
     <string name="drawer_menu_settings">تنظيمات</string>
     <string name="drawer_menu_profile">پروفايل</string>
+    <string name="drawer_menu_hosting">مهمان پذيری</string>
+    <string name="drawer_menu_about_us">درباره نارنگی</string>
     <string name="drawer_menu_map">نمايش نقشه</string>
+
+    <!-- Drawer menu, logged in -->
+    <string name="drawer_menu_inbox">پيام ها</string>
+    <string name="drawer_menu_favorites">علاقه مندی ها</string>
+    <string name="drawer_menu_logout">خروج از حساب کاربری</string>
 
     <string-array name="search_history_array">
         <item>تهران</item>
@@ -29,5 +36,9 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_host">HostActivity</string>
+
+    <string name="currency_rials">ريال</string>
+    <string name="night_caption">شب</string>
+    <string name="multiply_mark">*</string>
 
 </resources>

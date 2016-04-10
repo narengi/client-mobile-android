@@ -10,12 +10,11 @@ public class AroundPlaceAttraction {
 
     private String Name;
     private String[] Images;
-    private GeoPoint Position;
     private String CityName;
     private String AroundHousesText;
     private String[] AroundHouses;
+    private GeoPoint Position;
     private String URL;
-
 
     public String getName() {
         return Name;
@@ -31,14 +30,6 @@ public class AroundPlaceAttraction {
 
     public void setImages(String[] images) {
         Images = images;
-    }
-
-    public GeoPoint getPosition() {
-        return Position;
-    }
-
-    public void setPosition(GeoPoint position) {
-        Position = position;
     }
 
     public String getCityName() {
@@ -63,6 +54,14 @@ public class AroundPlaceAttraction {
 
     public void setAroundHouses(String[] aroundHouses) {
         AroundHouses = aroundHouses;
+    }
+
+    public GeoPoint getPosition() {
+        return Position;
+    }
+
+    public void setPosition(GeoPoint position) {
+        Position = position;
     }
 
     public String getURL() {

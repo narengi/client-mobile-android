@@ -11,12 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -33,7 +31,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,8 +38,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.viewpagerindicator.CirclePageIndicator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit.Call;
@@ -143,7 +138,7 @@ public class CityActivity extends ActionBarActivity {
                     int index = -1;
                     int position = rv.getChildAdapterPosition(childView);
 
-                    if (city.getAttraction() != null && city.getAttraction().length > 0) {
+                    if (city.getAttractions() != null && city.getAttractions().length > 0) {
                         index = position - 2;
                     } else {
                         index = position - 1;
@@ -172,7 +167,7 @@ public class CityActivity extends ActionBarActivity {
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.city_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -490,15 +485,15 @@ public class CityActivity extends ActionBarActivity {
 
                     titleTextView.setText(city.getName());
                     houseCountTextView.setText(city.getHouseCountText());
-                    summaryTextView.setText(city.getSummary() + "\n" + city.getSummary() + "\n" + city.getSummary() + "\n" + city.getSummary());
+//                    summaryTextView.setText(city.getSummary() + "\n" + city.getSummary() + "\n" + city.getSummary() + "\n" + city.getSummary());
                     summaryTextView.setText(city.getSummary());
 
 
                     setupContentRecyclerView(city);
 
-//                    if (city.getAttraction() != null && city.getAttraction().length > 0) {
+//                    if (city.getAttractions() != null && city.getAttractions().length > 0) {
 //                        showAttractionViews();
-//                        setupAttractionsGrid(city.getAttraction().length, Arrays.asList(city.getAttraction()));
+//                        setupAttractionsGrid(city.getAttractions().length, Arrays.asList(city.getAttractions()));
 //                    } else {
 //                        hideAttractionViews();
 //                    }

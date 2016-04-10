@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/book_arriveDepartLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_gray_light"
+    android:orientation="horizontal">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_weight="1"
+        android:layout_margin="16dp"
+        android:background="@color/bg_gray_light"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/bg_gray_light"
+            android:gravity="center"
+            android:text="@string/book_depart_date_caption"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/text_gray_light" />
+
+        <TextView
+            android:id="@+id/book_departDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/bg_gray_light"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/orange_light" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:background="@color/bg_gray_light"
+        android:src="@drawable/arrive_depart_arrow" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:layout_weight="1"
+        android:layout_margin="16dp"
+        android:background="@color/bg_gray_light"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/bg_gray_light"
+            android:gravity="center"
+            android:text="@string/book_arrive_date_caption"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/text_gray_light" />
+
+        <TextView
+            android:id="@+id/book_arriveDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/bg_gray_light"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/orange_light" />
+
+    </LinearLayout>
+
+</LinearLayout>

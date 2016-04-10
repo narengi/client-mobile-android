@@ -44,13 +44,18 @@ public class SignUpConfirmActivity extends AppCompatActivity implements View.OnC
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 103 || resultCode == 103) {
+        if (requestCode == 102 || resultCode == 102) {
             close();
+        }
+
+        if (resultCode == 401) {
+            setResult(401);
+            finish();
         }
     }
 
     private void close() {
-        setResult(102);
+        setResult(101);
         finish();
     }
 

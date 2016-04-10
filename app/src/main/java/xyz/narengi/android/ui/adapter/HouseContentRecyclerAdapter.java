@@ -28,7 +28,6 @@ import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.common.dto.HouseReview;
 import xyz.narengi.android.ui.activity.HostActivity;
 import xyz.narengi.android.ui.activity.HouseFeaturesActivity;
-import xyz.narengi.android.ui.widget.HouseLinearLayoutManager;
 import xyz.narengi.android.ui.widget.LineDividerItemDecoration;
 
 /**
@@ -170,9 +169,11 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private void setupSpecsLayout(HouseSpecsViewHolder viewHolder) {
 
-        viewHolder.bedCountTextView.setText(context.getString(R.string.house_bed_count, house.getBedCount()));
-        viewHolder.guestCountTextView.setText(context.getString(R.string.house_guest_count, house.getGuestCount()));
-        viewHolder.bedroomCountTextView.setText(context.getString(R.string.house_bedroom_count, house.getBedroomCount()));
+        if (house.getSpec() != null) {
+            viewHolder.bedCountTextView.setText(context.getString(R.string.house_bed_count, house.getSpec().getBedCount()));
+            viewHolder.guestCountTextView.setText(context.getString(R.string.house_guest_count, house.getSpec().getGuestCount()));
+            viewHolder.bedroomCountTextView.setText(context.getString(R.string.house_bedroom_count, house.getSpec().getBedroomCount()));
+        }
 
         if (house.getType() != null) {
             if (house.getType().equals("apartment")) {
@@ -196,7 +197,7 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private void setHouseDescription(DescriptionViewHolder viewHolder) {
 
-        String description = house.getName() + ", " + house.getSummary() + ", " + house.getFeatureSummray();
+        String description = house.getName() + ", " + house.getSummary() + ", " + house.getFeatureSummary();
         description += description;
 
         viewHolder.descriptionTextView.setText(description);
@@ -327,10 +328,10 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private void setupUserReviewsLayout(UserReviewsViewHolder viewHolder) {
 
         // use a linear layout manager
-//        CustomLinearLayoutManager mLayoutManager = new CustomLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-//        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+
+//        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+
         viewHolder.userReviewsRecyclerView.setLayoutManager(mLayoutManager);
 
         HouseReviewsRecyclerAdapter recyclerAdapter = new HouseReviewsRecyclerAdapter(context, house.getReviews());
@@ -455,10 +456,8 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             review.setReviewer("علی کريمی");
             review.setMessage("اين یک کامنت صرفا تستی می باشد. همين دیگه! مگه قرار بود چی باشه ها !؟ ای بابا ول مون کن داداش چی ميگی تو!");
 
-//            CustomLinearLayoutManager mLayoutManager = new CustomLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-            HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-//            LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-//            StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+//            HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             userReviewsRecyclerView.setLayoutManager(mLayoutManager);
 
             HouseReviewsRecyclerAdapter recyclerAdapter = new HouseReviewsRecyclerAdapter(context, new HouseReview[]{ review });

@@ -54,9 +54,9 @@ public class CityDeserializer implements JsonDeserializer<City> {
         String url = urlElement.getAsString();
         city.setURL(url);
 
-        JsonElement attractionsElement = jsonElement.getAsJsonObject().get("Attraction");
+        JsonElement attractionsElement = jsonElement.getAsJsonObject().get("Attractions");
         AroundPlaceAttraction[] attractions = gson.fromJson(attractionsElement, AroundPlaceAttraction[].class);
-        city.setAttraction(attractions);
+        city.setAttractions(attractions);
 
         JsonElement housesElement = jsonElement.getAsJsonObject().get("Houses");
         AroundPlaceHouse[] houses = gson.fromJson(housesElement, AroundPlaceHouse[].class);

@@ -1,9 +1,11 @@
 package xyz.narengi.android.common.dto;
 
+import java.io.Serializable;
+
 /**
  * @author Siavash Mahmoudpour
  */
-public class AccessToken {
+public class AccessToken implements Serializable {
 
     private String username;
     private String token;
