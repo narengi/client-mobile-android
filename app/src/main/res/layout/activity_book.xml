@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <!--<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:scrollbars="vertical|horizontal"-->
+        <!--android:fitsSystemWindows="true"-->
+        <!--android:nestedScrollingEnabled="false"-->
+        <!--android:overScrollMode="ifContentScrolls"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+        <!-->-->
+
+        <!--<include layout="@layout/book_content"/>-->
+    <!--</android.support.v4.widget.NestedScrollView>-->
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/book_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/book_appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/book_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            />
+        <!--app:layout_collapseMode="pin"-->
+
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.design.widget.CoordinatorLayout>

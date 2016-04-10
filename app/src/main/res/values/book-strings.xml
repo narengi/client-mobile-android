@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="book_page_title">اجاره اقامتگاه</string>
+    <string name="book_arrive_date_caption">زمان رسيدن</string>
+    <string name="book_depart_date_caption">زمان ترک</string>
+    <string name="book_day_night_count">%1$s شب و %2$s روز</string>
+    <string name="book_guests_caption">تعداد مهمانان:</string>
+    <string name="book_guests_add_caption">+</string>
+    <string name="book_guests_remove_caption">-</string>
+    <string name="book_extra_services_caption">خدمات اضافی:</string>
+    <string name="book_extra_services_add_caption">+</string>
+    <string name="book_price_caption">قيمت:</string>
+    <string name="book_prices_total">مجموع</string>
+
+</resources>

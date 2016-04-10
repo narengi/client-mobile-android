@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Narengi</string>
+    <string name="app_name">نارنگی</string>
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -36,5 +36,9 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_host">HostActivity</string>
+
+    <string name="currency_rials">ريال</string>
+    <string name="night_caption">شب</string>
+    <string name="multiply_mark">*</string>
 
 </resources>

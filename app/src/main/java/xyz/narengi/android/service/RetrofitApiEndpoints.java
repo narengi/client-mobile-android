@@ -24,6 +24,7 @@ import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.HostProfile;
 import xyz.narengi.android.common.dto.House;
+import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.common.dto.ProvinceCity;
 import xyz.narengi.android.common.dto.RequestVerification;
@@ -89,5 +90,8 @@ public interface RetrofitApiEndpoints {
     @POST("/api/v1/accounts/verifications/request/{type}")
     Call<AccountVerification> requestIdVerification(@Header("authorization") String authorization, @Path("type") String type,
                                                     @Body RequestBody picture);
+
+    @GET
+    Call<HouseAvailableDates> getHouseAvailableDates(@Url String url);
 
 }

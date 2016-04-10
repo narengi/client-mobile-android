@@ -691,7 +691,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
         String authorizationJson = gson.toJson(authorization);
@@ -716,7 +716,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (accountProfile != null && accountProfile.getProfile() != null) {
                     /*if (accountProfile.getProfile().getBirthDate() == null ||
                             accountProfile.getProfile().getBirthDate().length() == 0) {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                         Date date = new Date();
                         String dateString = dateFormat.format(date);
                         accountProfile.getProfile().setBirthDate(dateString);
@@ -845,7 +845,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
         String authorizationJson = gson.toJson(authorization);
@@ -987,7 +987,7 @@ public class EditProfileActivity extends AppCompatActivity {
         EditText familyEditText = (EditText) findViewById(R.id.edit_profile_family);
         Spinner genderSpinner = (Spinner) findViewById(R.id.edit_profile_gender);
         if (accountProfile.getProfile().getBirthDate() != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             try {
                 Date birthDate = dateFormat.parse(accountProfile.getProfile().getBirthDate());
                 if (birthDate != null) {

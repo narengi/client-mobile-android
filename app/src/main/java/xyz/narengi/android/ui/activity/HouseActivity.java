@@ -2,6 +2,7 @@ package xyz.narengi.android.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -66,50 +67,64 @@ import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
  */
 public class HouseActivity extends ActionBarActivity {
 
+    private House house;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_house);
         setupToolbar();
-//        setupViewPager();
 
         showProgress();
         if (getIntent() != null && getIntent().getStringExtra("houseUrl") != null) {
             String houseUrl = getIntent().getStringExtra("houseUrl");
             getHouse(houseUrl);
         }
-
-//        if (getIntent() != null && getIntent().getSerializableExtra("house") != null) {
-//            Serializable houseSerializable = getIntent().getSerializableExtra("house");
-//            if (houseSerializable instanceof AroundPlaceHouse) {
-//                AroundPlaceHouse house = (AroundPlaceHouse)houseSerializable;
-//                setHouse(house);
-//            }
-//        }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 301) {
+            if (resultCode == 302) {
+                //user registered
+                openSignUpConfirm();
+            } else if (resultCode == 303) {
+                //user logged in
+                openBookHouse();
+            }
+        }
+
+        if (resultCode == 401 || resultCode == 101 || requestCode == 101) {
+            openBookHouse();
+        }
+
+    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-//        setupToolbar();
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-//        setupToolbar();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == android.R.id.home) {
-//            Toast.makeText(this, "Back button pressed", Toast.LENGTH_LONG).show();
             onBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openSignUpConfirm() {
+        Intent intent = new Intent(this, SignUpConfirmActivity.class);
+        startActivityForResult(intent, 101);
     }
 
     private void setupToolbar() {
@@ -150,7 +165,7 @@ public class HouseActivity extends ActionBarActivity {
 
             @Override
             public void onGlobalLayout() {
-                // TODO Auto-generated method stub
+
                 int height= contentScrollView.getHeight();
                 Toast.makeText(HouseActivity.this, "Content height : " + height, Toast.LENGTH_LONG).show();
 
@@ -182,6 +197,9 @@ public class HouseActivity extends ActionBarActivity {
     }
 
     private void setHouse(final House house) {
+
+        this.house = house;
+
 //        String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=";
 //        if (house.getPosition() != null) {
 //            house.getPosition().setLat(35.710139);
@@ -245,6 +263,35 @@ public class HouseActivity extends ActionBarActivity {
 //        collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(android.R.color.holo_orange_light));
 
 //        setupToolbar();
+
+        Button bookHouseButton = (Button)findViewById(R.id.house_bookButton);
+        bookHouseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openBookHouse();
+            }
+        });
+    }
+
+    private void openBookHouse() {
+        final SharedPreferences preferences = getSharedPreferences("profile", 0);
+        String accessToken = preferences.getString("accessToken", "");
+        String username = preferences.getString("username", "");
+
+        if (accessToken.length() > 0 && username.length() > 0 && house != null && house.getURL() != null && house.getBookingUrl() != null) {
+
+            Intent intent = new Intent(this, BookActivity.class);
+            intent.putExtra("house", house);
+            startActivityForResult(intent, 501);
+
+        } else {
+            openSignInSignUp();
+        }
+    }
+
+    private void openSignInSignUp() {
+        Intent intent = new Intent(this, SignInSignUpActivity.class);
+        startActivityForResult(intent, 301);
     }
 
     private void openHostActivity(String hostUrl) {

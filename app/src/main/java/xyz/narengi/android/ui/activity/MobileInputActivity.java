@@ -131,7 +131,7 @@ public class MobileInputActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
         String authorizationJson = gson.toJson(authorization);

@@ -15,6 +15,7 @@
         android:background="@color/bg_gray_light"
         >
 
+        <!--??? android:minHeight="200dp" ???-->
         <ImageView
             android:id="@+id/edit_profile_image"
             android:layout_width="match_parent"
