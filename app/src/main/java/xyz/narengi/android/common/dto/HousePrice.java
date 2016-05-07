@@ -12,6 +12,7 @@ public class HousePrice implements Serializable {
     private String currencyText;
     private double weeklyDiscount;
     private double monthlyDiscount;
+    private double extraGuestPrice;
 
     public double getPrice() {
         return price;
@@ -51,5 +52,13 @@ public class HousePrice implements Serializable {
 
     public void setMonthlyDiscount(double monthlyDiscount) {
         this.monthlyDiscount = monthlyDiscount;
+    }
+
+    public double getExtraGuestPrice() {
+        return extraGuestPrice;
+    }
+
+    public void setExtraGuestPrice(double extraGuestPrice) {
+        this.extraGuestPrice = extraGuestPrice;
     }
 }

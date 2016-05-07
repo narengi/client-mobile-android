@@ -40,5 +40,6 @@
     <string name="currency_rials">ريال</string>
     <string name="night_caption">شب</string>
     <string name="multiply_mark">*</string>
+    <string name="close_button">بستن</string>
 
 </resources>

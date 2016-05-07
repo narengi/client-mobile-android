@@ -1,11 +1,13 @@
 package com.byagowi.persiancalendar.Entity;
 
+import java.io.Serializable;
+
 import calendar.PersianDate;
 
 /**
  * Created by behdad on 10/25/15.
  */
-public class Day {
+public class Day implements Serializable {
     String num;
     boolean holiday;
     boolean today;

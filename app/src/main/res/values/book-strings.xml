@@ -11,6 +11,21 @@
     <string name="book_extra_services_caption">خدمات اضافی:</string>
     <string name="book_extra_services_add_caption">+</string>
     <string name="book_price_caption">قيمت:</string>
+    <string name="book_prices_service_fee">حق سرويس</string>
     <string name="book_prices_total">مجموع</string>
+    <string name="book_continue_button">ادامه</string>
+    <string name="book_extra_guests_caption">نفر مهمان اضافه</string>
+    <string name="book_max_guest_count_alert">حداکثر تعداد مهمان برای اين خانه %s نفر می باشد.</string>
+    <string name="book_dates_not_selected_alert">بايد زمان رسيدن و زمان ترک انتخاب شده باشد.</string>
+
+    <!-- Service fee page -->
+    <string name="book_service_fee_page_title">حق سرويس</string>
+    <string name="book_service_fee_page_message">حق سرويس مبلغی است که به نارنگی کمک می کند سرويس خود را نگهداری کند و خدمت رسانی به شما را انجام دهد.</string>
+
+    <!-- Book result -->
+    <string name="book_result_success_message">پرداخت موفق رزرواسيون شما انجام شد</string>
+    <string name="book_result_success_description">از طرف مالک برای هماهنگی نهايی با شما تماس گرفته خواهد شد.</string>
+    <string name="book_result_failure_message">پرداخت رزرواسيون شما با موفقيت انجام نشد.</string>
+    <string name="book_result_fauilure_description">لطفا با مراجعه به پروفايل خود و وارد شدن به بخش رزروهای من> اقدام به پرداخت سفارش خود نماييد.</string>
 
 </resources>

@@ -1,12 +1,13 @@
 package calendar;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 /**
  * @author Amir
  * @author ebraminio (implementing isLeapYear)
  */
-public class PersianDate extends AbstractDate {
+public class PersianDate extends AbstractDate implements Serializable {
     private int year;
     private int month;
     private int day;

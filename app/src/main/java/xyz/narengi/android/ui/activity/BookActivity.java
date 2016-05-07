@@ -1,10 +1,11 @@
 package xyz.narengi.android.ui.activity;
 
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,10 +13,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -33,11 +33,9 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.Attraction;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
-import xyz.narengi.android.ui.adapter.AttractionContentRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.BookContentRecyclerAdapter;
 import xyz.narengi.android.ui.fragment.CalendarFragment;
 
@@ -48,6 +46,7 @@ import xyz.narengi.android.ui.fragment.CalendarFragment;
 public class BookActivity extends AppCompatActivity {
 
     private House house;
+    private BookContentRecyclerAdapter bookContentRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +85,16 @@ public class BookActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 501) {
+            finish();
+        }
+    }
+
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.book_toolbar);
-//        final Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
 
         Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
@@ -110,6 +116,11 @@ public class BookActivity extends AppCompatActivity {
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
+
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.book_collapse_toolbar);
+        collapsingToolbarLayout.setTitle(getString(R.string.book_page_title));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(android.R.color.black));
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.black));
     }
 
     private void getHouseAvailableDates() {
@@ -146,6 +157,13 @@ public class BookActivity extends AppCompatActivity {
                 HouseAvailableDates houseAvailableDates = response.body();
                 if (houseAvailableDates != null) {
                     setupContentRecyclerView(houseAvailableDates);
+                    Button continueButton = (Button) findViewById(R.id.book_continueButton);
+                    continueButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openBookSummary();
+                        }
+                    });
                 }
             }
 
@@ -166,9 +184,22 @@ public class BookActivity extends AppCompatActivity {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        BookContentRecyclerAdapter recyclerAdapter = new BookContentRecyclerAdapter(this, house, houseAvailableDates);
-        mRecyclerView.setAdapter(recyclerAdapter);
+        bookContentRecyclerAdapter = new BookContentRecyclerAdapter(this, house, houseAvailableDates);
+        mRecyclerView.setAdapter(bookContentRecyclerAdapter);
 
+    }
+
+    private void openBookSummary() {
+        if (bookContentRecyclerAdapter != null && bookContentRecyclerAdapter.getBookProperties() != null &&
+                bookContentRecyclerAdapter.getBookProperties().getArriveDay() != null && bookContentRecyclerAdapter.getBookProperties().getDepartDay() != null &&
+                bookContentRecyclerAdapter.getBookProperties().getDaysCount() > 0 && bookContentRecyclerAdapter.getBookProperties().getGuestsCount() > 0) {
+
+            Intent intent = new Intent(this, BookSummaryActivity.class);
+            intent.putExtra("bookProperties" , bookContentRecyclerAdapter.getBookProperties());
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, getString(R.string.book_dates_not_selected_alert), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void setupCalendar() {
