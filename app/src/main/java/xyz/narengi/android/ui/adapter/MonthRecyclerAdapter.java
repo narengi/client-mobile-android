@@ -22,6 +22,7 @@ import calendar.DateConverter;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.ui.fragment.CalendarMonthFragment;
+import xyz.narengi.android.util.DateUtils;
 
 /**
  * @author Siavash Mahmoudpour
@@ -243,7 +244,7 @@ public class MonthRecyclerAdapter extends RecyclerView.Adapter<MonthRecyclerAdap
                             if (houseAvailableDates != null && houseAvailableDates.getDates() != null) {
                                 for (int i = selectionStart; i < position; i++) {
                                     Day day = getSelectedDay(i);
-                                    Date date = getDateOfDay(day);
+                                    Date date = DateUtils.getInstance(context).getDateOfDay(day);
 
                                     boolean isDateAvailable = false;
                                     for (String availableDateString : houseAvailableDates.getDates()) {
@@ -341,20 +342,6 @@ public class MonthRecyclerAdapter extends RecyclerView.Adapter<MonthRecyclerAdap
                 notifyDataSetChanged();
 //            }
         }
-    }
-
-    private Date getDateOfDay(Day day) {
-
-        Date date = null;
-
-        if (day != null && day.getPersianDate() != null) {
-            CivilDate civilDate = DateConverter.persianToCivil(day.getPersianDate());
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(civilDate.getYear(), civilDate.getMonth() - 1, civilDate.getDayOfMonth());
-            date = calendar.getTime();
-        }
-
-        return date;
     }
 
     private Day getSelectedDay(int position) {

@@ -9,6 +9,7 @@ public class HouseSpec implements Serializable {
 
     private int bedroomCount;
     private int guestCount;
+    private int maxGuestCount;
     private int bedCount;
 
     public int getBedroomCount() {
@@ -25,6 +26,14 @@ public class HouseSpec implements Serializable {
 
     public void setGuestCount(int guestCount) {
         this.guestCount = guestCount;
+    }
+
+    public int getMaxGuestCount() {
+        return maxGuestCount;
+    }
+
+    public void setMaxGuestCount(int maxGuestCount) {
+        this.maxGuestCount = maxGuestCount;
     }
 
     public int getBedCount() {

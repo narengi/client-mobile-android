@@ -1,9 +1,11 @@
 package xyz.narengi.android.common.dto;
 
+import java.io.Serializable;
+
 /**
  * @author Siavash Mahmoudpour
  */
-public class BookPriceItem {
+public class BookPriceItem implements Serializable {
 
     private String title;
     private String type;
