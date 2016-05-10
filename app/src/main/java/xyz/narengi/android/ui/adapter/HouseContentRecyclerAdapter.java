@@ -28,6 +28,7 @@ import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.common.dto.HouseReview;
 import xyz.narengi.android.ui.activity.HostActivity;
 import xyz.narengi.android.ui.activity.HouseFeaturesActivity;
+import xyz.narengi.android.ui.activity.HouseMapActivity;
 import xyz.narengi.android.ui.widget.LineDividerItemDecoration;
 
 /**
@@ -147,13 +148,26 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private void setHouseMapImage(MapImageViewHolder viewHolder) {
 
         Picasso.with(context).load(buildMapImageUrl()).into(viewHolder.mapImageView);
+
+        if (house != null && house.getPosition() != null) {
+
+            viewHolder.mapImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    openHouseMap(house.getPosition().getLat(), house.getPosition().getLng());
+                }
+            });
+        }
     }
 
     private String buildMapImageUrl() {
         String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=";
         if (house.getPosition() != null) {
-            house.getPosition().setLat(35.710139);
-            house.getPosition().setLng(51.418049);
+
+//            house.getPosition().setLat(35.710139);
+//            house.getPosition().setLng(51.418049);
+            house.getPosition().setLat(house.getPosition().getLat());
+            house.getPosition().setLng(house.getPosition().getLng());
             String latLngString = String.valueOf(house.getPosition().getLat()) + "," + String.valueOf(house.getPosition().getLng());
             mapUrl = mapUrl + latLngString;
             mapUrl = mapUrl + "&zoom=14&size=";
@@ -165,6 +179,14 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         return mapUrl;
+    }
+
+    private void openHouseMap(double lat, double lng) {
+        Intent intent = new Intent(context, HouseMapActivity.class);
+        intent.putExtra("lat", lat);
+        intent.putExtra("lng", lng);
+        intent.putExtra("houseTitle", house.getName());
+        context.startActivity(intent);
     }
 
     private void setupSpecsLayout(HouseSpecsViewHolder viewHolder) {

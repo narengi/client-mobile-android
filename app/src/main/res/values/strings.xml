@@ -41,5 +41,6 @@
     <string name="night_caption">شب</string>
     <string name="multiply_mark">*</string>
     <string name="close_button">بستن</string>
+    <string name="title_activity_house_map">Map</string>
 
 </resources>
