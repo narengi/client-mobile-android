@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:orientation="vertical"
+    android:padding="0dp"
+    tools:context=".ui.activity.SearchResultMapActivity">
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/headerbar"-->
+        <!--style="@style/HeaderBar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:clickable="true"-->
+        <!--android:longClickable="true"-->
+        <!--android:orientation="vertical">-->
+
+        <!--<include layout="@layout/toolbar_actionbar" />-->
+    <!--</LinearLayout>-->
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/branchDetailMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.activity.SearchResultMapActivity" />
+</LinearLayout>
