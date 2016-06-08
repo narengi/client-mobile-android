@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_vertical"
+        android:layout_weight="0"
+        android:background="@color/bg_gray_light"
+        >
+
+        <!--??? android:minHeight="200dp" ???-->
+        <ImageView
+            android:id="@+id/edit_profile_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_margin="0dp"
+            android:minHeight="200dp"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:gravity="center"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            android:background="@color/bg_gray_light"
+            android:src="@drawable/profile_image"
+            />
+
+        <xyz.narengi.android.ui.widget.CustomButton
+            android:id="@+id/edit_profile_addPhotoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_action_add_profile_image"
+            android:drawableRight="@drawable/ic_action_add_profile_image"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/edit_profile_add_image"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <!-- Name & family -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_weight="0"
+        android:background="@drawable/round_rect_bg"
+        android:orientation="vertical">
+
+        <xyz.narengi.android.ui.widget.CustomEditText
+            android:id="@+id/edit_profile_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="right|center_vertical"
+            android:hint="@string/edit_profile_name_hint"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColorHint="@android:color/tertiary_text_dark" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="0dp"
+            android:background="@android:color/darker_gray"
+            android:padding="0dp" />
+
+        <xyz.narengi.android.ui.widget.CustomEditText
+            android:id="@+id/edit_profile_family"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="right|center_vertical"
+            android:hint="@string/edit_profile_family_hint"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColorHint="@android:color/tertiary_text_dark" />
+
+    </LinearLayout>
+
+    <!-- Gender & birth date -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_weight="0"
+        android:background="@drawable/round_rect_bg"
+        android:orientation="vertical">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/edit_profile_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:prompt="@array/gender_array" />
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
+                android:singleLine="true"
+                android:text="@string/edit_profile_gender_hint"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="0dp"
+            android:background="@android:color/darker_gray"
+            android:padding="0dp" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal">
+
+            <xyz.narengi.android.ui.widget.CustomEditText
+                android:id="@+id/edit_profile_birthDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:background="@android:color/transparent"
+                android:gravity="left|center_vertical"
+                android:editable="false"
+                android:imeOptions="actionNext" />
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
+                android:singleLine="true"
+                android:text="@string/edit_profile_birth_date_hint"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Email & phone number -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_weight="0"
+        android:background="@drawable/round_rect_bg"
+        android:orientation="vertical">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/edit_profile_province"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:prompt="@array/gender_array" />
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
+                android:singleLine="true"
+                android:text="@string/edit_profile_province_hint"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="0dp"
+            android:background="@android:color/darker_gray"
+            android:padding="0dp" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/edit_profile_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:prompt="@array/gender_array" />
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
+                android:singleLine="true"
+                android:text="@string/edit_profile_city_hint"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Short bio -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_weight="0"
+        android:background="@drawable/round_rect_bg"
+        android:orientation="vertical">
+
+        <xyz.narengi.android.ui.widget.CustomEditText
+            android:id="@+id/edit_profile_bio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="right|top"
+            android:hint="@string/edit_profile_short_bio_hint"
+            android:imeOptions="actionDone"
+            android:minLines="5"
+            android:singleLine="false"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/tertiary_text_dark" />
+
+    </LinearLayout>
+
+</LinearLayout>

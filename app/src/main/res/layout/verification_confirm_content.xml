@@ -26,7 +26,7 @@
             android:scaleType="center"
             android:src="@drawable/ic_action_homepage_aroundme" />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
@@ -37,13 +37,13 @@
             android:gravity="center"
             android:singleLine="false"
             android:text="@string/verification_confirm_message_one"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            style="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/green"
             android:textStyle="bold" />
 
     </LinearLayout>
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
@@ -54,7 +54,7 @@
         android:gravity="center"
         android:singleLine="false"
         android:text="@string/verification_confirm_message_two"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/text_gray_light" />
 
 </LinearLayout>

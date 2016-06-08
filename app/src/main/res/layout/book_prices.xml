@@ -35,7 +35,7 @@
             android:background="@color/bg_gray_light"
             android:orientation="horizontal">
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:id="@+id/book_prices_serviceFeePrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                 android:layout_margin="16dp"
                 android:background="@color/bg_gray_light"
                 android:gravity="left|center_vertical"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/text_gray_dark" />
 
             <!--<Space-->
@@ -53,7 +53,7 @@
                 <!--android:background="@color/bg_gray_light"-->
                 <!--/>-->
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:id="@+id/book_prices_serviceFeeCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                 android:gravity="right|center_vertical"
                 android:drawableLeft="@drawable/ic_action_about_narengi"
                 android:text="@string/book_prices_service_fee"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/orange_light"
                 />
 
@@ -92,7 +92,7 @@
             android:background="@color/bg_gray_light"
             android:orientation="horizontal">
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:id="@+id/book_prices_totalPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,10 +101,10 @@
                 android:layout_weight="0"
                 android:background="@color/bg_gray_light"
                 android:gravity="left|center_vertical"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/text_gray_dark" />
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
@@ -117,7 +117,7 @@
                 android:drawablePadding="8dp"
                 android:gravity="right|center_vertical"
                 android:text="@string/book_prices_total"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/orange_light"
                 />
 

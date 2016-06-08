@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:text="There is no houses added. You should add a house first with below add button"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:gravity="center" />
+</LinearLayout>

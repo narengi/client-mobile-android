@@ -6,7 +6,7 @@
     android:orientation="vertical"
     >
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
@@ -19,7 +19,7 @@
         android:background="@android:color/transparent"
         android:singleLine="false"
         android:text="@string/verification_view_message"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/text_gray_dark"
         android:textStyle="bold" />
 
@@ -57,7 +57,7 @@
                 android:background="@android:color/transparent"
                 />
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
@@ -67,7 +67,7 @@
                 android:gravity="right|center_vertical"
                 android:singleLine="false"
                 android:text="@string/verification_view_identity_card_caption"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/text_gray_dark"
                 android:textStyle="bold" />
 
@@ -89,7 +89,7 @@
             android:background="@android:color/transparent"
             android:orientation="horizontal">
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:id="@+id/verification_view_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                 android:background="@android:color/transparent"
                 />
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
@@ -112,7 +112,7 @@
                 android:gravity="right|center_vertical"
                 android:singleLine="true"
                 android:text="@string/verification_view_email_caption"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/text_gray_dark"
                 android:textStyle="bold" />
 
@@ -134,7 +134,7 @@
             android:background="@android:color/transparent"
             android:orientation="horizontal">
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:id="@+id/verification_view_cellNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                 android:background="@android:color/transparent"
                 />
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
@@ -157,7 +157,7 @@
                 android:gravity="right|center_vertical"
                 android:singleLine="false"
                 android:text="@string/verification_view_cell_number_caption"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/text_gray_dark"
                 android:textStyle="bold" />
 

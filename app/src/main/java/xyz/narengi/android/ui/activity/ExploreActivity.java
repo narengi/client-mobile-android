@@ -262,6 +262,9 @@ public class ExploreActivity extends ActionBarActivity {
                         case R.id.navigation_item_logout:
                             logout();
                             break;
+                        case R.id.navigation_item_hosting:
+                            openHostHouses();
+                            break;
                         default:
                             break;
                     }
@@ -309,6 +312,11 @@ public class ExploreActivity extends ActionBarActivity {
             });
 
         }
+    }
+
+    private void openHostHouses() {
+        Intent intent = new Intent(this, HostHousesActivity.class);
+        startActivity(intent);
     }
 
     private void getProfilePicture(ImageView profileImageView) {

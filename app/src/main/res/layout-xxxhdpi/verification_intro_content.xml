@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/verification_intro_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="100dp"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:gravity="center"
+            android:padding="0dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_action_homepage_aroundme" />
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="50dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/verification_intro_message_one_1"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/text_gray_dark"
+            android:textStyle="bold" />
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/verification_intro_message_one_2"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/text_gray_dark"
+            android:textStyle="bold" />
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/verification_intro_message_one_3"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/text_gray_dark"
+            android:textStyle="bold" />
+
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/verification_intro_message_two_1"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/text_gray_light" />
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/verification_intro_message_two_2"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/text_gray_light" />
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/verification_intro_message_two_3"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/text_gray_light" />
+
+    </LinearLayout>
+
+    <xyz.narengi.android.ui.widget.CustomButton
+        android:id="@+id/verification_intro_startButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_margin="16dp"
+        android:background="@drawable/button_bg_green"
+        android:gravity="center"
+        android:text="@string/verification_intro_start_button"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/green_dark" />
+
+</LinearLayout>

@@ -19,9 +19,8 @@
         android:focusable="false"
         />
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/house_features_list_item_title"
-        style="@android:style/TextAppearance.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/house_features_list_item_icon"
@@ -29,7 +28,7 @@
         android:layout_margin="8dp"
         android:gravity="right|center_vertical"
         android:padding="8dp"
-        android:textSize="@dimen/font_size_normal"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textStyle="bold"
         android:textColor="@android:color/tertiary_text_dark"
         />

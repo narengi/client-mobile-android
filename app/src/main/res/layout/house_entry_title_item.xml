@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/house_entry_title_item_number"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/text_gray_dark"
+        />
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/house_entry_title_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/house_entry_title_item_number"
+        android:layout_margin="8dp"
+        android:gravity="right|center_vertical"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/text_gray_dark"
+        />
+
+</RelativeLayout>

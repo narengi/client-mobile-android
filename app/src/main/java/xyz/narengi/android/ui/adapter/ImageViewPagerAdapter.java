@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 import xyz.narengi.android.R;
 
 /**
- * Created by apple on 1/7/16.
+ * @author Siavash Mahmoudpour
  */
 public class ImageViewPagerAdapter extends PagerAdapter {
     // Declare Variables
@@ -35,7 +35,8 @@ public class ImageViewPagerAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((RelativeLayout) object);
+//        return view == ((RelativeLayout) object);
+        return view == ((View) object);
     }
 
     @Override

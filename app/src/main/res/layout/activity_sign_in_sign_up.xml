@@ -26,7 +26,7 @@
             android:orientation="vertical"
             tools:context="xyz.narengi.android.ui.activity.SignInSignUpActivity">
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center_vertical"
@@ -37,11 +37,11 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:text="@string/login_title_1"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                style="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@android:color/holo_orange_dark"
                 android:textStyle="bold" />
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center_vertical"
@@ -52,7 +52,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:text="@string/login_title_2"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                style="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@android:color/holo_orange_dark"
                 android:textStyle="bold" />
         </LinearLayout>

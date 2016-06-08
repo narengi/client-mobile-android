@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="30dp"
+    android:maxHeight="30dp"
+    android:background="@android:color/darker_gray"
+    android:orientation="vertical"
+    android:paddingRight="8dp"
+    android:paddingLeft="8dp"
+    android:focusable="false"
+    android:clickable="false"
+    >
+
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/suggestion_header_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="30dp"
+        android:gravity="right|center_vertical"
+        android:layout_gravity="right|center_vertical"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        android:focusable="false"
+        android:clickable="false"
+        />
+
+</LinearLayout>

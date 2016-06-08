@@ -108,6 +108,8 @@ public class HouseMapActivity extends ActionBarActivity implements OnMapReadyCal
                     .fillColor(Color.argb(20, 251, 147, 81)));
 
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
         }
 
         // Add a marker in Sydney and move the camera

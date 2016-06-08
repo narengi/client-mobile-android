@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
@@ -13,7 +13,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
         android:text="@string/book_extra_services_caption"
         android:textColor="@color/text_gray_dark"

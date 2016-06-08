@@ -17,13 +17,13 @@
         android:layout_marginLeft="10dp"
         android:orientation="horizontal">
 
-        <Button
+        <xyz.narengi.android.ui.widget.CustomButton
             android:id="@+id/city_allAttractionsButton"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_gravity="left|center_vertical"
             android:layout_margin="0dp"
-            android:background="@drawable/button_bg"
+            android:background="@drawable/button_bg_orange"
             android:gravity="center"
             android:maxHeight="32dp"
             android:paddingBottom="0dp"
@@ -33,9 +33,9 @@
             android:singleLine="true"
             android:text="@string/city_all_attractions_button"
             android:textColor="@android:color/tertiary_text_dark"
-            android:textSize="@dimen/font_size_small" />
+            style="@style/TextAppearance.AppCompat.Small" />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:id="@+id/city_attractionsCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:gravity="right|center_vertical"
             android:text="@string/city_attractions_caption"
             android:textColor="@android:color/tertiary_text_dark"
-            android:textSize="@dimen/font_size_normal"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textStyle="bold" />
 
     </RelativeLayout>

@@ -29,7 +29,7 @@
             android:scaleType="center"
             />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
@@ -40,11 +40,11 @@
             android:gravity="center"
             android:singleLine="false"
             android:text="@string/identity_card_message_one"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/text_gray_dark"
             android:textStyle="bold" />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
@@ -56,13 +56,13 @@
             android:gravity="center"
             android:singleLine="false"
             android:text="@string/identity_card_message_two"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/text_gray_light" />
 
 
     </LinearLayout>
 
-    <Button
+    <xyz.narengi.android.ui.widget.CustomButton
         android:id="@+id/identity_card_selectPhotoButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
         android:background="@drawable/button_bg_black"
         android:gravity="center"
         android:text="@string/identity_card_select_photo_button"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/black" />
 
 </LinearLayout>

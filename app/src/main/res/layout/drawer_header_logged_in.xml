@@ -17,7 +17,7 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/circle_bg_red_border"
         android:scaleType="centerCrop" />
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         style="@style/TextAppearance.AppCompat.Headline"
         android:id="@+id/drawer_header_userTitle"
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         android:textColor="@color/green"
         android:textStyle="bold"
         />
-    <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+    <!--style="@style/TextAppearance.AppCompat.Medium"-->
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

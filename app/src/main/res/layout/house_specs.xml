@@ -8,7 +8,7 @@
     android:background="@color/gray_light"
     >
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/house_bedCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,13 +17,13 @@
         android:gravity="center"
         android:layout_margin="8dp"
         android:padding="4dp"
-        android:textSize="@dimen/font_size_normal"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:background="@android:color/transparent"
         />
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/house_guestCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,13 +32,13 @@
         android:gravity="center"
         android:layout_margin="8dp"
         android:padding="4dp"
-        android:textSize="@dimen/font_size_normal"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:background="@android:color/transparent"
         />
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/house_bedroomCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,13 +47,13 @@
         android:gravity="center"
         android:layout_margin="8dp"
         android:padding="4dp"
-        android:textSize="@dimen/font_size_normal"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:background="@android:color/transparent"
         />
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/house_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
         android:gravity="center"
         android:layout_margin="8dp"
         android:padding="4dp"
-        android:textSize="@dimen/font_size_normal"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:background="@android:color/transparent"

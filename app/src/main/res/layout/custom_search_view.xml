@@ -28,14 +28,14 @@
     >
 
     <!-- This is actually used for the badge icon *or* the badge label (or neither) -->
-    <!--<TextView-->
+    <!--<xyz.narengi.android.ui.widget.CustomTextView-->
         <!--android:id="@+id/search_badge"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="match_parent"-->
         <!--android:gravity="center_vertical"-->
         <!--android:layout_marginBottom="2dip"-->
         <!--android:drawablePadding="0dip"-->
-        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+        <!--style="@style/TextAppearance.AppCompat.Medium"-->
         <!--android:textColor="?android:attr/textColorPrimary"-->
         <!--android:visibility="gone" />-->
 

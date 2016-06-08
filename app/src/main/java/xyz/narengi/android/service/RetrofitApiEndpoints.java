@@ -5,14 +5,11 @@ import com.squareup.okhttp.RequestBody;
 import java.util.Map;
 
 import retrofit.Call;
-import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Header;
-import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;
-import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.Url;
@@ -28,7 +25,6 @@ import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.common.dto.ProvinceCity;
 import xyz.narengi.android.common.dto.RequestVerification;
-import xyz.narengi.android.common.dto.SearchResult;
 import xyz.narengi.android.common.dto.SuggestionsResult;
 
 /**
@@ -94,4 +90,9 @@ public interface RetrofitApiEndpoints {
     @GET
     Call<HouseAvailableDates> getHouseAvailableDates(@Url String url);
 
+    @GET("/api/v1/houses/settings/house-types")
+    Call<Map<String, String>[]> getHouseTypes();
+
+    @GET("/api/v1/houses/settings/features")
+    Call<Map<String, String>[]> getHouseFeatures();
 }

@@ -31,7 +31,7 @@
         android:layout_margin="16dp"
         >
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_vertical"
@@ -42,11 +42,11 @@
             android:gravity="center"
             android:singleLine="true"
             android:text="@string/profile_registration_success_title"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            style="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/green_dark"
             android:textStyle="bold" />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_vertical"
@@ -57,11 +57,11 @@
             android:gravity="center"
             android:singleLine="false"
             android:text="@string/profile_registration_success_message"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/tertiary_text_dark"
             android:textStyle="bold" />
 
-        <Button
+        <xyz.narengi.android.ui.widget.CustomButton
             android:id="@+id/register_confirm_completeProfileButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,13 +71,13 @@
             android:gravity="center"
             android:text="@string/profile_complete_button"
             android:textColor="@android:color/black"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             />
 
     </LinearLayout>
 
 
-    <Button
+    <xyz.narengi.android.ui.widget.CustomButton
         android:id="@+id/register_confirm_skipButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
         android:background="@android:color/transparent"
         android:gravity="center"
         android:text="@string/profile_skip_update_button"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         />

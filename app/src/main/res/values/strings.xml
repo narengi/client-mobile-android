@@ -40,7 +40,10 @@
     <string name="currency_rials">ريال</string>
     <string name="night_caption">شب</string>
     <string name="multiply_mark">*</string>
+    <string name="plus_mark">+</string>
+    <string name="minus_mark">-</string>
     <string name="close_button">بستن</string>
     <string name="title_activity_house_map">Map</string>
+    <string name="title_activity_host_houses">HostHousesActivity</string>
 
 </resources>
