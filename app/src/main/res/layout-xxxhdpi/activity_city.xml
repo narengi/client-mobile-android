@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/city_coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:padding="0dp"
+    android:fitsSystemWindows="true"
+    android:background="@android:color/background_light"
+    >
+
+    <LinearLayout
+        android:id="@+id/city_progressLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@android:color/transparent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/city_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            >
+        </ProgressBar>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/city_housesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/city_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:gravity="top|center_horizontal"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        android:layout_marginTop="0dp"
+        android:paddingTop="0dp"
+        android:background="@android:color/transparent"
+        >
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/city_collapse_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_collapseMode="parallax"
+            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="64dp"
+            app:collapsedTitleGravity="left|center_vertical"
+            app:collapsedTitleTextAppearance="?android:attr/textAppearanceLarge"
+            app:expandedTitleTextAppearance="@android:color/transparent"
+            >
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="100dp"
+                android:orientation="vertical"
+                android:layout_margin="0dp"
+                android:padding="0dp"
+                android:fitsSystemWindows="true"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.7"
+                >
+                <!--app:layout_collapseParallaxMultiplier="0.7"-->
+                <!-- View A, Image pager -->
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:padding="0dp"
+                    >
+
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/city_viewpager"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_margin="0dp"
+                        android:padding="0dp"
+                        />
+
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/city_dataLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignBottom="@id/city_viewpager"
+                        android:layout_alignLeft="@id/city_viewpager"
+                        android:layout_alignRight="@id/city_viewpager"
+                        android:layout_alignTop="@id/city_viewpager"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!--<xyz.narengi.android.ui.widget.CustomTextView-->
+                        <!--android:id="@+id/city_viewpager_item_title"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:gravity="center"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:textSize="48sp"-->
+                        <!--android:textStyle="bold" />-->
+
+                        <!--<xyz.narengi.android.ui.widget.CustomTextView-->
+                        <!--android:id="@+id/city_viewpager_item_house_count"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:gravity="center"-->
+                        <!--android:layout_marginLeft="10dp"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:textSize="24sp"-->
+                        <!--android:textStyle="bold"-->
+                        <!--/>-->
+
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/city_wikiLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/city_viewpager"
+                        android:layout_margin="0dp"
+                        android:padding="0dp"
+                        android:background="@drawable/city_pager_bg"
+                        android:orientation="vertical">
+
+                        <xyz.narengi.android.ui.widget.CustomTextView
+                            android:id="@+id/city_viewpager_item_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:textStyle="bold" />
+
+                        <xyz.narengi.android.ui.widget.CustomTextView
+                            android:id="@+id/city_viewpager_item_house_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="@dimen/city_title_bottom_margin"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            style="@style/TextAppearance.AppCompat.Small"
+                            android:textStyle="bold" />
+
+                        <xyz.narengi.android.ui.widget.CustomTextView
+                            android:id="@+id/city_viewpager_item_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:gravity="right|center_vertical"
+                            android:singleLine="false"
+                            android:textColor="@android:color/white"
+                            style="@style/TextAppearance.AppCompat.Small" />
+
+                        <xyz.narengi.android.ui.widget.CustomTextView
+                            android:id="@+id/city_viewpager_item_wiki"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:gravity="left|center_vertical"
+                            android:singleLine="true"
+                            android:text="@string/city_wikipedia_caption"
+                            android:textColor="@android:color/white"
+                            style="@style/TextAppearance.AppCompat.Small"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <com.viewpagerindicator.CirclePageIndicator
+                        android:id="@+id/city_pageIndicator"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/city_wikiLayout"
+                        android:layout_margin="4dp" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/city_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:minHeight="?attr/actionBarSize"
+                android:layout_margin="0dp"
+                android:padding="0dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:layout_collapseMode="pin"
+                android:elevation="0dp"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.design.widget.CoordinatorLayout>

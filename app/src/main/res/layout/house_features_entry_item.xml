@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/city_attractionsHeaderLayout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:background="@android:color/transparent"-->
+    <!-->-->
+
+    <!--<ImageButton-->
+        <!--android:id="@+id/house_features_list_item_icon"-->
+        <!--style="?attr/actionButtonStyle"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="right|center_vertical"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:contentDescription=""-->
+        <!--android:focusable="false"-->
+        <!--/>-->
+
+<xyz.narengi.android.ui.widget.CustomCheckBox
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/house_features_entry_item_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="10dp"
+    android:gravity="right|center_vertical"
+    android:padding="10dp"
+    style="@style/TextAppearance.AppCompat.Small"
+    android:textStyle="bold"
+    />
+    <!--android:textColor="@color/house_type_radio_button_text_color"-->
+    <!--android:button="@drawable/house_type_radio_button_bg_left"-->
+
+    <!--android:layout_toLeftOf="@id/house_features_list_item_icon"-->
+
+
+<!--</RelativeLayout>-->

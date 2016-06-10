@@ -15,24 +15,24 @@
         android:background="@color/bg_gray_light"
         android:orientation="vertical">
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@color/bg_gray_light"
             android:gravity="center"
             android:text="@string/book_depart_date_caption"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/text_gray_light" />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:id="@+id/book_departDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@color/bg_gray_light"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/orange_light" />
 
     </LinearLayout>
@@ -55,24 +55,24 @@
         android:background="@color/bg_gray_light"
         android:orientation="vertical">
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@color/bg_gray_light"
             android:gravity="center"
             android:text="@string/book_arrive_date_caption"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/text_gray_light" />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:id="@+id/book_arriveDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@color/bg_gray_light"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/orange_light" />
 
     </LinearLayout>

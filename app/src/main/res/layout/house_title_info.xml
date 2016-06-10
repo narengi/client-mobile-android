@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/house_city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,13 +15,13 @@
         android:paddingLeft="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="0dp"
-        android:textSize="@dimen/font_size_normal"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textStyle="bold"
         android:textColor="@android:color/holo_orange_dark"
         android:background="@android:color/transparent"
         />
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/house_summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:paddingLeft="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="0dp"
-        android:textSize="@dimen/font_size_large"
+        style="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
         android:textColor="@color/green_dark"
         android:background="@android:color/transparent"
@@ -48,7 +48,7 @@
         android:gravity="right|center_vertical"
         >
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:id="@+id/house_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             android:paddingLeft="8dp"
             android:paddingTop="4dp"
             android:paddingBottom="0dp"
-            android:textSize="@dimen/font_size_small"
+            style="@style/TextAppearance.AppCompat.Small"
             android:textStyle="bold"
             android:textColor="@android:color/darker_gray"
             android:background="@android:color/transparent"

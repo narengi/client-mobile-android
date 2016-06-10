@@ -12,14 +12,14 @@
     >
 
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/suggestion_header_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:maxHeight="30dp"
         android:gravity="right|center_vertical"
         android:layout_gravity="right|center_vertical"
-        android:textSize="@dimen/font_size_normal"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textStyle="bold"
         android:background="@android:color/transparent"
         android:focusable="false"

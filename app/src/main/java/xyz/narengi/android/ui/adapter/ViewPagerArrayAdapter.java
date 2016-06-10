@@ -54,10 +54,7 @@ public class ViewPagerArrayAdapter extends RecyclerView.Adapter<ViewPagerArrayAd
                 "315,761,000", "237,641,326", "193,946,886", "182,912,000",
                 "170,901,000", "152,518,015", "143,369,806", "127,360,000" };
 
-        int[] flag = new int[] { R.drawable.sample_0, R.drawable.sample_1,
-                R.drawable.sample_2, R.drawable.sample_3,
-                R.drawable.sample_4, R.drawable.sample_5, R.drawable.sample_6,
-                R.drawable.sample_7, R.drawable.sample_1, R.drawable.sample_2};
+        int[] flag = new int[] {};
 
         // Locate the ViewPager in viewpager_main.xml
 //            ViewPager viewPager = (ViewPager) rowView.findViewById(R.id.viewpager);

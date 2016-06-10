@@ -19,11 +19,11 @@
         android:background="@android:color/transparent"
         />
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/calendar_header_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/TextAppearance.AppCompat.Large"
         android:layout_centerVertical="true"
         android:gravity="center"
         android:background="@android:color/transparent"

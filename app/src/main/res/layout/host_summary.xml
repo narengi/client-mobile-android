@@ -7,7 +7,7 @@
     android:padding="0dp"
     >
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/host_profile_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:layout_margin="10dp"
         android:padding="0dp"
         android:singleLine="false"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/tertiary_text_dark"
         android:textStyle="bold"
         android:background="@android:color/transparent"

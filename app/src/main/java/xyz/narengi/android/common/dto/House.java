@@ -28,6 +28,8 @@ public class House implements Serializable {
     private HouseExtraService[] ExtraServices;
     private String bookingUrl;
     private Commission Commission;
+    private Location location;
+    private String address;
 
 
     public String getName() {
@@ -196,6 +198,22 @@ public class House implements Serializable {
 
     public void setCommission(House.Commission commission) {
         Commission = commission;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public class Commission implements Serializable {

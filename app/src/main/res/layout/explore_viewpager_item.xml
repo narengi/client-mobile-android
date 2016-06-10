@@ -25,23 +25,23 @@
         android:layout_alignBottom="@id/explore_viewpager_item_image"
         >
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:id="@+id/explore_viewpager_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textSize="@dimen/font_size_x_large"
+            style="@style/TextAppearance.AppCompat.Large"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:id="@+id/explore_viewpager_item_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textSize="@dimen/font_size_large"
+            style="@style/TextAppearance.AppCompat.Large"
             android:textColor="@android:color/white"
             />
 

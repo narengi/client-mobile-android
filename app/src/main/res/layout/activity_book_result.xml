@@ -40,7 +40,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:id="@+id/book_result_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,11 +52,11 @@
                 android:gravity="center"
                 android:singleLine="false"
                 android:text="@string/profile_registration_success_title"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                style="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/green_dark"
                 />
 
-            <TextView
+            <xyz.narengi.android.ui.widget.CustomTextView
                 android:id="@+id/book_result_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
                 android:gravity="center"
                 android:singleLine="false"
                 android:text="@string/profile_registration_success_message"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/text_gray_dark"
                 android:textStyle="bold" />
 
@@ -76,7 +76,7 @@
 
     </LinearLayout>
 
-    <Button
+    <xyz.narengi.android.ui.widget.CustomButton
         android:id="@+id/book_result_closeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,6 +89,6 @@
         android:shadowRadius="0"
         android:stateListAnimator="@null"
         android:text="@string/close_button"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/tertiary_text_dark" />
 </RelativeLayout>

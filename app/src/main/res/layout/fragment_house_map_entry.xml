@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_gray_light"
+    tools:context="xyz.narengi.android.ui.fragment.HouseMapEntryFragment">
+
+
+    <FrameLayout
+        android:id="@+id/house_entry_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_gray_light">
+
+    </FrameLayout>
+
+    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:map="http://schemas.android.com/apk/res-auto"-->
+        <!--xmlns:tools="http://schemas.android.com/tools"-->
+        <!--android:id="@+id/house_entry_map"-->
+        <!--android:name="xyz.narengi.android.ui.fragment.MapFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--tools:context="xyz.narengi.android.ui.fragment.HouseMapEntryFragment">-->
+    <!--</fragment>-->
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+
+        <xyz.narengi.android.ui.widget.CustomButton
+            android:id="@+id/house_map_entry_nextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/button_bg_green"
+            android:gravity="center"
+            android:minHeight="40dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="4dp"
+            android:text="@string/house_entry_next_button"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/green_dark" />
+
+        <xyz.narengi.android.ui.widget.CustomButton
+            android:id="@+id/house_map_entry_previousButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/button_bg_orange"
+            android:gravity="center"
+            android:minHeight="40dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="4dp"
+            android:text="@string/house_entry_previous_button"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/orange_light" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

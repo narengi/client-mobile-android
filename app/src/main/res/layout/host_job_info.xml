@@ -19,7 +19,7 @@
         android:gravity="right|center_vertical"
         android:orientation="horizontal">
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:id="@+id/host_profile_job"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,11 +30,11 @@
             android:gravity="right|center_vertical"
             android:padding="0dp"
             android:singleLine="false"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/tertiary_text_dark"
             android:textStyle="bold" />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
@@ -45,7 +45,7 @@
             android:padding="0dp"
             android:singleLine="true"
             android:text="@string/host_profile_job_caption"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/holo_orange_dark"
             android:textStyle="bold" />
 

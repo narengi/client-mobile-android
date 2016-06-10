@@ -6,13 +6,13 @@
     android:background="@android:color/transparent"
     >
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/book_day_night_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_margin="8dip"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/orange_light"
         android:background="@android:color/transparent"
         />

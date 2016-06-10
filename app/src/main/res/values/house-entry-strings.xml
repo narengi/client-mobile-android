@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="house_info_entry_page_title">اطلاعات عمومی مسکن</string>
+    <string name="house_map_entry_page_title">موقعيت مکانی روی نقشه</string>
+    <string name="house_type_entry_page_title">نوع مسکن</string>
+    <string name="house_room_entry_page_title">اطلاعات اتاق</string>
+    <string name="house_guest_entry_page_title">اطلاعات مهمان</string>
+    <string name="house_features_entry_page_title">امکانات</string>
+
+    <string name="house_entry_next_button">مرحله بعدی</string>
+    <string name="house_entry_previous_button">مرحله قبلی</string>
+
+    <string name="house_info_entry_title_hint">عنوان</string>
+    <string name="house_info_entry_summary_hint">توضيحات</string>
+    <string name="house_info_entry_province_hint">انتخاب استان</string>
+    <string name="house_info_entry_city_hint">انتخاب شهر</string>
+    <string name="house_info_entry_address_hint">آدرس</string>
+
+    <string-array name="house_entry_province_array">
+        <item>استان</item>
+    </string-array>
+
+    <string-array name="house_entry_city_array">
+        <item>شهر</item>
+    </string-array>
+
+    <!-- House rooms section -->
+    <string name="house_room_entry_counter_caption">%s عدد</string>
+    <string name="house_room_entry_rooms_caption">تعداد اتاق خواب</string>
+    <string name="house_room_entry_beds_caption">تعداد تخت خواب</string>
+    <string name="house_room_entry_price_caption">قيمت هر شب اقامت (ريال)</string>
+    <string name="house_entry_price_hint">مثال : ۱،۰۰۰</string>
+
+    <!-- House guests section -->
+    <string name="house_guest_entry_counter_caption">%s نفر</string>
+    <string name="house_guest_entry_guests_caption">تعداد مهمانان</string>
+    <string name="house_guest_entry_max_guests_caption">تعداد حداکثر مهمان</string>
+    <string name="house_guest_entry_extra_guest_price_caption">هزينه هر مهمان اضافی (ريال)</string>
+
+</resources>

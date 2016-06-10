@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="0dp">
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
@@ -18,7 +18,7 @@
         android:padding="0dp"
         android:singleLine="true"
         android:text="@string/host_profile_reviews_caption"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/holo_orange_dark"
         android:textStyle="bold" />
 </LinearLayout>

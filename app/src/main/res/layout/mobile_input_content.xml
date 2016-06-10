@@ -6,7 +6,7 @@
     android:orientation="vertical"
     >
 
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
@@ -19,7 +19,7 @@
         android:background="@android:color/transparent"
         android:singleLine="true"
         android:text="@string/mobile_input_caption"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/tertiary_text_dark"
         android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
             android:background="@android:color/transparent"
             android:gravity="left|center_vertical" />
 
-        <TextView
+        <xyz.narengi.android.ui.widget.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
@@ -55,7 +55,7 @@
             android:gravity="right|center_vertical"
             android:singleLine="true"
             android:text="@string/mobile_input_mobile_caption"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
@@ -70,7 +70,7 @@
         android:background="@android:color/transparent"
         >
 
-        <Button
+        <xyz.narengi.android.ui.widget.CustomButton
             android:id="@+id/mobile_input_sendButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
             android:gravity="center"
             android:text="@string/mobile_input_send_button"
             android:textColor="@color/green_dark"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/TextAppearance.AppCompat.Medium"
             />
 
 

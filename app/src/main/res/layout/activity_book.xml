@@ -89,7 +89,7 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <Button
+    <xyz.narengi.android.ui.widget.CustomButton
         android:id="@+id/book_continueButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,6 +99,6 @@
         android:gravity="center"
         android:text="@string/book_continue_button"
         android:textColor="@color/green"
-        android:textSize="@dimen/font_size_normal" />
+        style="@style/TextAppearance.AppCompat.Medium" />
 
 </RelativeLayout>

@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <!-- Houses caption -->
-    <TextView
+    <xyz.narengi.android.ui.widget.CustomTextView
         android:id="@+id/city_housesCaption"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:layout_marginTop="0dp"
         android:gravity="center"
         android:textColor="@android:color/holo_orange_dark"
-        android:textSize="@dimen/font_size_large"
+        style="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
         android:text="@string/city_houses_caption"
         />

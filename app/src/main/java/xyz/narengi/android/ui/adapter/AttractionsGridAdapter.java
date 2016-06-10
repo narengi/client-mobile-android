@@ -108,14 +108,6 @@ public class AttractionsGridAdapter extends BaseAdapter {
         return itemView;
     }
 
-    // references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.sample_4, R.drawable.sample_4,
-            R.drawable.sample_4, R.drawable.sample_4,
-            R.drawable.sample_4, R.drawable.sample_4,
-            R.drawable.sample_4
-    };
-
     private class RoundedTransformation implements com.squareup.picasso.Transformation {
         private final int radius;
         private final int margin;  // dp
