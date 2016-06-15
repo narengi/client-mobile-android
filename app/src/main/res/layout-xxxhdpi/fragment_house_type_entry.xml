@@ -1,106 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/bg_gray_light"
     android:orientation="vertical"
     tools:context="xyz.narengi.android.ui.fragment.HouseTypeEntryFragment">
 
-            <!--<Space-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--android:layout_weight="0"-->
-                <!--android:layout_margin="0dp"-->
-                <!--android:background="@android:color/transparent"-->
-                <!--android:padding="0dp" />-->
+    <!--<Space-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="?attr/actionBarSize"-->
+    <!--android:layout_weight="0"-->
+    <!--android:layout_margin="0dp"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:padding="0dp" />-->
 
-            <!--<Space-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--android:layout_weight="0"-->
-                <!--android:layout_margin="0dp"-->
-                <!--android:background="@android:color/transparent"-->
-                <!--android:padding="0dp" />-->
+    <!--<Space-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="?attr/actionBarSize"-->
+    <!--android:layout_weight="0"-->
+    <!--android:layout_margin="0dp"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:padding="0dp" />-->
 
 
-            <RadioGroup
-                android:id="@+id/house_type_entry_radioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:layout_gravity="top"
-                android:layout_margin="0dp"
-                android:background="@android:color/transparent"
-                >
+    <RadioGroup
+        android:id="@+id/house_type_entry_radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_margin="0dp"
+        android:layout_weight="0"
+        android:background="@android:color/transparent">
 
-                <!--<xyz.narengi.android.ui.widget.CustomRadioButton-->
-                    <!--android:id="@+id/house_type_entry_vila"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="right|top"-->
-                    <!--android:layout_margin="10dp"-->
-                    <!--android:background="@null"-->
-                    <!--android:button="@null"-->
-                    <!--android:drawableLeft="@drawable/house_type_radio_button_bg_left"-->
-                    <!--android:drawableRight="@drawable/house_type_radio_button_bg_right"-->
-                    <!--android:gravity="right|center_vertical"-->
-                    <!--android:text="خانه ويلايی"-->
-                    <!--style="@style/TextAppearance.AppCompat.Small"-->
-                    <!--android:textColor="@color/house_type_radio_button_text_color" />-->
+        <!--<xyz.narengi.android.ui.widget.CustomRadioButton-->
+        <!--android:id="@+id/house_type_entry_vila"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="right|top"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:background="@null"-->
+        <!--android:button="@null"-->
+        <!--android:drawableLeft="@drawable/house_type_radio_button_bg_left"-->
+        <!--android:drawableRight="@drawable/house_type_radio_button_bg_right"-->
+        <!--android:gravity="right|center_vertical"-->
+        <!--android:text="خانه ويلايی"-->
+        <!--style="@style/TextAppearance.AppCompat.Small"-->
+        <!--android:textColor="@color/house_type_radio_button_text_color" />-->
 
-                <!--<View-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="1dp"-->
-                    <!--android:background="@android:color/darker_gray" />-->
-                <!--&lt;!&ndash;android:button="@drawable/ic_action_check_mark"&ndash;&gt;-->
+        <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@android:color/darker_gray" />-->
+        <!--&lt;!&ndash;android:button="@drawable/ic_action_check_mark"&ndash;&gt;-->
 
-            </RadioGroup>
+    </RadioGroup>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0"
+        android:background="@android:color/transparent">
+
+        <xyz.narengi.android.ui.widget.CustomButton
+            android:id="@+id/house_type_entry_nextButton"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="10dp"
-            >
+            android:maxHeight="?android:attr/listPreferredItemHeight"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/button_bg_green"
+            android:gravity="center"
+            android:paddingBottom="0dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="0dp"
+            android:text="@string/house_entry_next_button"
+            android:textColor="@color/green_dark" />
 
-
-            <xyz.narengi.android.ui.widget.CustomButton
-                android:id="@+id/house_type_entry_nextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/button_bg_green"
-                android:gravity="center"
-                android:minHeight="40dp"
-                android:paddingBottom="4dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="4dp"
-                android:text="@string/house_entry_next_button"
-                style="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/green_dark" />
-
-            <xyz.narengi.android.ui.widget.CustomButton
-                android:id="@+id/house_type_entry_previousButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="10dp"
-                android:background="@drawable/button_bg_orange"
-                android:gravity="center"
-                android:minHeight="40dp"
-                android:paddingBottom="4dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="4dp"
-                android:text="@string/house_entry_previous_button"
-                style="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/orange_light" />
-
-        </RelativeLayout>
-        </LinearLayout>
+        <xyz.narengi.android.ui.widget.CustomButton
+            android:id="@+id/house_type_entry_previousButton"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="?android:attr/listPreferredItemHeight"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/button_bg_orange"
+            android:gravity="center"
+            android:paddingBottom="0dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="0dp"
+            android:text="@string/house_entry_previous_button"
+            android:textColor="@color/orange_light" />
+    </RelativeLayout>
+</LinearLayout>

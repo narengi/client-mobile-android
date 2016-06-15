@@ -121,8 +121,8 @@ public class ExploreActivity extends ActionBarActivity {
         String accessToken = preferences.getString("accessToken", "");
         String username = preferences.getString("username", "");
         if (accessToken.length() > 0 && username.length() > 0) {
-            System.err.println("\n\n\naccessToken : " + accessToken);
-            System.err.println("\n\nusername : " + username + "\n\n");
+//            System.err.println("\n\n\naccessToken : " + accessToken);
+//            System.err.println("\n\nusername : " + username + "\n\n");
             setupNavigationView(true);
         } else {
             setupNavigationView(false);

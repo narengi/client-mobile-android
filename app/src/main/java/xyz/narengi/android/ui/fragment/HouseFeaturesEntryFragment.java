@@ -50,6 +50,7 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
     private Map<String, String>[] houseFeatures;
     private NestedScrollingListView featuresListView;
     private List<String> selectedFeatures;
+    private List<HouseFeature> selectedHouseFeatures;
 
     public HouseFeaturesEntryFragment() {
         // Required empty public constructor
@@ -67,15 +68,16 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        featuresListView = (NestedScrollingListView)view.findViewById(R.id.house_features_entry_featuresListView);
+        featuresListView = (NestedScrollingListView) view.findViewById(R.id.house_features_entry_featuresListView);
         featuresListView.setListener(new NestedScrollingListView.OnTouchListener() {
             @Override
             public void onTouch() {
                 if (getActivity() != null && getActivity() instanceof AddHouseActivity) {
-                    ((AddHouseActivity)getActivity()).requestDisallowInterceptTouchEvent(true);
+                    ((AddHouseActivity) getActivity()).requestDisallowInterceptTouchEvent(true);
                 }
             }
         });
+
 
         featuresListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -120,8 +122,8 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
 
         getHouseFeatures();
 
-        Button nextButton = (Button)view.findViewById(R.id.house_features_entry_nextButton);
-        Button previousButton = (Button)view.findViewById(R.id.house_features_entry_previousButton);
+        Button nextButton = (Button) view.findViewById(R.id.house_features_entry_nextButton);
+        Button previousButton = (Button) view.findViewById(R.id.house_features_entry_previousButton);
 
         switch (getEntryMode()) {
             case ADD:
@@ -131,6 +133,12 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                         @Override
                         public void onClick(View view) {
                             if (validate() && getOnInteractionListener() != null) {
+                                List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
+                                if (selectedHouseFeatures != null) {
+                                    HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
+                                    selectedHouseFeatures.toArray(houseFeatures);
+                                    getHouse().setFeatureList(houseFeatures);
+                                }
                                 getOnInteractionListener().onGoToNextSection(getHouse());
                             }
                         }
@@ -143,6 +151,12 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                         @Override
                         public void onClick(View view) {
                             if (validate() && getOnInteractionListener() != null) {
+                                List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
+                                if (selectedHouseFeatures != null) {
+                                    HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
+                                    selectedHouseFeatures.toArray(houseFeatures);
+                                    getHouse().setFeatureList(houseFeatures);
+                                }
                                 getOnInteractionListener().onBackToPreviousSection(getHouse());
                             }
                         }
@@ -154,6 +168,23 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                     nextButton.setVisibility(View.GONE);
                 break;
         }
+    }
+
+    private List<HouseFeature> getSelectedHouseFeatures() {
+        selectedHouseFeatures = new ArrayList<HouseFeature>();
+        SparseBooleanArray checked = featuresListView.getCheckedItemPositions();
+        for (int i = 0; i < featuresListView.getCount(); i++)
+            if (checked.get(i)) {
+                Map<String, String> selectedFeatureMap = houseFeatures[i];
+                HouseFeature houseFeature = new HouseFeature();
+                Map.Entry<String, String> entry = selectedFeatureMap.entrySet().iterator().next();
+                houseFeature.setType(entry.getKey());
+                houseFeature.setName(entry.getValue());
+                houseFeature.setAvailable(true);
+                selectedHouseFeatures.add(houseFeature);
+            }
+
+        return selectedHouseFeatures;
     }
 
     private void getHouseFeatures() {
@@ -195,7 +226,7 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
         HouseFeature[] houseFeatureArray = buildHouseFeatureArray(houseFeatures);
         final String[] titlesArray = new String[houseFeatureArray.length];
         final String[] typesArray = new String[houseFeatureArray.length];
-        for (int i=0 ; i < houseFeatureArray.length ; i++) {
+        for (int i = 0; i < houseFeatureArray.length; i++) {
             titlesArray[i] = houseFeatureArray[i].getName();
             typesArray[i] = houseFeatureArray[i].getType();
         }
@@ -213,7 +244,7 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
 //                if (isChecked) {
 //                    rightDrawable = getResources().getDrawable(R.drawable.ic_action_about_narengi);
 //                }
-                ((CheckedTextView)v).setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.house_type_radio_button_bg_left),
+                ((CheckedTextView) v).setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.house_type_radio_button_bg_left),
                         null, rightDrawable, null);
 
                 return v;
@@ -221,6 +252,18 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
         };
         featuresListView.setAdapter(adapter);
         featuresListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        if (getHouse() != null && getHouse().getFeatureList() != null) {
+            for (int i = 0; i < houseFeatureArray.length; i++) {
+                HouseFeature houseFeature = houseFeatureArray[i];
+                for (HouseFeature selectedHouseFeature : getHouse().getFeatureList()) {
+                    if (houseFeature.getType().equalsIgnoreCase(selectedHouseFeature.getType())) {
+                        featuresListView.setItemChecked(i, true);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private HouseFeature[] buildHouseFeatureArray(Map<String, String>[] houseFeaturesMapArray) {
@@ -229,7 +272,7 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
             return null;
 
         HouseFeature[] houseFeatureArray = new HouseFeature[houseFeaturesMapArray.length];
-        for (int i=0 ; i < houseFeaturesMapArray.length ; i++) {
+        for (int i = 0; i < houseFeaturesMapArray.length; i++) {
             HouseFeature houseFeature = new HouseFeature();
             houseFeature.setAvailable(true);
             Map<String, String> houseFeatureMap = houseFeaturesMapArray[i];
@@ -275,22 +318,22 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                 //configure view holder
 
                 viewHolder = new ViewHolder();
-                viewHolder.titleCheckBox = (CheckBox)rowView.findViewById(R.id.house_features_entry_item_title);
+                viewHolder.titleCheckBox = (CheckBox) rowView.findViewById(R.id.house_features_entry_item_title);
 
                 rowView.setTag(viewHolder);
             } else {
-                viewHolder = (ViewHolder)rowView.getTag();
+                viewHolder = (ViewHolder) rowView.getTag();
             }
 
 
-            if( objects != null && position < objects.length ) {
+            if (objects != null && position < objects.length) {
                 final HouseFeature houseFeature = objects[position];
 
                 viewHolder.titleCheckBox.setText(houseFeature.getName());
                 boolean isChecked = false;
 
                 if (selectedFeatures != null) {
-                    for (String featureType:selectedFeatures) {
+                    for (String featureType : selectedFeatures) {
                         if (featureType.equalsIgnoreCase(houseFeature.getType())) {
                             isChecked = true;
                         }
@@ -301,7 +344,7 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                     @Override
                     public void onClick(View view) {
 
-                        if (((CheckBox)view).isChecked()) {
+                        if (((CheckBox) view).isChecked()) {
                             if (selectedFeatures == null)
                                 selectedFeatures = new ArrayList<String>();
                             selectedFeatures.add(houseFeature.getType());
@@ -338,7 +381,8 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                     rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_camera);
                     break;
                 default:
-                    rightDrawable = getResources().getDrawable(R.drawable.house_type_radio_button_bg_right);
+//                    rightDrawable = getResources().getDrawable(R.drawable.house_type_radio_button_bg_right);
+                    rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_compass);
                     break;
 
             }

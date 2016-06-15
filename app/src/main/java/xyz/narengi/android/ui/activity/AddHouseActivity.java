@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -17,11 +18,18 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.byagowi.persiancalendar.Entity.Day;
+
+import java.util.List;
+import java.util.Map;
+
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.House;
+import xyz.narengi.android.ui.fragment.HouseDatesEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseEntryBaseFragment;
 import xyz.narengi.android.ui.fragment.HouseFeaturesEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseGuestEntryFragment;
+import xyz.narengi.android.ui.fragment.HouseImagesEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseInfoEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseMapEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseRoomEntryFragment;
@@ -31,6 +39,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 
     private House house;
     private HouseEntryStep currentStep;
+    private List<Uri> imageUris;
+    private Map<String,List<Day>> selectedDaysMap;
 
     public enum HouseEntryStep {
         HOUSE_INFO,
@@ -158,8 +168,12 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                 goToFeaturesSection();
                 break;
             case HOUSE_FEATURES:
+                currentStep = HouseEntryStep.HOUSE_IMAGES;
+                goToImagesSection();
                 break;
             case HOUSE_IMAGES:
+                currentStep = HouseEntryStep.HOUSE_DATES;
+                goToDatesSection();
                 break;
             case HOUSE_DATES:
                 break;
@@ -211,8 +225,12 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                 backToGuestsSection();
                 break;
             case HOUSE_IMAGES:
+                currentStep = HouseEntryStep.HOUSE_FEATURES;
+                backToFeaturesSection();
                 break;
             case HOUSE_DATES:
+                currentStep = HouseEntryStep.HOUSE_IMAGES;
+                backToImagesSection();
                 break;
 //            default:
 //                scrollView = (NestedScrollView)findViewById(R.id.add_house_scrollview);
@@ -462,6 +480,120 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         }
     }
 
+    private void goToImagesSection() {
+        HouseEntryBaseFragment houseEntryFragment = new HouseImagesEntryFragment();
+        initNextFragment(houseEntryFragment);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.add_house_content, houseEntryFragment, "AddHouseContentFragment")
+                .commit();
+
+        updatePageTitle(R.string.house_images_entry_page_title);
+
+        TextView indicatorTextView1 = (TextView) findViewById(R.id.add_house_indicator1);
+        if (indicatorTextView1 != null) {
+            indicatorTextView1.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView1.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView2 = (TextView) findViewById(R.id.add_house_indicator2);
+        if (indicatorTextView2 != null) {
+            indicatorTextView2.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView2.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView3 = (TextView) findViewById(R.id.add_house_indicator3);
+        if (indicatorTextView3 != null) {
+            indicatorTextView3.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView3.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView4 = (TextView) findViewById(R.id.add_house_indicator4);
+        if (indicatorTextView4 != null) {
+            indicatorTextView4.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView4.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView5 = (TextView) findViewById(R.id.add_house_indicator5);
+        if (indicatorTextView5 != null) {
+            indicatorTextView5.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView5.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView6 = (TextView) findViewById(R.id.add_house_indicator6);
+        if (indicatorTextView6 != null) {
+            indicatorTextView6.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView6.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView7 = (TextView) findViewById(R.id.add_house_indicator7);
+        if (indicatorTextView7 != null) {
+            indicatorTextView7.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView7.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_orange));
+        }
+    }
+
+    private void goToDatesSection() {
+        HouseEntryBaseFragment houseEntryFragment = new HouseDatesEntryFragment();
+        initNextFragment(houseEntryFragment);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.add_house_content, houseEntryFragment, "AddHouseContentFragment")
+                .commit();
+
+        updatePageTitle(R.string.house_dates_entry_page_title);
+
+        TextView indicatorTextView1 = (TextView) findViewById(R.id.add_house_indicator1);
+        if (indicatorTextView1 != null) {
+            indicatorTextView1.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView1.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView2 = (TextView) findViewById(R.id.add_house_indicator2);
+        if (indicatorTextView2 != null) {
+            indicatorTextView2.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView2.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView3 = (TextView) findViewById(R.id.add_house_indicator3);
+        if (indicatorTextView3 != null) {
+            indicatorTextView3.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView3.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView4 = (TextView) findViewById(R.id.add_house_indicator4);
+        if (indicatorTextView4 != null) {
+            indicatorTextView4.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView4.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView5 = (TextView) findViewById(R.id.add_house_indicator5);
+        if (indicatorTextView5 != null) {
+            indicatorTextView5.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView5.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView6 = (TextView) findViewById(R.id.add_house_indicator6);
+        if (indicatorTextView6 != null) {
+            indicatorTextView6.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView6.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView7 = (TextView) findViewById(R.id.add_house_indicator7);
+        if (indicatorTextView7 != null) {
+            indicatorTextView7.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView7.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView8 = (TextView) findViewById(R.id.add_house_indicator8);
+        if (indicatorTextView8 != null) {
+            indicatorTextView8.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView8.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_orange));
+        }
+    }
+
     private void backToMapSection() {
         HouseEntryBaseFragment houseEntryFragment = new HouseMapEntryFragment();
         initNextFragment(houseEntryFragment);
@@ -626,6 +758,124 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         }
     }
 
+    private void backToFeaturesSection() {
+        HouseEntryBaseFragment houseEntryFragment = new HouseFeaturesEntryFragment();
+        initNextFragment(houseEntryFragment);
+
+        readCurrentFragmentHouse();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.add_house_content, houseEntryFragment, "AddHouseContentFragment")
+                .commit();
+
+        updatePageTitle(R.string.house_features_entry_page_title);
+
+        TextView indicatorTextView1 = (TextView) findViewById(R.id.add_house_indicator1);
+        if (indicatorTextView1 != null) {
+            indicatorTextView1.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView1.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView2 = (TextView) findViewById(R.id.add_house_indicator2);
+        if (indicatorTextView2 != null) {
+            indicatorTextView2.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView2.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView3 = (TextView) findViewById(R.id.add_house_indicator3);
+        if (indicatorTextView3 != null) {
+            indicatorTextView3.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView3.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView4 = (TextView) findViewById(R.id.add_house_indicator4);
+        if (indicatorTextView4 != null) {
+            indicatorTextView4.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView4.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView5 = (TextView) findViewById(R.id.add_house_indicator5);
+        if (indicatorTextView5 != null) {
+            indicatorTextView5.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView5.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView6 = (TextView) findViewById(R.id.add_house_indicator6);
+        if (indicatorTextView6 != null) {
+            indicatorTextView6.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView6.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_orange));
+        }
+
+        TextView indicatorTextView7 = (TextView) findViewById(R.id.add_house_indicator7);
+        if (indicatorTextView7 != null) {
+            indicatorTextView7.setTextColor(getResources().getColor(R.color.text_gray_dark));
+            indicatorTextView7.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_gray_light));
+        }
+    }
+
+    private void backToImagesSection() {
+        HouseEntryBaseFragment houseEntryFragment = new HouseImagesEntryFragment();
+        initNextFragment(houseEntryFragment);
+
+        readCurrentFragmentHouse();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.add_house_content, houseEntryFragment, "AddHouseContentFragment")
+                .commit();
+
+        updatePageTitle(R.string.house_images_entry_page_title);
+
+        TextView indicatorTextView1 = (TextView) findViewById(R.id.add_house_indicator1);
+        if (indicatorTextView1 != null) {
+            indicatorTextView1.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView1.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView2 = (TextView) findViewById(R.id.add_house_indicator2);
+        if (indicatorTextView2 != null) {
+            indicatorTextView2.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView2.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView3 = (TextView) findViewById(R.id.add_house_indicator3);
+        if (indicatorTextView3 != null) {
+            indicatorTextView3.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView3.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView4 = (TextView) findViewById(R.id.add_house_indicator4);
+        if (indicatorTextView4 != null) {
+            indicatorTextView4.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView4.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView5 = (TextView) findViewById(R.id.add_house_indicator5);
+        if (indicatorTextView5 != null) {
+            indicatorTextView5.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView5.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView6 = (TextView) findViewById(R.id.add_house_indicator6);
+        if (indicatorTextView6 != null) {
+            indicatorTextView6.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView6.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_green));
+        }
+
+        TextView indicatorTextView7 = (TextView) findViewById(R.id.add_house_indicator7);
+        if (indicatorTextView7 != null) {
+            indicatorTextView7.setTextColor(getResources().getColor(android.R.color.white));
+            indicatorTextView7.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_orange));
+        }
+
+        TextView indicatorTextView8 = (TextView) findViewById(R.id.add_house_indicator8);
+        if (indicatorTextView8 != null) {
+            indicatorTextView8.setTextColor(getResources().getColor(R.color.text_gray_dark));
+            indicatorTextView8.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_gray_light));
+        }
+    }
+
     @Override
     public void onGoToNextSection(House house) {
         goToNextSection(house);
@@ -709,4 +959,19 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         }
     }
 
+    public List<Uri> getImageUris() {
+        return imageUris;
+    }
+
+    public void setImageUris(List<Uri> imageUris) {
+        this.imageUris = imageUris;
+    }
+
+    public Map<String, List<Day>> getSelectedDaysMap() {
+        return selectedDaysMap;
+    }
+
+    public void setSelectedDaysMap(Map<String, List<Day>> selectedDaysMap) {
+        this.selectedDaysMap = selectedDaysMap;
+    }
 }

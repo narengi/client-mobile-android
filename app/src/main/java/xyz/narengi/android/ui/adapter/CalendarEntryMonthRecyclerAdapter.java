@@ -12,7 +12,10 @@ import com.byagowi.persiancalendar.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -36,20 +39,20 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
     private List<Day> lastMonthDays;
     private List<Day> nextMonthDays;
     private int selectedDay;
-    private Integer selectionStart = null;
-    private Integer selectionEnd = null;
+    private List<Day> selectedDays;
 
     private DateSelectionListener dateSelectionListener;
 
     public CalendarEntryMonthRecyclerAdapter(Context context, CalendarEntryMonthFragment monthFragment, List<Day> days,
                                 List<Day> lastMonthDays, List<Day> nextMonthDays,
-                                DateSelectionListener dateSelectionListener) {
+                                DateSelectionListener dateSelectionListener, List<Day> selectedDays) {
         this.context = context;
         this.days = days;
         this.monthFragment = monthFragment;
         this.lastMonthDays = lastMonthDays;
         this.nextMonthDays = nextMonthDays;
         this.dateSelectionListener = dateSelectionListener;
+        this.selectedDays = selectedDays;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
         DayViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.month_day_item, parent, false);
+        View view = inflater.inflate(R.layout.house_entry_month_day_item, parent, false);
         viewHolder = new DayViewHolder(view);
 
         return viewHolder;
@@ -71,28 +74,27 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
             if (position - 7 - days.get(0).getDayOfWeek() >= 0 && (position - 7 - days.get(0).getDayOfWeek()) < days.size()) {
 
                 Day day = days.get(position - 7 - days.get(0).getDayOfWeek());
-
+//                int dayPosition = position - 7 - days.get(0).getDayOfWeek();
+//                Day day = getSelectedDay(dayPosition);
                 viewHolder.dayItemButton.setText(day.getNum());
 
                 if (day.isToday()) {
                     viewHolder.dayItemButton.setTextColor(context.getResources().getColor(android.R.color.holo_red_dark));
                 } else {
-                    viewHolder.dayItemButton.setTextColor(context.getResources().getColor(android.R.color.black));
+                    viewHolder.dayItemButton.setTextColor(context.getResources().getColor(R.color.text_gray_dark));
                 }
+                viewHolder.dayItemButton.setClickable(true);
 
             } else {
 
-//                if ((position - 7) < (days.get(0).getDayOfWeek() + 1) && lastMonthDays != null && lastMonthDays.size() > 0) {
                 if (position - 7 - days.get(0).getDayOfWeek() < 0 && lastMonthDays != null && lastMonthDays.size() > 0) {
-//                    int index = position - 7;
                     int index = position - 7 - days.get(0).getDayOfWeek();
-//                    int lastMonthIndex = lastMonthDays.size() - (days.get(0).getDayOfWeek() - index) - 2;
-//                    int lastMonthIndex = lastMonthDays.size() - 1 + index;
                     int lastMonthIndex = lastMonthDays.size() + index;
 
                     Day day = lastMonthDays.get(lastMonthIndex);
                     viewHolder.dayItemButton.setText(day.getNum());
-                    viewHolder.dayItemButton.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+                    viewHolder.dayItemButton.setTextColor(context.getResources().getColor(R.color.text_gray_light));
+                    viewHolder.dayItemButton.setClickable(false);
                 }
 
                 if ((position - 7 - days.get(0).getDayOfWeek()) >= days.size() && nextMonthDays != null && nextMonthDays.size() > 0) {
@@ -100,90 +102,61 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
 
                     Day day = nextMonthDays.get(index);
                     viewHolder.dayItemButton.setText(day.getNum());
-                    viewHolder.dayItemButton.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+                    viewHolder.dayItemButton.setTextColor(context.getResources().getColor(R.color.text_gray_light));
+                    viewHolder.dayItemButton.setClickable(false);
                 }
-
-//                viewHolder.dayItemButton.setClickable(false);
-//                viewHolder.dayItemButton.setTextSize(25);
-//                viewHolder.dayItemButton.setText("");
-//                viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(android.R.color.white));
             }
 
-            if (position == selectedDay) {
-                viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.orange_light));
-            } else {
-                viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(android.R.color.white));
-            }
+//            if (position == selectedDay) {
+//                viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.orange_light));
+//            } else {
+//                viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.bg_gray_light));
+//            }
 
-            int dayIndex = position - 7 - days.get(0).getDayOfWeek();
-            if (selectionStart != null && selectionEnd != null && dayIndex >= selectionStart && dayIndex <= selectionEnd) {
-                viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.orange_light));
-            } else {
-                if (position != selectedDay)
-                    viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(android.R.color.white));
-            }
+            if (selectedDays != null) {
+                Day currentDay = getSelectedDay(position - 7 - days.get(0).getDayOfWeek());
+                for (Day day:selectedDays) {
+                    if (day.getPersianDate() != null && currentDay.getPersianDate() != null &&
+                        day.getPersianDate().getYear() == currentDay.getPersianDate().getYear() &&
+                                day.getPersianDate().getMonth() == currentDay.getPersianDate().getMonth() &&
+                                day.getPersianDate().getDayOfMonth() == currentDay.getPersianDate().getDayOfMonth()) {
 
-            /*if (houseAvailableDates != null && houseAvailableDates.getDates() != null) {
+//                        viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.orange_light));
 
-                Date currentItemDate = null;
-                Day day = getSelectedDay(dayIndex);
-                if (day != null && day.getPersianDate() != null) {
-                    CivilDate civilDate = DateConverter.persianToCivil(day.getPersianDate());
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(civilDate.getYear(), civilDate.getMonth() - 1, civilDate.getDayOfMonth());
-                    currentItemDate = calendar.getTime();
-                }
-
-                boolean isAvailable = false;
-                for (String dateString : houseAvailableDates.getDates()) {
-
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                    try {
-                        Date availableDate = dateFormat.parse(dateString);
-                        if (availableDate != null && currentItemDate != null) {
-
-                            Calendar availableDateCalendar = Calendar.getInstance();
-                            availableDateCalendar.setTime(availableDate);
-
-                            Calendar currentItemDateCalendar = Calendar.getInstance();
-                            currentItemDateCalendar.setTime(currentItemDate);
-
-                            if (availableDateCalendar.get(Calendar.YEAR) == currentItemDateCalendar.get(Calendar.YEAR) &&
-                                    availableDateCalendar.get(Calendar.MONTH) == currentItemDateCalendar.get(Calendar.MONTH) &&
-                                    availableDateCalendar.get(Calendar.DAY_OF_MONTH) == currentItemDateCalendar.get(Calendar.DAY_OF_MONTH)) {
-
-                                viewHolder.dayItemButton.setClickable(true);
-                                isAvailable = true;
-                                break;
-                            }
+                        if (isPreviousDaySelected(currentDay) && isNextDaySelected(currentDay)) {
+                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_middle_bg));
+                        } else if (!isPreviousDaySelected(currentDay) && !isNextDaySelected(currentDay)) {
+                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_bg));
+                        } else if (isPreviousDaySelected(currentDay)) {
+                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_end_bg));
+                        } else if (isNextDaySelected(currentDay)) {
+                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_start_bg));
                         }
 
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        disableDayItemButton(viewHolder);
+//                        viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_bg));
+                        viewHolder.dayItemButton.setTextColor(context.getResources().getColor(R.color.orange_light));
                     }
                 }
+            }
 
-                if (isAvailable) {
-                    viewHolder.dayItemButton.setClickable(true);
-                } else  {
-                    disableDayItemButton(viewHolder);
-                }
-            } else {
-                disableDayItemButton(viewHolder);
-            }*/
+//            int dayIndex = position - 7 - days.get(0).getDayOfWeek();
+//            if (selectionStart != null && selectionEnd != null && dayIndex >= selectionStart && dayIndex <= selectionEnd) {
+//                viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.orange_light));
+//            } else {
+//                if (position != selectedDay)
+//                    viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.bg_gray_light));
+//            }
 
-            viewHolder.dayItemButton.setTextSize(25);
-//            viewHolder.dayItemButton.setClickable(true);
+            viewHolder.dayItemButton.setTextSize(16);
 
         } else {
 
             viewHolder.dayItemButton.setClickable(false);
             viewHolder.dayItemButton.setText(Utils.firstCharOfDaysOfWeekName[position]);
             viewHolder.dayItemButton.setTextColor(context.getResources().getColor(android.R.color.holo_blue_dark));
-            viewHolder.dayItemButton.setTextSize(20);
+            viewHolder.dayItemButton.setTextSize(16);
             viewHolder.dayItemButton.setVisibility(View.VISIBLE);
-            viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(android.R.color.white));
+            viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.bg_gray_light));
         }
 
     }
@@ -219,72 +192,40 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
         public void onClick(View view) {
 
             if (getAdapterPosition() - 7 >= 0) {
+
+                if (selectedDays == null)
+                    selectedDays = new ArrayList<Day>();
+
                 int position = getAdapterPosition() - 7 - days.get(0).getDayOfWeek();
+                Day selectedDay = getSelectedDay(position);
+                boolean isRedundant = false;
 
-                if ((selectionStart == null && selectionEnd == null) || (selectionStart != null && selectionEnd != null)) {
-                    selectionStart = null;
-                    selectionEnd = null;
-                    selectionStart = position;
-//                    arriveDepartDatesSelectionListener.arriveDateSelected(getSelectedDay(position));
-//                    arriveDepartDatesSelectionListener.departDateSelected(null);
-                } else {
-                    if (selectionStart != null) {
-                        if (position <= selectionStart) {
-                            selectionStart = position;
-                            selectionEnd = null;
-//                            arriveDepartDatesSelectionListener.arriveDateSelected(getSelectedDay(position));
-//                            arriveDepartDatesSelectionListener.departDateSelected(null);
-                        } else {
-
-                            boolean isDatesContinuous = true;
-
-                            /*if (houseAvailableDates != null && houseAvailableDates.getDates() != null) {
-                                for (int i = selectionStart; i < position; i++) {
-                                    Day day = getSelectedDay(i);
-                                    Date date = DateUtils.getInstance(context).getDateOfDay(day);
-
-                                    boolean isDateAvailable = false;
-                                    for (String availableDateString : houseAvailableDates.getDates()) {
-
-                                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                                        Date availableDate = null;
-                                        try {
-                                            availableDate = dateFormat.parse(availableDateString);
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        Calendar availableDateCalendar = Calendar.getInstance();
-                                        availableDateCalendar.setTime(availableDate);
-
-                                        Calendar currentItemDateCalendar = Calendar.getInstance();
-                                        currentItemDateCalendar.setTime(date);
-
-                                        if (availableDateCalendar.get(Calendar.YEAR) == currentItemDateCalendar.get(Calendar.YEAR) &&
-                                                availableDateCalendar.get(Calendar.MONTH) == currentItemDateCalendar.get(Calendar.MONTH) &&
-                                                availableDateCalendar.get(Calendar.DAY_OF_MONTH) == currentItemDateCalendar.get(Calendar.DAY_OF_MONTH)) {
-                                            isDateAvailable = true;
-                                        }
-                                    }
-
-                                    if (!isDateAvailable) {
-                                        isDatesContinuous = false;
-                                        break;
-                                    }
-                                }
-                            }*/
-
-                            if (isDatesContinuous) {
-                                selectionEnd = position;
-//                                arriveDepartDatesSelectionListener.departDateSelected(getSelectedDay(position));
-                            } else {
-                                selectionStart = position;
-                                selectionEnd = null;
-//                                arriveDepartDatesSelectionListener.arriveDateSelected(getSelectedDay(position));
-                            }
-                        }
+                for (Day day:selectedDays) {
+//                    if (day.getPersianDate().equals(selectedDay.getPersianDate())) {
+                    if (day.getPersianDate().getYear() == selectedDay.getPersianDate().getYear() &&
+                            day.getPersianDate().getMonth() == selectedDay.getPersianDate().getMonth() &&
+                            day.getPersianDate().getDayOfMonth() == selectedDay.getPersianDate().getDayOfMonth()) {
+                        isRedundant = true;
+                        selectedDays.remove(day);
+                        break;
                     }
                 }
+//                if (isRedundant) {
+//                    selectedDays.remove(selectedDay);
+//                } else {
+//                    selectedDays.add(selectedDay);
+//                }
+                if (!isRedundant)
+                    selectedDays.add(selectedDay);
+
+                Collections.sort(selectedDays, new Comparator<Day>() {
+                    @Override
+                    public int compare(Day day1, Day day2) {
+                        return day1.getPersianDate().getDayOfMonth() - day2.getPersianDate().getDayOfMonth();
+                    }
+                });
+
+                dateSelectionListener.dateSelected(selectedDay, !isRedundant);
             }
 
             selectedDay = getAdapterPosition();
@@ -316,8 +257,30 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
         return day;
     }
 
+    private boolean isPreviousDaySelected(Day selectedDay) {
+        if (selectedDays == null || selectedDays.size() < 2)
+            return false;
+
+        for (Day day:selectedDays) {
+            if (selectedDay.getPersianDate().getDayOfMonth() == (day.getPersianDate().getDayOfMonth() + 1))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean isNextDaySelected(Day selectedDay) {
+        if (selectedDays == null || selectedDays.size() < 2)
+            return false;
+
+        for (Day day:selectedDays) {
+            if (selectedDay.getPersianDate().getDayOfMonth() == (day.getPersianDate().getDayOfMonth() - 1))
+                return true;
+        }
+        return false;
+    }
+
     public interface DateSelectionListener {
 
-        public void dateSelected(Day arriveDay);
+        public void dateSelected(Day day, boolean isSelected);
     }
 }

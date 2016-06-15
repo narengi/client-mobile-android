@@ -34,6 +34,7 @@ public class CalendarEntryMonthFragment extends Fragment implements View.OnClick
     private RecyclerView recyclerView;
     private CalendarEntryMonthRecyclerAdapter recyclerAdapter;
     private Utils utils = Utils.getInstance();
+    private List<Day> selectedDays;
 
     private DateSelectionListener dateSelectionListener;
 
@@ -47,6 +48,14 @@ public class CalendarEntryMonthFragment extends Fragment implements View.OnClick
 
     public void setDateSelectionListener(DateSelectionListener dateSelectionListener) {
         this.dateSelectionListener = dateSelectionListener;
+    }
+
+    public List<Day> getSelectedDays() {
+        return selectedDays;
+    }
+
+    public void setSelectedDays(List<Day> selectedDays) {
+        this.selectedDays = selectedDays;
     }
 
     @Override
@@ -66,7 +75,7 @@ public class CalendarEntryMonthFragment extends Fragment implements View.OnClick
 
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        View view = inflater.inflate(R.layout.house_entry_calendar_month, container, false);
 
         ImageButton previousMonthImageButton = (ImageButton)view.findViewById(R.id.calendar_header_previous_month);
         previousMonthImageButton.setOnClickListener(this);
@@ -107,7 +116,7 @@ public class CalendarEntryMonthFragment extends Fragment implements View.OnClick
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 //        recyclerView.setNestedScrollingEnabled(true);
-        recyclerAdapter = new CalendarEntryMonthRecyclerAdapter(getActivity(), this, days, lastMonthDays, nextMonthDays, this);
+        recyclerAdapter = new CalendarEntryMonthRecyclerAdapter(getActivity(), this, days, lastMonthDays, nextMonthDays, this, selectedDays);
         recyclerView.setAdapter(recyclerAdapter);
 
         return view;
@@ -120,7 +129,7 @@ public class CalendarEntryMonthFragment extends Fragment implements View.OnClick
         List<Day> lastMonthDays = utils.getDays(getContext(), offset-1);
         List<Day> nextMonthDays = utils.getDays(getContext(), offset+1);
 
-        recyclerAdapter = new CalendarEntryMonthRecyclerAdapter(getActivity(), this, days, lastMonthDays, nextMonthDays, this);
+        recyclerAdapter = new CalendarEntryMonthRecyclerAdapter(getActivity(), this, days, lastMonthDays, nextMonthDays, this, selectedDays);
         recyclerView.setAdapter(recyclerAdapter);
     }
 
@@ -156,12 +165,12 @@ public class CalendarEntryMonthFragment extends Fragment implements View.OnClick
     }
 
     @Override
-    public void dateSelected(Day arriveDay) {
-        dateSelectionListener.dateSelected(arriveDay);
+    public void dateSelected(Day day, boolean isSelected) {
+        dateSelectionListener.dateSelected(day, isSelected);
     }
 
     public interface DateSelectionListener {
 
-        public void dateSelected(Day arriveDay);
+        public void dateSelected(Day day, boolean isSelected);
     }
 }

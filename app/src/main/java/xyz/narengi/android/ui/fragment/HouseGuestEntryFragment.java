@@ -62,7 +62,7 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
                 maxGuestCount = getHouse().getSpec().getMaxGuestCount();
             }
 
-            if (getHouse().getPrice() != null && getHouse().getPrice().getPrice() > 0) {
+            if (getHouse().getPrice() != null && getHouse().getPrice().getExtraGuestPrice() > 0) {
                 extraGuestPriceEditText.setText(String.valueOf((long) getHouse().getPrice().getExtraGuestPrice()));
             }
         }

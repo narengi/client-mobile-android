@@ -168,7 +168,7 @@
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?android:attr/listPreferredItemHeight"
             android:layout_weight="0"
             android:layout_marginBottom="10dp"
             android:layout_gravity="bottom|center_horizontal"
@@ -179,7 +179,7 @@
                 android:id="@+id/house_info_entry_nextButton"
                 style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="?android:attr/listPreferredItemHeightSmall"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="10dp"
                 android:background="@drawable/button_bg_green"

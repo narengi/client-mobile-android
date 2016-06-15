@@ -7,9 +7,12 @@
     <string name="house_room_entry_page_title">اطلاعات اتاق</string>
     <string name="house_guest_entry_page_title">اطلاعات مهمان</string>
     <string name="house_features_entry_page_title">امکانات</string>
+    <string name="house_images_entry_page_title">تصاوير</string>
+    <string name="house_dates_entry_page_title">روزهای قابل سرويس دهی</string>
 
     <string name="house_entry_next_button">مرحله بعدی</string>
     <string name="house_entry_previous_button">مرحله قبلی</string>
+    <string name="house_entry_finish_button">ثبت نهايی</string>
 
     <string name="house_info_entry_title_hint">عنوان</string>
     <string name="house_info_entry_summary_hint">توضيحات</string>
@@ -38,4 +41,6 @@
     <string name="house_guest_entry_max_guests_caption">تعداد حداکثر مهمان</string>
     <string name="house_guest_entry_extra_guest_price_caption">هزينه هر مهمان اضافی (ريال)</string>
 
+    <!-- House images section -->
+    <string name="house_images_entry_house_removed_alert">عکس مورد نظر حذف شد.</string>
 </resources>

@@ -144,23 +144,19 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 //        SpinnerArrayAdapter<String> provinceArrayAdapter = new SpinnerArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item,
 //                getResources().getStringArray(R.array.house_entry_province_array)) {
         SpinnerArrayAdapter<String> provinceArrayAdapter = new SpinnerArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item,
-                new String[0]) {
+                getResources().getStringArray(R.array.house_entry_province_array)) {
 
             public View getView(int position, View convertView,ViewGroup parent) {
 
                 View v = super.getView(position, convertView, parent);
-//                ((TextView) v).setTextSize(16);
-                if (position == getCount()) {
-//                    ((TextView)v.findViewById(android.R.id.text1)).setText("");
-//                    ((TextView)v.findViewById(android.R.id.text1)).setHint(R.string.house_info_entry_province_hint);
-                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
-                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
-//                    ((TextView) v).setHint(R.string.house_info_entry_province_hint);
-                } else {
-                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
-                }
-
-                ((TextView)v.findViewById(android.R.id.text1)).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+//                if (position == getCount()) {
+//                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
+//                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
+//                } else {
+//                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
+//                }
+//
+//                ((TextView)v.findViewById(android.R.id.text1)).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 ((TextView) v).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 return v;
 
@@ -170,13 +166,13 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
                 View v = super.getDropDownView(position, convertView,parent);
                 ((TextView) v).setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
-                if (position == getCount()) {
-                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
-                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
-                    ((TextView) v).setHint(R.string.house_info_entry_province_hint);
-                } else {
-                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
-                }
+//                if (position == getCount()) {
+//                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
+//                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
+//                    ((TextView) v).setHint(R.string.house_info_entry_province_hint);
+//                } else {
+//                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
+//                }
                 return v;
             }
         };
@@ -190,23 +186,20 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 //        SpinnerArrayAdapter<String> cityArrayAdapter = new SpinnerArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item,
 //                getResources().getStringArray(R.array.house_entry_city_array)) {
         SpinnerArrayAdapter<String> cityArrayAdapter = new SpinnerArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item,
-                new String[0]) {
+                getResources().getStringArray(R.array.house_entry_city_array)) {
 
             public View getView(int position, View convertView,ViewGroup parent) {
 
                 View v = super.getView(position, convertView, parent);
-//                ((TextView) v).setTextSize(16);
-                if (position == getCount()) {
-//                    ((TextView)v.findViewById(android.R.id.text1)).setText("");
-//                    ((TextView)v.findViewById(android.R.id.text1)).setHint(R.string.house_info_entry_province_hint);
-                    ((TextView) v).setText(R.string.house_info_entry_city_hint);
-                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
-//                    ((TextView) v).setHint(R.string.house_info_entry_city_hint);
-                } else {
-                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
-                }
-
-                ((TextView)v.findViewById(android.R.id.text1)).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+//                if (position == getCount()) {
+//                    ((TextView) v).setText(R.string.house_info_entry_city_hint);
+//                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
+//
+//                } else {
+//                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
+//                }
+//
+//                ((TextView)v.findViewById(android.R.id.text1)).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 ((TextView) v).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 return v;
 
@@ -216,13 +209,13 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
                 View v = super.getDropDownView(position, convertView,parent);
                 ((TextView) v).setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
-                if (position == getCount()) {
-                    ((TextView) v).setText(R.string.house_info_entry_city_hint);
-                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
-                    ((TextView) v).setHint(R.string.house_info_entry_city_hint);
-                } else {
-                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
-                }
+//                if (position == getCount()) {
+//                    ((TextView) v).setText(R.string.house_info_entry_city_hint);
+//                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
+//                    ((TextView) v).setHint(R.string.house_info_entry_city_hint);
+//                } else {
+//                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
+//                }
                 return v;
             }
         };
@@ -269,7 +262,6 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<Map<String,ProvinceCity[]>> call = apiEndpoints.getProvinces();
-
         call.enqueue(new Callback<Map<String, ProvinceCity[]>>() {
             @Override
             public void onResponse(Response<Map<String, ProvinceCity[]>> response, Retrofit retrofit) {
@@ -301,18 +293,14 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
             public View getView(int position, View convertView,ViewGroup parent) {
 
                 View v = super.getView(position, convertView, parent);
-//                ((TextView) v).setTextSize(16);
-                if (position == getCount()) {
-//                    ((TextView)v.findViewById(android.R.id.text1)).setText("");
-//                    ((TextView)v.findViewById(android.R.id.text1)).setHint(R.string.house_info_entry_province_hint);
-                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
-                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
-//                    ((TextView) v).setHint(R.string.house_info_entry_province_hint);
-                } else {
-                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
-                }
-
-                ((TextView)v.findViewById(android.R.id.text1)).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+//                if (position == getCount()) {
+//                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
+//                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
+//                } else {
+//                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
+//                }
+//
+//                ((TextView)v.findViewById(android.R.id.text1)).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 ((TextView) v).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 return v;
 
@@ -322,13 +310,13 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
                 View v = super.getDropDownView(position, convertView,parent);
                 ((TextView) v).setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
-                if (position == getCount()) {
-                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
-                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
-                    ((TextView) v).setHint(R.string.house_info_entry_province_hint);
-                } else {
-                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
-                }
+//                if (position == getCount()) {
+//                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
+//                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
+//                    ((TextView) v).setHint(R.string.house_info_entry_province_hint);
+//                } else {
+//                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
+//                }
                 return v;
             }
         };
@@ -353,18 +341,14 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
                             public View getView(int position, View convertView, ViewGroup parent) {
 
                                 View v = super.getView(position, convertView, parent);
-//                ((TextView) v).setTextSize(16);
-                                if (position == getCount()) {
-//                    ((TextView)v.findViewById(android.R.id.text1)).setText("");
-//                    ((TextView)v.findViewById(android.R.id.text1)).setHint(R.string.house_info_entry_city_hint);
-                                    ((TextView) v).setText(R.string.house_info_entry_city_hint);
-                                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
-//                    ((TextView) v).setHint(R.string.house_info_entry_province_hint);
-                                } else {
-                                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
-                                }
-
-                                ((TextView)v.findViewById(android.R.id.text1)).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+//                                if (position == getCount()) {
+//                                    ((TextView) v).setText(R.string.house_info_entry_city_hint);
+//                                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
+//                                } else {
+//                                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
+//                                }
+//
+//                                ((TextView)v.findViewById(android.R.id.text1)).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                                 ((TextView) v).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                                 return v;
 
@@ -374,13 +358,13 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
                                 View v = super.getDropDownView(position, convertView, parent);
                                 ((TextView) v).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-                                if (position == getCount()) {
-                                    ((TextView) v).setText(R.string.house_info_entry_city_hint);
-                                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
-                                    ((TextView) v).setHint(R.string.house_info_entry_city_hint);
-                                } else {
-                                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
-                                }
+//                                if (position == getCount()) {
+//                                    ((TextView) v).setText(R.string.house_info_entry_city_hint);
+//                                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
+//                                    ((TextView) v).setHint(R.string.house_info_entry_city_hint);
+//                                } else {
+//                                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
+//                                }
                                 return v;
                             }
                         };
