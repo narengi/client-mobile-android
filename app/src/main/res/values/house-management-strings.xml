@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Host houses -->
-    <string name="host_houses_page_title">خانه های من</string>
-
     <!-- House entry -->
     <string name="house_entry_add_page_title">ثبت خانه جديد</string>
     <string name="house_entry_edit_page_title">ويرايش خانه</string>

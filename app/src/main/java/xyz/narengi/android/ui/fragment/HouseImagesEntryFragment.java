@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -31,15 +33,39 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.soundcloud.android.crop.Crop;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 import xyz.narengi.android.R;
+import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.Authorization;
+import xyz.narengi.android.common.dto.ImageInfo;
+import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
+import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.ui.activity.AddHouseActivity;
 import xyz.narengi.android.ui.adapter.HouseEntryImageThumbnailsRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.HouseImageEntryViewPagerAdapter;
@@ -57,6 +83,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
     private ViewPager viewPager;
     private HouseImageEntryViewPagerAdapter viewPagerAdapter;
     private List<Uri> imageUris;
+    private ImageInfo[] imageInfoArray;
     private ArrayList<Bitmap> imageThumbnailBitmaps;
     private RecyclerView thumbnailsRecyclerView;
     private HouseEntryImageThumbnailsRecyclerAdapter thumbnailsRecyclerAdapter;
@@ -84,8 +111,26 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getActivity() instanceof AddHouseActivity)
-            imageUris = ((AddHouseActivity)getActivity()).getImageUris();
+        if (getActivity() instanceof AddHouseActivity) {
+            imageInfoArray = ((AddHouseActivity) getActivity()).getImageInfoArray();
+            imageUris = ((AddHouseActivity) getActivity()).getImageUris();
+        }
+
+//        Handler pagerHandler = new Handler();
+//        pagerHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                setupViewPager(getView());
+//            }
+//        });
+//
+//        Handler thumbnailsHandler = new Handler();
+//        thumbnailsHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                setupThumbnailsRecyclerView(getView());
+//            }
+//        });
 
         setupViewPager(view);
         setupThumbnailsRecyclerView(view);
@@ -103,7 +148,8 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                             if (validate() && getOnInteractionListener() != null) {
                                 if (getActivity() instanceof AddHouseActivity)
                                     ((AddHouseActivity)getActivity()).setImageUris(imageUris);
-                                getOnInteractionListener().onGoToNextSection(getHouse());
+                                uploadHouseImages();
+//                                getOnInteractionListener().onGoToNextSection(getHouse());
                             }
                         }
                     });
@@ -115,8 +161,10 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                         @Override
                         public void onClick(View view) {
                             if (validate() && getOnInteractionListener() != null) {
-                                if (getActivity() instanceof AddHouseActivity)
-                                    ((AddHouseActivity)getActivity()).setImageUris(imageUris);
+                                if (getActivity() instanceof AddHouseActivity) {
+                                    ((AddHouseActivity) getActivity()).setImageUris(imageUris);
+                                    ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);
+                                }
                                 getOnInteractionListener().onBackToPreviousSection(getHouse());
                             }
                         }
@@ -130,6 +178,141 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         }
     }
 
+    private void uploadHouseImages() {
+
+        final SharedPreferences preferences = getActivity().getSharedPreferences("profile", 0);
+        String accessToken = preferences.getString("accessToken", "");
+        String username = preferences.getString("username", "");
+
+        Authorization authorization = new Authorization();
+        authorization.setUsername(username);
+        authorization.setToken(accessToken);
+
+        Gson gson = new GsonBuilder().create();
+
+        String authorizationJson = gson.toJson(authorization);
+        if (authorizationJson != null) {
+            authorizationJson = authorizationJson.replace("{", "");
+            authorizationJson = authorizationJson.replace("}", "");
+        }
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.SERVER_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+//        File file = new File(resultUri.getPath());
+
+        MultipartBuilder builder = new MultipartBuilder();
+        builder.type(MultipartBuilder.FORM);
+
+        for(Uri uri : imageUris){
+            File file = new File(uri.getPath());
+            RequestBody photoRequestBody = RequestBody.create(MediaType.parse("application/image"), file);
+            builder.addFormDataPart("pictures", file.getName(), photoRequestBody);
+        }
+
+        RequestBody requestBody = builder.build();
+
+        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+        Call<ImageInfo[]> call = apiEndpoints.uploadHouseImages(authorizationJson, getHouse().getURL() + "/pictures", requestBody);
+
+        call.enqueue(new Callback<ImageInfo[]>() {
+            @Override
+            public void onResponse(Response<ImageInfo[]> response, Retrofit retrofit) {
+                int statusCode = response.code();
+                ImageInfo[] result = response.body();
+//                if (statusCode == 201 || statusCode == 204) {
+                if (result != null) {
+                    imageInfoArray = result;
+                    Toast.makeText(getActivity(), "Upload image success... :  " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
+                    imageUris = null;
+                    if (getActivity() instanceof AddHouseActivity) {
+                        ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);
+                        ((AddHouseActivity) getActivity()).setImageUris(imageUris);
+                    }
+                    getOnInteractionListener().onGoToNextSection(getHouse());
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getActivity(), "Upload image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void removeHouseImage(ImageInfo imageInfo) {
+
+        final SharedPreferences preferences = getActivity().getSharedPreferences("profile", 0);
+        String accessToken = preferences.getString("accessToken", "");
+        String username = preferences.getString("username", "");
+
+        Authorization authorization = new Authorization();
+        authorization.setUsername(username);
+        authorization.setToken(accessToken);
+
+        Gson gson = new GsonBuilder().create();
+
+        String authorizationJson = gson.toJson(authorization);
+        if (authorizationJson != null) {
+            authorizationJson = authorizationJson.replace("{", "");
+            authorizationJson = authorizationJson.replace("}", "");
+        }
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.SERVER_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RemoveHouseImagesInfo removeHouseImagesInfo = new RemoveHouseImagesInfo();
+        String[] imageNames = new String[1];
+        imageNames[0] = imageInfo.getFilename();
+        removeHouseImagesInfo.setPicture_names(imageNames);
+
+        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+        Call<ImageInfo[]> call = apiEndpoints.removeHouseImages(authorizationJson, getHouse().getURL() + "/pictures", removeHouseImagesInfo);
+        call.enqueue(new Callback<ImageInfo[]>() {
+            @Override
+            public void onResponse(Response<ImageInfo[]> response, Retrofit retrofit) {
+                int statusCode = response.code();
+                ImageInfo[] result = response.body();
+//                if (statusCode == 201 || statusCode == 204) {
+                if (result != null || statusCode == 201 || statusCode == 204) {
+                    imageInfoArray = result;
+                    imageRemoved();
+                    Toast.makeText(getActivity(), "Remove image success... :  " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
+                    if (getActivity() instanceof AddHouseActivity) {
+                        ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);
+                    }
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getActivity(), "Remove image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
+                t.printStackTrace();
+            }
+        });
+    }
+
     private void setupViewPager(View view) {
         viewPager = (ViewPager)view.findViewById(R.id.house_images_entry_imageViewpager);
 
@@ -140,7 +323,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
         if (imageUris == null)
             imageUris = new ArrayList<Uri>();
-        viewPagerAdapter = new HouseImageEntryViewPagerAdapter(getContext(), imageUris);
+        viewPagerAdapter = new HouseImageEntryViewPagerAdapter(getContext(), imageUris, imageInfoArray);
         viewPager.setAdapter(viewPagerAdapter);
 
         CirclePageIndicator pageIndicator = (CirclePageIndicator)view.findViewById(R.id.house_images_entry_imagePageIndicator);
@@ -150,7 +333,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         removeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                removeImage();
+                removeImageOnClick();
             }
         });
         updateRemoveButtonVisibility();
@@ -163,12 +346,26 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             removeImageButton.setVisibility(View.VISIBLE);
     }
 
-    private void removeImage() {
+    private void removeImageOnClick() {
 
         int selectedImagePosition = viewPager.getCurrentItem();
-        imageUris.remove(selectedImagePosition);
 
-        viewPagerAdapter = new HouseImageEntryViewPagerAdapter(getContext(), imageUris);
+        if (imageInfoArray != null) {
+            if (selectedImagePosition >= imageInfoArray.length) {
+                imageUris.remove(selectedImagePosition - imageInfoArray.length);
+                imageRemoved();
+            } else {
+                ImageInfo imageInfo = imageInfoArray[selectedImagePosition];
+                removeHouseImage(imageInfo);
+            }
+        } else {
+            imageUris.remove(selectedImagePosition);
+            imageRemoved();
+        }
+    }
+
+    private void imageRemoved() {
+        viewPagerAdapter = new HouseImageEntryViewPagerAdapter(getContext(), imageUris, imageInfoArray);
         viewPager.setAdapter(viewPagerAdapter);
         if (viewPagerAdapter.getCount() > 0)
             viewPager.setCurrentItem(viewPagerAdapter.getCount() - 1);
@@ -186,7 +383,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             imageUris = new ArrayList<Uri>();
 
         imageUris.add(resultUri);
-        viewPagerAdapter = new HouseImageEntryViewPagerAdapter(getContext(), imageUris);
+        viewPagerAdapter = new HouseImageEntryViewPagerAdapter(getContext(), imageUris, imageInfoArray);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(viewPagerAdapter.getCount() - 1);
         viewPager.invalidate();
@@ -203,13 +400,29 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         thumbnailsRecyclerView.setLayoutManager(layoutManager);
         thumbnailsRecyclerView.setHasFixedSize(true);
         imageThumbnailBitmaps =  new ArrayList<Bitmap>();
-        if (imageUris != null && imageUris.size() > 0) {
 
-            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-            float thumbnailWidthDp = (dpWidth - 28) / 3;
-            int thumbnailWidthPx = (int)(thumbnailWidthDp * displayMetrics.density);
-            int thumbnailHeightPx = (int)(80 * displayMetrics.density);
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        float thumbnailWidthDp = (dpWidth - 28) / 3;
+        final int thumbnailWidthPx = (int)(thumbnailWidthDp * displayMetrics.density);
+        final int thumbnailHeightPx = (int)(80 * displayMetrics.density);
+
+        if (imageInfoArray != null && imageInfoArray.length > 0) {
+            for (ImageInfo imageInfo:imageInfoArray) {
+                final String url = imageInfo.getUrl();
+                ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(getActivity(), url, thumbnailWidthPx, thumbnailHeightPx);
+                AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
+                try {
+                    Bitmap thumbnailBitmap = (Bitmap) asyncTask.get();
+                    if (thumbnailBitmap != null)
+                        imageThumbnailBitmaps.add(thumbnailBitmap);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+//        else
+        if (imageUris != null && imageUris.size() > 0) {
 
             for (Uri imageUri:imageUris) {
 
@@ -426,4 +639,82 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+    public class ImageDownloaderAsyncTask extends AsyncTask {
+        private Context context;
+        private String imageUrl;
+        private int width, height;
+        private String authorization;
+
+        public ImageDownloaderAsyncTask(Context context, String imageUrl, int width, int height) {
+            this.context = context;
+            this.imageUrl = imageUrl;
+            this.width = width;
+            this.height = height;
+        }
+
+        public ImageDownloaderAsyncTask(Context context, String authorization, String imageUrl) {
+            this.context = context;
+            this.authorization = authorization;
+            this.imageUrl = imageUrl;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            return getImageBitmap(imageUrl);
+        }
+
+        private Bitmap getImageBitmap(String url) {
+
+            Picasso picasso;
+            try {
+
+                if (authorization != null && authorization.length() > 0) {
+
+                    OkHttpClient picassoClient = new OkHttpClient();
+
+                    picassoClient.networkInterceptors().add(new Interceptor() {
+
+                        @Override
+                        public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
+                            Request newRequest = chain.request().newBuilder()
+                                    .addHeader("authorization", authorization)
+                                    .build();
+                            return chain.proceed(newRequest);
+                        }
+                    });
+
+                    picasso = new Picasso.Builder(context).downloader(new OkHttpDownloader(picassoClient)).build();
+                } else {
+                    picasso = Picasso.with(context);
+                }
+
+                if (width > 0 && height > 0) {
+                    return picasso.load(imageUrl).resize(width, height).centerCrop().get();
+                } else {
+                    return picasso.load(imageUrl).resize(120, 80).centerCrop().get();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+//    @NotThreadSafe
+//    public class HttpDeleteWithBody extends org.apache.http.client.methods.HttpEntityEnclosingRequestBase {
+//        public static final String METHOD_NAME = "DELETE";
+//        public String getMethod() { return METHOD_NAME; }
+//
+//        public HttpDeleteWithBody(final String uri) {
+//            super();
+//            setURI(URI.create(uri));
+//        }
+//        public HttpDeleteWithBody(final URI uri) {
+//            super();
+//            setURI(uri);
+//        }
+//        public HttpDeleteWithBody() { super(); }
+//    }
 }

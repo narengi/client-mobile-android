@@ -242,9 +242,8 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         house.setSummary(summaryEditText.getText().toString());
         house.setAddress(addressEditText.getText().toString());
         Location location = new Location();
-        location.setCity(citySpinner.getSelectedItem().toString());
-        location.setProvince(provinceSpinner.getSelectedItem().toString());
-        house.setLocation(location);
+        house.setCityName(citySpinner.getSelectedItem().toString());
+        house.setProvinceName(provinceSpinner.getSelectedItem().toString());
 
         return house;
     }
