@@ -30,14 +30,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?android:attr/listPreferredItemHeight"
         android:layout_alignParentBottom="true">
 
 
         <xyz.narengi.android.ui.widget.CustomButton
             android:id="@+id/house_map_entry_nextButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="?android:attr/listPreferredItemHeight"
             android:layout_margin="10dp"
             android:background="@drawable/button_bg_green"
             android:gravity="center"
@@ -53,7 +53,7 @@
         <xyz.narengi.android.ui.widget.CustomButton
             android:id="@+id/house_map_entry_previousButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="?android:attr/listPreferredItemHeight"
             android:layout_alignParentRight="true"
             android:layout_margin="10dp"
             android:background="@drawable/button_bg_orange"

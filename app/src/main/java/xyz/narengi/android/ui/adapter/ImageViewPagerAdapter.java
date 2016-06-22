@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import xyz.narengi.android.R;
@@ -49,9 +52,22 @@ public class ImageViewPagerAdapter extends PagerAdapter {
         View itemView = inflater.inflate(R.layout.image_viewpager_item, container,
                 false);
 
+        final LinearLayout progressBarLayout = (LinearLayout)itemView.findViewById(R.id.image_viewpager_item_progressBarLayout);
+        final ProgressBar progressBar = (ProgressBar)itemView.findViewById(R.id.image_viewpager_item_progressBar);
         imageView = (ImageView) itemView.findViewById(R.id.image_viewpager_item_image);
 
-        Picasso.with(context).load(imageUrls[position]).into(imageView);
+        Picasso.with(context).load(imageUrls[position]).into(imageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                progressBar.setVisibility(View.GONE);
+                progressBarLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
         container.addView(itemView);
 
         return itemView;

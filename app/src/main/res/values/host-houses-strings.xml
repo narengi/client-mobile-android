@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="host_houses_page_title">خانه های من</string>
+    <string name="host_houses_empty_data">شما هنوز هيچ خانه ای ثبت نکرده ايد. برای ثبت خانه جدید، دکمه اضافه کردن خانه جديد در پايين صفحه را کليک کنيد</string>
+
+</resources>

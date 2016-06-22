@@ -15,6 +15,7 @@ public class House implements Serializable {
     private String Rating;
     private String Summary;
     private String CityName;
+    private String ProvinceName;
     private String URL;
     private HouseReview[] Reviews;
     private HouseFeature[] FeatureList;
@@ -94,6 +95,14 @@ public class House implements Serializable {
 
     public void setCityName(String cityName) {
         CityName = cityName;
+    }
+
+    public String getProvinceName() {
+        return ProvinceName;
+    }
+
+    public void setProvinceName(String provinceName) {
+        ProvinceName = provinceName;
     }
 
     public String getURL() {

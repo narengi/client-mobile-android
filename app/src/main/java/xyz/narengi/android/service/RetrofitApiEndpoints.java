@@ -2,11 +2,15 @@ package xyz.narengi.android.service;
 
 import com.squareup.okhttp.RequestBody;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.util.Map;
 
 import retrofit.Call;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
+import retrofit.http.HTTP;
 import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.PUT;
@@ -22,10 +26,14 @@ import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.HostProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
+import xyz.narengi.android.common.dto.HouseEntryInput;
+import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.common.dto.ProvinceCity;
+import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
 import xyz.narengi.android.common.dto.RequestVerification;
 import xyz.narengi.android.common.dto.SuggestionsResult;
+import xyz.narengi.android.ui.fragment.HouseImagesEntryFragment;
 
 /**
  * @author Siavash Mahmoudpour
@@ -95,4 +103,17 @@ public interface RetrofitApiEndpoints {
 
     @GET("/api/v1/houses/settings/features")
     Call<Map<String, String>[]> getHouseFeatures();
+
+    @POST("/api/v1/houses")
+    Call<House> addHouse(@Header("authorization") String authorization, @Body HouseEntryInput houseEntryInput);
+
+    @PUT
+    Call<House> updateHouse(@Header("authorization") String authorization,@Url String url, @Body HouseEntryInput houseEntryInput);
+
+    @POST
+    Call<ImageInfo[]> uploadHouseImages(@Header("authorization") String authorization, @Url String url, @Body RequestBody picture);
+
+    @POST
+    Call<ImageInfo[]> removeHouseImages(@Header("authorization") String authorization, @Url String url, @Body RemoveHouseImagesInfo removeHouseImagesInfo);
+
 }

@@ -258,7 +258,7 @@ public class HouseMapEntryFragment extends HouseEntryBaseFragment implements OnM
         if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
         {
             int actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
-            mMap.setPadding(0, actionBarHeight * 2, 0, actionBarHeight);
+            mMap.setPadding(0, 0, 0, actionBarHeight);
         }
 
         if (getHouse() != null && getHouse().getPosition() != null) {

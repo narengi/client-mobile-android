@@ -22,6 +22,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAda
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
 
 import java.util.List;
+import java.util.Map;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.ExpandableDataProvider;
@@ -42,13 +43,13 @@ public class HouseEntryContentRecyclerAdapter extends AbstractExpandableItemAdap
     private int dayItemsCount;
 
     @Override
-    public void dateSelected(Day arriveDay) {
-
+    public void itemsCountChanges(int itemsCount) {
+        dayItemsCount = itemsCount;
     }
 
     @Override
-    public void itemsCountChanges(int itemsCount) {
-        dayItemsCount = itemsCount;
+    public void dateSelected(Map<String, List<Day>> selectedDaysMap) {
+
     }
 
     // NOTE: Make accessible with short name
@@ -221,7 +222,7 @@ public class HouseEntryContentRecyclerAdapter extends AbstractExpandableItemAdap
     private void setupCalendar(final CalendarViewHolder viewHolder) {
 
         Utils.getInstance().loadLanguageFromSettings(context);
-        CalendarEntryPagerAdapter calendarEntryPagerAdapter = new CalendarEntryPagerAdapter(((AppCompatActivity) context).getSupportFragmentManager(), context, this);
+        CalendarEntryPagerAdapter calendarEntryPagerAdapter = new CalendarEntryPagerAdapter(((AppCompatActivity) context).getSupportFragmentManager(), context, this, null, viewHolder.viewPager);
         calendarEntryPagerAdapter.setDateSelectionListener(this);
 
         viewHolder.viewPager.setAdapter(calendarEntryPagerAdapter);

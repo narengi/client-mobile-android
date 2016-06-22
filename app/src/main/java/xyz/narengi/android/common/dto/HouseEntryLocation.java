@@ -5,24 +5,24 @@ import java.io.Serializable;
 /**
  * @author Siavash Mahmoudpour
  */
-public class Location implements Serializable {
+public class HouseEntryLocation implements Serializable {
 
-    private String City;
-    private String Province;
+    private String city;
+    private String province;
 
     public String getCity() {
-        return City;
+        return city;
     }
 
     public void setCity(String city) {
-        this.City = city;
+        this.city = city;
     }
 
     public String getProvince() {
-        return Province;
+        return province;
     }
 
     public void setProvince(String province) {
-        this.Province = province;
+        this.province = province;
     }
 }
