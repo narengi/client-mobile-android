@@ -123,7 +123,12 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     @Override
     public void onBackPressed() {
 //        backToPreviousSection(readCurrentFragmentHouse());
-        super.onBackPressed();
+        if (house == null || house.getURL() == null) {
+            super.onBackPressed();
+        } else {
+            setResult(2001);
+            finish();
+        }
     }
 
     private void addHouse() {

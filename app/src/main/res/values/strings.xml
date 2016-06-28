@@ -45,5 +45,7 @@
     <string name="close_button">بستن</string>
     <string name="title_activity_house_map">Map</string>
     <string name="title_activity_host_houses">HostHousesActivity</string>
+    <string name="cancel_button">انصراف</string>
+    <string name="ok_button">تاييد</string>
 
 </resources>

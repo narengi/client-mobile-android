@@ -225,7 +225,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 //                if (statusCode == 201 || statusCode == 204) {
                 if (result != null) {
                     imageInfoArray = result;
-                    Toast.makeText(getActivity(), "Upload image success... :  " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), "Upload image success... :  " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
                     imageUris = null;
                     if (getActivity() instanceof AddHouseActivity) {
                         ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);

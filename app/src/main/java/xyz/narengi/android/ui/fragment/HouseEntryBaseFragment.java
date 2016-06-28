@@ -3,6 +3,8 @@ package xyz.narengi.android.ui.fragment;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import xyz.narengi.android.common.dto.House;
 
@@ -66,6 +68,11 @@ public abstract class HouseEntryBaseFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         setOnInteractionListener(null);
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.SHOW_FORCED);
     }
 
     public interface OnInteractionListener {

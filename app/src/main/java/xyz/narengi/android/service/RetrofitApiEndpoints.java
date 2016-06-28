@@ -104,16 +104,25 @@ public interface RetrofitApiEndpoints {
     @GET("/api/v1/houses/settings/features")
     Call<Map<String, String>[]> getHouseFeatures();
 
+    @GET("/api/v1/houses/my-houses")
+    Call<House[]> getHostHouses(@Header("authorization") String authorization);
+
     @POST("/api/v1/houses")
     Call<House> addHouse(@Header("authorization") String authorization, @Body HouseEntryInput houseEntryInput);
 
     @PUT
     Call<House> updateHouse(@Header("authorization") String authorization,@Url String url, @Body HouseEntryInput houseEntryInput);
 
+    @DELETE
+    Call<Object> removeHouse(@Header("authorization") String authorization,@Url String url);
+
     @POST
     Call<ImageInfo[]> uploadHouseImages(@Header("authorization") String authorization, @Url String url, @Body RequestBody picture);
 
     @POST
     Call<ImageInfo[]> removeHouseImages(@Header("authorization") String authorization, @Url String url, @Body RemoveHouseImagesInfo removeHouseImagesInfo);
+
+    @GET
+    Call<ImageInfo[]> getHouseImages(@Url String url);
 
 }

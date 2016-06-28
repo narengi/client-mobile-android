@@ -110,7 +110,7 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         if (titleTextView != null)
             titleTextView.requestFocus();
 
-        Button nextButton = (Button)view.findViewById(R.id.house_info_entry_nextButton);
+        final Button nextButton = (Button)view.findViewById(R.id.house_info_entry_nextButton);
 
         switch (getEntryMode()) {
             case ADD:
@@ -119,6 +119,7 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
                     nextButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            hideKeyboard(nextButton);
                             if (validate() && getOnInteractionListener() != null) {
                                 getOnInteractionListener().onGoToNextSection(getHouse());
                             }
