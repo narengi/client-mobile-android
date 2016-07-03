@@ -58,10 +58,10 @@ public abstract class HouseEntryBaseFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnInteractionListener) {
             setOnInteractionListener((OnInteractionListener)context);
-        } else {
+        } /*else {
             throw new RuntimeException(context.toString()
                     + " must implement OnInteractionListener");
-        }
+        }*/
     }
 
     @Override
@@ -79,6 +79,4 @@ public abstract class HouseEntryBaseFragment extends Fragment {
         void onGoToNextSection(House house);
         void onBackToPreviousSection(House house);
     }
-
-
 }

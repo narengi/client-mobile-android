@@ -3,6 +3,7 @@ package xyz.narengi.android.ui.fragment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
@@ -14,11 +15,13 @@ import android.widget.Button;
 import com.byagowi.persiancalendar.Entity.Day;
 import com.byagowi.persiancalendar.Utils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.ui.activity.AddHouseActivity;
+import xyz.narengi.android.ui.activity.EditHouseDetailActivity;
 import xyz.narengi.android.ui.adapter.CalendarEntryPagerAdapter;
 
 /**
@@ -45,12 +48,22 @@ public class HouseDatesEntryFragment extends HouseEntryBaseFragment
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         if (getActivity() instanceof AddHouseActivity)
             selectedDaysMap = ((AddHouseActivity)getActivity()).getSelectedDaysMap();
-        setupCalendar(view);
+        else if (getActivity() instanceof EditHouseDetailActivity)
+            selectedDaysMap = ((EditHouseDetailActivity)getActivity()).getSelectedDaysMap();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setupCalendar(view);
+            }
+        }, 30);
+//        setupCalendar(view);
 
         Button nextButton = (Button)view.findViewById(R.id.house_dates_entry_finishButton);
         Button previousButton = (Button)view.findViewById(R.id.house_dates_entry_previousButton);
@@ -88,6 +101,8 @@ public class HouseDatesEntryFragment extends HouseEntryBaseFragment
             case EDIT:
                 if (nextButton != null)
                     nextButton.setVisibility(View.GONE);
+                if (previousButton != null)
+                    previousButton.setVisibility(View.GONE);
                 break;
         }
     }
@@ -138,6 +153,8 @@ public class HouseDatesEntryFragment extends HouseEntryBaseFragment
     @Override
     public void dateSelected(Map<String,List<Day>> selectedDaysMap) {
         this.selectedDaysMap = selectedDaysMap;
+        if (getActivity() != null && getActivity() instanceof EditHouseDetailActivity)
+            ((EditHouseDetailActivity)getActivity()).setSelectedDaysMap((HashMap<String,List<Day>>)this.selectedDaysMap);
     }
 
     @Override

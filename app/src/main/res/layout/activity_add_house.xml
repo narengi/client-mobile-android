@@ -118,7 +118,7 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/white"
                 android:orientation="vertical">
 
@@ -130,8 +130,8 @@
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_margin="8dp"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_margin="0dp"
                     android:layout_weight="1"
                     android:background="@android:color/white"
                     android:orientation="horizontal"
@@ -141,88 +141,80 @@
                         android:id="@+id/add_house_indicator8"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
+                        android:layout_margin="4dp"
                         android:layout_weight="0"
                         android:background="@drawable/circle_bg_gray_light"
                         android:gravity="center"
-                        android:text="8"
                         android:textColor="@color/text_gray_dark" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
                         android:id="@+id/add_house_indicator7"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
+                        android:layout_margin="4dp"
                         android:layout_weight="0"
                         android:background="@drawable/circle_bg_gray_light"
                         android:gravity="center"
-                        android:text="7"
                         android:textColor="@color/text_gray_dark" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
                         android:id="@+id/add_house_indicator6"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
+                        android:layout_margin="4dp"
                         android:layout_weight="0"
                         android:background="@drawable/circle_bg_gray_light"
                         android:gravity="center"
-                        android:text="6"
                         android:textColor="@color/text_gray_dark" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
                         android:id="@+id/add_house_indicator5"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
+                        android:layout_margin="4dp"
                         android:layout_weight="0"
                         android:background="@drawable/circle_bg_gray_light"
                         android:gravity="center"
-                        android:text="5"
                         android:textColor="@color/text_gray_dark" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
                         android:id="@+id/add_house_indicator4"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
+                        android:layout_margin="4dp"
                         android:layout_weight="0"
                         android:background="@drawable/circle_bg_gray_light"
                         android:gravity="center"
-                        android:text="4"
                         android:textColor="@color/text_gray_dark" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
                         android:id="@+id/add_house_indicator3"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
+                        android:layout_margin="4dp"
                         android:layout_weight="0"
                         android:background="@drawable/circle_bg_gray_light"
                         android:gravity="center"
-                        android:text="3"
                         android:textColor="@color/text_gray_dark" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
                         android:id="@+id/add_house_indicator2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
+                        android:layout_margin="4dp"
                         android:layout_weight="0"
                         android:background="@drawable/circle_bg_gray_light"
                         android:gravity="center"
-                        android:text="2"
                         android:textColor="@color/text_gray_dark" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
                         android:id="@+id/add_house_indicator1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
+                        android:layout_margin="4dp"
                         android:layout_weight="0"
                         android:background="@drawable/circle_bg_gray_light"
                         android:gravity="center"
-                        android:text="1"
                         android:textColor="@color/text_gray_dark" />
 
                 </LinearLayout>

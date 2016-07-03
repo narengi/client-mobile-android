@@ -27,7 +27,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
             ActivityManager am = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
             ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
-            if (cn.getShortClassName() != null && cn.getShortClassName().equalsIgnoreCase("HostHousesActivity")) {
+            if (cn.getShortClassName() != null && cn.getShortClassName().contains("HostHousesActivity")) {
 //            Intent newIntent = new Intent("xyz.narengi.android.ui.activity." + cn);
                 try {
                     Class clazz = Class.forName(cn.getClassName());

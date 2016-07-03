@@ -243,7 +243,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == 2001) {
+        if (resultCode == 2001 || resultCode == 2002) {
             showProgress();
             getHostHouses();
         }

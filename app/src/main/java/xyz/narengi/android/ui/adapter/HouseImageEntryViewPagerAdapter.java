@@ -74,6 +74,9 @@ public class HouseImageEntryViewPagerAdapter extends PagerAdapter {
 
         if (imageInfoArray == null) {
             if (imageUris != null && imageUris.size() > position) {
+                progressBarLayout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+
                 // Get the dimensions of the bitmap
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 bmOptions.inJustDecodeBounds = true;
@@ -96,8 +99,14 @@ public class HouseImageEntryViewPagerAdapter extends PagerAdapter {
 
                 progressBarLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
+            } else {
+                progressBarLayout.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         } else if ( imageInfoArray.length > position) {
+
+            progressBarLayout.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
 
             Picasso.with(context).load(imageInfoArray[position].getUrl()).into(imageView, new Callback() {
                 @Override
@@ -112,6 +121,10 @@ public class HouseImageEntryViewPagerAdapter extends PagerAdapter {
                 }
             });
         } else if (imageUris != null && imageUris.size() > (position - imageInfoArray.length)) {
+
+            progressBarLayout.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+
             // Get the dimensions of the bitmap
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inJustDecodeBounds = true;

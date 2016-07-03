@@ -88,6 +88,8 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
             case EDIT:
                 if (nextButton != null)
                     nextButton.setVisibility(View.GONE);
+                if (previousButton != null)
+                    previousButton.setVisibility(View.GONE);
                 break;
         }
     }

@@ -1,11 +1,16 @@
 package xyz.narengi.android.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -14,14 +19,20 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.byagowi.persiancalendar.Entity.Day;
+import com.byagowi.persiancalendar.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -41,6 +52,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.HouseEntryStep;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.House;
@@ -60,7 +72,6 @@ import xyz.narengi.android.ui.fragment.HouseMapEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseRoomEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseTypeEntryFragment;
 import xyz.narengi.android.util.DateUtils;
-import xyz.narengi.android.util.SecurityUtils;
 
 public class AddHouseActivity extends AppCompatActivity implements HouseEntryBaseFragment.OnInteractionListener {
 
@@ -69,17 +80,6 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     private List<Uri> imageUris;
     private ImageInfo[] imageInfoArray;
     private Map<String,List<Day>> selectedDaysMap;
-
-    public enum HouseEntryStep {
-        HOUSE_INFO,
-        HOUSE_MAP,
-        HOUSE_TYPE,
-        HOUSE_ROOMS,
-        HOUSE_GUESTS,
-        HOUSE_FEATURES,
-        HOUSE_IMAGES,
-        HOUSE_DATES
-    }
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -126,6 +126,16 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         if (house == null || house.getURL() == null) {
             super.onBackPressed();
         } else {
+            setResult(2001);
+            finish();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == 2001) {
             setResult(2001);
             finish();
         }
@@ -182,8 +192,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                     }
                 } else {
                     house = resultHouse;
-                    Toast.makeText(AddHouseActivity.this, "Added House : " + resultHouse.getName(), Toast.LENGTH_SHORT).show();
-                    goToNextSection();
+                    showUpdateHouseResultDialog();
                 }
             }
 
@@ -194,6 +203,49 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                 t.printStackTrace();
             }
         });
+    }
+
+    private int getScreenWidth(Context context) {
+        int measuredWidth;
+        Point size = new Point();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            wm.getDefaultDisplay().getSize(size);
+            measuredWidth = size.x;
+        } else {
+            Display d = wm.getDefaultDisplay();
+            measuredWidth = d.getHeight();
+        }
+
+        return measuredWidth;
+    }
+
+    public void showUpdateHouseResultDialog() {
+
+        Toast toast = new Toast(getApplicationContext());
+        View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params != null) {
+            int width = (getScreenWidth(this) * 3 / 5);
+            params.width = width;
+            params.height = width;
+            view.setLayoutParams(params);
+        }
+
+        toast.setView(view);
+        toast.setDuration(Toast.LENGTH_SHORT);
+
+        int margin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        toast.setGravity(Gravity.CENTER, 0, margin);
+        toast.show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                goToNextSection();
+            }
+        }, 1000);
     }
 
     private void updateHouse() {
@@ -244,8 +296,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                     }
                 } else {
                     house = resultHouse;
-                    Toast.makeText(AddHouseActivity.this, "Added House : " + resultHouse.getName(), Toast.LENGTH_SHORT).show();
-                    goToNextSection();
+                    showUpdateHouseResultDialog();
                 }
 
             }
@@ -262,10 +313,12 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     private void addUpdateHouse() {
 
         if (currentStep == HouseEntryStep.HOUSE_INFO) {
-            addHouse();
+            if (house == null || house.getURL() == null || house.getURL().length() == 0)
+                addHouse();
+            else updateHouse();
         } else if (currentStep == HouseEntryStep.HOUSE_IMAGES) {
             hideProgress();
-            goToNextSection();
+            showUpdateHouseResultDialog();
         } else {
             updateHouse();
         }
@@ -415,12 +468,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                 goToDatesSection();
                 break;
             case HOUSE_DATES:
+                openAddHouseConfirm();
                 break;
-//            default:
-//                scrollView = (NestedScrollView)findViewById(R.id.add_house_scrollview);
-//                if (scrollView != null)
-//                    scrollView.requestDisallowInterceptTouchEvent(false);
-//                break;
         }
 
         if (currentStep != HouseEntryStep.HOUSE_MAP && currentStep != HouseEntryStep.HOUSE_FEATURES)
@@ -1118,7 +1167,6 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     @Override
     public void onGoToNextSection(House house) {
         this.house = house;
-//        goToNextSection();
         showProgress();
         addUpdateHouse();
     }
@@ -1128,20 +1176,45 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         backToPreviousSection(house);
     }
 
+    private void openAddHouseConfirm() {
+        Intent intent = new Intent(this, AddHouseConfirmActivity.class);
+        startActivityForResult(intent, 2001);
+    }
+
     private void setupIndicatorsSize() {
+
+        char[] digits = Utils.getInstance().preferredDigits(this);
+
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
 
-        float indicatorWidth = (dpWidth - 4 * 8 - 2 * 8) / 8;
+        float indicatorWidth = (dpWidth - 8 * 8 - 2 * 8) / 8;
         indicatorWidth = indicatorWidth * displayMetrics.density;
         float indicatorHeight = indicatorWidth;
+
+        int margin = 8;
+        int actionBarHeight;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+            if (actionBarHeight > 0) {
+                indicatorWidth = actionBarHeight / 2;
+                indicatorHeight = actionBarHeight / 2;
+                margin = (displayMetrics.widthPixels - actionBarHeight * 4) / 16;
+            }
+        }
 
         TextView indicatorTextView1 = (TextView) findViewById(R.id.add_house_indicator1);
         if (indicatorTextView1 != null && indicatorTextView1.getLayoutParams() != null) {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) indicatorTextView1.getLayoutParams();
             params.width = (int) indicatorWidth;
             params.height = (int) indicatorHeight;
+            params.gravity = Gravity.CENTER;
+            params.setMargins(margin, margin, margin, margin);
             indicatorTextView1.setLayoutParams(params);
+            indicatorTextView1.setGravity(Gravity.CENTER);
+            indicatorTextView1.setText(Utils.formatNumber(1, digits));
         }
 
         TextView indicatorTextView2 = (TextView) findViewById(R.id.add_house_indicator2);
@@ -1149,7 +1222,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) indicatorTextView2.getLayoutParams();
             params.width = (int) indicatorWidth;
             params.height = (int) indicatorHeight;
+            params.gravity = Gravity.CENTER;
+            params.setMargins(margin, margin, margin, margin);
             indicatorTextView2.setLayoutParams(params);
+            indicatorTextView2.setGravity(Gravity.CENTER);
+            indicatorTextView2.setText(Utils.formatNumber(2, digits));
         }
 
         TextView indicatorTextView3 = (TextView) findViewById(R.id.add_house_indicator3);
@@ -1157,7 +1234,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) indicatorTextView3.getLayoutParams();
             params.width = (int) indicatorWidth;
             params.height = (int) indicatorHeight;
+            params.gravity = Gravity.CENTER;
+            params.setMargins(margin, margin, margin, margin);
             indicatorTextView3.setLayoutParams(params);
+            indicatorTextView3.setGravity(Gravity.CENTER);
+            indicatorTextView3.setText(Utils.formatNumber(3, digits));
         }
 
         TextView indicatorTextView4 = (TextView) findViewById(R.id.add_house_indicator4);
@@ -1165,7 +1246,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) indicatorTextView4.getLayoutParams();
             params.width = (int) indicatorWidth;
             params.height = (int) indicatorHeight;
+            params.gravity = Gravity.CENTER;
+            params.setMargins(margin, margin, margin, margin);
             indicatorTextView4.setLayoutParams(params);
+            indicatorTextView4.setGravity(Gravity.CENTER);
+            indicatorTextView4.setText(Utils.formatNumber(4, digits));
         }
 
         TextView indicatorTextView5 = (TextView) findViewById(R.id.add_house_indicator5);
@@ -1173,7 +1258,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) indicatorTextView5.getLayoutParams();
             params.width = (int) indicatorWidth;
             params.height = (int) indicatorHeight;
+            params.gravity = Gravity.CENTER;
+            params.setMargins(margin, margin, margin, margin);
             indicatorTextView5.setLayoutParams(params);
+            indicatorTextView5.setGravity(Gravity.CENTER);
+            indicatorTextView5.setText(Utils.formatNumber(5, digits));
         }
 
         TextView indicatorTextView6 = (TextView) findViewById(R.id.add_house_indicator6);
@@ -1181,7 +1270,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) indicatorTextView6.getLayoutParams();
             params.width = (int) indicatorWidth;
             params.height = (int) indicatorHeight;
+            params.gravity = Gravity.CENTER;
+            params.setMargins(margin, margin, margin, margin);
             indicatorTextView6.setLayoutParams(params);
+            indicatorTextView6.setGravity(Gravity.CENTER);
+            indicatorTextView6.setText(Utils.formatNumber(6, digits));
         }
 
         TextView indicatorTextView7 = (TextView) findViewById(R.id.add_house_indicator7);
@@ -1189,7 +1282,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) indicatorTextView7.getLayoutParams();
             params.width = (int) indicatorWidth;
             params.height = (int) indicatorHeight;
+            params.gravity = Gravity.CENTER;
+            params.setMargins(margin, margin, margin, margin);
             indicatorTextView7.setLayoutParams(params);
+            indicatorTextView7.setGravity(Gravity.CENTER);
+            indicatorTextView7.setText(Utils.formatNumber(7, digits));
         }
 
         TextView indicatorTextView8 = (TextView) findViewById(R.id.add_house_indicator8);
@@ -1197,7 +1294,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) indicatorTextView8.getLayoutParams();
             params.width = (int) indicatorWidth;
             params.height = (int) indicatorHeight;
+            params.gravity = Gravity.CENTER;
+            params.setMargins(margin, margin, margin, margin);
             indicatorTextView8.setLayoutParams(params);
+            indicatorTextView8.setGravity(Gravity.CENTER);
+            indicatorTextView8.setText(Utils.formatNumber(8, digits));
         }
     }
 

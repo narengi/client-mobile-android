@@ -287,6 +287,9 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         final String[] provinceArray = new String[provincesMap.keySet().size()];
         provincesMap.keySet().toArray(provinceArray);
 
+        if (provinceArray.length == 0 || provinceArray[0] == null)
+            return;
+
         SpinnerArrayAdapter<String> provinceArrayAdapter = new SpinnerArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item,
                 provinceArray) {
 
@@ -375,11 +378,11 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
                         citySpinner.setAdapter(cityArrayAdapter);
                         citySpinner.setPromptId(R.string.house_info_entry_city_hint);
 
-                        if (house != null && house.getLocation() != null && house.getLocation().getCity() != null &&
-                                house.getLocation().getCity().length() > 0 ) {
+                        if (house != null && house.getCityName() != null &&
+                                house.getCityName().length() > 0 ) {
                             for (int i=0 ; i < cityArray.length ; i++) {
                                 ProvinceCity provinceCity = cityArray[i];
-                                if (house.getLocation().getCity().equalsIgnoreCase(provinceCity.getCity())) {
+                                if (house.getCityName().trim().equalsIgnoreCase(provinceCity.getCity().trim())) {
                                     citySpinner.setSelection(i);
                                     citySpinner.invalidate();
                                 }
@@ -395,19 +398,19 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
             }
         });
 
-        if (!provincesMap.isEmpty() && house != null && house.getLocation() != null && (house.getLocation().getCity() != null ||
-            house.getLocation().getProvince() != null)) {
+        if (!provincesMap.isEmpty() && house != null && (house.getCityName() != null ||
+            house.getProvinceName() != null)) {
 
             ProvinceCity[] cityArray = null;
 
-            if (house.getLocation().getProvince() != null && house.getLocation().getProvince().length() > 0) {
-                if (provincesMap.containsKey(house.getLocation().getProvince())) {
+            if (house.getProvinceName() != null && house.getProvinceName().length() > 0) {
+                if (provincesMap.containsKey(house.getProvinceName().trim())) {
                     provincesMap.keySet().toArray(provinceArray);
                     for (int i=0 ; i < provinceArray.length ; i++) {
-                        if (house.getLocation().getProvince().equalsIgnoreCase(provinceArray[i])) {
+                        if (house.getProvinceName().trim().equalsIgnoreCase(provinceArray[i].trim())) {
                             provinceSpinner.setSelection(i);
                             provinceSpinner.invalidate();
-                            cityArray = provincesMap.get(house.getLocation().getProvince());
+                            cityArray = provincesMap.get(house.getProvinceName().trim());
                         }
                     }
                 }

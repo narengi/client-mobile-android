@@ -21,6 +21,7 @@ import java.util.List;
 
 import calendar.CivilDate;
 import calendar.DateConverter;
+import calendar.PersianDate;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.ui.fragment.CalendarMonthFragment;
@@ -69,6 +70,8 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
     @Override
     public void onBindViewHolder(DayViewHolder viewHolder, int position) {
 
+        PersianDate todayDate = Utils.getToday();
+
         if (position >= 7) {
 
             if (position - 7 - days.get(0).getDayOfWeek() >= 0 && (position - 7 - days.get(0).getDayOfWeek()) < days.size()) {
@@ -83,7 +86,13 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
                 } else {
                     viewHolder.dayItemButton.setTextColor(context.getResources().getColor(R.color.text_gray_dark));
                 }
-                viewHolder.dayItemButton.setClickable(true);
+
+                if (day.getPersianDate() != null && day.getPersianDate().getYear() == todayDate.getYear() &&
+                        day.getPersianDate().getMonth() == todayDate.getMonth() && day.getPersianDate().getDayOfMonth() < todayDate.getDayOfMonth()) {
+                    viewHolder.dayItemButton.setClickable(false);
+                } else {
+                    viewHolder.dayItemButton.setClickable(true);
+                }
 
             } else {
 
