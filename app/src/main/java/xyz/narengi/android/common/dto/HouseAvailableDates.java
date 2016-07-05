@@ -1,9 +1,11 @@
 package xyz.narengi.android.common.dto;
 
+import java.io.Serializable;
+
 /**
  * @author Siavash Mahmoudpour
  */
-public class HouseAvailableDates {
+public class HouseAvailableDates implements Serializable {
 
     private String lastAllowedDate;
     private String startDate;

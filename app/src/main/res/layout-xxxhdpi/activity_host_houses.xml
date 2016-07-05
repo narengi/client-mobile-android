@@ -4,35 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_gray_light"
     android:fitsSystemWindows="true"
     tools:context="xyz.narengi.android.ui.activity.HostHousesActivity">
 
-    <LinearLayout
-        android:id="@+id/host_houses_progressLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/host_houses_progressLayout"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="vertical"-->
+        <!-->-->
 
-        <ProgressBar
-            android:id="@+id/host_houses_progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:foregroundGravity="center"
-            android:indeterminate="false"
-            android:background="@android:color/transparent"
-            />
-    </LinearLayout>
+        <!--<ProgressBar-->
+            <!--android:id="@+id/host_houses_progressBar"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--/>-->
+    <!--</LinearLayout>-->
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/host_houses_recyclerView"
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/host_houses_swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/host_houses_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="80dp"
+            android:background="@android:color/transparent"
+            android:clipToPadding="false"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/host_houses_appbar"
@@ -57,6 +67,11 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:titleTextColor="@color/text_gray_dark" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/orange_light" />
 
         <!--<android.support.design.widget.CollapsingToolbarLayout-->
         <!--android:id="@+id/host_houses_collapse_toolbar"-->

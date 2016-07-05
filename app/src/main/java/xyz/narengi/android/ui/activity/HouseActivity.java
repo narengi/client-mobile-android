@@ -25,6 +25,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -37,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,8 +56,10 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseFeature;
+import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.content.HouseDeserializer;
 import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
@@ -78,6 +82,7 @@ public class HouseActivity extends ActionBarActivity {
         showProgress();
         if (getIntent() != null && getIntent().getStringExtra("houseUrl") != null) {
             String houseUrl = getIntent().getStringExtra("houseUrl");
+            getHouseImage(houseUrl);
             getHouse(houseUrl);
         }
     }
@@ -184,16 +189,53 @@ public class HouseActivity extends ActionBarActivity {
         LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.house_progressLayout);
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.house_progressBar);
 
-        progressBar.setVisibility(View.VISIBLE);
-        progressBarLayout.setVisibility(View.VISIBLE);
+        if (progressBarLayout != null && progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void hideProgress() {
         LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.house_progressLayout);
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.house_progressBar);
 
-        progressBar.setVisibility(View.GONE);
-        progressBarLayout.setVisibility(View.GONE);
+        if (progressBarLayout != null && progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+            progressBarLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void getHouseImage(String houseUrl) {
+
+        Gson gson = new GsonBuilder().create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.SERVER_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+        Call<ImageInfo[]> call = apiEndpoints.getHouseImages(houseUrl + "/pictures");
+
+        call.enqueue(new Callback<ImageInfo[]>() {
+            @Override
+            public void onResponse(Response<ImageInfo[]> response, Retrofit retrofit) {
+                int statusCode = response.code();
+                ImageInfo[] result = response.body();
+                if (result != null && result.length > 0) {
+                    String[] imageUrls = new String[result.length];
+                    for (int i=0 ; i < result.length ; i++) {
+                        imageUrls[i] = result[i].getUrl();
+                        setupImageViewPager(imageUrls);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void setHouse(final House house) {
@@ -215,9 +257,9 @@ public class HouseActivity extends ActionBarActivity {
 //            getHouseMapImage(mapUrl);
 //        }
 
-        if (house.getImages() != null && house.getImages().length > 0) {
-            setupImageViewPager(house.getImages());
-        }
+//        if (house.getImages() != null && house.getImages().length > 0) {
+//            setupImageViewPager(house.getImages());
+//        }
 
 //        setupTitleInfoLayout(house);
         TextView priceTextView = (TextView)findViewById(R.id.house_price);

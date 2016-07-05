@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    >
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/edit_house_menu_item_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/circle_bg_gray_light"
+        android:gravity="center"
+        android:textColor="@color/text_gray_dark" />
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/edit_house_menu_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/edit_house_menu_item_indicator"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@android:color/transparent"
+        android:gravity="right|center_vertical"
+        android:textColor="@color/text_gray_light"
+        />
+
+</RelativeLayout>

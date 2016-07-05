@@ -18,6 +18,7 @@ import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -39,6 +40,7 @@ import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.ui.activity.AddHouseActivity;
+import xyz.narengi.android.ui.activity.EditHouseDetailActivity;
 import xyz.narengi.android.ui.widget.NestedScrollingListView;
 
 /**
@@ -72,12 +74,27 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
         featuresListView.setListener(new NestedScrollingListView.OnTouchListener() {
             @Override
             public void onTouch() {
-                if (getActivity() != null && getActivity() instanceof AddHouseActivity) {
-                    ((AddHouseActivity) getActivity()).requestDisallowInterceptTouchEvent(true);
+                if (getActivity() != null) {
+                    if (getActivity() instanceof AddHouseActivity) {
+                        ((AddHouseActivity) getActivity()).requestDisallowInterceptTouchEvent(true);
+                    } else if (getActivity() instanceof EditHouseDetailActivity) {
+                        ((EditHouseDetailActivity) getActivity()).requestDisallowInterceptTouchEvent(true);
+                    }
                 }
             }
         });
 
+        featuresListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
+                if (selectedHouseFeatures != null) {
+                    HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
+                    selectedHouseFeatures.toArray(houseFeatures);
+                    getHouse().setFeatureList(houseFeatures);
+                }
+            }
+        });
 
         featuresListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -117,6 +134,15 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
 //                        null, rightDrawable, null);
 //                titleCheckBox.setButtonDrawable(leftDrawable);
 //                titleCheckBox.setTextColor(textColor);
+
+
+
+                List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
+                if (selectedHouseFeatures != null) {
+                    HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
+                    selectedHouseFeatures.toArray(houseFeatures);
+                    getHouse().setFeatureList(houseFeatures);
+                }
             }
         });
 
@@ -133,12 +159,12 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                         @Override
                         public void onClick(View view) {
                             if (validate() && getOnInteractionListener() != null) {
-                                List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
-                                if (selectedHouseFeatures != null) {
-                                    HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
-                                    selectedHouseFeatures.toArray(houseFeatures);
-                                    getHouse().setFeatureList(houseFeatures);
-                                }
+//                                List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
+//                                if (selectedHouseFeatures != null) {
+//                                    HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
+//                                    selectedHouseFeatures.toArray(houseFeatures);
+//                                    getHouse().setFeatureList(houseFeatures);
+//                                }
                                 getOnInteractionListener().onGoToNextSection(getHouse());
                             }
                         }
@@ -151,12 +177,12 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                         @Override
                         public void onClick(View view) {
                             if (validate() && getOnInteractionListener() != null) {
-                                List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
-                                if (selectedHouseFeatures != null) {
-                                    HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
-                                    selectedHouseFeatures.toArray(houseFeatures);
-                                    getHouse().setFeatureList(houseFeatures);
-                                }
+//                                List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
+//                                if (selectedHouseFeatures != null) {
+//                                    HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
+//                                    selectedHouseFeatures.toArray(houseFeatures);
+//                                    getHouse().setFeatureList(houseFeatures);
+//                                }
                                 getOnInteractionListener().onBackToPreviousSection(getHouse());
                             }
                         }
@@ -166,6 +192,15 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
             case EDIT:
                 if (nextButton != null)
                     nextButton.setVisibility(View.GONE);
+                if (previousButton != null)
+                    previousButton.setVisibility(View.GONE);
+
+                if (featuresListView.getLayoutParams() != null) {
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)featuresListView.getLayoutParams();
+                    layoutParams.bottomMargin = 10;
+                    featuresListView.setLayoutParams(layoutParams);
+                }
+
                 break;
         }
     }

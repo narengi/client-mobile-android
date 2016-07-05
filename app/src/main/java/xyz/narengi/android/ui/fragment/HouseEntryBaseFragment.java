@@ -3,6 +3,8 @@ package xyz.narengi.android.ui.fragment;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import xyz.narengi.android.common.dto.House;
 
@@ -56,10 +58,10 @@ public abstract class HouseEntryBaseFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnInteractionListener) {
             setOnInteractionListener((OnInteractionListener)context);
-        } else {
+        } /*else {
             throw new RuntimeException(context.toString()
                     + " must implement OnInteractionListener");
-        }
+        }*/
     }
 
     @Override
@@ -68,10 +70,13 @@ public abstract class HouseEntryBaseFragment extends Fragment {
         setOnInteractionListener(null);
     }
 
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.SHOW_FORCED);
+    }
+
     public interface OnInteractionListener {
         void onGoToNextSection(House house);
         void onBackToPreviousSection(House house);
     }
-
-
 }

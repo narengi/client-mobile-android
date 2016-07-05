@@ -137,9 +137,12 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private void setupTitleInfoLayout(TitleInfoViewHolder viewHolder) {
 
 //        viewHolder.priceTextView.setText(house.getCost());
-        viewHolder.cityTextView.setText(house.getCityName());
-        viewHolder.summaryTextView.setText(house.getSummary());
-        viewHolder.ratingTextView.setText("(" + house.getRating() + " رای" + ")");
+        if (house.getName() != null)
+            viewHolder.cityTextView.setText(house.getName());
+        if (house.getSummary() != null)
+            viewHolder.summaryTextView.setText(house.getSummary());
+        if (house.getRating() != null)
+            viewHolder.ratingTextView.setText("(" + house.getRating() + " رای" + ")");
 
         Drawable drawable = viewHolder.houseRatingBar.getProgressDrawable();
         drawable.setColorFilter(context.getResources().getColor(R.color.rating_bar_yelloh), PorterDuff.Mode.SRC_ATOP);
@@ -191,11 +194,16 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private void setupSpecsLayout(HouseSpecsViewHolder viewHolder) {
 
+        int bedCount = 0, guestCount = 0, bedroomCount = 0;
         if (house.getSpec() != null) {
-            viewHolder.bedCountTextView.setText(context.getString(R.string.house_bed_count, house.getSpec().getBedCount()));
-            viewHolder.guestCountTextView.setText(context.getString(R.string.house_guest_count, house.getSpec().getGuestCount()));
-            viewHolder.bedroomCountTextView.setText(context.getString(R.string.house_bedroom_count, house.getSpec().getBedroomCount()));
+            bedCount = house.getSpec().getBedCount();
+            guestCount = house.getSpec().getGuestCount();
+            bedroomCount = house.getSpec().getBedroomCount();
         }
+
+        viewHolder.bedCountTextView.setText(context.getString(R.string.house_bed_count, bedCount));
+        viewHolder.guestCountTextView.setText(context.getString(R.string.house_guest_count, guestCount));
+        viewHolder.bedroomCountTextView.setText(context.getString(R.string.house_bedroom_count, bedroomCount));
 
         if (house.getType() != null) {
             if (house.getType().equals("apartment")) {
@@ -219,10 +227,17 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private void setHouseDescription(DescriptionViewHolder viewHolder) {
 
-        String description = house.getName() + ", " + house.getSummary() + ", " + house.getFeatureSummary();
-        description += description;
+        StringBuilder builder = new StringBuilder();
+        if (house.getSummary() != null) {
+            builder.append(house.getSummary());
+            builder.append("\n");
+        }
+        if (house.getFeatureSummary() != null) {
+            builder.append(house.getFeatureSummary());
+            builder.append("\n");
+        }
 
-        viewHolder.descriptionTextView.setText(description);
+        viewHolder.descriptionTextView.setText(builder.toString());
     }
 
     private void setupFeaturesLayout(FeaturesViewHolder viewHolder) {
@@ -341,8 +356,10 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     private void setupUserRatingLayout(UserRatingViewHolder viewHolder) {
-        viewHolder.userRatingTextView.setText("بر اساس ۹ رای");
-        viewHolder.userRatingTextView.setText(context.getString(R.string.house_user_rating, house.getRating()));
+//        viewHolder.userRatingTextView.setText("بر اساس ۹ رای");
+        viewHolder.userRatingTextView.setText("بر اساس " + String.valueOf(house.getReviewsCount()) + " رای");
+        if (house.getRating() != null)
+            viewHolder.userRatingTextView.setText(context.getString(R.string.house_user_rating, house.getRating()));
         Drawable drawable = viewHolder.userRatingBar.getProgressDrawable();
         drawable.setColorFilter(context.getResources().getColor(R.color.rating_bar_yelloh), PorterDuff.Mode.SRC_ATOP);
     }

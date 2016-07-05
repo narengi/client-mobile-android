@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/bg_gray_light"
+    android:background="@android:color/transparent"
     android:scrollbars="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="xyz.narengi.android.ui.fragment.HouseInfoEntryFragment">
@@ -15,7 +15,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_gray_light"
+        android:background="@android:color/transparent"
         android:orientation="vertical"
         >
 
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:background="@color/bg_gray_light"
+        android:background="@android:color/transparent"
         android:orientation="vertical">
 
         <!--<Space-->

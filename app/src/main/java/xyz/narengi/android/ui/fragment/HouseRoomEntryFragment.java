@@ -2,6 +2,8 @@ package xyz.narengi.android.ui.fragment;
 
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
     private EditText priceEditText;
     private int roomCount;
     private int bedCount;
+    private TextWatcher priceTextWatcher;
 
     public HouseRoomEntryFragment() {
         // Required empty public constructor
@@ -56,6 +59,25 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
         removeBedButton = (Button)view.findViewById(R.id.house_room_entry_removeBedButton);
         priceEditText = (EditText)view.findViewById(R.id.house_room_entry_price);
 
+        priceTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                setPrice(editable.toString());
+            }
+        };
+
+        priceEditText.addTextChangedListener(priceTextWatcher);
+
         if (getHouse() != null) {
             if (getHouse().getSpec() != null) {
                 roomCount = getHouse().getSpec().getBedroomCount();
@@ -63,7 +85,10 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
             }
 
             if (getHouse().getPrice() != null && getHouse().getPrice().getPrice() > 0) {
-                priceEditText.setText(String.valueOf((long)getHouse().getPrice().getPrice()));
+                priceEditText.removeTextChangedListener(priceTextWatcher);
+                priceEditText.setText(String.valueOf((long) getHouse().getPrice().getPrice()));
+                priceEditText.addTextChangedListener(priceTextWatcher);
+
             }
         }
 
@@ -146,6 +171,8 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
             case EDIT:
                 if (nextButton != null)
                     nextButton.setVisibility(View.GONE);
+                if (previousButton != null)
+                    previousButton.setVisibility(View.GONE);
                 break;
         }
     }

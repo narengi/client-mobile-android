@@ -11,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:padding="0dp"
-        android:scaleType="fitXY" />
+        android:scaleType="centerCrop" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/image_viewpager_item_progressBarLayout"
@@ -22,7 +22,9 @@
         android:layout_alignRight="@id/image_viewpager_item_image"
         android:layout_alignTop="@id/image_viewpager_item_image"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible"
+        >
 
         <ProgressBar
             android:id="@+id/image_viewpager_item_progressBar"
@@ -32,10 +34,8 @@
             android:layout_gravity="center"
             android:layout_margin="56dp"
             android:background="@android:color/transparent"
-            android:foreground="@color/orange_light"
-            android:foregroundGravity="center"
-            android:indeterminate="false"
-            android:visibility="visible" />
+            android:indeterminateDrawable="@xml/progress"
+            android:visibility="invisible" />
 
     </LinearLayout>
 

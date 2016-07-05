@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.ui.fragment.CalendarMonthFragment;
 
@@ -23,7 +24,6 @@ import xyz.narengi.android.ui.fragment.CalendarMonthFragment;
  */
 public class CalendarEntryPagerAdapter extends FragmentStatePagerAdapter implements CalendarEntryMonthFragment.DateSelectionListener {
 
-    private final int MONTHS_LIMIT = 1200;
     private DateSelectionListener dateSelectionListener;
     private HouseAvailableDates houseAvailableDates;
     private Context context;
@@ -54,7 +54,7 @@ public class CalendarEntryPagerAdapter extends FragmentStatePagerAdapter impleme
         if (selectedDaysMap != null && selectedDaysMap.get(String.valueOf(position)) != null)
             fragment.setSelectedDays(selectedDaysMap.get(String.valueOf(position)));
         Bundle args = new Bundle();
-        int offset = position - MONTHS_LIMIT / 2;
+        int offset = position - Constants.CALENDAR_MONTHS_LIMIT / 2;
 //        args.putInt("offset", (position - MONTHS_LIMIT / 2));
         args.putInt("offset", offset);
         fragment.setArguments(args);
@@ -78,7 +78,7 @@ public class CalendarEntryPagerAdapter extends FragmentStatePagerAdapter impleme
 
     @Override
     public int getCount() {
-        return MONTHS_LIMIT;
+        return Constants.CALENDAR_MONTHS_LIMIT;
     }
 
     @Override

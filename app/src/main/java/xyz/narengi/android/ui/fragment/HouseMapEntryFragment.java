@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.GeoPoint;
 import xyz.narengi.android.ui.activity.AddHouseActivity;
+import xyz.narengi.android.ui.activity.EditHouseDetailActivity;
 
 /**
  * @author Siavash Mahmoudpour
@@ -154,8 +155,12 @@ public class HouseMapEntryFragment extends HouseEntryBaseFragment implements OnM
         mapFragment.setListener(new MapFragment.OnTouchListener() {
             @Override
             public void onTouch() {
-                if (getActivity() != null && getActivity() instanceof AddHouseActivity) {
-                    ((AddHouseActivity)getActivity()).requestDisallowInterceptTouchEvent(true);
+                if (getActivity() != null) {
+                    if (getActivity() instanceof AddHouseActivity) {
+                        ((AddHouseActivity) getActivity()).requestDisallowInterceptTouchEvent(true);
+                    } else if (getActivity() instanceof EditHouseDetailActivity) {
+                        ((EditHouseDetailActivity) getActivity()).requestDisallowInterceptTouchEvent(true);
+                    }
                 }
             }
         });
@@ -196,6 +201,8 @@ public class HouseMapEntryFragment extends HouseEntryBaseFragment implements OnM
             case EDIT:
                 if (nextButton != null)
                     nextButton.setVisibility(View.GONE);
+                if (previousButton != null)
+                    previousButton.setVisibility(View.GONE);
                 break;
         }
     }
