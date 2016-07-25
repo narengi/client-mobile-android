@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -27,6 +28,16 @@ import android.widget.ProgressBar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -37,6 +48,8 @@ import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.House;
+import xyz.narengi.android.common.dto.HouseAvailableDates;
+import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.ui.adapter.HostHousesContentRecyclerAdapter;
@@ -44,6 +57,12 @@ import xyz.narengi.android.ui.adapter.HostHousesContentRecyclerAdapter;
 public class HostHousesActivity extends AppCompatActivity implements HostHousesContentRecyclerAdapter.RemoveHouseListener {
 
     private House[] hostHouses;
+//    private List<ImageInfo[]> imageInfoList;
+    private Map<String,ImageInfo[]> allImageInfoArraysMap;
+//    private List<HouseAvailableDates> houseAvailableDatesList;
+    private Map<String,HouseAvailableDates> allHouseAvailableDatesMap;
+    private RecyclerView mRecyclerView;
+
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -51,6 +70,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_host_houses);
         swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.host_houses_swipeRefreshLayout);
+
 //        swipeRefreshLayout.setActivated(true);
 //        swipeRefreshLayout.dispatchSetActivated(true);
 //        swipeRefreshLayout.getViewTreeObserver()
@@ -66,7 +86,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 //                        });
 
 
-        /*TypedValue typed_value = new TypedValue();
+        TypedValue typed_value = new TypedValue();
         getTheme().resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, typed_value, true);
         swipeRefreshLayout.setProgressViewOffset(false, 0, getResources().getDimensionPixelSize(typed_value.resourceId));
         swipeRefreshLayout.postDelayed(new Runnable() {
@@ -74,7 +94,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             public void run() {
                 swipeRefreshLayout.setRefreshing(true);
             }
-        }, 100);*/
+        }, 100);
 
         setupToolbar();
         showProgress();
@@ -144,13 +164,16 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     }
 
     private void setupContentRecyclerView() {
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
+        mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(this, hostHouses, this);
+//        HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(this,
+//                hostHouses, imageInfoList, houseAvailableDatesList, this);
+        HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(this,
+                hostHouses, null, null, this, allImageInfoArraysMap, allHouseAvailableDatesMap);
         mRecyclerView.setAdapter(contentRecyclerAdapter);
     }
 
@@ -164,6 +187,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 //        }
 
 //        swipeRefreshLayout.setRefreshing(true);
+
 
         TypedValue typed_value = new TypedValue();
         getTheme().resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, typed_value, true);
@@ -184,6 +208,8 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 //            progressBar.setVisibility(View.GONE);
 //            progressBarLayout.setVisibility(View.GONE);
 //        }
+
+
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -218,12 +244,28 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         call.enqueue(new Callback<House[]>() {
             @Override
             public void onResponse(Response<House[]> response, Retrofit retrofit) {
-                hideProgress();
+//                hideProgress();
                 int statusCode = response.code();
                 hostHouses = response.body();
-//                if (hostHouses != null && hostHouses.length > 0) {
-                setupContentRecyclerView();
+
+//                ImagesAndDatesAsyncTask imagesAndDatesAsyncTask = new ImagesAndDatesAsyncTask();
+//                AsyncTask asyncTask = imagesAndDatesAsyncTask .execute();
+//                try {
+//                    Object asyncTaskResult = asyncTask.get();
+//                    setupContentRecyclerView();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
 //                }
+
+                if (hostHouses == null || hostHouses.length == 0) {
+                    setupContentRecyclerView();
+                } else {
+                    readDatesAndImages();
+
+                    setupContentRecyclerView();
+                }
             }
 
             @Override
@@ -232,6 +274,169 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
                 t.printStackTrace();
             }
         });
+    }
+
+
+    public class ImagesAndDatesAsyncTask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            readDatesAndImages();
+            return null;
+        }
+    }
+
+
+    private void readImageInfo(final House house) {
+        final SharedPreferences preferences = getSharedPreferences("profile", 0);
+        String accessToken = preferences.getString("accessToken", "");
+        String username = preferences.getString("username", "");
+
+        Authorization authorization = new Authorization();
+        authorization.setUsername(username);
+        authorization.setToken(accessToken);
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                .create();
+
+        String authorizationJson = gson.toJson(authorization);
+        if (authorizationJson != null) {
+            authorizationJson = authorizationJson.replace("{", "");
+            authorizationJson = authorizationJson.replace("}", "");
+        }
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.SERVER_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+        Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getURL() + "/pictures");
+
+        imagesCall.enqueue(new Callback<ImageInfo[]>() {
+            @Override
+            public void onResponse(Response<ImageInfo[]> response, Retrofit retrofit) {
+                ImageInfo[] result = response.body();
+                allImageInfoArraysMap.put(house.getURL(), result);
+
+                if (allImageInfoArraysMap.size() == hostHouses.length) {
+                    HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
+                            hostHouses, null, null, HostHousesActivity.this, allImageInfoArraysMap, allHouseAvailableDatesMap);
+
+                    if (mRecyclerView == null)
+                        mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
+                    mRecyclerView.setAdapter(contentRecyclerAdapter);
+                    hideProgress();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                allImageInfoArraysMap.put(house.getURL(), null);
+                if (allImageInfoArraysMap.size() == hostHouses.length) {
+                    HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
+                            hostHouses, null, null, HostHousesActivity.this, allImageInfoArraysMap, allHouseAvailableDatesMap);
+
+                    if (mRecyclerView == null)
+                        mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
+                    mRecyclerView.setAdapter(contentRecyclerAdapter);
+                    hideProgress();
+                }
+
+                t.printStackTrace();
+
+            }
+        });
+    }
+
+    private void readAvailableDates(House house) {
+
+    }
+
+    private void readDatesAndImages() {
+
+        if (hostHouses == null || hostHouses.length == 0)
+            return;
+
+        allImageInfoArraysMap = new HashMap<String,ImageInfo[]>();
+
+//        final SharedPreferences preferences = getSharedPreferences("profile", 0);
+//        String accessToken = preferences.getString("accessToken", "");
+//        String username = preferences.getString("username", "");
+//
+//        Authorization authorization = new Authorization();
+//        authorization.setUsername(username);
+//        authorization.setToken(accessToken);
+//
+//        Gson gson = new GsonBuilder()
+//                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
+//                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+//                .create();
+//
+//        String authorizationJson = gson.toJson(authorization);
+//        if (authorizationJson != null) {
+//            authorizationJson = authorizationJson.replace("{", "");
+//            authorizationJson = authorizationJson.replace("}", "");
+//        }
+//
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        Date startDate = new Date();
+//        final Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(startDate);
+//        calendar.add(Calendar.MONTH, 3);
+//        Date endDate = calendar.getTime();
+//        String startDateString = simpleDateFormat.format(startDate);
+//        String endDateString = simpleDateFormat.format(endDate);
+
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(Constants.SERVER_BASE_URL)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//
+//        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+
+//        imageInfoList = new ArrayList<ImageInfo[]>();
+//        houseAvailableDatesList = new ArrayList<HouseAvailableDates>();
+
+        for (House house:hostHouses) {
+
+            readImageInfo(house);
+
+//            Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getURL() + "/pictures");
+//
+//            try {
+//                Response<ImageInfo[]> imageCallResponse = imagesCall.execute();
+//                ImageInfo[] result = imageCallResponse.body();
+//                imageInfoList.add(result);
+//            } catch (IOException e) {
+//                imageInfoList.add(null);
+//                e.printStackTrace();
+//            }
+
+            /*String url = house.getURL();
+            url = url + "/available-dates/start-" + startDateString + "/end-" + endDateString;
+
+            Call<HouseAvailableDates> datesCall = apiEndpoints.getHouseAvailableDates(url);
+
+            try {
+                Response<HouseAvailableDates> datesResponse = datesCall.execute();
+                HouseAvailableDates houseAvailableDates = datesResponse.body();
+                houseAvailableDatesList.add(houseAvailableDates);
+            } catch (IOException e) {
+                houseAvailableDatesList.add(null);
+                e.printStackTrace();
+            }*/
+        }
+    }
+
+    public List<HouseAvailableDates> getHouseAvailableDatesList() {
+
+//        if (hostHouses == null || hostHouses.length == 0)
+            return null;
+
+//        return houseAvailableDatesList;
     }
 
     private void openAddHouse() {

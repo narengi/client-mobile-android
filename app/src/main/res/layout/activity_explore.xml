@@ -101,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:itemTextAppearance="?android:attr/textAppearanceLarge"
+        app:itemTextAppearance="?android:attr/textAppearanceMedium"
         app:itemTextColor="@color/orange_light"
         />
 </android.support.v4.widget.DrawerLayout>

@@ -142,5 +142,8 @@
         <item name="android:windowExitAnimation">@anim/slide_out_down</item>
     </style>
 
+    <style name="MapMarkerTextAppearance" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 
 </resources>

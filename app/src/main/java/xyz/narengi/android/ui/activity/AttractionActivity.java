@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.viewpagerindicator   .CirclePageIndicator;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import retrofit.Call;
 import retrofit.Callback;

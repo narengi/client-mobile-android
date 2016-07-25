@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:minWidth="160dp"
+    android:minHeight="120dp"
+    android:gravity="center"
+    android:padding="0dp">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map_house_info_window_imageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        >
+
+        <ImageView
+            android:id="@+id/map_house_info_window_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="160dp"
+            android:minHeight="120dp"
+            android:padding="0dp"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/map_house_info_window_priceLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/map_house_info_window_image"
+            android:layout_alignLeft="@id/map_house_info_window_image"
+            android:layout_alignRight="@id/map_house_info_window_image"
+            android:layout_alignTop="@id/map_house_info_window_image"
+            android:layout_margin="0dp"
+            android:gravity="left|top"
+            android:orientation="vertical"
+            android:padding="0dp">
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:id="@+id/map_house_info_window_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|top"
+                android:layout_margin="4dp"
+                android:background="@drawable/round_rect_bg_orange"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textColor="@android:color/white"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textStyle="bold"
+                />
+
+            <RatingBar
+                android:id="@+id/map_house_info_window_ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_margin="4dp"
+                android:padding="0dp"
+                android:max="4"
+                android:numStars="4"
+                android:stepSize="1.0"
+                android:rating="2.0"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="right|bottom"
+        >
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:id="@+id/map_house_info_window_featureSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:gravity="right|center_vertical"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/text_gray_dark"
+            android:textStyle="bold"
+            android:drawableRight="@drawable/ic_action_house_suggestion"
+            />
+
+    </LinearLayout>
+</LinearLayout>

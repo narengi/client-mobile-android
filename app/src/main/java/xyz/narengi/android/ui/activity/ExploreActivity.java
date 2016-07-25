@@ -538,6 +538,7 @@ public class ExploreActivity extends ActionBarActivity {
                             String item = historyItems[position];
                             if (item != null && item.length() > 0) {
 //                                searchEditText.setText(item.toString());
+                                closeSearchSuggestions(false);
                                 openSearchResult(item);
                             }
                         }
@@ -964,6 +965,7 @@ public class ExploreActivity extends ActionBarActivity {
                         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
                         storeSearchQuery(searchEditText.getText().toString());
+                        closeSearchSuggestions(false);
                         openSearchResult(searchEditText.getText().toString());
 //                        }
                         return true;
@@ -1044,7 +1046,7 @@ public class ExploreActivity extends ActionBarActivity {
             searchEditText.setText("");
         } else {
             if (!searchEditText.hasFocus()) {
-                Toast.makeText(ExploreActivity.this, "Map icon clicked!", Toast.LENGTH_LONG).show();
+                openAroundLocationsMap();
             }
         }
     }
@@ -1180,6 +1182,12 @@ public class ExploreActivity extends ActionBarActivity {
             }
         });
 
+    }
+
+    private void openAroundLocationsMap() {
+        Intent intent = new Intent(this, AroundLocationsMapActivity.class);
+        closeSearchSuggestions(true);
+        startActivity(intent);
     }
 
     private void openCityDetail(AroundPlaceCity city) {

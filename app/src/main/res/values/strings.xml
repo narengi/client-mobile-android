@@ -48,4 +48,7 @@
     <string name="cancel_button">انصراف</string>
     <string name="ok_button">تاييد</string>
 
+    <string name="enable_location_alert_title">تنظيمات مکان يابی</string>
+    <string name="enable_location_alert_message">سرويس مکان يابی گوشی شما غير فعال می باشد. برای دريافت مختصات مکان فعلی تان، بايد سرويس مکان يابی را از بخش تنظيمات گوشی فعال نماييد.</string>
+
 </resources>

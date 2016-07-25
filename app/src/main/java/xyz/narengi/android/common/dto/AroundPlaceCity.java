@@ -2,11 +2,13 @@ package xyz.narengi.android.common.dto;
 
 import org.parceler.Parcel;
 
+import java.io.Serializable;
+
 /**
  * @author Siavash Mahmoudpour
  */
 @Parcel
-public class AroundPlaceCity {
+public class AroundPlaceCity implements Serializable {
 
     private String Name;
     private String[] Images;

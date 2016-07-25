@@ -110,7 +110,10 @@ dependencies {
     compile 'net.danlew:android.joda:2.9.3'
     compile 'com.google.android.gms:play-services-maps:9.0.2'
     compile 'com.google.android.gms:play-services-location:8.3.0'
+//    compile 'com.google.maps.android:android-maps-utils:0.4'
+    compile 'com.google.maps.android:android-maps-utils:0.4.3'
     compile 'com.bignerdranch.android:expandablerecyclerview:1.0.3'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }
 
 //compile 'com.android.support:appcompat-v7:22.2.0'
