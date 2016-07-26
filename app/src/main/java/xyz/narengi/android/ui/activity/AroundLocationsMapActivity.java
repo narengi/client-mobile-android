@@ -2,6 +2,7 @@ package xyz.narengi.android.ui.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -15,11 +16,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -111,30 +114,23 @@ import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
 /**
  * @author Siavash Mahmoudpour
  */
-public class SearchResultMapActivity extends AppCompatActivity implements OnMapReadyCallback/*, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener*/
-            , ClusterManager.OnClusterClickListener<SearchResultMapActivity.AroundLocationClusterItem>,
-            ClusterManager.OnClusterInfoWindowClickListener<SearchResultMapActivity.AroundLocationClusterItem>,
-            ClusterManager.OnClusterItemClickListener<SearchResultMapActivity.AroundLocationClusterItem>,
-            ClusterManager.OnClusterItemInfoWindowClickListener<SearchResultMapActivity.AroundLocationClusterItem> {
+public class AroundLocationsMapActivity extends AppCompatActivity implements OnMapReadyCallback/*, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener*/
+        , ClusterManager.OnClusterClickListener<AroundLocationsMapActivity.AroundLocationClusterItem>,
+        ClusterManager.OnClusterInfoWindowClickListener<AroundLocationsMapActivity.AroundLocationClusterItem>,
+        ClusterManager.OnClusterItemClickListener<AroundLocationsMapActivity.AroundLocationClusterItem>,
+        ClusterManager.OnClusterItemInfoWindowClickListener<AroundLocationsMapActivity.AroundLocationClusterItem> {
 
 
     private GoogleMap mMap;
     private AroundLocation[] aroundLocations;
     private List<AroundLocation> aroundLocationList;
-    private EditText searchEditText;
-    private View.OnFocusChangeListener searchOnFocusChangeListener;
     private boolean loadingMore;
-    private RecyclerView searchResultListView;
-    private RecyclerView searchHistoryListView;
-    private boolean isShowingSuggestions = false;
-    private TextWatcher searchTextWatcher;
-    private RecyclerView.OnItemTouchListener suggestionsOnItemTouchListener;
 
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
 
-    private ClusterManager<SearchResultMapActivity.AroundLocationClusterItem> mClusterManager;
-    private List<SearchResultMapActivity.AroundLocationClusterItem> clusterItems;
+    private ClusterManager<AroundLocationsMapActivity.AroundLocationClusterItem> mClusterManager;
+    private List<AroundLocationsMapActivity.AroundLocationClusterItem> clusterItems;
     private CameraPosition cameraPosition;
     private Cluster<AroundLocationClusterItem> clickedCluster;
     private AroundLocationClusterItem clickedClusterItem;
@@ -144,6 +140,8 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
         public void onMyLocationChange(Location location) {
             if (lastLocation == null) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 14));
+                LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(location);
+                loadDataAsyncTask.execute();
             }
             lastLocation = location;
         }
@@ -152,7 +150,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result_map);
+        setContentView(R.layout.activity_around_locations_map);
 
         // Create an instance of GoogleAPIClient.
 //        if (googleApiClient == null) {
@@ -189,37 +187,20 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
             lastLocation = service.getLastKnownLocation(provider);
         }
 
-        String query = "";
-        if (getIntent() != null && getIntent().getStringExtra("query") != null) {
-            query = getIntent().getStringExtra("query");
-        }
 
-        setupToolbar(query);
-//        setupToolbar(null);
-
-//        searchEditText.removeTextChangedListener(searchTextWatcher);
-//        searchEditText.setOnFocusChangeListener(null);
-
-//        searchEditText.setText(query);
-//        closeSearchSuggestions(query);
-        searchEditText.clearFocus();
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
-
-//        searchEditText.addTextChangedListener(searchTextWatcher);
-//        searchEditText.setOnFocusChangeListener(searchOnFocusChangeListener);
+        setupToolbar();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.search_result_map_fragment);
+                .findFragmentById(R.id.around_locations_map_fragment);
         mapFragment.getMapAsync(this);
 
-        if (getIntent() != null && getIntent().getSerializableExtra("aroundLocations") != null) {
-            Object object = getIntent().getSerializableExtra("aroundLocations");
-            if (object instanceof AroundLocation[]) {
-                AroundLocation[] aroundLocations = (AroundLocation[]) object;
-                aroundLocationList = Arrays.asList(aroundLocations);
-                setupMarkers(aroundLocationList);
-            }
+        if (isLocationProvidersPresent() && !isLocationProvidersEnabled()) {
+            showEnableLocationProviderDialog();
+        }
+
+        if (lastLocation != null) {
+            LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(lastLocation);
+            loadDataAsyncTask.execute();
         }
     }
 
@@ -244,164 +225,76 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupToolbar(String query) {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.search_result_map_toolbar);
+    private void setupToolbar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.around_locations_map_toolbar);
 
-        if (toolbar != null) {
-            final ImageButton settingsImageButton = (ImageButton) findViewById(R.id.search_result_toolbar_action_settings);
-            final ImageButton mapImageButton = (ImageButton) findViewById(R.id.search_result_toolbar_action_map);
-            mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel));
-            searchEditText = (EditText) findViewById(R.id.search_result_toolbar_action_search);
-            searchEditText.setHint(R.string.search_hint);
-            if (query != null)
-                searchEditText.setText(query);
-
-//            final Handler handler = new Handler();
-
-//            searchTextWatcher = new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable editable) {
-//                    final String s = editable.toString();
-//
-//                    if (s.length() == 0) {
-//                        handler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                showSearchHistoryRecyclerView();
-//                                updateToolbarScrollFlags(false);
-//                            }
-//
-//                        }, 5);
-//                    } else {
-//
-//                        handler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                showSearchResultRecyclerView(searchEditText.getText().toString());
-//                                updateToolbarScrollFlags(false);
-//                            }
-//                        }, 5);
-//                    }
-//                }
-//            };
-
-//            searchEditText.addTextChangedListener(searchTextWatcher);
-
-//            searchOnFocusChangeListener = new View.OnFocusChangeListener() {
-//                @Override
-//                public void onFocusChange(View view, boolean b) {
-//                    if (b) {
-//                        if (searchEditText.getText().toString().length() == 0) {
-//                            handler.postAtFrontOfQueue(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    showSearchHistoryRecyclerView();
-//                                    updateToolbarScrollFlags(false);
-//                                }
-//
-//                            });
-//                        } else {
-//                            handler.postAtFrontOfQueue(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    showSearchResultRecyclerView(searchEditText.getText().toString());
-//                                    updateToolbarScrollFlags(false);
-//                                }
-//                            });
-//                        }
-//                        view.requestFocus();
-//
-//                        settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_back));
-//                        mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel));
-//                    } else {
-//                        mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_sort_by_size));
-//                    }
-//                }
-//            };
-//
-//            searchEditText.setOnFocusChangeListener(searchOnFocusChangeListener);
-
-            searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        if (searchEditText.getText().toString().length() > 0) {
-                            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
-                            storeSearchQuery(searchEditText.getText().toString());
-//                            closeSearchSuggestions(searchEditText.getText().toString());
-                            aroundLocationList = new ArrayList<AroundLocation>();
-                            setupMarkers(aroundLocationList);
-                            showProgress();
-                            LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(searchEditText.getText().toString());
-                            loadDataAsyncTask.execute();
-                            isShowingSuggestions = false;
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            });
-
-            settingsImageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    searchMenuButtonOnClick();
-                }
-            });
-
-            mapImageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    searchMapButtonOnClick();
-                }
-            });
-
-        }
+        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
+        backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
+        toolbar.setNavigationIcon(backButtonDrawable);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            actionBar.setTitle(getString(R.string.around_locations_map_page_title));
+            actionBar.setWindowTitle(getString(R.string.around_locations_map_page_title));
         }
     }
 
-    private void updateToolbarScrollFlags(boolean canScroll) {
+    private boolean isLocationProvidersPresent() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.search_result_map_toolbar);
-        if (toolbar == null)
-            return;
+        return locationManager != null &&
+                (locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER) ||
+                        locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER));
+    }
 
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.search_result_map_collapsing_toolbar);
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbar.getLayoutParams();
+    private boolean isLocationProvidersEnabled() {
 
-        if (canScroll) {
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-                    | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-        } else {
-            params.setScrollFlags(0);
-        }
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager != null &&
+                (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                        locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
+    }
 
-        collapsingToolbar.setLayoutParams(params);
+    private void showEnableLocationProviderDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.enable_location_alert_title));
+        builder.setMessage(getString(R.string.enable_location_alert_message));
+        builder.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Intent settingsIntent = new Intent(Settings.ACTION_SETTINGS);
+                startActivity(settingsIntent);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.search_result_map_progressLayout);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.search_result_map_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.around_locations_map_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.around_locations_map_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -410,8 +303,8 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.search_result_map_progressLayout);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.search_result_map_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.around_locations_map_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.around_locations_map_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.GONE);
@@ -419,297 +312,20 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
         }
     }
 
-    private void showSearchHistoryRecyclerView() {
-        LinearLayout toolbarInnerLayout = (LinearLayout) findViewById(R.id.search_result_toolbar_main_layout);
-        toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                closeSearchSuggestions(searchEditText.getText().toString());
-                return false;
-            }
-        });
-
-        searchHistoryListView = (RecyclerView) findViewById(R.id.search_result_suggestionsRecyclerView);
-
-        SharedPreferences preferences = getSharedPreferences("suggestions", 0);
-        String history = preferences.getString("searchHistory", "");
-
-        StringTokenizer tokenizer = new StringTokenizer(history, ",");
-        List<String> tokenList = new ArrayList<String>();
-        while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
-            tokenList.add(token);
-        }
-
-        final String[] historyItems;
-
-        if (tokenList.size() > 0) {
-            historyItems = new String[tokenList.size()];
-            tokenList.toArray(historyItems);
-        } else {
-            historyItems = null;
-        }
-
-        if (historyItems == null || historyItems.length == 0)
-            return;
-
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        searchHistoryListView.setLayoutManager(mLayoutManager);
-
-        SuggestionsRecyclerAdapter recyclerAdapter = new SuggestionsRecyclerAdapter(this, historyItems);
-        searchHistoryListView.setAdapter(recyclerAdapter);
-
-        final GestureDetector mGestureDetector;
-        mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return true;
-            }
-
-        });
-
-        if (suggestionsOnItemTouchListener != null)
-            searchHistoryListView.removeOnItemTouchListener(suggestionsOnItemTouchListener);
-
-        suggestionsOnItemTouchListener = new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent e) {
-
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
-
-                View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                int position = recyclerView.getChildAdapterPosition(childView);
-
-                if (childView == null) {
-                    closeSearchSuggestions(searchEditText.getText().toString());
-                } else {
-                    if (position >= 0 && mGestureDetector.onTouchEvent(e)) {
-                        if (historyItems.length > position) {
-                            Object item = historyItems[position];
-                            if (item != null) {
-                                closeSearchSuggestions(item.toString());
-                                aroundLocationList = new ArrayList<AroundLocation>();
-                                setupMarkers(aroundLocationList);
-                                showProgress();
-                                LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(item.toString());
-                                loadDataAsyncTask.execute();
-                            }
-                        }
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        };
-
-        searchHistoryListView.addOnItemTouchListener(suggestionsOnItemTouchListener);
-
-        searchHistoryListView.setVisibility(View.VISIBLE);
-        searchHistoryListView.invalidate();
-        isShowingSuggestions = true;
-    }
-
-    private SuggestionsResult getAroundLocationSuggestions(String query) {
-        SuggestionsServiceAsyncTask suggestionsAsyncTask = new SuggestionsServiceAsyncTask(query);
-        Object object = null;
-        try {
-            object = suggestionsAsyncTask.execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        if (object != null)
-            return (SuggestionsResult) object;
-
-        return null;
-    }
-
-    private void showSearchResultRecyclerView(String query) {
-
-        LinearLayout toolbarInnerLayout = (LinearLayout) findViewById(R.id.search_result_toolbar_main_layout);
-        toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                closeSearchSuggestions(searchEditText.getText().toString());
-                return false;
-            }
-        });
-
-        final List suggestions = new ArrayList();
-
-        SuggestionsResult suggestionsResult = getAroundLocationSuggestions(query);
-        if (suggestionsResult != null) {
-
-            if (suggestionsResult.getCity() != null && suggestionsResult.getCity().length > 0) {
-                suggestions.addAll(Arrays.asList(suggestionsResult.getCity()));
-            }
-            if (suggestionsResult.getAttraction() != null && suggestionsResult.getAttraction().length > 0) {
-                suggestions.addAll(Arrays.asList(suggestionsResult.getAttraction()));
-            }
-            if (suggestionsResult.getHouse() != null && suggestionsResult.getHouse().length > 0) {
-                suggestions.addAll(Arrays.asList(suggestionsResult.getHouse()));
-            }
-        }
-
-        searchResultListView = (RecyclerView) findViewById(R.id.search_result_suggestionsRecyclerView);
-
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        searchResultListView.setLayoutManager(mLayoutManager);
-
-        SuggestionsRecyclerAdapter recyclerAdapter = new SuggestionsRecyclerAdapter(this, suggestions.toArray());
-        searchResultListView.setAdapter(recyclerAdapter);
-
-        final GestureDetector mGestureDetector;
-        mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return true;
-            }
-        });
-
-        if (suggestionsOnItemTouchListener != null)
-            searchResultListView.removeOnItemTouchListener(suggestionsOnItemTouchListener);
-        suggestionsOnItemTouchListener = new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent e) {
-
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), InputMethodManager.SHOW_FORCED);
-
-                View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                int position = recyclerView.getChildAdapterPosition(childView);
-
-                if (childView == null) {
-                    closeSearchSuggestions(searchEditText.getText().toString());
-                } else {
-                    if (position >= 0 && mGestureDetector.onTouchEvent(e)) {
-                        if (suggestions.size() > position) {
-
-                            Object suggestion = suggestions.get(position);
-                            if (suggestion instanceof AroundPlaceCity) {
-                                openCityDetail((AroundPlaceCity) suggestion);
-                            } else if (suggestion instanceof AroundPlaceAttraction) {
-                                openAttractionDetail((AroundPlaceAttraction) suggestion);
-                            } else if (suggestion instanceof AroundPlaceHouse) {
-                                openHouseDetail((AroundPlaceHouse) suggestion);
-                            }
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        };
-
-        searchResultListView.addOnItemTouchListener(suggestionsOnItemTouchListener);
-
-        searchResultListView.setVisibility(View.VISIBLE);
-        searchResultListView.invalidate();
-        isShowingSuggestions = true;
-    }
-
-    private void storeSearchQuery(String query) {
-        SharedPreferences preferences = getSharedPreferences("suggestions", 0);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        String history = preferences.getString("searchHistory", "");
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(query);
-
-        StringTokenizer tokenizer = new StringTokenizer(history, ",");
-        List<String> tokenList = new ArrayList<String>();
-        while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
-            if (token != null && !token.equalsIgnoreCase(query))
-                tokenList.add(token);
-        }
-
-        if (tokenList.size() > 0) {
-            builder.append(",");
-
-            int count = Math.min(3, tokenList.size());
-            for (int i = 0; i < count; i++) {
-                builder.append(tokenList.get(i));
-
-                if (i < (count - 1))
-                    builder.append(",");
-            }
-        }
-
-        editor.putString("searchHistory", builder.toString());
-        editor.commit();
-    }
-
-    private void searchMapButtonOnClick() {
-
-        if (searchEditText.hasFocus()) {
-            searchEditText.setText("");
-        } else {
-            finish();
-        }
-    }
-
-    private void searchMenuButtonOnClick() {
-        isShowingSuggestions = false;
-        onBackPressed();
-    }
-
-    private void closeSearchSuggestions(String newQuery) {
-//        final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_settings);
-        final ImageButton mapImageButton = (ImageButton) findViewById(R.id.search_result_toolbar_action_map);
-
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.search_result_suggestionsRecyclerView);
-        searchEditText.setOnFocusChangeListener(null);
-        searchEditText.removeTextChangedListener(searchTextWatcher);
-        if (newQuery != null)
-            searchEditText.setText(newQuery);
-        else
-            searchEditText.setText("");
-        searchEditText.clearFocus();
-//        settingsImageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_navigation_menu));
-        mapImageButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_sort_by_size));
-
-        recyclerView.setVisibility(View.INVISIBLE);
-        recyclerView.invalidate();
-
-        searchEditText.setOnFocusChangeListener(searchOnFocusChangeListener);
-        searchEditText.addTextChangedListener(searchTextWatcher);
-
-        updateToolbarScrollFlags(true);
-        isShowingSuggestions = false;
-    }
-
     private void setupMarkers(List<AroundLocation> aroundLocations) {
 
         if (mMap == null)
             return;
+        else
+            mMap.clear();
+
+        if (mClusterManager != null)
+            mClusterManager.clearItems();
 
         if (aroundLocations == null || aroundLocations.size() == 0) {
-            mMap.clear();
-            if (mClusterManager != null)
-                mClusterManager.clearItems();
+//            mMap.clear();
+//            if (mClusterManager != null)
+//                mClusterManager.clearItems();
             return;
         }
 
@@ -952,6 +568,23 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
             googleMap.getUiSettings().setZoomControlsEnabled(true);
             googleMap.getUiSettings().setZoomGesturesEnabled(true);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+            googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+
+                    if (isLocationProvidersPresent() && !isLocationProvidersEnabled()) {
+                        showEnableLocationProviderDialog();
+                    }
+
+                    if (lastLocation != null) {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 14));
+                        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask(lastLocation);
+                        loadDataAsyncTask.execute();
+                    }
+                    return false;
+                }
+            });
         }
 
         TypedValue typedValue = new TypedValue();
@@ -970,7 +603,6 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
         String cityUrl = city.getURL();
         Intent intent = new Intent(this, CityActivity.class);
         intent.putExtra("cityUrl", cityUrl);
-//        closeSearchSuggestions("");
         startActivity(intent);
     }
 
@@ -978,7 +610,6 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
         String attractionUrl = attraction.getURL();
         Intent intent = new Intent(this, AttractionActivity.class);
         intent.putExtra("attractionUrl", attractionUrl);
-//        closeSearchSuggestions("");
         startActivity(intent);
     }
 
@@ -986,7 +617,6 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
         String houseUrl = house.getURL();
         Intent intent = new Intent(this, HouseActivity.class);
         intent.putExtra("houseUrl", houseUrl);
-//        closeSearchSuggestions("");
         startActivity(intent);
     }
 
@@ -1068,6 +698,30 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 
         @Override
         public LatLng getPosition() {
+            /*if (latLng != null)
+                return latLng;
+            else {
+                GeoPoint position = null;
+                if (aroundLocation.getType() != null && "City".equals(aroundLocation.getType()) &&
+                        aroundLocation.getData() instanceof AroundPlaceCity) {
+                    AroundPlaceCity city = (AroundPlaceCity) aroundLocation.getData();
+                    position = city.getPosition();
+                } else if (aroundLocation.getType() != null && "Attraction".equals(aroundLocation.getType()) &&
+                        aroundLocation.getData() instanceof AroundPlaceAttraction) {
+                    AroundPlaceAttraction attraction = (AroundPlaceAttraction) aroundLocation.getData();
+                    position = attraction.getPosition();
+                } else if (aroundLocation.getType() != null && "House".equals(aroundLocation.getType()) &&
+                        aroundLocation.getData() instanceof AroundPlaceHouse) {
+                    AroundPlaceHouse house = (AroundPlaceHouse) aroundLocation.getData();
+                    position = house.getPosition();
+                }
+
+                if (position == null)
+                    return  null;
+                else {
+                    return new LatLng(position.getLat(), position.getLng());
+                }
+            }*/
             return latLng;
         }
     }
@@ -1081,7 +735,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 //        private final int mDimension;
 
         public AroundLocationClusterRenderer(Context context, GoogleMap map,
-                                     ClusterManager<AroundLocationClusterItem> clusterManager) {
+                                             ClusterManager<AroundLocationClusterItem> clusterManager) {
             super(context, map, clusterManager);
 
             DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -1120,7 +774,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
                 int imageHeight = (int)(60 * displayMetrics.density);
 
                 AroundLocation aroundLocation = item.getAroundLocation();
-                IconGenerator iconGenerator = new IconGenerator(SearchResultMapActivity.this);
+                IconGenerator iconGenerator = new IconGenerator(AroundLocationsMapActivity.this);
                 iconGenerator.setColor(getResources().getColor(R.color.orange_light));
                 iconGenerator.setTextAppearance(R.style.MapMarkerTextAppearance);
 
@@ -1132,7 +786,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 
                     if (city.getImages() != null && city.getImages().length > 0) {
                         ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(
-                                SearchResultMapActivity.this, city.getImages()[0], imageWidth, imageHeight);
+                                AroundLocationsMapActivity.this, city.getImages()[0], imageWidth, imageHeight);
                         AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
                         try {
                             Object asyncTaskResult = asyncTask.get();
@@ -1162,7 +816,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 
                     if (attraction.getImages() != null && attraction.getImages().length > 0) {
                         ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(
-                                SearchResultMapActivity.this, attraction.getImages()[0], imageWidth, imageHeight);
+                                AroundLocationsMapActivity.this, attraction.getImages()[0], imageWidth, imageHeight);
                         AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
                         try {
                             Object asyncTaskResult = asyncTask.get();
@@ -1190,6 +844,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 //                    iconGenerator.setBackground(new ColorDrawable(getResources().getColor(R.color.orange_light)));
                     Bitmap iconBitmap = iconGenerator.makeIcon(house.getCost());
                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconBitmap));
+
                 }
             }
         }
@@ -1224,7 +879,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 
             if (clickedCluster != null) {
 
-                char[] digits = Utils.getInstance().preferredDigits(SearchResultMapActivity.this);
+                char[] digits = Utils.getInstance().preferredDigits(AroundLocationsMapActivity.this);
 
 
                 textView.setText(Utils.formatNumber(clickedCluster.getSize(), digits));
@@ -1282,25 +937,6 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
                         Picasso.with(getApplicationContext()).load(city.getImages()[0]).resize(imageWidth, imageHeight).into(cityImageView);
                     }
 
-                    /*ViewPager viewPager = (ViewPager)myContentsView.findViewById(R.id.map_city_info_window_imageViewpager);
-
-                    if (viewPager.getLayoutParams() != null) {
-
-                        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-                        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-                        int viewPagerWidth = (int)((dpWidth - 64) * displayMetrics.density);
-                        int viewPagerHeight = viewPagerWidth * 38 / 62;
-
-//                        viewPager.getLayoutParams().width = viewPagerWidth;
-//                        viewPager.getLayoutParams().height = viewPagerHeight;
-                    }
-
-                    ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(SearchResultMapActivity.this, city.getImages());
-                    viewPager.setAdapter(adapter);
-
-                    CirclePageIndicator pageIndicator = (CirclePageIndicator)myContentsView.findViewById(R.id.map_city_info_window_imagePageIndicator);
-                    pageIndicator.setViewPager(viewPager);*/
-
                 } else if (aroundLocation.getType() != null && "Attraction".equals(aroundLocation.getType()) &&
                         aroundLocation.getData() instanceof AroundPlaceAttraction) {
                     AroundPlaceAttraction attraction = (AroundPlaceAttraction) aroundLocation.getData();
@@ -1319,25 +955,6 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
                                 .findViewById(R.id.map_attraction_info_window_image);
                         Picasso.with(getApplicationContext()).load(attraction.getImages()[0]).resize(imageWidth, imageHeight).into(attractionImageView);
                     }
-
-                    /*ViewPager viewPager = (ViewPager)myContentsView.findViewById(R.id.map_attraction_info_window_imageViewpager);
-
-                    if (viewPager.getLayoutParams() != null) {
-
-                        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-                        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-                        int viewPagerWidth = (int)((dpWidth - 64) * displayMetrics.density);
-                        int viewPagerHeight = viewPagerWidth * 38 / 62;
-
-//                        viewPager.getLayoutParams().width = viewPagerWidth;
-//                        viewPager.getLayoutParams().height = viewPagerHeight;
-                    }
-
-                    ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(SearchResultMapActivity.this, attraction.getImages());
-                    viewPager.setAdapter(adapter);
-
-                    CirclePageIndicator pageIndicator = (CirclePageIndicator)myContentsView.findViewById(R.id.map_attraction_info_window_imagePageIndicator);
-                    pageIndicator.setViewPager(viewPager);*/
 
                 } else if (aroundLocation.getType() != null && "House".equals(aroundLocation.getType()) &&
                         aroundLocation.getData() instanceof AroundPlaceHouse) {
@@ -1385,10 +1002,10 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 
     private class LoadDataAsyncTask extends AsyncTask {
 
-        private String query;
+        private Location location;
 
-        public LoadDataAsyncTask(String query) {
-            this.query = query;
+        public LoadDataAsyncTask(Location location) {
+            this.location = location;
         }
 
         @Override
@@ -1400,6 +1017,10 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 
         @Override
         protected Object doInBackground(Object[] objects) {
+
+            if (location == null)
+                return null;
+
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(AroundLocation.class, new AroundLocationDeserializer())
                     .registerTypeAdapter(AroundPlaceCity.class, new AroundPlaceCityDeserializer())
@@ -1413,7 +1034,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
                     .build();
 
             RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-            Call<AroundLocation[]> call = apiEndpoints.getAroundLocations(query, "100", "0");
+            Call<AroundLocation[]> call = apiEndpoints.getAroundLocations("", "100", "0", location.getLatitude(), location.getLongitude());
 
             call.enqueue(new Callback<AroundLocation[]>() {
                 @Override

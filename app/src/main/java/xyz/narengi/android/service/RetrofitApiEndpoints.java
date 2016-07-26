@@ -43,6 +43,10 @@ public interface RetrofitApiEndpoints {
     @GET("/api/v1/search")
     Call<AroundLocation[]> getAroundLocations(@Query("term") String searchTerm, @Query("filter[limit]") String filterLimit, @Query("filter[skip]") String filterSkip);
 
+    @GET("/api/v1/search")
+    Call<AroundLocation[]> getAroundLocations(@Query("term") String searchTerm, @Query("filter[limit]") String filterLimit, @Query("filter[skip]") String filterSkip,
+                                              @Query("position[lat]") double lat, @Query("position[lng]") double lng);
+
     @GET("/api/v1/suggestion")
     Call<SuggestionsResult> getAroundLocationSuggestions(@Query("term") String searchTerm,
                                                          @Query("filter[selection][city]") String cityCount,

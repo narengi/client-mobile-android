@@ -90,9 +90,9 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
                 if (day.getPersianDate() != null && day.getPersianDate().getYear() == todayDate.getYear() &&
                         day.getPersianDate().getMonth() == todayDate.getMonth() && day.getPersianDate().getDayOfMonth() < todayDate.getDayOfMonth()) {
                     viewHolder.dayItemButton.setClickable(false);
-                } else {
-                    viewHolder.dayItemButton.setClickable(true);
                 }
+
+                viewHolder.dayItemButton.setClickable(true);
 
             } else {
 

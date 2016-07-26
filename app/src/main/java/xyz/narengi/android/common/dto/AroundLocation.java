@@ -7,11 +7,13 @@ import org.parceler.ParcelPropertyConverter;
 import org.parceler.Parcels;
 import org.parceler.converter.NullableParcelConverter;
 
+import java.io.Serializable;
+
 /**
  * @author Siavash Mahmoudpour
  */
 @Parcel
-public class AroundLocation<T> {
+public class AroundLocation<T> implements Serializable {
 
     @SerializedName("Type")
     private String Type;

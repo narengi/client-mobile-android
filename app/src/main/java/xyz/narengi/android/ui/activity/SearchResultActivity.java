@@ -539,7 +539,7 @@ public class SearchResultActivity extends ActionBarActivity {
         if (searchEditText.hasFocus()) {
             searchEditText.setText("");
         } else {
-            Toast.makeText(SearchResultActivity.this, "Map icon clicked!", Toast.LENGTH_LONG).show();
+            openSearchResultMap(searchEditText.getText().toString());
         }
 
 //        if (hasText) {
@@ -668,6 +668,21 @@ public class SearchResultActivity extends ActionBarActivity {
 
     }
 
+    private void openSearchResultMap(String query) {
+        if (query != null && query.length() > 0) {
+            Intent intent = new Intent(this, SearchResultMapActivity.class);
+
+            if (aroundLocationList != null && aroundLocationList.size() > 0) {
+                aroundLocations = new AroundLocation[aroundLocationList.size()];
+                aroundLocationList.toArray(aroundLocations);
+                intent.putExtra("aroundLocations", aroundLocations);
+            }
+
+            intent.putExtra("query", query);
+            startActivity(intent);
+        }
+    }
+
     private void openCityDetail(AroundPlaceCity city) {
         String cityUrl = city.getURL();
         Intent intent = new Intent(this, CityActivity.class);
@@ -726,7 +741,7 @@ public class SearchResultActivity extends ActionBarActivity {
                     .build();
 
             RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-            Call<AroundLocation[]> call = apiEndpoints.getAroundLocations(query, "30", "0");
+            Call<AroundLocation[]> call = apiEndpoints.getAroundLocations(query, "100", "0");
 
             call.enqueue(new Callback<AroundLocation[]>() {
                 @Override

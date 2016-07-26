@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -20,34 +20,46 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.byagowi.persiancalendar.Entity.Day;
 import com.byagowi.persiancalendar.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import calendar.CivilDate;
 import calendar.DateConverter;
 import calendar.PersianDate;
 import ir.smartlab.persindatepicker.util.PersianCalendar;
-import ir.smartlab.persindatepicker.util.PersianCalendarUtils;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -55,7 +67,6 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
@@ -63,30 +74,67 @@ import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.ui.activity.EditHouseActivity;
 import xyz.narengi.android.ui.activity.HouseActivity;
-import xyz.narengi.android.util.DateUtils;
 
 /**
  * @author Siavash Mahmoudpour
  */
 public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final ImageLoader imageLoader;
     private Context context;
     private House[] houses;
+    private List<ImageInfo[]> imageInfoList;
+    private List<HouseAvailableDates> houseAvailableDatesList;
     private RemoveHouseListener removeHouseListener;
     private Map<String,ImageInfo[]> imageInfoArraysMap;
 //    private Map<String,HouseAvailableDates> houseAvailableDatesMap;
     private HashMap<String,HashMap<String,List<Day>>> housesSelectedDaysMap;
+
+    private Map<String,ImageInfo[]> allImageInfoArraysMap;
+    private Map<String,HouseAvailableDates> allHouseAvailableDatesMap;
+
     //TODO : use AsyncQueryHandler
 
-    public HostHousesContentRecyclerAdapter(Context context, House[] houses, RemoveHouseListener removeHouseListener) {
+    public HostHousesContentRecyclerAdapter(Context context, House[] houses, List<ImageInfo[]> imageInfoList,
+                                            List<HouseAvailableDates> houseAvailableDatesList, RemoveHouseListener removeHouseListener,
+                                            Map<String,ImageInfo[]> allImageInfoArraysMap,
+                                            Map<String,HouseAvailableDates> allHouseAvailableDatesMap
+                                            ) {
         this.context = context;
         this.houses = houses;
+        this.imageInfoList = imageInfoList;
+        this.houseAvailableDatesList = houseAvailableDatesList;
         this.removeHouseListener = removeHouseListener;
         if (houses != null) {
             imageInfoArraysMap = new HashMap<String,ImageInfo[]>();
 //            houseAvailableDatesMap = new HashMap<String,HouseAvailableDates>();
             housesSelectedDaysMap = new HashMap<String,HashMap<String,List<Day>>>();
+
+            this.allImageInfoArraysMap = allImageInfoArraysMap;
+            this.allHouseAvailableDatesMap = allHouseAvailableDatesMap;
         }
+
+        imageLoader = ImageLoader.getInstance(); // Get singleton instance
+        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+
+//        displayImageOptions = new DisplayImageOptions.Builder()
+//                .showImageOnLoading(R.xml.progress)
+//                .showImageForEmptyUri(new ColorDrawable(context.getResources().getColor(R.color.gray_light)))
+//                .showImageOnFail(R.drawable.ic_action_remove_image)
+//                .cacheInMemory(true)
+//                .cacheOnDisk(true)
+//                .considerExifParams(true)
+//                .displayer(new SimpleBitmapDisplayer())
+//                .build();
+
+        displayImageOptions = new DisplayImageOptions.Builder()
+                .showImageForEmptyUri(new ColorDrawable(context.getResources().getColor(R.color.gray_light)))
+                .showImageOnFail(R.drawable.ic_action_close)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .displayer(new SimpleBitmapDisplayer())
+                .build();
     }
 
     @Override
@@ -100,25 +148,24 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             viewHolder = new EmptyDataViewHolder(view);
         } else {
             View itemView = inflater.inflate(R.layout.host_my_houses_item, parent, false);
-            HostHousesItemViewHolder housesItemViewHolder = new HostHousesItemViewHolder(itemView);
+//            HostHousesItemViewHolder housesItemViewHolder = new HostHousesItemViewHolder(itemView);
+            viewHolder = new HostHousesItemViewHolder(itemView);
 
-            housesItemViewHolder.houseInfoLayout = (LinearLayout)itemView.findViewById(R.id.host_my_houses_itemInfoLayout);
-            housesItemViewHolder.houseImageView = (ImageView)itemView.findViewById(R.id.host_my_houses_itemImage);
-            housesItemViewHolder.houseTitleTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemTitle);
-            housesItemViewHolder.houseDatesTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemAvailableDate);
-            housesItemViewHolder.housePriceTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemPrice);
-            housesItemViewHolder.imageProgressBarLayout = (LinearLayout)itemView.findViewById(R.id.host_my_houses_progressBarLayout);
-            housesItemViewHolder.imageProgressBar = (ProgressBar)itemView.findViewById(R.id.host_my_houses_progressBar);
-
-            housesItemViewHolder.houseTypeTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemHouseType);
-            housesItemViewHolder.houseBedsTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemRemoveBeds);
-            housesItemViewHolder.houseRoomsTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemRooms);
-
-            housesItemViewHolder.viewHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemViewButton);
-            housesItemViewHolder.editHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemEditButton);
-            housesItemViewHolder.removeHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemRemoveButton);
-
-            return housesItemViewHolder;
+//            housesItemViewHolder.houseInfoLayout = (LinearLayout)itemView.findViewById(R.id.host_my_houses_itemInfoLayout);
+//            housesItemViewHolder.houseImageView = (ImageView)itemView.findViewById(R.id.host_my_houses_itemImage);
+//            housesItemViewHolder.houseTitleTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemTitle);
+//            housesItemViewHolder.houseDatesTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemAvailableDate);
+//            housesItemViewHolder.housePriceTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemPrice);
+//            housesItemViewHolder.imageProgressBarLayout = (LinearLayout)itemView.findViewById(R.id.host_my_houses_progressBarLayout);
+//            housesItemViewHolder.imageProgressBar = (ProgressBar)itemView.findViewById(R.id.host_my_houses_progressBar);
+//
+//            housesItemViewHolder.houseTypeTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemHouseType);
+//            housesItemViewHolder.houseBedsTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemRemoveBeds);
+//            housesItemViewHolder.houseRoomsTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemRooms);
+//
+//            housesItemViewHolder.viewHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemViewButton);
+//            housesItemViewHolder.editHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemEditButton);
+//            housesItemViewHolder.removeHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemRemoveButton);
         }
 
         return viewHolder;
@@ -126,7 +173,6 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-
         if (houses != null && houses.length > 0) {
             HostHousesItemViewHolder housesItemViewHolder = (HostHousesItemViewHolder)viewHolder;
             setupHousesItem(housesItemViewHolder, position);
@@ -145,6 +191,10 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
     private void setupHousesItem(HostHousesItemViewHolder viewHolder, int position) {
 
+//        viewHolder.houseImageView.setImageBitmap(null);
+//        viewHolder.houseImageView.setImageDrawable(null);
+        viewHolder.houseDatesTextView.setText("");
+
         if (houses == null || position > houses.length)
             return;
 
@@ -157,7 +207,29 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
         viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
 
-        getHouseImage(house.getURL(), viewHolder);
+//        if (imageInfoList != null && imageInfoList.size() > position) {
+//            ImageInfo[] imageInfoArray = imageInfoList.get(position);
+//            if (imageInfoArray != null && imageInfoArray.length > 0) {
+//                imageInfoArraysMap.put(house.getURL(), imageInfoArray);
+//                getHouseImage(viewHolder, imageInfoArray[0]);
+//            } else
+//                getHouseImage(viewHolder, null);
+//        } else {
+//            getHouseImage(viewHolder, null);
+//        }
+
+        if (allImageInfoArraysMap != null && allImageInfoArraysMap.get(house.getURL()) != null) {
+            ImageInfo[] imageInfoArray = allImageInfoArraysMap.get(house.getURL());
+            if (imageInfoArray != null && imageInfoArray.length > 0) {
+                imageInfoArraysMap.put(house.getURL(), imageInfoArray);
+                getHouseImage(viewHolder, imageInfoArray[0]);
+            } else
+                getHouseImage(viewHolder, null);
+        } else {
+            getHouseImage(viewHolder, null);
+        }
+
+//        getHouseImages(house.getURL(), viewHolder);
 
         if (house.getType() != null) {
             switch (house.getType()) {
@@ -187,7 +259,15 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         viewHolder.houseRoomsTextView.setText(context.getString(R.string.host_houses_spec_rooms, String.valueOf(roomsCount)));
         viewHolder.houseBedsTextView.setText(context.getString(R.string.host_houses_spec_beds, String.valueOf(bedsCount)));
 
-        getHouseAvailableDates(house, viewHolder);
+//        if (houseAvailableDatesList != null && houseAvailableDatesList.size() > position) {
+//            HouseAvailableDates houseAvailableDates = houseAvailableDatesList.get(position);
+//            setFirstAvailableDate(viewHolder, houseAvailableDates, house.getURL());
+//        } else {
+//            viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+//        }
+
+
+//        getHouseAvailableDates(house, viewHolder);
 
         viewHolder.viewHouseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,7 +293,197 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         });
     }
 
-    private void getHouseImage(final String houseUrl, final HostHousesItemViewHolder viewHolder) {
+    private void getHouseImage(final HostHousesItemViewHolder viewHolder, ImageInfo imageInfo) {
+
+        final SharedPreferences preferences = context.getSharedPreferences("profile", 0);
+        String accessToken = preferences.getString("accessToken", "");
+        String username = preferences.getString("username", "");
+
+        Authorization authorization = new Authorization();
+        authorization.setUsername(username);
+        authorization.setToken(accessToken);
+
+        Gson gson = new GsonBuilder().create();
+
+        StringBuilder authorizationBuilder = new StringBuilder();
+        authorizationBuilder.append(gson.toJson(authorization));
+
+        String tempJson = "";
+        if (authorizationBuilder.toString().length() > 0) {
+            tempJson = authorizationBuilder.toString();
+            tempJson = tempJson.replace("{", "");
+            tempJson = tempJson.replace("}", "");
+        }
+
+        final String authorizationJson = tempJson;
+
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        float thumbnailWidthDp = dpWidth / 3;
+        final int thumbnailWidthPx = (int)(thumbnailWidthDp * displayMetrics.density);
+//                    final int thumbnailHeightPx = thumbnailWidthPx * 38 / 62;
+        final int thumbnailHeightPx = thumbnailWidthPx * 7 / 10;
+
+        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams)viewHolder.houseImageView.getLayoutParams();
+        int imageWidth = imageLayoutParams.width;
+        if (imageWidth <= 0) {
+            imageWidth = thumbnailWidthPx;
+            int imageHeight = imageWidth * 7 / 10;
+            imageLayoutParams.width = imageWidth;
+            imageLayoutParams.height = imageHeight;
+            viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
+
+        }
+
+        if (imageInfo != null && imageInfo.getUrl() != null) {
+            /*Picasso picasso;
+            if (authorizationJson != null && authorizationJson.length() > 0) {
+
+                OkHttpClient picassoClient = new OkHttpClient();
+
+                picassoClient.networkInterceptors().add(new Interceptor() {
+
+                    @Override
+                    public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
+                        Request newRequest = chain.request().newBuilder()
+                                .addHeader("authorization", authorizationJson)
+                                .build();
+                        return chain.proceed(newRequest);
+                    }
+                });
+
+                picasso = new Picasso.Builder(context).downloader(new OkHttpDownloader(picassoClient)).build();
+            } else {
+                picasso = Picasso.with(context);
+            }*/
+
+//            picasso.load(imageInfo.getUrl()).networkPolicy(NetworkPolicy.NO_STORE).into(viewHolder.houseImageView);
+
+            imageLoader.displayImage(imageInfo.getUrl(), viewHolder.houseImageView, displayImageOptions, animateFirstListener);
+
+            // Load image, decode it to Bitmap and return Bitmap to callback
+            imageLoader.loadImage(imageInfo.getUrl(), null, displayImageOptions, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+                    }
+                    viewHolder.houseImageView.setImageBitmap(loadedImage);
+                }
+
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    super.onLoadingStarted(imageUri, view);
+                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                        viewHolder.imageProgressBar.setVisibility(View.VISIBLE);
+                        viewHolder.imageProgressBarLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    super.onLoadingFailed(imageUri, view, failReason);
+                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+                    }
+    //                viewHolder.houseImageView.setImageBitmap(null);
+    //                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    super.onLoadingCancelled(imageUri, view);
+                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+                    }
+//                    viewHolder.houseImageView.setImageBitmap(null);
+//                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+                    }
+                });
+
+            /*ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, viewHolder, authorizationJson, imageInfo.getUrl());
+            AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
+            try {
+                Object asyncTaskResult = asyncTask.get();
+                if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                    viewHolder.imageProgressBar.setVisibility(View.GONE);
+                    viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+                }
+                if (asyncTaskResult != null) {
+                    Bitmap bitmap = (Bitmap)asyncTaskResult;
+                    viewHolder.houseImageView.setImageBitmap(bitmap);
+                } else {
+                    viewHolder.houseImageView.setImageBitmap(null);
+                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                viewHolder.houseImageView.setImageBitmap(null);
+                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+
+                if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                    viewHolder.imageProgressBar.setVisibility(View.GONE);
+                    viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+                }
+                e.printStackTrace();
+            }*/
+
+            /*picasso.load(imageInfo.getUrl()).networkPolicy(NetworkPolicy.NO_CACHE).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+                    }
+                    viewHolder.houseImageView.invalidate();
+                }
+
+                @Override
+                public void onError() {
+                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+                    }
+                    viewHolder.houseImageView.setImageBitmap(null);
+                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+                    viewHolder.houseImageView.invalidate();
+                }
+            });*/
+        } else {
+            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                viewHolder.imageProgressBar.setVisibility(View.GONE);
+                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+            }
+//            viewHolder.houseImageView.setImageBitmap(null);
+//            viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//            viewHolder.houseImageView.invalidate();
+            imageLoader.displayImage("", viewHolder.houseImageView, displayImageOptions, animateFirstListener);
+        }
+    }
+
+    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+    private DisplayImageOptions displayImageOptions;
+
+    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+
+        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            if (loadedImage != null) {
+                ImageView imageView = (ImageView) view;
+                boolean firstDisplay = !displayedImages.contains(imageUri);
+                if (firstDisplay) {
+                    FadeInBitmapDisplayer.animate(imageView, 500);
+                    displayedImages.add(imageUri);
+                }
+            }
+        }
+    }
+
+    private void getHouseImages(final String houseUrl, final HostHousesItemViewHolder viewHolder) {
 
         final SharedPreferences preferences = context.getSharedPreferences("profile", 0);
         String accessToken = preferences.getString("accessToken", "");
@@ -356,6 +626,29 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                 t.printStackTrace();
             }
         });
+    }
+
+    private void setFirstAvailableDate(final HostHousesItemViewHolder viewHolder, HouseAvailableDates houseAvailableDates, String houseUrl) {
+        if (houseAvailableDates != null && houseAvailableDates.getStartDate() != null) {
+
+            HashMap<String,List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
+            if (selectedDaysMap != null) {
+                housesSelectedDaysMap.put(houseUrl, selectedDaysMap);
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            try {
+                Date firstAvailableDate = dateFormat.parse(houseAvailableDates.getStartDate());
+                PersianCalendar persianCalendar = new PersianCalendar(firstAvailableDate.getTime());
+                String dateString = persianCalendar.getPersianShortDate();
+                viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, dateString));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+            }
+        } else {
+            viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+        }
     }
 
     private void getHouseAvailableDates(final House house, final HostHousesItemViewHolder viewHolder) {
@@ -534,6 +827,22 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
         public HostHousesItemViewHolder(View itemView) {
             super(itemView);
+
+            houseInfoLayout = (LinearLayout)itemView.findViewById(R.id.host_my_houses_itemInfoLayout);
+            houseImageView = (ImageView)itemView.findViewById(R.id.host_my_houses_itemImage);
+            houseTitleTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemTitle);
+            houseDatesTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemAvailableDate);
+            housePriceTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemPrice);
+            imageProgressBarLayout = (LinearLayout)itemView.findViewById(R.id.host_my_houses_progressBarLayout);
+            imageProgressBar = (ProgressBar)itemView.findViewById(R.id.host_my_houses_progressBar);
+
+            houseTypeTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemHouseType);
+            houseBedsTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemBeds);
+            houseRoomsTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemRooms);
+
+            viewHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemViewButton);
+            editHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemEditButton);
+            removeHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemRemoveButton);
         }
     }
 
@@ -552,7 +861,27 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
         @Override
         protected Object doInBackground(Object[] objects) {
-            return getImage();
+//            return getImage();
+
+            URL aURL;
+            try {
+                aURL = new URL(imageUrl);
+                URLConnection conn = aURL.openConnection();
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                BufferedInputStream bis = new BufferedInputStream(is);
+                Bitmap bitmap = BitmapFactory.decodeStream(bis);
+                bis.close();
+                is.close();
+
+                return bitmap;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
         }
 
         private Object getImage() {
