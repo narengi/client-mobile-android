@@ -31,6 +31,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
+import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -71,6 +74,8 @@ import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.ui.fragment.SignInFragment;
 import xyz.narengi.android.ui.fragment.SignUpFragment;
+import xyz.narengi.android.ui.util.AlertUtils;
+import xyz.narengi.android.util.NetworkUtil;
 
 /**
  * @author Siavash Mahmoudpour
@@ -80,6 +85,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private ActionBarRtlizer rtlizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +93,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         setContentView(R.layout.activity_sign_in_sign_up);
         setupToolbar();
 //        initViews();
+        setPageTitle(getString(R.string.login_register_page_title));
 
         viewPager = (ViewPager) findViewById(R.id.login_viewpager);
         setupViewPager(viewPager);
@@ -94,6 +101,29 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         tabLayout = (TabLayout) findViewById(R.id.login_tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
+
+    private void setPageTitle(String title) {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
+        if (toolbar != null) {
+            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            titleTextView.setText(title);
+        }
+    }
+
+    protected void rtlizeActionBar() {
+        if (getSupportActionBar() != null) {
+//            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
+            rtlizer = new ActionBarRtlizer(this);;
+            ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
+            RtlizeEverything.rtlize(rtlizer.getActionBarView());
+            if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
+                RtlizeEverything.rtlize((ViewGroup) rtlizer.getHomeViewContainer());
+            }
+            RtlizeEverything.rtlize(homeView);
+            rtlizer.flipActionBarUpIconIfAvailable(homeView);
+        }
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -112,7 +142,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
+        /*Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -120,15 +150,26 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
+        });*/
 
         setSupportActionBar(toolbar);
+
+        if (toolbar != null) {
+            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+        }
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setDisplayShowHomeEnabled(true);
+//            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
@@ -345,7 +386,12 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
     @Override
     public void onRegisterButtonPressed(String email, String password) {
-        register(email, password);
+
+        if (NetworkUtil.getInstance().isNetworkConnected(this)) {
+            register(email, password);
+        } else {
+            AlertUtils.getInstance().showNetworkErrorDialog(this, getString(R.string.network_error_alert_message));
+        }
 
 //        Snackbar snack = Snackbar.make(findViewById(android.R.id.content), "Registration Successful!", Snackbar.LENGTH_LONG);
 //        View view = snack.getView();
@@ -380,7 +426,12 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
     @Override
     public void onLoginButtonPressed(String email, String password) {
-        login(email, password);
+
+        if (NetworkUtil.getInstance().isNetworkConnected(this)) {
+            login(email, password);
+        } else {
+            AlertUtils.getInstance().showNetworkErrorDialog(this, getString(R.string.network_error_alert_message));
+        }
     }
 
 

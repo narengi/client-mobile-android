@@ -20,10 +20,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
+import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -56,6 +61,7 @@ import xyz.narengi.android.ui.adapter.HostHousesContentRecyclerAdapter;
 
 public class HostHousesActivity extends AppCompatActivity implements HostHousesContentRecyclerAdapter.RemoveHouseListener {
 
+    private ActionBarRtlizer rtlizer;
     private House[] hostHouses;
 //    private List<ImageInfo[]> imageInfoList;
     private Map<String,ImageInfo[]> allImageInfoArraysMap;
@@ -117,6 +123,14 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         });
     }
 
+    private void setPageTitle(String title) {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.host_houses_toolbar);
+        if (toolbar != null) {
+            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            titleTextView.setText(title);
+        }
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -135,10 +149,25 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         return super.onOptionsItemSelected(item);
     }
 
+    protected void rtlizeActionBar() {
+        if (getSupportActionBar() != null) {
+//            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
+            rtlizer = new ActionBarRtlizer(this);;
+            ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
+            RtlizeEverything.rtlize(rtlizer.getActionBarView());
+            if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
+                RtlizeEverything.rtlize((ViewGroup) rtlizer.getHomeViewContainer());
+            }
+            RtlizeEverything.rtlize(homeView);
+            rtlizer.flipActionBarUpIconIfAvailable(homeView);
+        }
+    }
+
+
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.host_houses_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
+        /*Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -146,20 +175,31 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
+        });*/
+
+        if (toolbar != null) {
+            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+        }
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setDisplayShowHomeEnabled(true);
+//            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-            actionBar.setTitle(getString(R.string.host_houses_page_title));
-            actionBar.setWindowTitle(getString(R.string.host_houses_page_title));
+//            actionBar.setTitle(getString(R.string.host_houses_page_title));
+//            actionBar.setWindowTitle(getString(R.string.host_houses_page_title));
+            setPageTitle(getString(R.string.host_houses_page_title));
         }
     }
 

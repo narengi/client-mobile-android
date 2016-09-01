@@ -1,70 +1,158 @@
 package xyz.narengi.android.common.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Siavash Mahmoudpour
  */
-public class BookRequest {
+public class BookRequest implements Serializable {
 
-    private Long id;
-    private Host host;
-    private Guest guest;
-    private Date bookDate;
-    private String message;
-    private RequestStatus requestStatus;
+    private HostProfile Host;
+    private String GuestUrl;
+    private House House;
+    private String RequestDate;
+    private int Guests;
+    private HouseExtraService[] extraServices;
+    private String StartDate;
+    private String EndDate;
+    private TotalCost TotalCost;
+    private BookingConversation[] Conversation;
+    private String URL;
+    private boolean Paid;
+    private String Status;
 
-    public enum RequestStatus {
+
+    public HostProfile getHost() {
+        return Host;
+    }
+
+    public void setHost(HostProfile host) {
+        Host = host;
+    }
+
+    public String getGuestUrl() {
+        return GuestUrl;
+    }
+
+    public void setGuestUrl(String guestUrl) {
+        GuestUrl = guestUrl;
+    }
+
+    public xyz.narengi.android.common.dto.House getHouse() {
+        return House;
+    }
+
+    public void setHouse(xyz.narengi.android.common.dto.House house) {
+        House = house;
+    }
+
+    public String getRequestDate() {
+        return RequestDate;
+    }
+
+    public void setRequestDate(String requestDate) {
+        RequestDate = requestDate;
+    }
+
+    public int getGuests() {
+        return Guests;
+    }
+
+    public void setGuests(int guests) {
+        Guests = guests;
+    }
+
+    public HouseExtraService[] getExtraServices() {
+        return extraServices;
+    }
+
+    public void setExtraServices(HouseExtraService[] extraServices) {
+        this.extraServices = extraServices;
+    }
+
+    public String getStartDate() {
+        return StartDate;
+    }
+
+    public void setStartDate(String startDate) {
+        StartDate = startDate;
+    }
+
+    public String getEndDate() {
+        return EndDate;
+    }
+
+    public void setEndDate(String endDate) {
+        EndDate = endDate;
+    }
+
+    public BookRequest.TotalCost getTotalCost() {
+        return TotalCost;
+    }
+
+    public void setTotalCost(BookRequest.TotalCost totalCost) {
+        TotalCost = totalCost;
+    }
+
+    public BookingConversation[] getConversation() {
+        return Conversation;
+    }
+
+    public void setConversation(BookingConversation[] conversation) {
+        Conversation = conversation;
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
+    public boolean isPaid() {
+        return Paid;
+    }
+
+    public void setPaid(boolean paid) {
+        Paid = paid;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
+    }
+
+    public enum BookingStatus {
         PENDING,
         APPROVED,
-        REJECTED
+        REJECTED,
+        CANCELED
     }
 
-    public Long getId() {
-        return id;
-    }
+    public class TotalCost implements Serializable {
+        private double cost;
+        private String currency;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Host getHost() {
-        return host;
-    }
+        public double getCost() {
+            return cost;
+        }
 
-    public void setHost(Host host) {
-        this.host = host;
-    }
+        public void setCost(double cost) {
+            this.cost = cost;
+        }
 
-    public Guest getGuest() {
-        return guest;
-    }
+        public String getCurrency() {
+            return currency;
+        }
 
-    public void setGuest(Guest guest) {
-        this.guest = guest;
-    }
-
-    public Date getBookDate() {
-        return bookDate;
-    }
-
-    public void setBookDate(Date bookDate) {
-        this.bookDate = bookDate;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public RequestStatus getRequestStatus() {
-        return requestStatus;
-    }
-
-    public void setRequestStatus(RequestStatus requestStatus) {
-        this.requestStatus = requestStatus;
+        public void setCurrency(String currency) {
+            this.currency = currency;
+        }
     }
 }

@@ -8,6 +8,10 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.activity.ExploreActivity">
 
+    <xyz.narengi.android.ui.widget.TwoDScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
@@ -95,6 +99,7 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
+    </xyz.narengi.android.ui.widget.TwoDScrollView>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/explore_navigationView"

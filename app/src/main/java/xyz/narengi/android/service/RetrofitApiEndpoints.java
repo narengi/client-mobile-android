@@ -21,6 +21,8 @@ import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.Attraction;
+import xyz.narengi.android.common.dto.BookRequest;
+import xyz.narengi.android.common.dto.BookRequestDTO;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.HostProfile;
@@ -128,5 +130,23 @@ public interface RetrofitApiEndpoints {
 
     @GET
     Call<ImageInfo[]> getHouseImages(@Url String url);
+
+    @GET("/api/v1/me/book-requests")
+    Call<BookRequest[]> getBookRequests(@Header("authorization") String authorization);
+
+
+    /**
+     * This service should be removed or renamed after new services for book requests created in back-end
+     * @param authorization
+     * @return
+     */
+    @GET("/api/v1/me/book-requests")
+    Call<BookRequestDTO[]> getBookRequestDTOs(@Header("authorization") String authorization);
+
+    @PUT("/api/v1/book-request/{request-id}/accept")
+    Call<BookRequest> approveBookRequest(@Header("authorization") String authorization, @Path("request-id") String requestId);
+
+    @PUT("/api/v1/book-request/{request-id}/reject")
+    Call<BookRequest> rejectBookRequest(@Header("authorization") String authorization, @Path("request-id") String requestId);
 
 }

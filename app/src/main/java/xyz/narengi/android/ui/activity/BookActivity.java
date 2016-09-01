@@ -15,7 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -26,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
+import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -45,6 +50,7 @@ import xyz.narengi.android.ui.fragment.CalendarFragment;
  */
 public class BookActivity extends AppCompatActivity {
 
+    private ActionBarRtlizer rtlizer;
     private House house;
     private BookContentRecyclerAdapter bookContentRecyclerAdapter;
 
@@ -66,6 +72,14 @@ public class BookActivity extends AppCompatActivity {
         }
 
 //        setupCalendar();
+    }
+
+    private void setPageTitle(String title) {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.book_toolbar);
+        if (toolbar != null) {
+            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            titleTextView.setText(title);
+        }
     }
 
     @Override
@@ -93,10 +107,25 @@ public class BookActivity extends AppCompatActivity {
         }
     }
 
+    protected void rtlizeActionBar() {
+        if (getSupportActionBar() != null) {
+//            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
+            rtlizer = new ActionBarRtlizer(this);;
+            ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
+            RtlizeEverything.rtlize(rtlizer.getActionBarView());
+            if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
+                RtlizeEverything.rtlize((ViewGroup) rtlizer.getHomeViewContainer());
+            }
+            RtlizeEverything.rtlize(homeView);
+            rtlizer.flipActionBarUpIconIfAvailable(homeView);
+        }
+    }
+
+
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.book_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
+        /*Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -104,23 +133,37 @@ public class BookActivity extends AppCompatActivity {
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
+        });*/
+
+        if (toolbar != null) {
+            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+        }
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setDisplayShowHomeEnabled(true);
+//            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
+        setPageTitle(getString(R.string.book_page_title));
+
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.book_collapse_toolbar);
-        collapsingToolbarLayout.setTitle(getString(R.string.book_page_title));
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(android.R.color.black));
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.black));
+//        collapsingToolbarLayout.setTitle(getString(R.string.book_page_title));
+//        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(android.R.color.black));
+//        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.black));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(android.R.color.transparent));
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
     }
 
     private void getHouseAvailableDates() {

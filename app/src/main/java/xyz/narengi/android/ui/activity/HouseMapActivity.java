@@ -11,6 +11,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,11 +24,14 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
+import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import xyz.narengi.android.R;
 
 public class HouseMapActivity extends ActionBarActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private ActionBarRtlizer rtlizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +54,39 @@ public class HouseMapActivity extends ActionBarActivity implements OnMapReadyCal
         return super.onOptionsItemSelected(item);
     }
 
+    private void setPageTitle(String title) {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.house_map_toolbar);
+        if (toolbar != null) {
+            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            titleTextView.setText(title);
+        }
+    }
+
+    protected void rtlizeActionBar() {
+        if (getSupportActionBar() != null) {
+//            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
+            rtlizer = new ActionBarRtlizer(this);;
+            ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
+            RtlizeEverything.rtlize(rtlizer.getActionBarView());
+            if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
+                RtlizeEverything.rtlize((ViewGroup) rtlizer.getHomeViewContainer());
+            }
+            RtlizeEverything.rtlize(homeView);
+            rtlizer.flipActionBarUpIconIfAvailable(homeView);
+        }
+    }
+
+
     private void setupToolbar() {
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.house_map_toolbar);
 
         if (getIntent() != null && getIntent().getStringExtra("houseTitle") != null) {
-            toolbar.setTitle(getIntent().getStringExtra("houseTitle"));
+//            toolbar.setTitle(getIntent().getStringExtra("houseTitle"));
+            setPageTitle(getIntent().getStringExtra("houseTitle"));
         }
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
+        /*Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -64,17 +94,26 @@ public class HouseMapActivity extends ActionBarActivity implements OnMapReadyCal
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
+        });*/
 
+        if (toolbar != null) {
+            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+        }
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
 
             ActionBar actionBar = getSupportActionBar();
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setDisplayShowHomeEnabled(true);
+//            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }

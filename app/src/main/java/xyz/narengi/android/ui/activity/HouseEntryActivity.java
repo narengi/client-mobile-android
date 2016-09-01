@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
@@ -17,6 +20,8 @@ import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandab
 import java.util.ArrayList;
 import java.util.List;
 
+import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
+import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HouseEntryTitleItem;
 import xyz.narengi.android.ui.adapter.HouseEntryContentRecyclerAdapter;
@@ -29,6 +34,8 @@ public class HouseEntryActivity extends AppCompatActivity
         implements RecyclerViewExpandableItemManager.OnGroupCollapseListener,
         RecyclerViewExpandableItemManager.OnGroupExpandListener {
 
+    private ActionBarRtlizer rtlizer;
+
     private static final String SAVED_STATE_EXPANDABLE_ITEM_MANAGER = "RecyclerViewExpandableItemManager";
     private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewExpandableItemManager mRecyclerViewExpandableItemManager;
@@ -38,6 +45,29 @@ public class HouseEntryActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_house_entry);
         setupContentRecyclerView();
+        setPageTitle(getString(R.string.house_entry_add_page_title));
+    }
+
+    private void setPageTitle(String title) {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.house_entry_toolbar);
+        if (toolbar != null) {
+            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            titleTextView.setText(title);
+        }
+    }
+
+    protected void rtlizeActionBar() {
+        if (getSupportActionBar() != null) {
+//            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
+            rtlizer = new ActionBarRtlizer(this);;
+            ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
+            RtlizeEverything.rtlize(rtlizer.getActionBarView());
+            if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
+                RtlizeEverything.rtlize((ViewGroup) rtlizer.getHomeViewContainer());
+            }
+            RtlizeEverything.rtlize(homeView);
+            rtlizer.flipActionBarUpIconIfAvailable(homeView);
+        }
     }
 
 

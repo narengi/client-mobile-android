@@ -29,11 +29,13 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -49,6 +51,8 @@ import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.concurrent.ExecutionException;
 
+import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
+import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -72,6 +76,7 @@ import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
 public class HouseActivity extends ActionBarActivity {
 
     private House house;
+    private ActionBarRtlizer rtlizer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +91,7 @@ public class HouseActivity extends ActionBarActivity {
             getHouse(houseUrl);
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -112,6 +118,52 @@ public class HouseActivity extends ActionBarActivity {
         super.onPostCreate(savedInstanceState);
     }
 
+    protected void rtlizeActionBar() {
+        if (getSupportActionBar() != null) {
+//            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
+            rtlizer = new ActionBarRtlizer(this);;
+            ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
+            RtlizeEverything.rtlize(rtlizer.getActionBarView());
+            if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
+                RtlizeEverything.rtlize((ViewGroup) rtlizer.getHomeViewContainer());
+            }
+            RtlizeEverything.rtlize(homeView);
+            rtlizer.flipActionBarUpIconIfAvailable(homeView);
+        }
+    }
+
+    /*@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        boolean result = super.onCreateOptionsMenu(menu);
+        rtlizer = new ActionBarRtlizer(this);
+        ViewGroup actionBarView = rtlizer.getActionBarView();
+        View actionMenuView = rtlizer.getActionMenuView();
+//        ViewGroup homeView = (ViewGroup)rtlizer.findViewByClass("HomeView", actionBarView);
+        ViewGroup homeView = (ViewGroup)rtlizer.getHomeView();
+
+        rtlizer.flipActionBarUpIconIfAvailable(homeView);
+        RtlizeEverything.rtlize(actionBarView, true);
+        RtlizeEverything.rtlize(homeView, true);
+//        return result;
+        return super.onCreateOptionsMenu(menu);
+    }*/
+
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//
+//        rtlizer = new ActionBarRtlizer(this);
+//        ViewGroup actionBarView = rtlizer.getActionBarView();
+//        View actionMenuView = rtlizer.getActionMenuView();
+////        ViewGroup homeView = (ViewGroup)rtlizer.findViewByClass("HomeView", actionBarView);
+//        ViewGroup homeView = (ViewGroup)rtlizer.getHomeView();
+//
+//        rtlizer.flipActionBarUpIconIfAvailable(homeView);
+//        RtlizeEverything.rtlize(actionBarView, true);
+//        RtlizeEverything.rtlize(homeView, true);
+//
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -132,26 +184,44 @@ public class HouseActivity extends ActionBarActivity {
         startActivityForResult(intent, 101);
     }
 
+    private void setPageTitle(String title) {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.house_toolbar);
+        if (toolbar != null) {
+            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            titleTextView.setText(title);
+        }
+    }
+
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.house_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
-        backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
-        toolbar.setNavigationIcon(backButtonDrawable);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+//        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
+//        backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
+//        toolbar.setNavigationIcon(backButtonDrawable);
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onBackPressed();
+//            }
+//        });
+
+        if (toolbar != null) {
+            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+        }
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setDisplayShowHomeEnabled(true);
+//            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -241,6 +311,7 @@ public class HouseActivity extends ActionBarActivity {
     private void setHouse(final House house) {
 
         this.house = house;
+        setPageTitle(house.getName());
 
 //        String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=";
 //        if (house.getPosition() != null) {

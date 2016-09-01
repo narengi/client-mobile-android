@@ -24,6 +24,7 @@ import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
 import xyz.narengi.android.ui.adapter.RecyclerAdapter;
 import xyz.narengi.android.ui.adapter.SuggestionsExpandableListAdapter;
 import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
+import xyz.narengi.android.ui.util.AlertUtils;
 import xyz.narengi.android.util.SecurityUtils;
 
 import android.content.Context;
@@ -260,7 +261,8 @@ public class ExploreActivity extends ActionBarActivity {
                     switch (menuItem.getItemId()) {
 
                         case R.id.navigation_item_logout:
-                            logout();
+//                            logout();
+                            showLogoutAlert();
                             break;
                         case R.id.navigation_item_hosting:
                             openHostHouses();
@@ -312,6 +314,10 @@ public class ExploreActivity extends ActionBarActivity {
             });
 
         }
+    }
+
+    private void showLogoutAlert() {
+        AlertUtils.getInstance().showLogoutDialog(this, this);
     }
 
     private void openHostHouses() {
@@ -367,7 +373,7 @@ public class ExploreActivity extends ActionBarActivity {
         }
     }
 
-    private void logout() {
+    public void logout() {
 
         SharedPreferences preferences = getSharedPreferences("profile", 0);
         SharedPreferences.Editor editor = preferences.edit();

@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,6 +45,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
+import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import ir.smartlab.persindatepicker.util.PersianCalendar;
 import retrofit.Call;
 import retrofit.Callback;
@@ -73,8 +76,12 @@ import xyz.narengi.android.ui.fragment.HouseRoomEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseTypeEntryFragment;
 import xyz.narengi.android.util.DateUtils;
 
+/**
+ * @author Siavash Mahmoudpour
+ */
 public class AddHouseActivity extends AppCompatActivity implements HouseEntryBaseFragment.OnInteractionListener {
 
+    private ActionBarRtlizer rtlizer;
     private House house;
     private HouseEntryStep currentStep;
     private List<Uri> imageUris;
@@ -110,6 +117,14 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         indicatorTextView1.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_orange));
     }
 
+    private void setPageTitle(String title) {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.add_house_toolbar);
+        if (toolbar != null) {
+            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            titleTextView.setText(title);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -140,6 +155,21 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             finish();
         }
     }
+
+    protected void rtlizeActionBar() {
+        if (getSupportActionBar() != null) {
+//            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
+            rtlizer = new ActionBarRtlizer(this);;
+            ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
+            RtlizeEverything.rtlize(rtlizer.getActionBarView());
+            if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
+                RtlizeEverything.rtlize((ViewGroup) rtlizer.getHomeViewContainer());
+            }
+            RtlizeEverything.rtlize(homeView);
+            rtlizer.flipActionBarUpIconIfAvailable(homeView);
+        }
+    }
+
 
     private void addHouse() {
 
@@ -381,7 +411,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.add_house_toolbar);
 
-        Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
+        /*Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(backButtonDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -389,15 +419,25 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
+        });*/
+
+        if (toolbar != null) {
+            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+        }
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setDisplayShowHomeEnabled(true);
+//            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -552,8 +592,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     private void updatePageTitle(int titleResId) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(getString(titleResId));
-            actionBar.setWindowTitle(getString(titleResId));
+//            actionBar.setTitle(getString(titleResId));
+//            actionBar.setWindowTitle(getString(titleResId));
+
+            String title = getString(titleResId);
+            setPageTitle(title);
 
 //            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.add_house_collapse_toolbar);
 //            if (collapsingToolbarLayout != null) {
