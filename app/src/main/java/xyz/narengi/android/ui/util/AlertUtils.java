@@ -118,7 +118,7 @@ public class AlertUtils {
     }
 
     @SuppressLint("ValidFragment")
-    public class LogoutDialogFragment extends DialogFragment {
+    public static class LogoutDialogFragment extends DialogFragment {
 
         private Context context;
         private Activity parentActivity;

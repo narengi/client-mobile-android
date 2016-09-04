@@ -17,6 +17,7 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:elevation="0dp"
+    app:elevation="0dp"
     app:layout_scrollFlags="scroll|enterAlways">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:layout_gravity="center"
+        android:elevation="0dp"
         android:orientation="horizontal"
         android:background="@android:color/white"
         >
@@ -89,5 +91,7 @@
         android:id="@+id/search_result_suggestionsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="0dp"
+        app:elevation="0dp"
         />
 </LinearLayout>

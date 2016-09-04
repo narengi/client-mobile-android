@@ -4,12 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.BookRequest;
+import xyz.narengi.android.ui.adapter.BookRequestContentRecyclerAdapter;
+import xyz.narengi.android.ui.adapter.BookRequestsContentRecyclerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,6 +72,25 @@ public class BookRequestListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_book_request_list, container, false);
     }
 
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupContentRecyclerView(view);
+    }
+
+
+    private void setupContentRecyclerView(View view) {
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.book_requests_recyclerView);
+
+        // use a linear layout manager
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(mLayoutManager);
+
+        BookRequestsContentRecyclerAdapter contentRecyclerAdapter = new BookRequestsContentRecyclerAdapter(getActivity(), bookRequests);
+        recyclerView.setAdapter(contentRecyclerAdapter);
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -81,8 +104,8 @@ public class BookRequestListFragment extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 

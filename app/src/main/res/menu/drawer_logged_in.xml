@@ -19,6 +19,12 @@
             android:title="@string/drawer_menu_hosting"/>
 
         <item
+            android:id="@+id/navigation_item_book_requests"
+            android:checked="false"
+            android:icon="@drawable/ic_action_hosting"
+            android:title="@string/drawer_menu_book_requests"/>
+
+        <item
             android:id="@+id/navigation_item_aboutUs"
             android:checked="false"
             android:icon="@drawable/ic_action_about_narengi"

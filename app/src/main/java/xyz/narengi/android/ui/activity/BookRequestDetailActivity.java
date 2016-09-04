@@ -1,10 +1,15 @@
 package xyz.narengi.android.ui.activity;
 
-import android.app.ActionBar;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -13,10 +18,19 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.io.Serializable;
 
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.Authorization;
@@ -31,7 +45,7 @@ import xyz.narengi.android.ui.adapter.BookRequestContentRecyclerAdapter;
  * @author Siavash Mahmoudpour
  */
 
-public class BookRequestDetailActivity extends AppCompatActivity  {
+public class BookRequestDetailActivity extends AppCompatActivity {
 
     private ActionBarRtlizer rtlizer;
 
@@ -43,11 +57,14 @@ public class BookRequestDetailActivity extends AppCompatActivity  {
 
         showProgress();
         if (getIntent() != null && getIntent().getStringExtra("bookRequest") != null) {
-            BookRequest bookRequest = getIntent().getStringExtra("bookRequest");
-            setupContentRecyclerView(bookRequest);
+            Serializable bookRequestSerializable = getIntent().getSerializableExtra("bookRequest");
+            if (bookRequestSerializable != null) {
+                BookRequest bookRequest = (BookRequest)bookRequestSerializable;
+                setupContentRecyclerView(bookRequest);
 
-            if (bookRequest.getGuestUrl() != null) {
-                setProfileImage(bookRequest.getGuestUrl());
+                if (bookRequest.getGuestUrl() != null) {
+                    setProfileImage(bookRequest.getGuestUrl());
+                }
             }
         }
     }

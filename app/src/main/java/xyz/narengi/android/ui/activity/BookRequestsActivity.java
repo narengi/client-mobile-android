@@ -23,12 +23,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.Authorization;
@@ -54,14 +62,66 @@ public class BookRequestsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_requests);
         setupToolbar();
-        setPageTitle("");
-        showProgress();
-
-        viewPager = (ViewPager) findViewById(R.id.book_requests_viewpager);
-        setupViewPager(viewPager);
+        setPageTitle(getString(R.string.book_requests_page_title));
+//        showProgress();
 
         tabLayout = (TabLayout) findViewById(R.id.book_requests_tabs);
+        viewPager = (ViewPager) findViewById(R.id.book_requests_viewpager);
+        setupViewPager(viewPager, createDummyBookRequests());
+
         tabLayout.setupWithViewPager(viewPager);
+        if (tabLayout != null && tabLayout.getTabCount() > 0) {
+            for (int i = 0; i < tabLayout.getTabCount(); i++) {
+                tabLayout.getTabAt(i).setIcon(R.drawable.ic_action_hosting);
+            }
+        }
+    }
+
+    private BookRequestDTO[] createDummyBookRequests() {
+
+        BookRequestDTO[] bookRequestDTOs = new BookRequestDTO[3];
+
+        BookRequestDTO bookRequestDTO1 = new BookRequestDTO();
+        bookRequestDTO1.setHouseTitle("ویلای رامسر");
+
+        BookRequest[] bookRequests1 = new BookRequest[3];
+        BookRequest bookRequest11 = new BookRequest();
+        bookRequests1[0] = bookRequest11;
+        BookRequest bookRequest12 = new BookRequest();
+        bookRequests1[1] = bookRequest12;
+        BookRequest bookRequest13 = new BookRequest();
+        bookRequests1[2] = bookRequest13;
+
+        bookRequestDTO1.setBookRequests(bookRequests1);
+        bookRequestDTOs[0] = bookRequestDTO1;
+
+        BookRequestDTO bookRequestDTO2 = new BookRequestDTO();
+        bookRequestDTO2.setHouseTitle("سوئیت تهران");
+
+        BookRequest[] bookRequests2 = new BookRequest[2];
+        BookRequest bookRequest21 = new BookRequest();
+        bookRequests2[0] = bookRequest21;
+        BookRequest bookRequest22 = new BookRequest();
+        bookRequests2[1] = bookRequest22;
+
+        bookRequestDTO2.setBookRequests(bookRequests2);
+        bookRequestDTOs[1] = bookRequestDTO2;
+
+        BookRequestDTO bookRequestDTO3 = new BookRequestDTO();
+        bookRequestDTO3.setHouseTitle("ویلای رامسر");
+
+        BookRequest[] bookRequests3 = new BookRequest[3];
+        BookRequest bookRequest31 = new BookRequest();
+        bookRequests3[0] = bookRequest31;
+        BookRequest bookRequest32 = new BookRequest();
+        bookRequests3[1] = bookRequest32;
+        BookRequest bookRequest33 = new BookRequest();
+        bookRequests3[2] = bookRequest33;
+
+        bookRequestDTO3.setBookRequests(bookRequests3);
+        bookRequestDTOs[2] = bookRequestDTO3;
+
+        return bookRequestDTOs;
     }
 
     private void setPageTitle(String title) {
@@ -169,7 +229,7 @@ public class BookRequestsActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
 
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(bookRequests.length - 1);
     }
 
     private void setupViewPager(ViewPager viewPager, BookRequestDTO[] bookRequestDTOs) {
@@ -186,7 +246,7 @@ public class BookRequestsActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
 
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(bookRequestDTOs.length - 1);
     }
 
     private void getBookRequests() {
@@ -266,12 +326,12 @@ public class BookRequestsActivity extends AppCompatActivity {
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<BookRequestDTO[]> call = apiEndpoints.getBookRequestDTOs(authorizationJson);
 
-        call.enqueue(new Callback<BookRequest[]>() {
+        call.enqueue(new Callback<BookRequestDTO[]>() {
             @Override
             public void onResponse(Response<BookRequestDTO[]> response, Retrofit retrofit) {
                 hideProgress();
                 int statusCode = response.code();
-                bookRequests = response.body();
+                bookRequestDTOs = response.body();
 
                 if (bookRequestDTOs == null || bookRequestDTOs.length == 0) {
                     setupViewPager(viewPager, bookRequestDTOs);
