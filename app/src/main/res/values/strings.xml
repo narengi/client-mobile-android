@@ -12,6 +12,7 @@
     <string name="drawer_menu_settings">تنظيمات</string>
     <string name="drawer_menu_profile">پروفايل</string>
     <string name="drawer_menu_hosting">مهمان پذيری</string>
+    <string name="drawer_menu_book_requests">درخواست های رزرواسیون</string>
     <string name="drawer_menu_about_us">درباره نارنگی</string>
     <string name="drawer_menu_map">نمايش نقشه</string>
 
@@ -50,5 +51,6 @@
 
     <string name="enable_location_alert_title">تنظيمات مکان يابی</string>
     <string name="enable_location_alert_message">سرويس مکان يابی گوشی شما غير فعال می باشد. برای دريافت مختصات مکان فعلی تان، بايد سرويس مکان يابی را از بخش تنظيمات گوشی فعال نماييد.</string>
+    <string name="title_activity_book_requests">BookRequestsActivity</string>
 
 </resources>

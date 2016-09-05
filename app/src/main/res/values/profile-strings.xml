@@ -2,6 +2,7 @@
 <resources>
 
     <!-- SignIn, signUp -->
+    <string name="login_register_page_title">ورود/ثبت نام</string>
     <string name="login_title_1">به خانه خود</string>
     <string name="login_title_2">خوش آمديد.</string>
 

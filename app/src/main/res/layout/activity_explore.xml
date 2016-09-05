@@ -8,6 +8,10 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.activity.ExploreActivity">
 
+    <!--<xyz.narengi.android.ui.widget.TwoDScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
@@ -40,6 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:elevation="0dp"
+            app:elevation="0dp"
             android:fitsSystemWindows="true"
             android:padding="0dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -50,6 +56,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
+                android:elevation="0dp"
+                app:elevation="0dp"
                 android:fitsSystemWindows="true"
                 android:padding="0dp"
                 app:backgroundTint="@color/transparent_state_list"
@@ -77,6 +85,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
                     android:elevation="0dp"
+                    app:elevation="0dp"
                     android:padding="0dp"
                     app:backgroundTint="@color/transparent_state_list"
                     app:layout_scrollFlags="scroll|enterAlways"
@@ -95,13 +104,13 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-
+    <!--</xyz.narengi.android.ui.widget.TwoDScrollView>-->
     <android.support.design.widget.NavigationView
         android:id="@+id/explore_navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
-        app:itemTextAppearance="?android:attr/textAppearanceMedium"
+        android:layout_gravity="start"
+        app:itemTextAppearance="?android:attr/textAppearanceSmall"
         app:itemTextColor="@color/orange_light"
         />
 </android.support.v4.widget.DrawerLayout>

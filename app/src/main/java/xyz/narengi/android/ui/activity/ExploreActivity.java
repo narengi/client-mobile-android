@@ -24,8 +24,10 @@ import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
 import xyz.narengi.android.ui.adapter.RecyclerAdapter;
 import xyz.narengi.android.ui.adapter.SuggestionsExpandableListAdapter;
 import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
+import xyz.narengi.android.ui.util.AlertUtils;
 import xyz.narengi.android.util.SecurityUtils;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +39,7 @@ import android.graphics.Paint;
 import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
@@ -128,11 +131,20 @@ public class ExploreActivity extends ActionBarActivity {
             setupNavigationView(false);
         }
 
+        forceRTLIfSupported();
+
         aroundLocationList = new ArrayList<AroundLocation>();
         setupListView(aroundLocationList);
 
-        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask("");
+        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask("ت");
         loadDataAsyncTask.execute();
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void forceRTLIfSupported() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+            getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        }
     }
 
     @Override
@@ -156,8 +168,8 @@ public class ExploreActivity extends ActionBarActivity {
     public void onBackPressed() {
 
         if (drawerLayout != null) {
-            if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-                drawerLayout.closeDrawer(GravityCompat.END);
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
                 return;
             } else {
                 RecyclerView recyclerView = (RecyclerView) findViewById(R.id.search_results_list);
@@ -260,10 +272,14 @@ public class ExploreActivity extends ActionBarActivity {
                     switch (menuItem.getItemId()) {
 
                         case R.id.navigation_item_logout:
-                            logout();
+//                            logout();
+                            showLogoutAlert();
                             break;
                         case R.id.navigation_item_hosting:
                             openHostHouses();
+                            break;
+                        case R.id.navigation_item_book_requests:
+                            openBookRequests();
                             break;
                         default:
                             break;
@@ -314,8 +330,17 @@ public class ExploreActivity extends ActionBarActivity {
         }
     }
 
+    private void showLogoutAlert() {
+        AlertUtils.getInstance().showLogoutDialog(this, this);
+    }
+
     private void openHostHouses() {
         Intent intent = new Intent(this, HostHousesActivity.class);
+        startActivity(intent);
+    }
+
+    private void openBookRequests() {
+        Intent intent = new Intent(this, BookRequestsActivity.class);
         startActivity(intent);
     }
 
@@ -367,7 +392,7 @@ public class ExploreActivity extends ActionBarActivity {
         }
     }
 
-    private void logout() {
+    public void logout() {
 
         SharedPreferences preferences = getSharedPreferences("profile", 0);
         SharedPreferences.Editor editor = preferences.edit();
@@ -375,6 +400,7 @@ public class ExploreActivity extends ActionBarActivity {
         editor.commit();
 
         setupNavigationView(false);
+        finish();
     }
 
     private void openViewProfile() {
@@ -1076,10 +1102,10 @@ public class ExploreActivity extends ActionBarActivity {
             updateToolbarScrollFlags(true);
         } else {
             if (drawerLayout != null) {
-                if (drawerLayout.isDrawerOpen(GravityCompat.END))
-                    drawerLayout.closeDrawer(GravityCompat.END);
+                if (drawerLayout.isDrawerOpen(GravityCompat.START))
+                    drawerLayout.closeDrawer(GravityCompat.START);
                 else
-                    drawerLayout.openDrawer(GravityCompat.END);
+                    drawerLayout.openDrawer(GravityCompat.START);
             }
         }
 
