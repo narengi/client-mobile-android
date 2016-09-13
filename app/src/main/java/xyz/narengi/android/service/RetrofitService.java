@@ -2,10 +2,7 @@ package xyz.narengi.android.service;
 
 import android.util.Log;
 
-import retrofit.Call;
-import retrofit.Callback;
 import retrofit.GsonConverterFactory;
-import retrofit.Response;
 import retrofit.Retrofit;
 import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AroundLocation;
@@ -30,7 +27,6 @@ public class RetrofitService {
 
         if (instance == null)
             instance = new RetrofitService();
-
         return instance;
     }
 

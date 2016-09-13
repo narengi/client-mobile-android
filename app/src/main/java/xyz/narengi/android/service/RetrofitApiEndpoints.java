@@ -10,7 +10,6 @@ import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
-import retrofit.http.HTTP;
 import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.PUT;

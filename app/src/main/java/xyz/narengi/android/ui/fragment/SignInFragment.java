@@ -3,7 +3,11 @@ package xyz.narengi.android.ui.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +25,7 @@ import xyz.narengi.android.R;
  * create an instance of this fragment.
  */
 public class SignInFragment extends Fragment {
+    private static final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -29,6 +34,10 @@ public class SignInFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private EditText etxtEmail;
+    private EditText etxtPassword;
+    private TextInputLayout tilEmailLayout;
+    private TextInputLayout tilPasswordLayout;
 
     private OnLoginButtonClickListener mListener;
 
@@ -71,17 +80,52 @@ public class SignInFragment extends Fragment {
         if (view == null)
             return null;
 
-        Button loginButton = (Button)view.findViewById(R.id.login_loginButton);
+        Button loginButton = (Button) view.findViewById(R.id.login_loginButton);
 
-        final EditText emailEditText = (EditText)view.findViewById(R.id.login_email);
-        final EditText passwordEditText = (EditText)view.findViewById(R.id.login_password);
+        this.etxtEmail = (EditText) view.findViewById(R.id.login_email);
+        this.etxtPassword = (EditText) view.findViewById(R.id.login_password);
+        this.tilEmailLayout = (TextInputLayout) view.findViewById(R.id.tilEmailInputLayout);
+        this.tilPasswordLayout = (TextInputLayout) view.findViewById(R.id.tilPasswordInputLayout);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = emailEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+                String email = etxtEmail.getText().toString();
+                String password = etxtPassword.getText().toString();
                 onLoginButtonPressed(email, password);
+            }
+        });
+
+        this.etxtPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilPasswordLayout.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        this.etxtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilEmailLayout.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -89,6 +133,21 @@ public class SignInFragment extends Fragment {
     }
 
     public void onLoginButtonPressed(String email, String password) {
+        boolean shouldReturn = false;
+        if (TextUtils.isEmpty(password)) {
+            this.tilPasswordLayout.setError("Password Should not be empty");
+            shouldReturn = true;
+        }
+        if (TextUtils.isEmpty(email)) {
+            this.tilEmailLayout.setError("Email should not be empty");
+            shouldReturn = true;
+        } else if (!email.matches(EMAIL_REGEX)) {
+            this.tilEmailLayout.setError("Email is not correct");
+            shouldReturn = true;
+        }
+        if (shouldReturn)
+            return;
+
         if (mListener != null) {
             mListener.onLoginButtonPressed(email, password);
         }
@@ -116,7 +175,7 @@ public class SignInFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
