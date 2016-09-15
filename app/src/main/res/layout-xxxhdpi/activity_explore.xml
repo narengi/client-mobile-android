@@ -9,14 +9,21 @@
     tools:context=".ui.activity.ExploreActivity">
 
     <!--<xyz.narengi.android.ui.widget.TwoDScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/scrollRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:id="@+id/explore_progressLayout"
@@ -27,17 +34,44 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <ProgressBar
-                android:id="@+id/explore_progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
-        </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/scrollRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+                <ProgressBar
+                    android:id="@+id/explore_progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/transparent" />
+
+                <LinearLayout
+                    android:id="@+id/llErrorContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <xyz.narengi.android.ui.widget.CustomTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="خطا در برقراری ارتباط با سایت" />
+
+                    <xyz.narengi.android.ui.widget.CustomButton
+                        android:id="@+id/btnRetry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingTop="8dp"
+                        android:text="تلاش مجدد" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -45,10 +79,10 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:elevation="0dp"
-            app:elevation="0dp"
             android:fitsSystemWindows="true"
             android:padding="0dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:elevation="0dp">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/explore_collapsing_toolbar"
@@ -57,11 +91,11 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:elevation="0dp"
-                app:elevation="0dp"
                 android:fitsSystemWindows="true"
                 android:padding="0dp"
                 app:backgroundTint="@color/transparent_state_list"
                 app:contentScrim="@android:color/transparent"
+                app:elevation="0dp"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ToolBarStyle">
 
@@ -85,12 +119,11 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
                     android:elevation="0dp"
-                    app:elevation="0dp"
                     android:padding="0dp"
                     app:backgroundTint="@color/transparent_state_list"
+                    app:elevation="0dp"
                     app:layout_scrollFlags="scroll|enterAlways"
-                    app:popupTheme="@style/ToolBarStyle"
-                    />
+                    app:popupTheme="@style/ToolBarStyle" />
 
                 <include layout="@layout/explore_toolbar_layout" />
                 <!--<FrameLayout-->
@@ -112,6 +145,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:itemTextAppearance="?android:attr/textAppearanceSmall"
-        app:itemTextColor="@color/orange_light"
-        />
+        app:itemTextColor="@color/orange_light" />
 </android.support.v4.widget.DrawerLayout>

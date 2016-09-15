@@ -146,4 +146,9 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="errorTextStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#660000</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>

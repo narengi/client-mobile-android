@@ -67,6 +67,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
@@ -113,11 +114,25 @@ public class ExploreActivity extends ActionBarActivity {
     private TextWatcher searchTextWatcher;
     private RecyclerView.OnItemTouchListener suggestionsOnItemTouchListener;
 
+    private View llErrorContainer;
+    private Button btnRetry;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        this.llErrorContainer = findViewById(R.id.llErrorContainer);
+        this.btnRetry = (Button) findViewById(R.id.btnRetry);
+        this.btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideError();
+                LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask("ت");
+                loadDataAsyncTask.execute();
+            }
+        });
+
         setupToolbar();
 
         final SharedPreferences preferences = getSharedPreferences("profile", 0);
@@ -471,6 +486,18 @@ public class ExploreActivity extends ActionBarActivity {
 
         progressBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    private void showError() {
+        showProgress();
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.explore_progressBar);
+        progressBar.setVisibility(View.GONE);
+
+        llErrorContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void hideError() {
+        llErrorContainer.setVisibility(View.GONE);
     }
 
     private void showSearchHistoryRecyclerView() {
@@ -1257,6 +1284,7 @@ public class ExploreActivity extends ActionBarActivity {
         @Override
         protected void onPreExecute() {
             showProgress();
+            hideError();
             loadingMore = true;
         }
 
@@ -1282,6 +1310,10 @@ public class ExploreActivity extends ActionBarActivity {
                 @Override
                 public void onResponse(Response<AroundLocation[]> response, Retrofit retrofit) {
                     int statusCode = response.code();
+                    if(statusCode != 200) {
+                        showError();
+                        return;
+                    }
                     AroundLocation[] aroundLocations = response.body();
 
                     if (aroundLocations != null && aroundLocations.length > 0) {
@@ -1298,6 +1330,7 @@ public class ExploreActivity extends ActionBarActivity {
                 @Override
                 public void onFailure(Throwable t) {
                     // Log error here since request failed
+                    Log.d("asd","asd");
                 }
             });
 
