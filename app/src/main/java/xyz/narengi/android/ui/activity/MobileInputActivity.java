@@ -1,25 +1,16 @@
 package xyz.narengi.android.ui.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Handler;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,20 +22,18 @@ import com.google.gson.GsonBuilder;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.RequestVerification;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 
 /**
  * @author Siavash Mahmoudpour
@@ -65,7 +54,7 @@ public class MobileInputActivity extends AppCompatActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.mobile_input_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -73,7 +62,8 @@ public class MobileInputActivity extends AppCompatActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -127,7 +117,7 @@ public class MobileInputActivity extends AppCompatActivity {
         setPageTitle(getString(R.string.mobile_input_page_title));
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -148,8 +138,8 @@ public class MobileInputActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        Button sendButton = (Button)findViewById(R.id.mobile_input_sendButton);
-        final EditText mobileNoEditText = (EditText)findViewById(R.id.mobile_input_mobileNumber);
+        Button sendButton = (Button) findViewById(R.id.mobile_input_sendButton);
+        final EditText mobileNoEditText = (EditText) findViewById(R.id.mobile_input_mobileNumber);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,17 +173,14 @@ public class MobileInputActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AccountVerification> call = apiEndpoints.requestVerification("SMS", requestVerification, authorizationJson);
 
         call.enqueue(new Callback<AccountVerification>() {
             @Override
-            public void onResponse(Response<AccountVerification> response, Retrofit retrofit) {
+            public void onResponse(Call<AccountVerification> call, Response<AccountVerification> response) {
                 int statusCode = response.code();
                 AccountVerification accountVerification = response.body();
                 if (accountVerification != null && accountVerification.getCode() != null) {
@@ -203,7 +190,7 @@ public class MobileInputActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<AccountVerification> call, Throwable t) {
                 t.printStackTrace();
             }
         });

@@ -35,6 +35,8 @@ public class CustomEditText extends EditText {
 
     @Override
     public void setTypeface(Typeface tf, int style) {
+        if(isInEditMode())
+            return;
         if (style == Typeface.BOLD) {
             super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans-Bold.ttf"));
         } else {
@@ -44,6 +46,8 @@ public class CustomEditText extends EditText {
 
     @Override
     public void setTypeface(Typeface tf) {
+        if(isInEditMode())
+            return;
         super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans.ttf"));
     }
 }

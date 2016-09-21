@@ -2,13 +2,11 @@ package xyz.narengi.android.ui.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,16 +29,15 @@ import java.util.Date;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.BookContentRecyclerAdapter;
 import xyz.narengi.android.ui.fragment.CalendarFragment;
 
@@ -77,7 +74,7 @@ public class BookActivity extends AppCompatActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.book_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -110,7 +107,8 @@ public class BookActivity extends AppCompatActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -136,7 +134,7 @@ public class BookActivity extends AppCompatActivity {
         });*/
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -170,10 +168,7 @@ public class BookActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder().create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
 
@@ -193,8 +188,9 @@ public class BookActivity extends AppCompatActivity {
 
         Call<HouseAvailableDates> call = apiEndpoints.getHouseAvailableDates(url);
         call.enqueue(new Callback<HouseAvailableDates>() {
+
             @Override
-            public void onResponse(Response<HouseAvailableDates> response, Retrofit retrofit) {
+            public void onResponse(Call<HouseAvailableDates> call, Response<HouseAvailableDates> response) {
 //                int statusCode = response.code();
 //                hideProgress();
                 HouseAvailableDates houseAvailableDates = response.body();
@@ -211,7 +207,7 @@ public class BookActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<HouseAvailableDates> call, Throwable t) {
                 // Log error here since request failed
                 t.printStackTrace();
                 Log.d("BookActivity", "getHouseAvailableDates onFailure : " + t.getMessage(), t);
@@ -238,7 +234,7 @@ public class BookActivity extends AppCompatActivity {
                 bookContentRecyclerAdapter.getBookProperties().getDaysCount() > 0 && bookContentRecyclerAdapter.getBookProperties().getGuestsCount() > 0) {
 
             Intent intent = new Intent(this, BookSummaryActivity.class);
-            intent.putExtra("bookProperties" , bookContentRecyclerAdapter.getBookProperties());
+            intent.putExtra("bookProperties", bookContentRecyclerAdapter.getBookProperties());
             startActivity(intent);
         } else {
             Toast.makeText(this, getString(R.string.book_dates_not_selected_alert), Toast.LENGTH_LONG).show();

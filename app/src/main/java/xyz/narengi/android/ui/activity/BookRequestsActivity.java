@@ -4,8 +4,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,20 +30,18 @@ import java.util.List;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.BookRequest;
 import xyz.narengi.android.common.dto.BookRequestDTO;
 import xyz.narengi.android.common.dto.Credential;
-import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.fragment.BookRequestListFragment;
 
 public class BookRequestsActivity extends AppCompatActivity {
@@ -127,7 +123,7 @@ public class BookRequestsActivity extends AppCompatActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.book_requests_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -135,7 +131,8 @@ public class BookRequestsActivity extends AppCompatActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -161,8 +158,8 @@ public class BookRequestsActivity extends AppCompatActivity {
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.book_requests_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.book_requests_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.book_requests_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.book_requests_progressBar);
 
         if (progressBarLayout != null && progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -171,8 +168,8 @@ public class BookRequestsActivity extends AppCompatActivity {
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.book_requests_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.book_requests_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.book_requests_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.book_requests_progressBar);
 
         if (progressBarLayout != null && progressBar != null) {
             progressBar.setVisibility(View.GONE);
@@ -197,7 +194,7 @@ public class BookRequestsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -220,7 +217,7 @@ public class BookRequestsActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager, BookRequest[] bookRequests) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        for (BookRequest bookRequest:bookRequests) {
+        for (BookRequest bookRequest : bookRequests) {
 
             if (bookRequest.getHouse() != null) {
                 adapter.addFragment(new BookRequestListFragment(), bookRequest.getHouse().getName());
@@ -235,7 +232,7 @@ public class BookRequestsActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager, BookRequestDTO[] bookRequestDTOs) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        for (BookRequestDTO bookRequestDTO:bookRequestDTOs) {
+        for (BookRequestDTO bookRequestDTO : bookRequestDTOs) {
 
             if (bookRequestDTO.getHouseTitle() != null) {
                 BookRequestListFragment bookRequestListFragment = new BookRequestListFragment();
@@ -269,17 +266,14 @@ public class BookRequestsActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<BookRequest[]> call = apiEndpoints.getBookRequests(authorizationJson);
 
         call.enqueue(new Callback<BookRequest[]>() {
             @Override
-            public void onResponse(Response<BookRequest[]> response, Retrofit retrofit) {
+            public void onResponse(Call<BookRequest[]> call, Response<BookRequest[]> response) {
                 hideProgress();
                 int statusCode = response.code();
                 bookRequests = response.body();
@@ -290,7 +284,7 @@ public class BookRequestsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<BookRequest[]> call, Throwable t) {
                 hideProgress();
                 t.printStackTrace();
             }
@@ -318,27 +312,25 @@ public class BookRequestsActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<BookRequestDTO[]> call = apiEndpoints.getBookRequestDTOs(authorizationJson);
 
         call.enqueue(new Callback<BookRequestDTO[]>() {
             @Override
-            public void onResponse(Response<BookRequestDTO[]> response, Retrofit retrofit) {
+            public void onResponse(Call<BookRequestDTO[]> call, Response<BookRequestDTO[]> response) {
                 hideProgress();
                 int statusCode = response.code();
                 bookRequestDTOs = response.body();
 
                 if (bookRequestDTOs == null || bookRequestDTOs.length == 0) {
                     setupViewPager(viewPager, bookRequestDTOs);
-                }            }
+                }
+            }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<BookRequestDTO[]> call, Throwable t) {
                 hideProgress();
                 t.printStackTrace();
             }
@@ -369,17 +361,14 @@ public class BookRequestsActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<BookRequest> call = apiEndpoints.approveBookRequest(authorizationJson, requestId);
 
         call.enqueue(new Callback<BookRequest>() {
             @Override
-            public void onResponse(Response<BookRequest> response, Retrofit retrofit) {
+            public void onResponse(Call<BookRequest> call, Response<BookRequest> response) {
                 int statusCode = response.code();
                 BookRequest bookRequest = response.body();
                 if (statusCode != 204) {
@@ -397,7 +386,7 @@ public class BookRequestsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<BookRequest> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(BookRequestsActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
@@ -405,32 +394,32 @@ public class BookRequestsActivity extends AppCompatActivity {
         });
     }
 
-class ViewPagerAdapter extends FragmentPagerAdapter {
-    private final List<Fragment> mFragmentList = new ArrayList<>();
-    private final List<String> mFragmentTitleList = new ArrayList<>();
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-    public ViewPagerAdapter(FragmentManager manager) {
-        super(manager);
-    }
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
 
-    @Override
-    public Fragment getItem(int position) {
-        return mFragmentList.get(position);
-    }
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
 
-    @Override
-    public int getCount() {
-        return mFragmentList.size();
-    }
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
 
-    public void addFragment(Fragment fragment, String title) {
-        mFragmentList.add(fragment);
-        mFragmentTitleList.add(title);
-    }
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return mFragmentTitleList.get(position);
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
-}
 }

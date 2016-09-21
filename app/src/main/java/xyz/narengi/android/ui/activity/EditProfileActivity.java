@@ -10,11 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -23,9 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -68,21 +65,20 @@ import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import ir.smartlab.persindatepicker.PersianDatePicker;
 import ir.smartlab.persindatepicker.util.PersianCalendar;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AccountProfile;
-import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.common.dto.ProvinceCity;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.SpinnerArrayAdapter;
 import xyz.narengi.android.util.SecurityUtils;
 
@@ -91,21 +87,20 @@ import xyz.narengi.android.util.SecurityUtils;
  */
 public class EditProfileActivity extends AppCompatActivity {
 
-    private ActionBarRtlizer rtlizer;
-    private static final String TAG = EditProfileActivity.class.getName();
-    private AccountProfile accountProfile;
-    static final int REQUEST_IMAGE_CAPTURE = 2001;
-    private ImageView profileImageView;
     protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 1001;
     protected static final int REQUEST_STORAGE_WRITE_ACCESS_PERMISSION = 1002;
+    static final int REQUEST_IMAGE_CAPTURE = 2001;
+    private static final String TAG = EditProfileActivity.class.getName();
     private static final int REQUEST_SELECT_PICTURE = 0x01;
     private static final String SAMPLE_CROPPED_IMAGE_NAME = "SampleCropImage.jpeg";
+    private ActionBarRtlizer rtlizer;
+    private AccountProfile accountProfile;
+    private ImageView profileImageView;
     private Uri mDestinationUri;
     private Date selectedBirthDate;
-    private Map<String,ProvinceCity[]> provincesMap;
+    private Map<String, ProvinceCity[]> provincesMap;
 
     private AlertDialog mAlertDialog;
-
 
 
     @Override
@@ -364,7 +359,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });*/
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -388,14 +383,14 @@ public class EditProfileActivity extends AppCompatActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.edit_profile_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
 
     private void initViews() {
 
-        profileImageView = (ImageView)findViewById(R.id.edit_profile_image);
+        profileImageView = (ImageView) findViewById(R.id.edit_profile_image);
 
         Spinner genderSpinner = (Spinner) findViewById(R.id.edit_profile_gender);
         String[] genderArray = getResources().getStringArray(R.array.gender_array);
@@ -414,7 +409,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-        Button addImageButton = (Button)findViewById(R.id.edit_profile_addPhotoButton);
+        Button addImageButton = (Button) findViewById(R.id.edit_profile_addPhotoButton);
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -427,7 +422,8 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -654,20 +650,14 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void getProvinces() {
-
-        Gson gson = new GsonBuilder().create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<Map<String,ProvinceCity[]>> call = apiEndpoints.getProvinces();
+        Call<Map<String, ProvinceCity[]>> call = apiEndpoints.getProvinces();
 
         call.enqueue(new Callback<Map<String, ProvinceCity[]>>() {
             @Override
-            public void onResponse(Response<Map<String, ProvinceCity[]>> response, Retrofit retrofit) {
+            public void onResponse(Call<Map<String, ProvinceCity[]>> call, Response<Map<String, ProvinceCity[]>> response) {
                 int statusCode = response.code();
                 provincesMap = response.body();
                 if (provincesMap != null && !provincesMap.isEmpty()) {
@@ -676,13 +666,13 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<Map<String, ProvinceCity[]>> call, Throwable t) {
                 t.printStackTrace();
             }
         });
     }
 
-    private void initProvinceSpinner(final Map<String,ProvinceCity[]> provincesMap) {
+    private void initProvinceSpinner(final Map<String, ProvinceCity[]> provincesMap) {
         Spinner provinceSpinner = (Spinner) findViewById(R.id.edit_profile_province);
         final Spinner citySpinner = (Spinner) findViewById(R.id.edit_profile_city);
         final String[] provinceArray = new String[provincesMap.keySet().size()];
@@ -737,17 +727,14 @@ public class EditProfileActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AccountProfile> call = apiEndpoints.getProfile(authorizationJson);
 
         call.enqueue(new Callback<AccountProfile>() {
             @Override
-            public void onResponse(Response<AccountProfile> response, Retrofit retrofit) {
+            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
                 int statusCode = response.code();
                 AccountProfile accountProfile = response.body();
                 if (accountProfile != null && accountProfile.getProfile() != null) {
@@ -764,7 +751,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<AccountProfile> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -787,10 +774,7 @@ public class EditProfileActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         File file = new File(resultUri.getPath());
 //        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
@@ -807,7 +791,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<AccountProfile>() {
             @Override
-            public void onResponse(Response<AccountProfile> response, Retrofit retrofit) {
+            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
                 int statusCode = response.code();
                 Toast.makeText(EditProfileActivity.this, "Status : " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
                 if (statusCode == 201 || statusCode == 204) {
@@ -826,7 +810,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<AccountProfile> call, Throwable t) {
                 Toast.makeText(EditProfileActivity.this, "Upload image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }
@@ -891,17 +875,14 @@ public class EditProfileActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call call = apiEndpoints.updateProfile(authorizationJson, profile);
 
         call.enqueue(new Callback() {
             @Override
-            public void onResponse(Response response, Retrofit retrofit) {
+            public void onResponse(Call call, Response response) {
                 int statusCode = response.code();
                 if (statusCode == 201 || statusCode == 204) {
                     saveDisplayName(nameEditText.getText().toString(), familyEditText.getText().toString());
@@ -920,7 +901,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -1067,7 +1048,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (provincesMap.containsKey(accountProfile.getProfile().getProvince())) {
                     final String[] provinceArray = new String[provincesMap.keySet().size()];
                     provincesMap.keySet().toArray(provinceArray);
-                    for (int i=0 ; i < provinceArray.length ; i++) {
+                    for (int i = 0; i < provinceArray.length; i++) {
                         if (accountProfile.getProfile().getProvince().equalsIgnoreCase(provinceArray[i])) {
                             provinceSpinner.setSelection(i);
                             cityArray = provincesMap.get(accountProfile.getProfile().getProvince());
@@ -1078,7 +1059,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             if (cityArray != null && accountProfile.getProfile().getCity() != null &&
                     accountProfile.getProfile().getCity().length() > 0) {
-                for (int i=0 ; i < cityArray.length ; i++) {
+                for (int i = 0; i < cityArray.length; i++) {
                     ProvinceCity provinceCity = cityArray[i];
                     if (accountProfile.getProfile().getCity().equalsIgnoreCase(provinceCity.getCity())) {
                         citySpinner.setSelection(i);

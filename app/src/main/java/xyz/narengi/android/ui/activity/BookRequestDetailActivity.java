@@ -26,18 +26,17 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.io.Serializable;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.BookRequest;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.actionbar.ActionBarRtlizer;
 import xyz.narengi.android.ui.adapter.BookRequestContentRecyclerAdapter;
 
@@ -59,7 +58,7 @@ public class BookRequestDetailActivity extends AppCompatActivity {
         if (getIntent() != null && getIntent().getStringExtra("bookRequest") != null) {
             Serializable bookRequestSerializable = getIntent().getSerializableExtra("bookRequest");
             if (bookRequestSerializable != null) {
-                BookRequest bookRequest = (BookRequest)bookRequestSerializable;
+                BookRequest bookRequest = (BookRequest) bookRequestSerializable;
                 setupContentRecyclerView(bookRequest);
 
                 if (bookRequest.getGuestUrl() != null) {
@@ -94,7 +93,7 @@ public class BookRequestDetailActivity extends AppCompatActivity {
         });*/
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -122,7 +121,7 @@ public class BookRequestDetailActivity extends AppCompatActivity {
     }
 
     private void setupContentRecyclerView(BookRequest bookRequest) {
-        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.book_request_contentRecyclerView);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.book_request_contentRecyclerView);
 
 //        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
@@ -135,13 +134,13 @@ public class BookRequestDetailActivity extends AppCompatActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.book_request_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
 
     private void setProfileImage(String imageUrl) {
-        ImageView profileImageView = (ImageView)findViewById(R.id.book_request_profileImage);
+        ImageView profileImageView = (ImageView) findViewById(R.id.book_request_profileImage);
         Picasso.with(this).load(imageUrl).into(profileImageView);
     }
 
@@ -168,17 +167,14 @@ public class BookRequestDetailActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<BookRequest> call = apiEndpoints.approveBookRequest(authorizationJson, requestId);
 
         call.enqueue(new Callback<BookRequest>() {
             @Override
-            public void onResponse(Response<BookRequest> response, Retrofit retrofit) {
+            public void onResponse(Call<BookRequest> call, Response<BookRequest> response) {
                 int statusCode = response.code();
                 BookRequest bookRequest = response.body();
                 if (statusCode != 204) {
@@ -196,7 +192,7 @@ public class BookRequestDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<BookRequest> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(BookRequestDetailActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
@@ -227,17 +223,14 @@ public class BookRequestDetailActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<BookRequest> call = apiEndpoints.rejectBookRequest(authorizationJson, requestId);
 
         call.enqueue(new Callback<BookRequest>() {
             @Override
-            public void onResponse(Response<BookRequest> response, Retrofit retrofit) {
+            public void onResponse(Call<BookRequest> call, Response<BookRequest> response) {
                 int statusCode = response.code();
                 BookRequest bookRequest = response.body();
                 if (statusCode != 204) {
@@ -255,7 +248,7 @@ public class BookRequestDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<BookRequest> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(BookRequestDetailActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
@@ -264,8 +257,8 @@ public class BookRequestDetailActivity extends AppCompatActivity {
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.book_request_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.book_request_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.book_request_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.book_request_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -274,8 +267,8 @@ public class BookRequestDetailActivity extends AppCompatActivity {
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.book_request_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.book_request_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.book_request_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.book_request_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.GONE);

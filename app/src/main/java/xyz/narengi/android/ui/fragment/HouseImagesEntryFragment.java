@@ -32,8 +32,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -56,17 +54,16 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.activity.AddHouseActivity;
 import xyz.narengi.android.ui.activity.EditHouseDetailActivity;
 import xyz.narengi.android.ui.adapter.HouseEntryImageThumbnailsRecyclerAdapter;
@@ -79,10 +76,10 @@ import xyz.narengi.android.ui.util.AlertUtils;
 public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements HouseEntryImageThumbnailsRecyclerAdapter.OnAddImageClickListener {
 
     protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 1002;
-    private static final int REQUEST_SELECT_PICTURE = 0x02;
     static final int REQUEST_IMAGE_CAPTURE = 2002;
-    private Uri mDestinationUri;
+    private static final int REQUEST_SELECT_PICTURE = 0x02;
     private static final String SAMPLE_CROPPED_IMAGE_NAME = "HouseCropImage.jpeg";
+    private Uri mDestinationUri;
     private ViewPager viewPager;
     private HouseImageEntryViewPagerAdapter viewPagerAdapter;
     private List<Uri> imageUris;
@@ -191,7 +188,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                                 if (imageUris != null && imageUris.size() > 0)
                                     uploadHouseImages();
                                 else
-                                   getOnInteractionListener().onGoToNextSection(getHouse());
+                                    getOnInteractionListener().onGoToNextSection(getHouse());
                             }
                         }
                     });
@@ -273,10 +270,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
 
 //        File file = new File(resultUri.getPath());
 
@@ -296,7 +290,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
-            public void onResponse(Response<ImageInfo[]> response, Retrofit retrofit) {
+            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
                 hideProgress();
                 int statusCode = response.code();
                 ImageInfo[] result = response.body();
@@ -327,7 +321,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(getActivity(), "Upload image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
@@ -355,10 +349,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RemoveHouseImagesInfo removeHouseImagesInfo = new RemoveHouseImagesInfo();
         String[] imageNames = new String[1];
@@ -369,7 +360,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         Call<ImageInfo[]> call = apiEndpoints.removeHouseImages(authorizationJson, getHouse().getURL() + "/pictures", removeHouseImagesInfo);
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
-            public void onResponse(Response<ImageInfo[]> response, Retrofit retrofit) {
+            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
                 hideProgress();
                 int statusCode = response.code();
                 ImageInfo[] result = response.body();
@@ -395,7 +386,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(getActivity(), "Remove image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();

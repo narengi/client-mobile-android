@@ -8,11 +8,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +19,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -46,17 +44,15 @@ import java.io.IOException;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 
 /**
  * @author Siavash Mahmoudpour
@@ -78,7 +74,7 @@ public class IdentityCardActivity extends AppCompatActivity {
         mDestinationUri = Uri.fromFile(new File(getCacheDir(), SAMPLE_CROPPED_IMAGE_NAME));
         setupToolbar();
 
-        Button selectPhotoButton = (Button)findViewById(R.id.identity_card_selectPhotoButton);
+        Button selectPhotoButton = (Button) findViewById(R.id.identity_card_selectPhotoButton);
         selectPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,7 +87,7 @@ public class IdentityCardActivity extends AppCompatActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.identity_card_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -99,7 +95,8 @@ public class IdentityCardActivity extends AppCompatActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -186,7 +183,7 @@ public class IdentityCardActivity extends AppCompatActivity {
         setPageTitle(getString(R.string.identity_card_page_title));
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -265,7 +262,7 @@ public class IdentityCardActivity extends AppCompatActivity {
 
     private void setCapturedImage(Uri resultUri) {
 
-        ImageView idCardImageView = (ImageView)findViewById(R.id.identity_card_image);
+        ImageView idCardImageView = (ImageView) findViewById(R.id.identity_card_image);
 
         // Get the dimensions of the View
         int targetW = idCardImageView.getWidth();
@@ -280,7 +277,7 @@ public class IdentityCardActivity extends AppCompatActivity {
 
         // Determine how much to scale down the image
         if (targetW > 0 && targetH > 0) {
-            int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
             bmOptions.inSampleSize = scaleFactor;
         }
 
@@ -311,10 +308,7 @@ public class IdentityCardActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         File file = new File(resultUri.getPath());
 
@@ -329,7 +323,7 @@ public class IdentityCardActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<AccountVerification>() {
             @Override
-            public void onResponse(Response<AccountVerification> response, Retrofit retrofit) {
+            public void onResponse(Call<AccountVerification> call, Response<AccountVerification> response) {
                 int statusCode = response.code();
 
                 AccountVerification verification = response.body();
@@ -354,7 +348,7 @@ public class IdentityCardActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<AccountVerification> call, Throwable t) {
                 Toast.makeText(IdentityCardActivity.this, "Upload image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }

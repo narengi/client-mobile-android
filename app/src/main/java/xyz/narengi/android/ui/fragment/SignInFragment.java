@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import xyz.narengi.android.R;
+import xyz.narengi.android.util.SimpleTextWatcher;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,36 +97,16 @@ public class SignInFragment extends Fragment {
             }
         });
 
-        this.etxtPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
+        this.etxtPassword.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 tilPasswordLayout.setErrorEnabled(false);
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
         });
-        this.etxtEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
+        this.etxtEmail.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 tilEmailLayout.setErrorEnabled(false);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         });
 

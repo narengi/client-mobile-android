@@ -60,11 +60,10 @@ import calendar.CivilDate;
 import calendar.DateConverter;
 import calendar.PersianDate;
 import ir.smartlab.persindatepicker.util.PersianCalendar;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.Authorization;
@@ -72,6 +71,7 @@ import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.activity.EditHouseActivity;
 import xyz.narengi.android.ui.activity.HouseActivity;
 
@@ -86,29 +86,31 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     private List<ImageInfo[]> imageInfoList;
     private List<HouseAvailableDates> houseAvailableDatesList;
     private RemoveHouseListener removeHouseListener;
-    private Map<String,ImageInfo[]> imageInfoArraysMap;
-//    private Map<String,HouseAvailableDates> houseAvailableDatesMap;
-    private HashMap<String,HashMap<String,List<Day>>> housesSelectedDaysMap;
+    private Map<String, ImageInfo[]> imageInfoArraysMap;
+    //    private Map<String,HouseAvailableDates> houseAvailableDatesMap;
+    private HashMap<String, HashMap<String, List<Day>>> housesSelectedDaysMap;
 
-    private Map<String,ImageInfo[]> allImageInfoArraysMap;
-    private Map<String,HouseAvailableDates> allHouseAvailableDatesMap;
+    private Map<String, ImageInfo[]> allImageInfoArraysMap;
+    private Map<String, HouseAvailableDates> allHouseAvailableDatesMap;
 
     //TODO : use AsyncQueryHandler
+    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+    private DisplayImageOptions displayImageOptions;
 
     public HostHousesContentRecyclerAdapter(Context context, House[] houses, List<ImageInfo[]> imageInfoList,
                                             List<HouseAvailableDates> houseAvailableDatesList, RemoveHouseListener removeHouseListener,
-                                            Map<String,ImageInfo[]> allImageInfoArraysMap,
-                                            Map<String,HouseAvailableDates> allHouseAvailableDatesMap
-                                            ) {
+                                            Map<String, ImageInfo[]> allImageInfoArraysMap,
+                                            Map<String, HouseAvailableDates> allHouseAvailableDatesMap
+    ) {
         this.context = context;
         this.houses = houses;
         this.imageInfoList = imageInfoList;
         this.houseAvailableDatesList = houseAvailableDatesList;
         this.removeHouseListener = removeHouseListener;
         if (houses != null) {
-            imageInfoArraysMap = new HashMap<String,ImageInfo[]>();
+            imageInfoArraysMap = new HashMap<String, ImageInfo[]>();
 //            houseAvailableDatesMap = new HashMap<String,HouseAvailableDates>();
-            housesSelectedDaysMap = new HashMap<String,HashMap<String,List<Day>>>();
+            housesSelectedDaysMap = new HashMap<String, HashMap<String, List<Day>>>();
 
             this.allImageInfoArraysMap = allImageInfoArraysMap;
             this.allHouseAvailableDatesMap = allHouseAvailableDatesMap;
@@ -174,10 +176,10 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (houses != null && houses.length > 0) {
-            HostHousesItemViewHolder housesItemViewHolder = (HostHousesItemViewHolder)viewHolder;
+            HostHousesItemViewHolder housesItemViewHolder = (HostHousesItemViewHolder) viewHolder;
             setupHousesItem(housesItemViewHolder, position);
         } else {
-            EmptyDataViewHolder emptyDataViewHolder = (EmptyDataViewHolder)viewHolder;
+            EmptyDataViewHolder emptyDataViewHolder = (EmptyDataViewHolder) viewHolder;
         }
     }
 
@@ -320,11 +322,11 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         float thumbnailWidthDp = dpWidth / 3;
-        final int thumbnailWidthPx = (int)(thumbnailWidthDp * displayMetrics.density);
+        final int thumbnailWidthPx = (int) (thumbnailWidthDp * displayMetrics.density);
 //                    final int thumbnailHeightPx = thumbnailWidthPx * 38 / 62;
         final int thumbnailHeightPx = thumbnailWidthPx * 7 / 10;
 
-        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams)viewHolder.houseImageView.getLayoutParams();
+        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
         int imageWidth = imageLayoutParams.width;
         if (imageWidth <= 0) {
             imageWidth = thumbnailWidthPx;
@@ -388,8 +390,8 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                         viewHolder.imageProgressBar.setVisibility(View.GONE);
                         viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
                     }
-    //                viewHolder.houseImageView.setImageBitmap(null);
-    //                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+                    //                viewHolder.houseImageView.setImageBitmap(null);
+                    //                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
                 }
 
                 @Override
@@ -401,8 +403,8 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                     }
 //                    viewHolder.houseImageView.setImageBitmap(null);
 //                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-                    }
-                });
+                }
+            });
 
             /*ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, viewHolder, authorizationJson, imageInfo.getUrl());
             AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
@@ -463,26 +465,6 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         }
     }
 
-    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
-    private DisplayImageOptions displayImageOptions;
-
-    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
-
-        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
-
-        @Override
-        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            if (loadedImage != null) {
-                ImageView imageView = (ImageView) view;
-                boolean firstDisplay = !displayedImages.contains(imageUri);
-                if (firstDisplay) {
-                    FadeInBitmapDisplayer.animate(imageView, 500);
-                    displayedImages.add(imageUri);
-                }
-            }
-        }
-    }
-
     private void getHouseImages(final String houseUrl, final HostHousesItemViewHolder viewHolder) {
 
         final SharedPreferences preferences = context.getSharedPreferences("profile", 0);
@@ -507,10 +489,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
         final String authorizationJson = tempJson;
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
@@ -519,11 +498,11 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         float thumbnailWidthDp = dpWidth / 3;
-        final int thumbnailWidthPx = (int)(thumbnailWidthDp * displayMetrics.density);
+        final int thumbnailWidthPx = (int) (thumbnailWidthDp * displayMetrics.density);
 //                    final int thumbnailHeightPx = thumbnailWidthPx * 38 / 62;
         final int thumbnailHeightPx = thumbnailWidthPx * 7 / 10;
 
-        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams)viewHolder.houseImageView.getLayoutParams();
+        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
         int imageWidth = imageLayoutParams.width;
         if (imageWidth <= 0) {
             imageWidth = thumbnailWidthPx;
@@ -536,7 +515,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
-            public void onResponse(Response<ImageInfo[]> response, Retrofit retrofit) {
+            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
                 int statusCode = response.code();
                 ImageInfo[] result = response.body();
                 if (result != null && result.length > 0) {
@@ -615,7 +594,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
                 if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
                     viewHolder.imageProgressBar.setVisibility(View.GONE);
                     viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
@@ -631,7 +610,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     private void setFirstAvailableDate(final HostHousesItemViewHolder viewHolder, HouseAvailableDates houseAvailableDates, String houseUrl) {
         if (houseAvailableDates != null && houseAvailableDates.getStartDate() != null) {
 
-            HashMap<String,List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
+            HashMap<String, List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
             if (selectedDaysMap != null) {
                 housesSelectedDaysMap.put(houseUrl, selectedDaysMap);
             }
@@ -655,10 +634,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
         Gson gson = new GsonBuilder().create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
 
@@ -677,11 +653,11 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         Call<HouseAvailableDates> call = apiEndpoints.getHouseAvailableDates(url);
         call.enqueue(new Callback<HouseAvailableDates>() {
             @Override
-            public void onResponse(Response<HouseAvailableDates> response, Retrofit retrofit) {
+            public void onResponse(Call<HouseAvailableDates> call, Response<HouseAvailableDates> response) {
                 HouseAvailableDates houseAvailableDates = response.body();
                 if (houseAvailableDates != null && houseAvailableDates.getStartDate() != null) {
 
-                    HashMap<String,List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
+                    HashMap<String, List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
                     if (selectedDaysMap != null) {
                         housesSelectedDaysMap.put(house.getURL(), selectedDaysMap);
                     }
@@ -702,7 +678,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<HouseAvailableDates> call, Throwable t) {
                 t.printStackTrace();
                 Log.d("HostHousesContent", "getHouseAvailableDates onFailure : " + t.getMessage(), t);
                 viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
@@ -710,18 +686,18 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         });
     }
 
-    private HashMap<String,List<Day>> createSelectedDaysMap(HouseAvailableDates houseAvailableDates) {
+    private HashMap<String, List<Day>> createSelectedDaysMap(HouseAvailableDates houseAvailableDates) {
 
         if (houseAvailableDates == null || houseAvailableDates.getDates() == null || houseAvailableDates.getDates().length == 0)
             return null;
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-        HashMap<String,List<Day>> selectedDaysMap = new HashMap<String,List<Day>>();
+        HashMap<String, List<Day>> selectedDaysMap = new HashMap<String, List<Day>>();
         char[] digits = Utils.getInstance().preferredDigits(context);
         PersianDate todayPersianDate = Utils.getToday();
 
-        for (String dateString:houseAvailableDates.getDates()) {
+        for (String dateString : houseAvailableDates.getDates()) {
             try {
                 Date availableDate = dateFormat.parse(dateString);
 
@@ -797,7 +773,28 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             intent.putExtra("selectedDaysMap", housesSelectedDaysMap.get(house.getURL()));
 
         if (context instanceof AppCompatActivity)
-            ((AppCompatActivity)context).startActivityForResult(intent, 2002);
+            ((AppCompatActivity) context).startActivityForResult(intent, 2002);
+    }
+
+    public interface RemoveHouseListener {
+        public void onRemoveHouse(House house);
+    }
+
+    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+
+        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            if (loadedImage != null) {
+                ImageView imageView = (ImageView) view;
+                boolean firstDisplay = !displayedImages.contains(imageUri);
+                if (firstDisplay) {
+                    FadeInBitmapDisplayer.animate(imageView, 500);
+                    displayedImages.add(imageUri);
+                }
+            }
+        }
     }
 
     public class EmptyDataViewHolder extends RecyclerView.ViewHolder {
@@ -828,21 +825,21 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         public HostHousesItemViewHolder(View itemView) {
             super(itemView);
 
-            houseInfoLayout = (LinearLayout)itemView.findViewById(R.id.host_my_houses_itemInfoLayout);
-            houseImageView = (ImageView)itemView.findViewById(R.id.host_my_houses_itemImage);
-            houseTitleTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemTitle);
-            houseDatesTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemAvailableDate);
-            housePriceTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemPrice);
-            imageProgressBarLayout = (LinearLayout)itemView.findViewById(R.id.host_my_houses_progressBarLayout);
-            imageProgressBar = (ProgressBar)itemView.findViewById(R.id.host_my_houses_progressBar);
+            houseInfoLayout = (LinearLayout) itemView.findViewById(R.id.host_my_houses_itemInfoLayout);
+            houseImageView = (ImageView) itemView.findViewById(R.id.host_my_houses_itemImage);
+            houseTitleTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemTitle);
+            houseDatesTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemAvailableDate);
+            housePriceTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemPrice);
+            imageProgressBarLayout = (LinearLayout) itemView.findViewById(R.id.host_my_houses_progressBarLayout);
+            imageProgressBar = (ProgressBar) itemView.findViewById(R.id.host_my_houses_progressBar);
 
-            houseTypeTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemHouseType);
-            houseBedsTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemBeds);
-            houseRoomsTextView = (TextView)itemView.findViewById(R.id.host_my_houses_itemRooms);
+            houseTypeTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemHouseType);
+            houseBedsTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemBeds);
+            houseRoomsTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemRooms);
 
-            viewHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemViewButton);
-            editHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemEditButton);
-            removeHouseButton = (Button)itemView.findViewById(R.id.host_my_houses_itemRemoveButton);
+            viewHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemViewButton);
+            editHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemEditButton);
+            removeHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemRemoveButton);
         }
     }
 
@@ -887,50 +884,46 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         private Object getImage() {
 
             Picasso picasso;
-                if (authorization != null && authorization.length() > 0) {
+            if (authorization != null && authorization.length() > 0) {
 
-                    OkHttpClient picassoClient = new OkHttpClient();
+                OkHttpClient picassoClient = new OkHttpClient();
 
-                    picassoClient.networkInterceptors().add(new Interceptor() {
-
-                        @Override
-                        public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                            Request newRequest = chain.request().newBuilder()
-                                    .addHeader("authorization", authorization)
-                                    .build();
-                            return chain.proceed(newRequest);
-                        }
-                    });
-
-                    picasso = new Picasso.Builder(context).downloader(new OkHttpDownloader(picassoClient)).build();
-                } else {
-                    picasso = Picasso.with(context);
-                }
-
-                picasso.load(imageUrl).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {
-                        if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                            viewHolder.imageProgressBar.setVisibility(View.GONE);
-                            viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                        }
-                    }
+                picassoClient.networkInterceptors().add(new Interceptor() {
 
                     @Override
-                    public void onError() {
-                        if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                            viewHolder.imageProgressBar.setVisibility(View.GONE);
-                            viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                        }
-                        viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+                    public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
+                        Request newRequest = chain.request().newBuilder()
+                                .addHeader("authorization", authorization)
+                                .build();
+                        return chain.proceed(newRequest);
                     }
                 });
 
+                picasso = new Picasso.Builder(context).downloader(new OkHttpDownloader(picassoClient)).build();
+            } else {
+                picasso = Picasso.with(context);
+            }
+
+            picasso.load(imageUrl).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onError() {
+                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+                    }
+                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+                }
+            });
+
             return null;
         }
-    }
-
-    public interface RemoveHouseListener {
-        public void onRemoveHouse(House house);
     }
 }

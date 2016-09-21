@@ -6,16 +6,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Map;
 
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.http.Url;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+import retrofit2.http.Url;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.AroundLocation;
@@ -67,7 +67,7 @@ public interface RetrofitApiEndpoints {
     @GET
     Call<Attraction> getAttraction(@Url String url);
 
-    @POST("/api/v1/accounts/register")
+    @POST("/api/accounts/register")
     Call<AccountProfile> register(@Body Credential credential);
 
     @POST("/api/v1/accounts/verifications/request/{type}")

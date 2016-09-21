@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -15,36 +14,20 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Handler;
+import android.os.Bundle;
 import android.provider.Settings;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Display;
-import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -72,46 +55,33 @@ import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
-import com.viewpagerindicator.CirclePageIndicator;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.GeoPoint;
-import xyz.narengi.android.common.dto.SuggestionsResult;
 import xyz.narengi.android.content.AroundLocationDeserializer;
 import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
 import xyz.narengi.android.content.AroundPlaceCityDeserializer;
 import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
-import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
-import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
-import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
+import xyz.narengi.android.service.RetrofitService;
 
 /**
  * @author Siavash Mahmoudpour
@@ -165,7 +135,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
 //        }
 
         int isGooglePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if( isGooglePlayServicesAvailable > 0 ) {
+        if (isGooglePlayServicesAvailable > 0) {
             try {
                 GooglePlayServicesUtil.getErrorDialog(isGooglePlayServicesAvailable, this, 0).show();
             } catch (Exception e) {
@@ -242,7 +212,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
         });*/
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -270,7 +240,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.around_locations_map_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -278,7 +248,8 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -485,7 +456,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
             public void onCameraChange(CameraPosition cameraPosition) {
                 super.onCameraChange(cameraPosition);
 
-                if (mMap == null )
+                if (mMap == null)
                     return;
                 LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 
@@ -625,8 +596,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
         }
 
         TypedValue typedValue = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
-        {
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
             int actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
             mMap.setPadding(0, actionBarHeight + 10, 0, 0);
         }
@@ -776,8 +746,8 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
             super(context, map, clusterManager);
 
             DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-            int imageWidth = (int)(80 * displayMetrics.density);
-            int imageHeight = (int)(60 * displayMetrics.density);
+            int imageWidth = (int) (80 * displayMetrics.density);
+            int imageHeight = (int) (60 * displayMetrics.density);
 //            int padding = (int)(2 * displayMetrics.density);
             int padding = 0;
 
@@ -807,8 +777,8 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
             if (item.getAroundLocation() != null) {
 
                 DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-                int imageWidth = (int)(80 * displayMetrics.density);
-                int imageHeight = (int)(60 * displayMetrics.density);
+                int imageWidth = (int) (80 * displayMetrics.density);
+                int imageHeight = (int) (60 * displayMetrics.density);
 
                 AroundLocation aroundLocation = item.getAroundLocation();
                 IconGenerator iconGenerator = new IconGenerator(AroundLocationsMapActivity.this);
@@ -828,9 +798,9 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
                         try {
                             Object asyncTaskResult = asyncTask.get();
                             if (asyncTaskResult != null) {
-                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap((Bitmap)asyncTaskResult));
+                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap((Bitmap) asyncTaskResult));
 
-                                mImageView.setImageBitmap((Bitmap)asyncTaskResult);
+                                mImageView.setImageBitmap((Bitmap) asyncTaskResult);
                                 Bitmap icon = mIconGenerator.makeIcon();
                                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(city.getName());
 
@@ -858,9 +828,9 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
                         try {
                             Object asyncTaskResult = asyncTask.get();
                             if (asyncTaskResult != null) {
-                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap((Bitmap)asyncTaskResult));
+                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap((Bitmap) asyncTaskResult));
 
-                                mImageView.setImageBitmap((Bitmap)asyncTaskResult);
+                                mImageView.setImageBitmap((Bitmap) asyncTaskResult);
                                 Bitmap icon = mIconGenerator.makeIcon();
                                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(attraction.getName());
                             }
@@ -952,7 +922,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
 
                 DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
                 float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-                int imageWidth = (int)((dpWidth - 80) * displayMetrics.density);
+                int imageWidth = (int) ((dpWidth - 80) * displayMetrics.density);
                 int imageHeight = imageWidth * 38 / 62;
 
                 if (aroundLocation.getType() != null && "City".equals(aroundLocation.getType()) &&
@@ -969,7 +939,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
 
                     if (city.getImages() != null && city.getImages().length > 0) {
 
-                        ImageView cityImageView = (ImageView)myContentsView
+                        ImageView cityImageView = (ImageView) myContentsView
                                 .findViewById(R.id.map_city_info_window_image);
                         Picasso.with(getApplicationContext()).load(city.getImages()[0]).resize(imageWidth, imageHeight).into(cityImageView);
                     }
@@ -988,7 +958,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
 
                     if (attraction.getImages() != null && attraction.getImages().length > 0) {
 
-                        ImageView attractionImageView = (ImageView)myContentsView
+                        ImageView attractionImageView = (ImageView) myContentsView
                                 .findViewById(R.id.map_attraction_info_window_image);
                         Picasso.with(getApplicationContext()).load(attraction.getImages()[0]).resize(imageWidth, imageHeight).into(attractionImageView);
                     }
@@ -1016,13 +986,13 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
 
                     if (house.getImages() != null && house.getImages().length > 0) {
 
-                        ImageView houseImageView = (ImageView)myContentsView
+                        ImageView houseImageView = (ImageView) myContentsView
                                 .findViewById(R.id.map_house_info_window_image);
                         Picasso.with(getApplicationContext()).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(houseImageView);
                     }
 
 
-                    RatingBar houseRatingBar = (RatingBar)myContentsView.findViewById(R.id.map_house_info_window_ratingBar);
+                    RatingBar houseRatingBar = (RatingBar) myContentsView.findViewById(R.id.map_house_info_window_ratingBar);
 
                     Drawable drawable = houseRatingBar.getProgressDrawable();
                     drawable.setColorFilter(getResources().getColor(R.color.orange_light), PorterDuff.Mode.SRC_ATOP);
@@ -1065,17 +1035,15 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
                     .registerTypeAdapter(AroundPlaceHouse.class, new AroundPlaceHouseDeserializer())
                     .create();
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(Constants.SERVER_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
+            Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
 
             RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
             Call<AroundLocation[]> call = apiEndpoints.getAroundLocations("", "100", "0", location.getLatitude(), location.getLongitude());
 
             call.enqueue(new Callback<AroundLocation[]>() {
+
                 @Override
-                public void onResponse(Response<AroundLocation[]> response, Retrofit retrofit) {
+                public void onResponse(Call<AroundLocation[]> call, Response<AroundLocation[]> response) {
                     int statusCode = response.code();
                     AroundLocation[] aroundLocations = response.body();
 
@@ -1090,7 +1058,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onFailure(Call<AroundLocation[]> call, Throwable t) {
                     // Log error here since request failed
                 }
             });

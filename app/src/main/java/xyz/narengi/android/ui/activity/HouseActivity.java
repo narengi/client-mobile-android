@@ -8,14 +8,9 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.Shader;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -25,48 +20,37 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.concurrent.ExecutionException;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.House;
-import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.common.dto.ImageInfo;
-import xyz.narengi.android.content.HouseDeserializer;
 import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.HouseContentRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
 
@@ -121,7 +105,8 @@ public class HouseActivity extends ActionBarActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -187,7 +172,7 @@ public class HouseActivity extends ActionBarActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.house_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -206,7 +191,7 @@ public class HouseActivity extends ActionBarActivity {
 //        });
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -256,8 +241,8 @@ public class HouseActivity extends ActionBarActivity {
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.house_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.house_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.house_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
 
         if (progressBarLayout != null && progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -266,8 +251,8 @@ public class HouseActivity extends ActionBarActivity {
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.house_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.house_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.house_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
 
         if (progressBarLayout != null && progressBar != null) {
             progressBar.setVisibility(View.GONE);
@@ -276,25 +261,19 @@ public class HouseActivity extends ActionBarActivity {
     }
 
     private void getHouseImage(String houseUrl) {
-
-        Gson gson = new GsonBuilder().create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<ImageInfo[]> call = apiEndpoints.getHouseImages(houseUrl + "/pictures");
 
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
-            public void onResponse(Response<ImageInfo[]> response, Retrofit retrofit) {
+            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
                 int statusCode = response.code();
                 ImageInfo[] result = response.body();
                 if (result != null && result.length > 0) {
                     String[] imageUrls = new String[result.length];
-                    for (int i=0 ; i < result.length ; i++) {
+                    for (int i = 0; i < result.length; i++) {
                         imageUrls[i] = result[i].getUrl();
                         setupImageViewPager(imageUrls);
                     }
@@ -302,7 +281,7 @@ public class HouseActivity extends ActionBarActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -333,11 +312,11 @@ public class HouseActivity extends ActionBarActivity {
 //        }
 
 //        setupTitleInfoLayout(house);
-        TextView priceTextView = (TextView)findViewById(R.id.house_price);
+        TextView priceTextView = (TextView) findViewById(R.id.house_price);
         priceTextView.setVisibility(View.VISIBLE);
         priceTextView.setText(house.getCost());
 
-        FloatingActionButton houseHostFab= (FloatingActionButton)findViewById(R.id.house_hostFab);
+        FloatingActionButton houseHostFab = (FloatingActionButton) findViewById(R.id.house_hostFab);
         houseHostFab.setVisibility(View.VISIBLE);
         houseHostFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -354,7 +333,7 @@ public class HouseActivity extends ActionBarActivity {
 //        setDescription(house);
 //        setupFeaturesLayout(house);
 
-        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.house_contentRecyclerView);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.house_contentRecyclerView);
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -377,7 +356,7 @@ public class HouseActivity extends ActionBarActivity {
 
 //        setupToolbar();
 
-        Button bookHouseButton = (Button)findViewById(R.id.house_bookButton);
+        Button bookHouseButton = (Button) findViewById(R.id.house_bookButton);
         bookHouseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -416,25 +395,25 @@ public class HouseActivity extends ActionBarActivity {
     private void setupImageViewPager(String[] images) {
 
 //        RelativeLayout viewPagerLayout = (RelativeLayout)findViewById(R.id.house_imageLayout);
-        ViewPager viewPager = (ViewPager)findViewById(R.id.house_imageViewpager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.house_imageViewpager);
 
-        Display display= ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         int height = display.getHeight();
-        viewPager.getLayoutParams().height = height/2;
+        viewPager.getLayoutParams().height = height / 2;
 //        viewPagerLayout.getLayoutParams().height = height/2;
 
         ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(this, images);
         viewPager.setAdapter(adapter);
 
-        CirclePageIndicator pageIndicator = (CirclePageIndicator)findViewById(R.id.house_imagePageIndicator);
+        CirclePageIndicator pageIndicator = (CirclePageIndicator) findViewById(R.id.house_imagePageIndicator);
         pageIndicator.setViewPager(viewPager);
     }
 
     private void setupHostFab(String imageUrl) {
 
-        FloatingActionButton houseHostFab= (FloatingActionButton)findViewById(R.id.house_hostFab);
+        FloatingActionButton houseHostFab = (FloatingActionButton) findViewById(R.id.house_hostFab);
         try {
-            int width=0 , height=0;
+            int width = 0, height = 0;
             if (houseHostFab != null) {
                 if (houseHostFab.getWidth() > 0 && houseHostFab.getHeight() > 0) {
                     width = houseHostFab.getWidth();
@@ -448,12 +427,12 @@ public class HouseActivity extends ActionBarActivity {
                     width, height);
             AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
 
-            Bitmap hostImageBitmap = (Bitmap)asyncTask.get();
+            Bitmap hostImageBitmap = (Bitmap) asyncTask.get();
             if (hostImageBitmap != null) {
 
                 Bitmap circleBitmap = Bitmap.createBitmap(hostImageBitmap.getWidth(), hostImageBitmap.getHeight(), Bitmap.Config.ARGB_8888);
 
-                BitmapShader shader = new BitmapShader (hostImageBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+                BitmapShader shader = new BitmapShader(hostImageBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
                 Paint paint = new Paint();
                 paint.setShader(shader);
                 paint.setAntiAlias(true);
@@ -481,17 +460,14 @@ public class HouseActivity extends ActionBarActivity {
 //                .registerTypeAdapter(House.class, new HouseDeserializer()).create();
         Gson gson = new GsonBuilder().create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
 
         Call<House> call = apiEndpoints.getHouse(url);
         call.enqueue(new Callback<House>() {
             @Override
-            public void onResponse(Response<House> response, Retrofit retrofit) {
+            public void onResponse(Call<House> call, Response<House> response) {
 //                int statusCode = response.code();
                 hideProgress();
                 House house = response.body();
@@ -504,7 +480,7 @@ public class HouseActivity extends ActionBarActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<House> call, Throwable t) {
                 // Log error here since request failed
                 t.printStackTrace();
                 Log.d("HouseActivity", "getHouse onFailure : " + t.getMessage(), t);

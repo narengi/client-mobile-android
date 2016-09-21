@@ -1,32 +1,5 @@
 package xyz.narengi.android.ui.activity;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
-import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AroundLocation;
-import xyz.narengi.android.common.dto.AroundPlaceAttraction;
-import xyz.narengi.android.common.dto.AroundPlaceCity;
-import xyz.narengi.android.common.dto.AroundPlaceHouse;
-import xyz.narengi.android.common.dto.Authorization;
-import xyz.narengi.android.common.dto.SuggestionsResult;
-import xyz.narengi.android.content.AroundLocationDeserializer;
-import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
-import xyz.narengi.android.content.AroundPlaceCityDeserializer;
-import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
-import xyz.narengi.android.content.RoundedTransformation;
-import xyz.narengi.android.service.ImageDownloaderAsyncTask;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
-import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
-import xyz.narengi.android.ui.adapter.RecyclerAdapter;
-import xyz.narengi.android.ui.adapter.SuggestionsExpandableListAdapter;
-import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
-import xyz.narengi.android.ui.util.AlertUtils;
-import xyz.narengi.android.util.SecurityUtils;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -51,7 +24,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -62,38 +34,49 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.picasso.OkHttpDownloader;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import xyz.narengi.android.R;
+import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.AroundLocation;
+import xyz.narengi.android.common.dto.AroundPlaceAttraction;
+import xyz.narengi.android.common.dto.AroundPlaceCity;
+import xyz.narengi.android.common.dto.AroundPlaceHouse;
+import xyz.narengi.android.common.dto.Authorization;
+import xyz.narengi.android.common.dto.SuggestionsResult;
+import xyz.narengi.android.content.AroundLocationDeserializer;
+import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
+import xyz.narengi.android.content.AroundPlaceCityDeserializer;
+import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
+import xyz.narengi.android.service.ImageDownloaderAsyncTask;
+import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
+import xyz.narengi.android.ui.adapter.RecyclerAdapter;
+import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
+import xyz.narengi.android.ui.util.AlertUtils;
 
 /**
  * @author Siavash Mahmoudpour
@@ -157,7 +140,7 @@ public class ExploreActivity extends ActionBarActivity {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void forceRTLIfSupported() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         }
     }
@@ -1113,7 +1096,7 @@ public class ExploreActivity extends ActionBarActivity {
         RecyclerView listView = (RecyclerView) findViewById(R.id.search_results_list);
         if (hasText || searchEditText.hasFocus() ||
                 (listView.getAdapter() != null && listView.getLayoutManager() != null && listView.getLayoutParams() != null &&
-                listView.getLayoutParams().height > 0)) {
+                        listView.getLayoutParams().height > 0)) {
             searchEditText.setOnFocusChangeListener(null);
             searchEditText.removeTextChangedListener(searchTextWatcher);
             searchEditText.setText("");
@@ -1298,19 +1281,16 @@ public class ExploreActivity extends ActionBarActivity {
                     .registerTypeAdapter(AroundPlaceHouse.class, new AroundPlaceHouseDeserializer())
                     .create();
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(Constants.SERVER_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
+            Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
 
             RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
             Call<AroundLocation[]> call = apiEndpoints.getAroundLocations(query, "30", "0");
 
             call.enqueue(new Callback<AroundLocation[]>() {
                 @Override
-                public void onResponse(Response<AroundLocation[]> response, Retrofit retrofit) {
+                public void onResponse(Call<AroundLocation[]> call, Response<AroundLocation[]> response) {
                     int statusCode = response.code();
-                    if(statusCode != 200) {
+                    if (statusCode != 200) {
                         showError();
                         return;
                     }
@@ -1328,9 +1308,9 @@ public class ExploreActivity extends ActionBarActivity {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onFailure(Call<AroundLocation[]> call, Throwable t) {
                     // Log error here since request failed
-                    Log.d("asd","asd");
+                    Log.d("asd", "asd");
                 }
             });
 

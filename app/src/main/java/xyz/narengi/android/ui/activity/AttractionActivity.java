@@ -3,9 +3,7 @@ package xyz.narengi.android.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
@@ -34,17 +32,16 @@ import com.viewpagerindicator.CirclePageIndicator;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.Attraction;
 import xyz.narengi.android.content.AttractionDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.AttractionContentRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
 
@@ -84,7 +81,7 @@ public class AttractionActivity extends ActionBarActivity {
     }
 
     private void setupContentRecyclerView(final Attraction attraction) {
-        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.attraction_housesRecyclerView);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.attraction_housesRecyclerView);
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -136,7 +133,7 @@ public class AttractionActivity extends ActionBarActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.attraction_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -155,7 +152,7 @@ public class AttractionActivity extends ActionBarActivity {
         });*/
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -184,7 +181,8 @@ public class AttractionActivity extends ActionBarActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -196,33 +194,33 @@ public class AttractionActivity extends ActionBarActivity {
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.attraction_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.attraction_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.attraction_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.attraction_progressBar);
 
         progressBar.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.attraction_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.attraction_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.attraction_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.attraction_progressBar);
 
         progressBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
     }
 
     private void setupViewPager() {
-        ViewPager viewPager = (ViewPager)findViewById(R.id.attraction_viewpager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.attraction_viewpager);
 
-        Display display= ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         int height = display.getHeight();
 
-        viewPager.getLayoutParams().height = height/2;
+        viewPager.getLayoutParams().height = height / 2;
 
         ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(this, null);
         viewPager.setAdapter(adapter);
 
-        CirclePageIndicator pageIndicator = (CirclePageIndicator)findViewById(R.id.attraction_pageIndicator);
+        CirclePageIndicator pageIndicator = (CirclePageIndicator) findViewById(R.id.attraction_pageIndicator);
         pageIndicator.setViewPager(viewPager);
     }
 
@@ -237,26 +235,24 @@ public class AttractionActivity extends ActionBarActivity {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Attraction.class, new AttractionDeserializer()).create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
 
         Call<Attraction> call = apiEndpoints.getAttraction(url);
         call.enqueue(new Callback<Attraction>() {
+
             @Override
-            public void onResponse(Response<Attraction> response, Retrofit retrofit) {
+            public void onResponse(Call<Attraction> call, Response<Attraction> response) {
                 hideProgress();
                 Attraction attraction = response.body();
                 if (attraction != null) {
                     setPageTitle(attraction.getName());
-                    ViewPager viewPager = (ViewPager)findViewById(R.id.attraction_viewpager);
+                    ViewPager viewPager = (ViewPager) findViewById(R.id.attraction_viewpager);
 
-                    Display display= ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+                    Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
                     int height = display.getHeight();
-                    viewPager.getLayoutParams().height = height/2;
+                    viewPager.getLayoutParams().height = height / 2;
 
                     ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(AttractionActivity.this, attraction.getImages());
                     viewPager.setAdapter(adapter);
@@ -280,7 +276,7 @@ public class AttractionActivity extends ActionBarActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<Attraction> call, Throwable t) {
                 // Log error here since request failed
                 t.printStackTrace();
                 Log.d("AttractionActivity", "getAttractions onFailure : " + t.getMessage(), t);

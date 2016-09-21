@@ -4,19 +4,11 @@ import android.os.AsyncTask;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
-import retrofit.Call;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import xyz.narengi.android.common.Constants;
+import retrofit2.Call;
+import retrofit2.Retrofit;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
@@ -32,6 +24,7 @@ import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
 public class SearchServiceAsyncTask extends AsyncTask {
 
     private String query;
+
     public SearchServiceAsyncTask(String query) {
         this.query = query;
     }
@@ -46,10 +39,7 @@ public class SearchServiceAsyncTask extends AsyncTask {
                 .registerTypeAdapter(AroundPlaceHouse.class, new AroundPlaceHouseDeserializer())
                 .create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AroundLocation[]> call = apiEndpoints.getAroundLocations(query, "30", "0");

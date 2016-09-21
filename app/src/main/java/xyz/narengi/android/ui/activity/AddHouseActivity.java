@@ -5,17 +5,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -38,7 +36,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,14 +44,11 @@ import java.util.Map;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import ir.smartlab.persindatepicker.util.PersianCalendar;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.HouseEntryStep;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
@@ -65,6 +59,7 @@ import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.Location;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.fragment.HouseDatesEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseEntryBaseFragment;
 import xyz.narengi.android.ui.fragment.HouseFeaturesEntryFragment;
@@ -81,16 +76,16 @@ import xyz.narengi.android.util.DateUtils;
  */
 public class AddHouseActivity extends AppCompatActivity implements HouseEntryBaseFragment.OnInteractionListener {
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     private ActionBarRtlizer rtlizer;
     private House house;
     private HouseEntryStep currentStep;
     private List<Uri> imageUris;
     private ImageInfo[] imageInfoArray;
-    private Map<String,List<Day>> selectedDaysMap;
-
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+    private Map<String, List<Day>> selectedDaysMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +115,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.add_house_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -159,7 +154,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -198,17 +194,14 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<House> call = apiEndpoints.addHouse(authorizationJson, houseEntryInput);
 
         call.enqueue(new Callback<House>() {
             @Override
-            public void onResponse(Response<House> response, Retrofit retrofit) {
+            public void onResponse(Call<House> call, Response<House> response) {
                 hideProgress();
                 int statusCode = response.code();
                 House resultHouse = response.body();
@@ -227,7 +220,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<House> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(AddHouseActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
@@ -303,17 +296,14 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<House> call = apiEndpoints.updateHouse(authorizationJson, house.getURL(), houseEntryInput);
 
         call.enqueue(new Callback<House>() {
             @Override
-            public void onResponse(Response<House> response, Retrofit retrofit) {
+            public void onResponse(Call<House> call, Response<House> response) {
                 int statusCode = response.code();
                 House resultHouse = response.body();
                 if (resultHouse == null) {
@@ -332,7 +322,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<House> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(AddHouseActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
@@ -390,11 +380,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 
         List<String> selectedDates = new ArrayList<String>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        for (Map.Entry<String,List<Day>> mapEntry:selectedDaysMap.entrySet()) {
+        for (Map.Entry<String, List<Day>> mapEntry : selectedDaysMap.entrySet()) {
             List<Day> selectedDays = mapEntry.getValue();
             if (selectedDays == null)
                 continue;
-            for (Day day:selectedDays) {
+            for (Day day : selectedDays) {
                 Date date = DateUtils.getInstance(this).getDateOfDay(day);
                 if (date != null) {
                     selectedDates.add(dateFormat.format(date));
@@ -422,7 +412,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         });*/
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -451,8 +441,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.add_house_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.add_house_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.add_house_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.add_house_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -461,8 +451,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.add_house_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.add_house_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.add_house_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.add_house_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.GONE);
@@ -471,7 +461,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     }
 
     public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        NestedScrollView scrollView = (NestedScrollView)findViewById(R.id.add_house_scrollview);
+        NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.add_house_scrollview);
         if (scrollView != null)
             scrollView.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
@@ -1238,8 +1228,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         int margin = 8;
         int actionBarHeight;
         TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
             if (actionBarHeight > 0) {
                 indicatorWidth = actionBarHeight / 2;

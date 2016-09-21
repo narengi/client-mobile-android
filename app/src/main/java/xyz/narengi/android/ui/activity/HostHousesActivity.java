@@ -4,9 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,35 +19,23 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.House;
@@ -57,16 +43,17 @@ import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.HostHousesContentRecyclerAdapter;
 
 public class HostHousesActivity extends AppCompatActivity implements HostHousesContentRecyclerAdapter.RemoveHouseListener {
 
     private ActionBarRtlizer rtlizer;
     private House[] hostHouses;
-//    private List<ImageInfo[]> imageInfoList;
-    private Map<String,ImageInfo[]> allImageInfoArraysMap;
-//    private List<HouseAvailableDates> houseAvailableDatesList;
-    private Map<String,HouseAvailableDates> allHouseAvailableDatesMap;
+    //    private List<ImageInfo[]> imageInfoList;
+    private Map<String, ImageInfo[]> allImageInfoArraysMap;
+    //    private List<HouseAvailableDates> houseAvailableDatesList;
+    private Map<String, HouseAvailableDates> allHouseAvailableDatesMap;
     private RecyclerView mRecyclerView;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -75,7 +62,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_host_houses);
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.host_houses_swipeRefreshLayout);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.host_houses_swipeRefreshLayout);
 
 //        swipeRefreshLayout.setActivated(true);
 //        swipeRefreshLayout.dispatchSetActivated(true);
@@ -126,7 +113,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.host_houses_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -152,7 +139,8 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -178,7 +166,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         });*/
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -273,17 +261,14 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<House[]> call = apiEndpoints.getHostHouses(authorizationJson);
 
         call.enqueue(new Callback<House[]>() {
             @Override
-            public void onResponse(Response<House[]> response, Retrofit retrofit) {
+            public void onResponse(Call<House[]> call, Response<House[]> response) {
 //                hideProgress();
                 int statusCode = response.code();
                 hostHouses = response.body();
@@ -309,23 +294,12 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<House[]> call, Throwable t) {
                 hideProgress();
                 t.printStackTrace();
             }
         });
     }
-
-
-    public class ImagesAndDatesAsyncTask extends AsyncTask {
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            readDatesAndImages();
-            return null;
-        }
-    }
-
 
     private void readImageInfo(final House house) {
         final SharedPreferences preferences = getSharedPreferences("profile", 0);
@@ -347,17 +321,14 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getURL() + "/pictures");
 
         imagesCall.enqueue(new Callback<ImageInfo[]>() {
             @Override
-            public void onResponse(Response<ImageInfo[]> response, Retrofit retrofit) {
+            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
                 ImageInfo[] result = response.body();
                 allImageInfoArraysMap.put(house.getURL(), result);
 
@@ -373,7 +344,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
                 allImageInfoArraysMap.put(house.getURL(), null);
                 if (allImageInfoArraysMap.size() == hostHouses.length) {
                     HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
@@ -400,7 +371,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         if (hostHouses == null || hostHouses.length == 0)
             return;
 
-        allImageInfoArraysMap = new HashMap<String,ImageInfo[]>();
+        allImageInfoArraysMap = new HashMap<String, ImageInfo[]>();
 
 //        final SharedPreferences preferences = getSharedPreferences("profile", 0);
 //        String accessToken = preferences.getString("accessToken", "");
@@ -440,7 +411,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 //        imageInfoList = new ArrayList<ImageInfo[]>();
 //        houseAvailableDatesList = new ArrayList<HouseAvailableDates>();
 
-        for (House house:hostHouses) {
+        for (House house : hostHouses) {
 
             readImageInfo(house);
 
@@ -474,7 +445,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     public List<HouseAvailableDates> getHouseAvailableDatesList() {
 
 //        if (hostHouses == null || hostHouses.length == 0)
-            return null;
+        return null;
 
 //        return houseAvailableDatesList;
     }
@@ -514,24 +485,21 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<Object> call = apiEndpoints.removeHouse(authorizationJson, house.getURL());
 
         call.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Response<Object> response, Retrofit retrofit) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
 //                hideProgress();
                 int statusCode = response.code();
                 getHostHouses();
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 hideProgress();
                 t.printStackTrace();
             }
@@ -566,6 +534,15 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         AlertDialog dialog = builder.create();
 //        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
+    }
+
+    public class ImagesAndDatesAsyncTask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            readDatesAndImages();
+            return null;
+        }
     }
 
 }

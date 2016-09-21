@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -44,23 +42,22 @@ import java.util.List;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.content.CityDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
-import xyz.narengi.android.ui.adapter.CityContentRecyclerAdapter;
-import xyz.narengi.android.ui.widget.MyLinearLayoutManager;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.AttractionsGridAdapter;
+import xyz.narengi.android.ui.adapter.CityContentRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.CityHousesRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
+import xyz.narengi.android.ui.widget.MyLinearLayoutManager;
 
 /**
  * @author Siavash Mahmoudpour
@@ -88,7 +85,7 @@ public class CityActivity extends ActionBarActivity {
             getCity(cityUrl);
         }
 
-        TextView wikiTextView = (TextView)findViewById(R.id.city_viewpager_item_wiki);
+        TextView wikiTextView = (TextView) findViewById(R.id.city_viewpager_item_wiki);
         wikiTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_action_wikipedia), null);
 
 //        setupAttractionsGrid(0, new ArrayList<AroundPlaceHouse>());
@@ -109,7 +106,7 @@ public class CityActivity extends ActionBarActivity {
     }
 
     private void setupContentRecyclerView(final City city) {
-        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.city_housesRecyclerView);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.city_housesRecyclerView);
 
         // use a linear layout manager
 //        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
@@ -172,7 +169,8 @@ public class CityActivity extends ActionBarActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -186,7 +184,7 @@ public class CityActivity extends ActionBarActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.city_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -195,7 +193,7 @@ public class CityActivity extends ActionBarActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.city_toolbar);
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -233,16 +231,16 @@ public class CityActivity extends ActionBarActivity {
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.city_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.city_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.city_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.city_progressBar);
 
         progressBar.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.city_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.city_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.city_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.city_progressBar);
 
         progressBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
@@ -288,17 +286,17 @@ public class CityActivity extends ActionBarActivity {
     }
 
     private void setupViewPager() {
-        ViewPager viewPager = (ViewPager)findViewById(R.id.city_viewpager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.city_viewpager);
 
-        Display display= ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         int height = display.getHeight();
 
-        viewPager.getLayoutParams().height = height/2;
+        viewPager.getLayoutParams().height = height / 2;
 
         ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(this, null);
         viewPager.setAdapter(adapter);
 
-        CirclePageIndicator pageIndicator = (CirclePageIndicator)findViewById(R.id.city_pageIndicator);
+        CirclePageIndicator pageIndicator = (CirclePageIndicator) findViewById(R.id.city_pageIndicator);
         pageIndicator.setViewPager(viewPager);
     }
 
@@ -307,7 +305,7 @@ public class CityActivity extends ActionBarActivity {
 
         //city_attractionsLayout
         LayoutInflater inflater = LayoutInflater.from(this);
-        attractionsLayout = (LinearLayout)inflater.inflate(R.layout.city_attractions, null);
+        attractionsLayout = (LinearLayout) inflater.inflate(R.layout.city_attractions, null);
 
         gridView = (GridView) attractionsLayout.findViewById(R.id.city_attractionsGridView);
         gridView.setNumColumns(size);
@@ -317,7 +315,7 @@ public class CityActivity extends ActionBarActivity {
         float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
 //
-        int width = (int)dpWidth / 2;
+        int width = (int) dpWidth / 2;
         int height = width * 38 / 62;
 //        int width = 120;
 
@@ -345,11 +343,11 @@ public class CityActivity extends ActionBarActivity {
     private void showAttractionViews() {
 
         gridView = (GridView) findViewById(R.id.city_attractionsGridView);
-        LinearLayout attractionsLayout = (LinearLayout)findViewById(R.id.city_attractionsLayout);
-        RelativeLayout attractionsHeaderLayout = (RelativeLayout)findViewById(R.id.city_attractionsHeaderLayout);
-        Button allAttractionsButton = (Button)findViewById(R.id.city_allAttractionsButton);
-        TextView attractionsCaptionTextView = (TextView)findViewById(R.id.city_attractionsCaption);
-        HorizontalScrollView attractionsScrollView = (HorizontalScrollView)findViewById(R.id.city_attractionsHorizontalScrollView);
+        LinearLayout attractionsLayout = (LinearLayout) findViewById(R.id.city_attractionsLayout);
+        RelativeLayout attractionsHeaderLayout = (RelativeLayout) findViewById(R.id.city_attractionsHeaderLayout);
+        Button allAttractionsButton = (Button) findViewById(R.id.city_allAttractionsButton);
+        TextView attractionsCaptionTextView = (TextView) findViewById(R.id.city_attractionsCaption);
+        HorizontalScrollView attractionsScrollView = (HorizontalScrollView) findViewById(R.id.city_attractionsHorizontalScrollView);
         View attractionsFooterView = findViewById(R.id.city_attractionsFooter);
 
         attractionsLayout.setVisibility(View.VISIBLE);
@@ -363,11 +361,11 @@ public class CityActivity extends ActionBarActivity {
 
     private void hideAttractionViews() {
         gridView = (GridView) findViewById(R.id.city_attractionsGridView);
-        LinearLayout attractionsLayout = (LinearLayout)findViewById(R.id.city_attractionsLayout);
-        RelativeLayout attractionsHeaderLayout = (RelativeLayout)findViewById(R.id.city_attractionsHeaderLayout);
-        Button allAttractionsButton = (Button)findViewById(R.id.city_allAttractionsButton);
-        TextView attractionsCaptionTextView = (TextView)findViewById(R.id.city_attractionsCaption);
-        HorizontalScrollView attractionsScrollView = (HorizontalScrollView)findViewById(R.id.city_attractionsHorizontalScrollView);
+        LinearLayout attractionsLayout = (LinearLayout) findViewById(R.id.city_attractionsLayout);
+        RelativeLayout attractionsHeaderLayout = (RelativeLayout) findViewById(R.id.city_attractionsHeaderLayout);
+        Button allAttractionsButton = (Button) findViewById(R.id.city_allAttractionsButton);
+        TextView attractionsCaptionTextView = (TextView) findViewById(R.id.city_attractionsCaption);
+        HorizontalScrollView attractionsScrollView = (HorizontalScrollView) findViewById(R.id.city_attractionsHorizontalScrollView);
         View attractionsFooterView = findViewById(R.id.city_attractionsFooter);
 
         attractionsLayout.setVisibility(View.INVISIBLE);
@@ -397,15 +395,15 @@ public class CityActivity extends ActionBarActivity {
 
     private void setupHousesList(final List<AroundPlaceHouse> houses) {
 
-        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.city_housesRecyclerView);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.city_housesRecyclerView);
 
-        LinearLayout attractionsLayout = (LinearLayout)findViewById(R.id.city_attractionsLayout);
+        LinearLayout attractionsLayout = (LinearLayout) findViewById(R.id.city_attractionsLayout);
         int attractionsLayoutHeight;
         attractionsLayoutHeight = attractionsLayout.getMeasuredHeight();
         if (attractionsLayoutHeight <= 0)
             attractionsLayoutHeight = attractionsLayout.getHeight();
 
-        TextView housesCaptionTextView = (TextView)findViewById(R.id.city_housesCaption);
+        TextView housesCaptionTextView = (TextView) findViewById(R.id.city_housesCaption);
         int housesCaptionHeight;
         housesCaptionHeight = housesCaptionTextView.getMeasuredHeight();
         if (housesCaptionHeight <= 0)
@@ -476,33 +474,30 @@ public class CityActivity extends ActionBarActivity {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(City.class, new CityDeserializer()).create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
 
         Call<City> call = apiEndpoints.getCity(url);
         call.enqueue(new Callback<City>() {
             @Override
-            public void onResponse(Response<City> response, Retrofit retrofit) {
+            public void onResponse(Call<City> call, Response<City> response) {
 //                int statusCode = response.code();
                 hideProgress();
                 City city = response.body();
                 if (city != null) {
                     setPageTitle(city.getName());
 
-                    ViewPager viewPager = (ViewPager)findViewById(R.id.city_viewpager);
+                    ViewPager viewPager = (ViewPager) findViewById(R.id.city_viewpager);
 
 //                    DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 //                    float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
 //                    float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
 //                    viewPager.getLayoutParams().height = (int)(dpHeight/2);
 
-                    Display display= ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+                    Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
                     int height = display.getHeight();
-                    viewPager.getLayoutParams().height = height/2;
+                    viewPager.getLayoutParams().height = height / 2;
 
                     ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(CityActivity.this, city.getImages());
                     viewPager.setAdapter(adapter);
@@ -555,7 +550,7 @@ public class CityActivity extends ActionBarActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<City> call, Throwable t) {
                 // Log error here since request failed
                 t.printStackTrace();
                 Log.d("CityActivity", "getCity onFailure : " + t.getMessage(), t);
