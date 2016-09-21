@@ -1,16 +1,10 @@
 package xyz.narengi.android.ui.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Handler;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,60 +12,34 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AccountProfile;
-import xyz.narengi.android.common.dto.AccountVerification;
-import xyz.narengi.android.common.dto.AroundLocation;
-import xyz.narengi.android.common.dto.AroundPlaceAttraction;
-import xyz.narengi.android.common.dto.AroundPlaceCity;
-import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.Profile;
-import xyz.narengi.android.content.AroundLocationDeserializer;
-import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
-import xyz.narengi.android.content.AroundPlaceCityDeserializer;
-import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.fragment.SignInFragment;
 import xyz.narengi.android.ui.fragment.SignUpFragment;
 import xyz.narengi.android.ui.util.AlertUtils;
@@ -105,7 +73,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -113,7 +81,8 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -155,7 +124,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -193,7 +162,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 //        registerButton.setOnClickListener(this);
     }
 
-//    @Override
+    //    @Override
     public void onClick(View view) {
 //        switch (view.getId()) {
 //            case R.id.login_loginButton:
@@ -215,17 +184,14 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AccountProfile> call = apiEndpoints.login(credential);
 
         call.enqueue(new Callback<AccountProfile>() {
             @Override
-            public void onResponse(Response<AccountProfile> response, Retrofit retrofit) {
+            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
                 int statusCode = response.code();
                 AccountProfile accountProfile = response.body();
                 if (accountProfile != null && accountProfile.getToken() != null) {
@@ -249,7 +215,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<AccountProfile> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -267,17 +233,14 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AccountProfile> call = apiEndpoints.register(credential);
 
         call.enqueue(new Callback<AccountProfile>() {
             @Override
-            public void onResponse(Response<AccountProfile> response, Retrofit retrofit) {
+            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
                 int statusCode = response.code();
                 if (statusCode != 201) {
                     Toast.makeText(SignInSignUpActivity.this, "Register failure, status code : " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
@@ -292,7 +255,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<AccountProfile> call, Throwable t) {
                 t.printStackTrace();
             }
         });

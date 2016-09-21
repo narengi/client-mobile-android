@@ -1,9 +1,6 @@
 package xyz.narengi.android.ui.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,22 +11,18 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.util.Map;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.Location;
 import xyz.narengi.android.common.dto.ProvinceCity;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.SpinnerArrayAdapter;
 
 /**
@@ -51,7 +44,7 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
     private Spinner citySpinner;
     private EditText addressEditText;
 
-    private Map<String,ProvinceCity[]> provincesMap;
+    private Map<String, ProvinceCity[]> provincesMap;
 
     public HouseInfoEntryFragment() {
         // Required empty public constructor
@@ -106,11 +99,11 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
             addressEditText.setText(super.getHouse().getAddress());
         }
 
-        TextView titleTextView = (TextView)view.findViewById(R.id.house_info_entry_title);
+        TextView titleTextView = (TextView) view.findViewById(R.id.house_info_entry_title);
         if (titleTextView != null)
             titleTextView.requestFocus();
 
-        final Button nextButton = (Button)view.findViewById(R.id.house_info_entry_nextButton);
+        final Button nextButton = (Button) view.findViewById(R.id.house_info_entry_nextButton);
 
         switch (getEntryMode()) {
             case ADD:
@@ -147,7 +140,7 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         SpinnerArrayAdapter<String> provinceArrayAdapter = new SpinnerArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item,
                 getResources().getStringArray(R.array.house_entry_province_array)) {
 
-            public View getView(int position, View convertView,ViewGroup parent) {
+            public View getView(int position, View convertView, ViewGroup parent) {
 
                 View v = super.getView(position, convertView, parent);
 //                if (position == getCount()) {
@@ -163,10 +156,10 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
             }
 
-            public View getDropDownView(int position, View convertView,ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
-                View v = super.getDropDownView(position, convertView,parent);
-                ((TextView) v).setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
+                View v = super.getDropDownView(position, convertView, parent);
+                ((TextView) v).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 //                if (position == getCount()) {
 //                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
 //                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -189,7 +182,7 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         SpinnerArrayAdapter<String> cityArrayAdapter = new SpinnerArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item,
                 getResources().getStringArray(R.array.house_entry_city_array)) {
 
-            public View getView(int position, View convertView,ViewGroup parent) {
+            public View getView(int position, View convertView, ViewGroup parent) {
 
                 View v = super.getView(position, convertView, parent);
 //                if (position == getCount()) {
@@ -206,10 +199,10 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
             }
 
-            public View getDropDownView(int position, View convertView,ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
-                View v = super.getDropDownView(position, convertView,parent);
-                ((TextView) v).setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
+                View v = super.getDropDownView(position, convertView, parent);
+                ((TextView) v).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 //                if (position == getCount()) {
 //                    ((TextView) v).setText(R.string.house_info_entry_city_hint);
 //                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -229,11 +222,6 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
     }
 
     @Override
-    public void setHouse(House house) {
-        super.setHouse(house);
-    }
-
-    @Override
     public House getHouse() {
         House house = super.getHouse();
         if (house == null)
@@ -249,22 +237,21 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         return house;
     }
 
+    @Override
+    public void setHouse(House house) {
+        super.setHouse(house);
+    }
+
     private void getProvinces() {
-
-        Gson gson = new GsonBuilder().create();
-
         final House house = super.getHouse();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<Map<String,ProvinceCity[]>> call = apiEndpoints.getProvinces();
+        Call<Map<String, ProvinceCity[]>> call = apiEndpoints.getProvinces();
         call.enqueue(new Callback<Map<String, ProvinceCity[]>>() {
             @Override
-            public void onResponse(Response<Map<String, ProvinceCity[]>> response, Retrofit retrofit) {
+            public void onResponse(Call<Map<String, ProvinceCity[]>> call, Response<Map<String, ProvinceCity[]>> response) {
                 int statusCode = response.code();
                 provincesMap = response.body();
                 if (provincesMap != null && !provincesMap.isEmpty()) {
@@ -273,13 +260,13 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<Map<String, ProvinceCity[]>> call, Throwable t) {
                 t.printStackTrace();
             }
         });
     }
 
-    private void initProvinceSpinner(final Map<String,ProvinceCity[]> provincesMap, final House house) {
+    private void initProvinceSpinner(final Map<String, ProvinceCity[]> provincesMap, final House house) {
 
         if (provinceSpinner == null || citySpinner == null || provincesMap == null || provincesMap.isEmpty())
             return;
@@ -293,7 +280,7 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         SpinnerArrayAdapter<String> provinceArrayAdapter = new SpinnerArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item,
                 provinceArray) {
 
-            public View getView(int position, View convertView,ViewGroup parent) {
+            public View getView(int position, View convertView, ViewGroup parent) {
 
                 View v = super.getView(position, convertView, parent);
 //                if (position == getCount()) {
@@ -309,10 +296,10 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
             }
 
-            public View getDropDownView(int position, View convertView,ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
-                View v = super.getDropDownView(position, convertView,parent);
-                ((TextView) v).setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
+                View v = super.getDropDownView(position, convertView, parent);
+                ((TextView) v).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 //                if (position == getCount()) {
 //                    ((TextView) v).setText(R.string.house_info_entry_province_hint);
 //                    ((TextView) v).setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -379,8 +366,8 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
                         citySpinner.setPromptId(R.string.house_info_entry_city_hint);
 
                         if (house != null && house.getCityName() != null &&
-                                house.getCityName().length() > 0 ) {
-                            for (int i=0 ; i < cityArray.length ; i++) {
+                                house.getCityName().length() > 0) {
+                            for (int i = 0; i < cityArray.length; i++) {
                                 ProvinceCity provinceCity = cityArray[i];
                                 if (house.getCityName().trim().equalsIgnoreCase(provinceCity.getCity().trim())) {
                                     citySpinner.setSelection(i);
@@ -399,14 +386,14 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         });
 
         if (!provincesMap.isEmpty() && house != null && (house.getCityName() != null ||
-            house.getProvinceName() != null)) {
+                house.getProvinceName() != null)) {
 
             ProvinceCity[] cityArray = null;
 
             if (house.getProvinceName() != null && house.getProvinceName().length() > 0) {
                 if (provincesMap.containsKey(house.getProvinceName().trim())) {
                     provincesMap.keySet().toArray(provinceArray);
-                    for (int i=0 ; i < provinceArray.length ; i++) {
+                    for (int i = 0; i < provinceArray.length; i++) {
                         if (house.getProvinceName().trim().equalsIgnoreCase(provinceArray[i].trim())) {
                             provinceSpinner.setSelection(i);
                             provinceSpinner.invalidate();

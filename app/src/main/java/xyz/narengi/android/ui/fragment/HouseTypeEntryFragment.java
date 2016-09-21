@@ -7,24 +7,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.util.Map;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 
 /**
  * @author Siavash Mahmoudpour
@@ -52,12 +47,12 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        houseTypeRadioGroup = (RadioGroup)view.findViewById(R.id.house_type_entry_radioGroup);
+        houseTypeRadioGroup = (RadioGroup) view.findViewById(R.id.house_type_entry_radioGroup);
 
         getHouseTypes();
 
-        Button nextButton = (Button)view.findViewById(R.id.house_type_entry_nextButton);
-        Button previousButton = (Button)view.findViewById(R.id.house_type_entry_previousButton);
+        Button nextButton = (Button) view.findViewById(R.id.house_type_entry_nextButton);
+        Button previousButton = (Button) view.findViewById(R.id.house_type_entry_previousButton);
 
         switch (getEntryMode()) {
             case ADD:
@@ -95,22 +90,16 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
     }
 
     private void getHouseTypes() {
-
-        Gson gson = new GsonBuilder().create();
-
         final House house = super.getHouse();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<Map<String, String>[]> call = apiEndpoints.getHouseTypes();
 
         call.enqueue(new Callback<Map<String, String>[]>() {
             @Override
-            public void onResponse(Response<Map<String, String>[]> response, Retrofit retrofit) {
+            public void onResponse(Call<Map<String, String>[]> call, Response<Map<String, String>[]> response) {
                 int statusCode = response.code();
                 houseTypes = response.body();
                 if (houseTypes != null && houseTypes.length > 0) {
@@ -119,7 +108,7 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<Map<String, String>[]> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -130,7 +119,7 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
             return;
 
         int counter = 1;
-        for (Map<String, String> houseTypeMap:houseTypes) {
+        for (Map<String, String> houseTypeMap : houseTypes) {
             if (houseTypeMap == null || houseTypeMap.isEmpty())
                 continue;
 
@@ -146,7 +135,7 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
             View lineDividerView = createLineDividerView();
             if (lineDividerView != null)
                 houseTypeRadioGroup.addView(lineDividerView);
-            if (counter == 1 && (getHouse() == null || getHouse().getType() == null) &&houseTypeRadioButton != null)
+            if (counter == 1 && (getHouse() == null || getHouse().getType() == null) && houseTypeRadioButton != null)
                 houseTypeRadioGroup.check(id);
             counter++;
         }
@@ -157,15 +146,15 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
 
                 RadioButton checkedRadioButton = null;
 
-                for (int i=0 ; i < houseTypeRadioGroup.getChildCount() ; i++) {
+                for (int i = 0; i < houseTypeRadioGroup.getChildCount(); i++) {
                     View view = houseTypeRadioGroup.getChildAt(i);
                     if (view != null && view instanceof RadioButton && view.getId() == id) {
-                        checkedRadioButton = (RadioButton)view;
+                        checkedRadioButton = (RadioButton) view;
                     }
                 }
 
                 if (checkedRadioButton != null) {
-                    for (Map<String, String> houseTypeMap:houseTypes) {
+                    for (Map<String, String> houseTypeMap : houseTypes) {
 
                         String[] keysArray = new String[houseTypeMap.keySet().size()];
                         houseTypeMap.keySet().toArray(keysArray);
@@ -183,7 +172,7 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
 
         if (getHouse() != null && getHouse().getType() != null && getHouse().getType().length() > 0) {
 
-            for (Map<String, String> houseTypeMap:houseTypes) {
+            for (Map<String, String> houseTypeMap : houseTypes) {
 
                 String[] keysArray = new String[houseTypeMap.keySet().size()];
                 houseTypeMap.keySet().toArray(keysArray);
@@ -192,10 +181,10 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
                 if (houseTypeKey != null && houseTypeKey.equalsIgnoreCase(house.getType())) {
                     String houseTypeValue = houseTypeMap.get(houseTypeKey);
                     if (houseTypeValue != null) {
-                        for (int i=0 ; i < houseTypeRadioGroup.getChildCount() ; i++) {
+                        for (int i = 0; i < houseTypeRadioGroup.getChildCount(); i++) {
                             View view = houseTypeRadioGroup.getChildAt(i);
-                            if (view != null && view instanceof RadioButton && ((RadioButton)view).getText() != null &&
-                                    ((RadioButton)view).getText().equals(houseTypeValue)) {
+                            if (view != null && view instanceof RadioButton && ((RadioButton) view).getText() != null &&
+                                    ((RadioButton) view).getText().equals(houseTypeValue)) {
                                 houseTypeRadioGroup.check(view.getId());
                             }
                         }
@@ -228,7 +217,7 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
         layoutParams.gravity = Gravity.RIGHT | Gravity.TOP;
         int marginDpValue = 10; // margin in dips
         float density = getActivity().getResources().getDisplayMetrics().density;
-        int marginPxValue = (int)(marginDpValue * density); // margin in pixels
+        int marginPxValue = (int) (marginDpValue * density); // margin in pixels
 
 //        radioButton.setPadding(marginPxValue, marginPxValue, marginPxValue, marginPxValue);
         layoutParams.setMargins(marginPxValue, marginPxValue, marginPxValue, marginPxValue);
@@ -248,7 +237,7 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
         View lineDividerView = new View(getActivity());
         int heightDpValue = 1; // margin in dips
         float density = getActivity().getResources().getDisplayMetrics().density;
-        int heightPxValue = (int)(heightDpValue * density); // margin in pixels
+        int heightPxValue = (int) (heightDpValue * density); // margin in pixels
         RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightPxValue);
         lineDividerView.setLayoutParams(layoutParams);
 

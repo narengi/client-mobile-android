@@ -340,22 +340,6 @@ public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
 
     public AroundLocation[] searchAroundLocations(String query) {
 
-        /*String BASE_URL = "http://149.202.20.233:3500";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AroundLocation[]> call = apiEndpoints.getAroundLocations();
-        try {
-            AroundLocation[] aroundLocations = call.execute().body();
-            if (aroundLocations != null)
-                return aroundLocations;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
         SearchServiceAsyncTask searchAsyncTask = new SearchServiceAsyncTask(query);
         Object object = null;
         try {

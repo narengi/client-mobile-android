@@ -2,7 +2,6 @@ package xyz.narengi.android.ui.fragment;
 
 
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,11 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,16 +25,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.activity.AddHouseActivity;
 import xyz.narengi.android.ui.activity.EditHouseDetailActivity;
 import xyz.narengi.android.ui.widget.NestedScrollingListView;
@@ -136,7 +131,6 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
 //                titleCheckBox.setTextColor(textColor);
 
 
-
                 List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
                 if (selectedHouseFeatures != null) {
                     HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
@@ -196,7 +190,7 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                     previousButton.setVisibility(View.GONE);
 
                 if (featuresListView.getLayoutParams() != null) {
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)featuresListView.getLayoutParams();
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) featuresListView.getLayoutParams();
                     layoutParams.bottomMargin = 10;
                     featuresListView.setLayoutParams(layoutParams);
                 }
@@ -224,21 +218,16 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
 
     private void getHouseFeatures() {
 
-        Gson gson = new GsonBuilder().create();
-
         final House house = super.getHouse();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<Map<String, String>[]> call = apiEndpoints.getHouseFeatures();
 
         call.enqueue(new Callback<Map<String, String>[]>() {
             @Override
-            public void onResponse(Response<Map<String, String>[]> response, Retrofit retrofit) {
+            public void onResponse(Call<Map<String, String>[]> call, Response<Map<String, String>[]> response) {
                 int statusCode = response.code();
                 houseFeatures = response.body();
                 if (houseFeatures != null && houseFeatures.length > 0) {
@@ -247,7 +236,7 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<Map<String, String>[]> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -323,16 +312,38 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
         return houseFeatureArray;
     }
 
+    private Drawable getRightDrawable(String houseFeatureType) {
+        Drawable rightDrawable;
+        if (houseFeatureType != null) {
+            switch (houseFeatureType) {
+                case "24hr-checkin":
+                    rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_call);
+                    break;
+                case "air-conditioner":
+                    rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_mylocation);
+                    break;
+                case "breakfast":
+                    rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_camera);
+                    break;
+                default:
+//                    rightDrawable = getResources().getDrawable(R.drawable.house_type_radio_button_bg_right);
+                    rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_compass);
+                    break;
+
+            }
+        } else {
+            rightDrawable = getResources().getDrawable(R.drawable.house_type_radio_button_bg_right);
+        }
+
+        return rightDrawable;
+    }
+
     public class FeatureListArrayAdapter extends ArrayAdapter<HouseFeature> {
 
         private Context context;
         private int resource;
         private HouseFeature[] objects;
 
-
-        class ViewHolder {
-            public CheckBox titleCheckBox;
-        }
 
         public FeatureListArrayAdapter(Context context, int resource, HouseFeature[] objects) {
             super(context, resource, objects);
@@ -400,31 +411,9 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
 
             return rowView;
         }
-    }
 
-    private Drawable getRightDrawable(String houseFeatureType) {
-        Drawable rightDrawable;
-        if (houseFeatureType != null) {
-            switch (houseFeatureType) {
-                case "24hr-checkin":
-                    rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_call);
-                    break;
-                case "air-conditioner":
-                    rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_mylocation);
-                    break;
-                case "breakfast":
-                    rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_camera);
-                    break;
-                default:
-//                    rightDrawable = getResources().getDrawable(R.drawable.house_type_radio_button_bg_right);
-                    rightDrawable = getResources().getDrawable(android.R.drawable.ic_menu_compass);
-                    break;
-
-            }
-        } else {
-            rightDrawable = getResources().getDrawable(R.drawable.house_type_radio_button_bg_right);
+        class ViewHolder {
+            public CheckBox titleCheckBox;
         }
-
-        return rightDrawable;
     }
 }

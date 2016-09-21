@@ -1,27 +1,5 @@
 package xyz.narengi.android.ui.activity;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
-import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AroundLocation;
-import xyz.narengi.android.common.dto.AroundPlaceAttraction;
-import xyz.narengi.android.common.dto.AroundPlaceCity;
-import xyz.narengi.android.common.dto.AroundPlaceHouse;
-import xyz.narengi.android.common.dto.SuggestionsResult;
-import xyz.narengi.android.content.AroundLocationDeserializer;
-import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
-import xyz.narengi.android.content.AroundPlaceCityDeserializer;
-import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
-import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
-import xyz.narengi.android.ui.adapter.RecyclerAdapter;
-import xyz.narengi.android.ui.adapter.SuggestionsExpandableListAdapter;
-import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,8 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,29 +23,42 @@ import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import xyz.narengi.android.R;
+import xyz.narengi.android.common.dto.AroundLocation;
+import xyz.narengi.android.common.dto.AroundPlaceAttraction;
+import xyz.narengi.android.common.dto.AroundPlaceCity;
+import xyz.narengi.android.common.dto.AroundPlaceHouse;
+import xyz.narengi.android.common.dto.SuggestionsResult;
+import xyz.narengi.android.content.AroundLocationDeserializer;
+import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
+import xyz.narengi.android.content.AroundPlaceCityDeserializer;
+import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
+import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
+import xyz.narengi.android.ui.adapter.RecyclerAdapter;
+import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
 
 /**
  * @author Siavash Mahmoudpour
@@ -120,23 +109,23 @@ public class SearchResultActivity extends ActionBarActivity {
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.search_result_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.search_result_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.search_result_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.search_result_progressBar);
 
         progressBar.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.search_result_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.search_result_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.search_result_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.search_result_progressBar);
 
         progressBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
     }
 
     private void showSearchHistoryRecyclerView() {
-        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.search_result_toolbar_main_layout);
+        LinearLayout toolbarInnerLayout = (LinearLayout) findViewById(R.id.search_result_toolbar_main_layout);
         toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -145,7 +134,7 @@ public class SearchResultActivity extends ActionBarActivity {
             }
         });
 
-        searchHistoryListView = (RecyclerView)findViewById(R.id.search_result_suggestionsRecyclerView);
+        searchHistoryListView = (RecyclerView) findViewById(R.id.search_result_suggestionsRecyclerView);
 
         SharedPreferences preferences = getSharedPreferences("suggestions", 0);
         String history = preferences.getString("searchHistory", "");
@@ -248,14 +237,14 @@ public class SearchResultActivity extends ActionBarActivity {
             e.printStackTrace();
         }
         if (object != null)
-            return (SuggestionsResult)object;
+            return (SuggestionsResult) object;
 
         return null;
     }
 
     private void showSearchResultRecyclerView(String query) {
 
-        LinearLayout toolbarInnerLayout = (LinearLayout)findViewById(R.id.search_result_toolbar_main_layout);
+        LinearLayout toolbarInnerLayout = (LinearLayout) findViewById(R.id.search_result_toolbar_main_layout);
         toolbarInnerLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -280,7 +269,7 @@ public class SearchResultActivity extends ActionBarActivity {
             }
         }
 
-        searchResultListView = (RecyclerView)findViewById(R.id.search_result_suggestionsRecyclerView);
+        searchResultListView = (RecyclerView) findViewById(R.id.search_result_suggestionsRecyclerView);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         searchResultListView.setLayoutManager(mLayoutManager);
@@ -368,7 +357,7 @@ public class SearchResultActivity extends ActionBarActivity {
             builder.append(",");
 
             int count = Math.min(3, tokenList.size());
-            for (int i=0 ; i < count ; i++) {
+            for (int i = 0; i < count; i++) {
                 builder.append(tokenList.get(i));
 
                 if (i < (count - 1))
@@ -384,9 +373,9 @@ public class SearchResultActivity extends ActionBarActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.search_result_toolbar);
 
         if (toolbar != null) {
-            final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_settings);
-            final ImageButton mapImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_map);
-            searchEditText = (EditText)findViewById(R.id.search_result_toolbar_action_search);
+            final ImageButton settingsImageButton = (ImageButton) findViewById(R.id.search_result_toolbar_action_settings);
+            final ImageButton mapImageButton = (ImageButton) findViewById(R.id.search_result_toolbar_action_map);
+            searchEditText = (EditText) findViewById(R.id.search_result_toolbar_action_search);
             searchEditText.setHint(R.string.search_hint);
             searchEditText.setText(query);
 
@@ -583,9 +572,9 @@ public class SearchResultActivity extends ActionBarActivity {
 
     private void closeSearchSuggestions(String newQuery) {
 //        final ImageButton settingsImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_settings);
-        final ImageButton mapImageButton = (ImageButton)findViewById(R.id.search_result_toolbar_action_map);
+        final ImageButton mapImageButton = (ImageButton) findViewById(R.id.search_result_toolbar_action_map);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.search_result_suggestionsRecyclerView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.search_result_suggestionsRecyclerView);
         searchEditText.setOnFocusChangeListener(null);
         searchEditText.removeTextChangedListener(searchTextWatcher);
         if (newQuery != null)
@@ -608,7 +597,7 @@ public class SearchResultActivity extends ActionBarActivity {
 
     private void setupListView(List<AroundLocation> aroundLocations) {
 
-        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.search_result_recyclerView);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.search_result_recyclerView);
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -715,6 +704,7 @@ public class SearchResultActivity extends ActionBarActivity {
     private class LoadDataAsyncTask extends AsyncTask {
 
         private String query;
+
         public LoadDataAsyncTask(String query) {
             this.query = query;
         }
@@ -735,17 +725,14 @@ public class SearchResultActivity extends ActionBarActivity {
                     .registerTypeAdapter(AroundPlaceHouse.class, new AroundPlaceHouseDeserializer())
                     .create();
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(Constants.SERVER_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
+            Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
 
             RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
             Call<AroundLocation[]> call = apiEndpoints.getAroundLocations(query, "100", "0");
 
             call.enqueue(new Callback<AroundLocation[]>() {
                 @Override
-                public void onResponse(Response<AroundLocation[]> response, Retrofit retrofit) {
+                public void onResponse(Call<AroundLocation[]> call, Response<AroundLocation[]> response) {
                     int statusCode = response.code();
                     AroundLocation[] aroundLocations = response.body();
 
@@ -761,7 +748,7 @@ public class SearchResultActivity extends ActionBarActivity {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onFailure(Call<AroundLocation[]> call, Throwable t) {
                     // Log error here since request failed
                 }
             });

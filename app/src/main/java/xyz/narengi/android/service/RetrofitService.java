@@ -2,16 +2,27 @@ package xyz.narengi.android.service;
 
 import android.util.Log;
 
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
+import com.google.gson.Gson;
+
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AroundLocation;
-import xyz.narengi.android.common.dto.SearchResult;
 
 /**
  * @author Siavash Mahmoudpour
  */
 public class RetrofitService {
+
+    private static HttpLoggingInterceptor.Logger retrofitLogger = new HttpLoggingInterceptor.Logger() {
+        @Override
+        public void log(String message) {
+            Log.d("RequestLog", message);
+        }
+    };
 
     private static RetrofitService instance;
     private Retrofit retrofit;
@@ -25,9 +36,42 @@ public class RetrofitService {
 
     public static RetrofitService getInstance() {
 
-        if (instance == null)
+        if (instance == null) {
             instance = new RetrofitService();
+            HttpLoggingInterceptor bodyLoggingInterceptor = new HttpLoggingInterceptor(retrofitLogger);
+            bodyLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                    .addInterceptor(bodyLoggingInterceptor)
+                    .connectTimeout(5, TimeUnit.SECONDS)
+                    .readTimeout(15, TimeUnit.SECONDS);
+            instance.retrofit = new Retrofit.Builder()
+                    .client(builder.build())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl(Constants.SERVER_BASE_URL)
+                    .build();
+        }
         return instance;
+    }
+
+    public static RetrofitService getInstance(Gson customGson) {
+        RetrofitService result;
+        result = new RetrofitService();
+        HttpLoggingInterceptor bodyLoggingInterceptor = new HttpLoggingInterceptor(retrofitLogger);
+        bodyLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .addInterceptor(bodyLoggingInterceptor)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS);
+        result.retrofit = new Retrofit.Builder()
+                .client(builder.build())
+                .addConverterFactory(GsonConverterFactory.create(customGson))
+                .baseUrl(Constants.SERVER_BASE_URL)
+                .build();
+        return result;
+    }
+
+    public Retrofit getRetrofit() {
+        return retrofit;
     }
 
     public void searchAroundLocations() {

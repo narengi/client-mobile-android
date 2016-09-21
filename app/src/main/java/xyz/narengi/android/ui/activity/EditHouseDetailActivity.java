@@ -6,18 +6,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.Display;
@@ -47,24 +45,22 @@ import java.util.Map;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.HouseEntryStep;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.House;
-import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.HouseEntryInput;
 import xyz.narengi.android.common.dto.HouseEntryPrice;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.Location;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.fragment.HouseDatesEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseEntryBaseFragment;
 import xyz.narengi.android.ui.fragment.HouseFeaturesEntryFragment;
@@ -82,18 +78,17 @@ import xyz.narengi.android.util.DateUtils;
  */
 public class EditHouseDetailActivity extends AppCompatActivity {
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     private ActionBarRtlizer rtlizer;
     private HouseEntryStep houseEntryStep;
     private House house;
     private List<Uri> imageUris;
     private ImageInfo[] imageInfoArray;
-    private HashMap<String,List<Day>> selectedDaysMap;
+    private HashMap<String, List<Day>> selectedDaysMap;
     private AlertDialog progressDialog;
-
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
-
     private Call<House> updateHouseRetrofitCall;
 
     @Override
@@ -109,7 +104,7 @@ public class EditHouseDetailActivity extends AppCompatActivity {
             }
 
             if (getIntent().getSerializableExtra("selectedDaysMap") != null) {
-                selectedDaysMap = (HashMap<String,List<Day>>) getIntent().getSerializableExtra("selectedDaysMap");
+                selectedDaysMap = (HashMap<String, List<Day>>) getIntent().getSerializableExtra("selectedDaysMap");
             }
 
             if (getIntent().getSerializableExtra("house") != null && getIntent().getStringExtra("houseEntrySection") != null) {
@@ -134,7 +129,7 @@ public class EditHouseDetailActivity extends AppCompatActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.edit_house_detail_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -142,7 +137,8 @@ public class EditHouseDetailActivity extends AppCompatActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -203,7 +199,7 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         });*/
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -250,7 +246,7 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.edit_house_detail_content);
 
         if (fragment instanceof HouseImagesEntryFragment) {
-            ((HouseImagesEntryFragment)fragment).uploadHouseImages();
+            ((HouseImagesEntryFragment) fragment).uploadHouseImages();
         } else {
             showProgress();
             updateHouse();
@@ -303,7 +299,7 @@ public class EditHouseDetailActivity extends AppCompatActivity {
     }
 
     public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        NestedScrollView scrollView = (NestedScrollView)findViewById(R.id.edit_house_detail_scrollview);
+        NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.edit_house_detail_scrollview);
         if (scrollView != null)
             scrollView.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
@@ -339,17 +335,14 @@ public class EditHouseDetailActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         updateHouseRetrofitCall = apiEndpoints.updateHouse(authorizationJson, house.getURL(), houseEntryInput);
 
         updateHouseRetrofitCall.enqueue(new Callback<House>() {
             @Override
-            public void onResponse(Response<House> response, Retrofit retrofit) {
+            public void onResponse(Call<House> call, Response<House> response) {
                 hideProgress();
                 int statusCode = response.code();
                 House resultHouse = response.body();
@@ -369,7 +362,7 @@ public class EditHouseDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<House> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(EditHouseDetailActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
@@ -460,11 +453,11 @@ public class EditHouseDetailActivity extends AppCompatActivity {
 
         List<String> selectedDates = new ArrayList<String>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        for (Map.Entry<String,List<Day>> mapEntry:selectedDaysMap.entrySet()) {
+        for (Map.Entry<String, List<Day>> mapEntry : selectedDaysMap.entrySet()) {
             List<Day> selectedDays = mapEntry.getValue();
             if (selectedDays == null)
                 continue;
-            for (Day day:selectedDays) {
+            for (Day day : selectedDays) {
                 Date date = DateUtils.getInstance(this).getDateOfDay(day);
                 if (date != null) {
                     selectedDates.add(dateFormat.format(date));
@@ -479,8 +472,8 @@ public class EditHouseDetailActivity extends AppCompatActivity {
     }
 
     public void showProgressBar() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.edit_house_detail_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.edit_house_detail_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.edit_house_detail_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.edit_house_detail_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -489,8 +482,8 @@ public class EditHouseDetailActivity extends AppCompatActivity {
     }
 
     public void hideProgressBar() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.edit_house_detail_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.edit_house_detail_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.edit_house_detail_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.edit_house_detail_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.GONE);

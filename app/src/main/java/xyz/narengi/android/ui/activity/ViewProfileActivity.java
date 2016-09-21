@@ -6,10 +6,9 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,11 +33,10 @@ import java.io.IOException;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AccountProfile;
@@ -48,6 +46,7 @@ import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.service.RetrofitService;
 
 /**
  * @author Siavash Mahmoudpour
@@ -115,7 +114,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.view_profile_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -136,7 +135,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -163,7 +162,8 @@ public class ViewProfileActivity extends AppCompatActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -201,17 +201,14 @@ public class ViewProfileActivity extends AppCompatActivity {
             authorizationJson = authorizationJson.replace("}", "");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AccountProfile> call = apiEndpoints.getProfile(authorizationJson);
 
         call.enqueue(new Callback<AccountProfile>() {
             @Override
-            public void onResponse(Response<AccountProfile> response, Retrofit retrofit) {
+            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
                 hideProgress();
                 int statusCode = response.code();
                 AccountProfile accountProfile = response.body();
@@ -221,7 +218,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<AccountProfile> call, Throwable t) {
                 hideProgress();
                 t.printStackTrace();
             }
@@ -230,7 +227,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private void getProfilePicture() {
 
-        ImageView profileImageView = (ImageView)findViewById(R.id.view_profile_profileImage);
+        ImageView profileImageView = (ImageView) findViewById(R.id.view_profile_profileImage);
 
         final SharedPreferences preferences = getSharedPreferences("profile", 0);
         String accessToken = preferences.getString("accessToken", "");
@@ -267,8 +264,8 @@ public class ViewProfileActivity extends AppCompatActivity {
     }
 
     private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.view_profile_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.view_profile_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.view_profile_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.view_profile_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -277,8 +274,8 @@ public class ViewProfileActivity extends AppCompatActivity {
     }
 
     private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.view_profile_progressLayout);
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.view_profile_progressBar);
+        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.view_profile_progressLayout);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.view_profile_progressBar);
 
         if (progressBar != null && progressBarLayout != null) {
             progressBar.setVisibility(View.GONE);
@@ -291,12 +288,12 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         setPageTitle(accountProfile.getDisplayName());
 
-        TextView nameTextView = (TextView)findViewById(R.id.view_profile_name);
-        TextView locationTextView = (TextView)findViewById(R.id.view_profile_location);
-        TextView bioTextView = (TextView)findViewById(R.id.view_profile_bio);
-        TextView memberFromTextView = (TextView)findViewById(R.id.view_profile_memberFrom);
+        TextView nameTextView = (TextView) findViewById(R.id.view_profile_name);
+        TextView locationTextView = (TextView) findViewById(R.id.view_profile_location);
+        TextView bioTextView = (TextView) findViewById(R.id.view_profile_bio);
+        TextView memberFromTextView = (TextView) findViewById(R.id.view_profile_memberFrom);
 
-        Button verificationButton = (Button)findViewById(R.id.view_profile_verifyButton);
+        Button verificationButton = (Button) findViewById(R.id.view_profile_verifyButton);
 
         if (accountProfile.getProfile() != null) {
             Profile profile = accountProfile.getProfile();
@@ -333,7 +330,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             verificationButton.setTextColor(getResources().getColor(R.color.green));
             Drawable[] compoundDrawables = verificationButton.getCompoundDrawables();
             if (compoundDrawables != null && compoundDrawables.length > 0) {
-                for (Drawable drawable:compoundDrawables) {
+                for (Drawable drawable : compoundDrawables) {
                     if (drawable != null)
                         drawable.setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.SRC_ATOP);
                 }
@@ -358,7 +355,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     verificationButton.setTextColor(getResources().getColor(android.R.color.black));
                     Drawable[] compoundDrawables = verificationButton.getCompoundDrawables();
                     if (compoundDrawables != null && compoundDrawables.length > 0) {
-                        for (Drawable drawable:compoundDrawables) {
+                        for (Drawable drawable : compoundDrawables) {
                             if (drawable != null)
                                 drawable.setColorFilter(getResources().getColor(android.R.color.black), PorterDuff.Mode.SRC_ATOP);
                         }
@@ -374,7 +371,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     verificationButton.setTextColor(getResources().getColor(R.color.green));
                     Drawable[] compoundDrawables = verificationButton.getCompoundDrawables();
                     if (compoundDrawables != null && compoundDrawables.length > 0) {
-                        for (Drawable drawable:compoundDrawables) {
+                        for (Drawable drawable : compoundDrawables) {
                             if (drawable != null)
                                 drawable.setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.SRC_ATOP);
                         }
@@ -393,7 +390,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                 verificationButton.setTextColor(getResources().getColor(R.color.green));
                 Drawable[] compoundDrawables = verificationButton.getCompoundDrawables();
                 if (compoundDrawables != null && compoundDrawables.length > 0) {
-                    for (Drawable drawable:compoundDrawables) {
+                    for (Drawable drawable : compoundDrawables) {
                         if (drawable != null)
                             drawable.setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.SRC_ATOP);
                     }

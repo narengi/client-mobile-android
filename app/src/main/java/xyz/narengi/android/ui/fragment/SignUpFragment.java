@@ -3,7 +3,11 @@ package xyz.narengi.android.ui.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import xyz.narengi.android.R;
+import xyz.narengi.android.util.SimpleTextWatcher;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,14 +26,19 @@ import xyz.narengi.android.R;
  * create an instance of this fragment.
  */
 public class SignUpFragment extends Fragment {
+    private static final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    private EditText etPassword;
+    private EditText etEmail;
+    private TextInputLayout tilPassword;
+    private TextInputLayout tilEmail;
+    private Button btnRegister;
 
     private OnRegisterButtonClickListener mListener;
 
@@ -56,10 +66,6 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -70,17 +76,34 @@ public class SignUpFragment extends Fragment {
         if (view == null)
             return null;
 
-        Button registerButton = (Button)view.findViewById(R.id.register_registerButton);
 
-        final EditText emailEditText = (EditText)view.findViewById(R.id.register_email);
-        final EditText passwordEditText = (EditText)view.findViewById(R.id.register_password);
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        this.tilPassword = (TextInputLayout) view.findViewById(R.id.tilPasswordInputLayout);
+        this.tilEmail = (TextInputLayout) view.findViewById(R.id.tilEmailInputLayout);
+        this.etEmail = (EditText) view.findViewById(R.id.etEmail);
+        this.etPassword = (EditText) view.findViewById(R.id.etPassword);
+        this.btnRegister = (Button) view.findViewById(R.id.btnRegister);
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = emailEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+                String email = etEmail.getText().toString();
+                String password = etPassword.getText().toString();
                 onRegisterButtonPressed(email, password);
+            }
+        });
+
+        etEmail.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilEmail.setErrorEnabled(false);
+            }
+        });
+
+        etPassword.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilPassword.setErrorEnabled(false);
             }
         });
 
@@ -88,9 +111,30 @@ public class SignUpFragment extends Fragment {
     }
 
     public void onRegisterButtonPressed(String email, String password) {
+        if(!checkForInputError())
+            return;
+
         if (mListener != null) {
             mListener.onRegisterButtonPressed(email, password);
         }
+    }
+
+    private boolean checkForInputError() {
+        boolean result = true;
+        if(TextUtils.isEmpty(etEmail.getText().toString())) {
+            result = false;
+            tilEmail.setError("لطفا ایمیل را وارد کنید");
+        } else {
+            if(!etEmail.getText().toString().matches(EMAIL_REGEX)) {
+                result = false;
+                tilEmail.setError("لطفا ایمیل را به صورت صحیح وارد کنید");
+            }
+        }
+        if(TextUtils.isEmpty(etPassword.getText().toString())) {
+            result = false;
+            tilPassword.setError("لطفا رمز عبور را وارد کنید");
+        }
+        return result;
     }
 
     @Override
