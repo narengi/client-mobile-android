@@ -260,16 +260,10 @@ public class BookRequestsActivity extends AppCompatActivity {
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<BookRequest[]> call = apiEndpoints.getBookRequests(authorizationJson);
+        Call<BookRequest[]> call = apiEndpoints.getBookRequests();
 
         call.enqueue(new Callback<BookRequest[]>() {
             @Override
@@ -306,16 +300,11 @@ public class BookRequestsActivity extends AppCompatActivity {
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<BookRequestDTO[]> call = apiEndpoints.getBookRequestDTOs(authorizationJson);
+        Call<BookRequestDTO[]> call = apiEndpoints.getBookRequestDTOs();
 
         call.enqueue(new Callback<BookRequestDTO[]>() {
             @Override
@@ -355,16 +344,11 @@ public class BookRequestsActivity extends AppCompatActivity {
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<BookRequest> call = apiEndpoints.approveBookRequest(authorizationJson, requestId);
+        Call<BookRequest> call = apiEndpoints.approveBookRequest(requestId);
 
         call.enqueue(new Callback<BookRequest>() {
             @Override

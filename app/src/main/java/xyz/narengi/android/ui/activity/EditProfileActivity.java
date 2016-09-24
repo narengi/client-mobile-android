@@ -721,16 +721,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.getProfile(authorizationJson);
+        Call<AccountProfile> call = apiEndpoints.getProfile();
 
         call.enqueue(new Callback<AccountProfile>() {
             @Override
@@ -766,14 +760,6 @@ public class EditProfileActivity extends AppCompatActivity {
         authorization.setUsername(username);
         authorization.setToken(accessToken);
 
-        Gson gson = new GsonBuilder().create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         File file = new File(resultUri.getPath());
@@ -787,7 +773,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 .build();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.uploadProfilePicture(authorizationJson, requestBody);
+        Call<AccountProfile> call = apiEndpoints.uploadProfilePicture(requestBody);
 
         call.enqueue(new Callback<AccountProfile>() {
             @Override
@@ -869,16 +855,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call call = apiEndpoints.updateProfile(authorizationJson, profile);
+        Call call = apiEndpoints.updateProfile(profile);
 
         call.enqueue(new Callback() {
             @Override

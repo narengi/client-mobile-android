@@ -209,7 +209,7 @@
                 android:inputType="number"
                 android:maxLength="10"
                 android:padding="8dp"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/tertiary_text_dark" />
 

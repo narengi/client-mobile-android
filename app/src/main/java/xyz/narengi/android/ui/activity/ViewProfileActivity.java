@@ -195,16 +195,11 @@ public class ViewProfileActivity extends AppCompatActivity {
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
 
         Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.getProfile(authorizationJson);
+        Call<AccountProfile> call = apiEndpoints.getProfile();
 
         call.enqueue(new Callback<AccountProfile>() {
             @Override

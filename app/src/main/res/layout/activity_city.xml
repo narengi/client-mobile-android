@@ -177,7 +177,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
                             android:gravity="left|center_vertical"
-                            android:singleLine="true"
+                            android:maxLines="1"
                             android:text="@string/city_wikipedia_caption"
                             android:textColor="@android:color/white"
                             style="@style/TextAppearance.AppCompat.Medium"

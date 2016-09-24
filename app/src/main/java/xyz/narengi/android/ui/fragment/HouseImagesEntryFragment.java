@@ -286,7 +286,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         RequestBody requestBody = builder.build();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> call = apiEndpoints.uploadHouseImages(authorizationJson, getHouse().getURL() + "/pictures", requestBody);
+        Call<ImageInfo[]> call = apiEndpoints.uploadHouseImages(getHouse().getURL() + "/pictures", requestBody);
 
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
@@ -357,7 +357,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         removeHouseImagesInfo.setPicture_names(imageNames);
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> call = apiEndpoints.removeHouseImages(authorizationJson, getHouse().getURL() + "/pictures", removeHouseImagesInfo);
+        Call<ImageInfo[]> call = apiEndpoints.removeHouseImages(getHouse().getURL() + "/pictures", removeHouseImagesInfo);
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
             public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {

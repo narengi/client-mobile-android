@@ -136,12 +136,115 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <!--</xyz.narengi.android.ui.widget.TwoDScrollView>-->
     <android.support.design.widget.NavigationView
         android:id="@+id/explore_navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:itemTextAppearance="?android:attr/textAppearanceSmall"
-        app:itemTextColor="@color/orange_light" />
+        app:itemTextColor="@color/orange_light">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start">
+
+            <RelativeLayout
+                android:id="@+id/rlDrawerHeader"
+                android:layout_width="match_parent"
+                android:layout_height="151dp">
+
+                <RelativeLayout
+                    android:id="@+id/rlUserProfileInfoContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgUserAvatar"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="16dp"
+                        android:src="#654321"
+                        app:civ_border_color="@android:color/holo_red_light"
+                        app:civ_border_width="1dp" />
+
+                    <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/tvUserFullName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="4dp"
+                        android:layout_toLeftOf="@+id/imgUserAvatar"
+                        android:text="سپهر بهروزی"
+                        android:textColor="@color/green" />
+
+                    <View
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@+id/tvUserFullName"
+                        android:background="@drawable/list_navigation_arrow" />
+
+                </RelativeLayout>
+
+                <xyz.narengi.android.ui.widget.CustomTextView
+                    android:id="@+id/tvWelcomeMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/drawer_welcome_message"
+                    android:textColor="@color/orange_light"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_height="1dp"
+                    android:background="#eeeeee" />
+
+            </RelativeLayout>
+
+            <ListView
+                android:id="@+id/lstDrawerItemsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/rlFooterContainer"
+                android:layout_below="@+id/rlDrawerHeader"
+                android:divider="@null" />
+
+            <RelativeLayout
+                android:id="@+id/rlFooterContainer"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true">
+
+                <xyz.narengi.android.ui.widget.CustomTextView
+                    android:id="@+id/tvHostingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_gray_light"
+                    android:gravity="center_vertical"
+                    android:paddingRight="16dp"
+                    android:text="@string/drawer_menu_hosting"
+                    android:textColor="@color/orange_light" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:src="@drawable/ic_action_hosting" />
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </android.support.design.widget.NavigationView>
+
 </android.support.v4.widget.DrawerLayout>

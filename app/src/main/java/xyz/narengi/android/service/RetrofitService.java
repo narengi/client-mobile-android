@@ -1,16 +1,26 @@
 package xyz.narengi.android.service;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.ui.NarengiApplication;
 
 /**
  * @author Siavash Mahmoudpour
@@ -42,6 +52,8 @@ public class RetrofitService {
             bodyLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
                     .addInterceptor(bodyLoggingInterceptor)
+                    .addInterceptor(new RequestAuthorizationInterceptor())
+                    .addInterceptor(new ResponseInterceptor())
                     .connectTimeout(5, TimeUnit.SECONDS)
                     .readTimeout(15, TimeUnit.SECONDS);
             instance.retrofit = new Retrofit.Builder()
@@ -60,6 +72,8 @@ public class RetrofitService {
         bodyLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(bodyLoggingInterceptor)
+                .addInterceptor(new RequestAuthorizationInterceptor())
+                .addInterceptor(new ResponseInterceptor())
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS);
         result.retrofit = new Retrofit.Builder()
@@ -103,5 +117,39 @@ public class RetrofitService {
 //                // Log error here since request failed
 //            }
 //        });
+    }
+
+    private static class RequestAuthorizationInterceptor implements Interceptor {
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request.Builder builder = chain.request().newBuilder();
+            SharedPreferences preferences = NarengiApplication.getInstance().getSharedPreferences("profile", Context.MODE_PRIVATE);
+            String accessToken = preferences.getString("accessToken", "");
+            String username = preferences.getString("username", "");
+
+            JSONObject authObject = new JSONObject();
+            try {
+                authObject.put("token", accessToken);
+                authObject.put("username", username);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            builder.addHeader("authorization", authObject.toString().replace("{", "").replace("}", ""));
+
+            return chain.proceed(builder.build());
+        }
+    }
+
+    private static class ResponseInterceptor implements Interceptor {
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Response response = chain.proceed(chain.request());
+            if (response.code() == 401) {
+                // TODO: 9/22/2016 AD logout user
+            }
+            return response;
+        }
     }
 }

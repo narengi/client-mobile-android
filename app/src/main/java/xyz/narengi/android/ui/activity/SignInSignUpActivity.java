@@ -1,5 +1,6 @@
 package xyz.narengi.android.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -44,12 +45,14 @@ import xyz.narengi.android.ui.fragment.SignInFragment;
 import xyz.narengi.android.ui.fragment.SignUpFragment;
 import xyz.narengi.android.ui.util.AlertUtils;
 import xyz.narengi.android.util.NetworkUtil;
+import xyz.narengi.android.util.Util;
 
 /**
  * @author Siavash Mahmoudpour
  */
 public class SignInSignUpActivity extends AppCompatActivity implements SignUpFragment.OnRegisterButtonClickListener, SignInFragment.OnLoginButtonClickListener {
 
+    private Context context;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -58,13 +61,14 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.context = this;
         setContentView(R.layout.activity_sign_in_sign_up);
         setupToolbar();
 //        initViews();
         setPageTitle(getString(R.string.login_register_page_title));
 
         viewPager = (ViewPager) findViewById(R.id.login_viewpager);
-        setupViewPager(viewPager);
+        setupViewPager();
 
         tabLayout = (TabLayout) findViewById(R.id.login_tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -144,12 +148,29 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         }
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new SignUpFragment(), getString(R.string.register_button));
         adapter.addFragment(new SignInFragment(), getString(R.string.login_button));
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if(state == ViewPager.SCROLL_STATE_SETTLING) {
+                    Util.hideSoftKeyboard(context, getCurrentFocus() == null ? viewPager : getCurrentFocus());
+                }
+            }
+        });
         viewPager.setCurrentItem(1);
     }
 
@@ -233,7 +254,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
+        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AccountProfile> call = apiEndpoints.register(credential);
@@ -266,7 +287,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("accessToken", accountProfile.getToken().getToken());
         editor.putString("username", accountProfile.getToken().getUsername());
-        editor.commit();
+        editor.apply();
 
         if (accountProfile.getProfile() != null) {
             Profile profile = accountProfile.getProfile();

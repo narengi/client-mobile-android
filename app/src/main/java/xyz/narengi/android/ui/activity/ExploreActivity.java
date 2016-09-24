@@ -36,11 +36,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +67,7 @@ import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.Authorization;
+import xyz.narengi.android.common.dto.DrawerItem;
 import xyz.narengi.android.common.dto.SuggestionsResult;
 import xyz.narengi.android.content.AroundLocationDeserializer;
 import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
@@ -74,6 +77,7 @@ import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
+import xyz.narengi.android.ui.adapter.DrawerItemsListAdapter;
 import xyz.narengi.android.ui.adapter.RecyclerAdapter;
 import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
 import xyz.narengi.android.ui.util.AlertUtils;
@@ -83,6 +87,7 @@ import xyz.narengi.android.ui.util.AlertUtils;
  */
 public class ExploreActivity extends ActionBarActivity {
 
+    private Context context;
     private AroundLocation[] aroundLocations;
     private List<AroundLocation> aroundLocationList;
     private RecyclerAdapter recyclerAdapter;
@@ -100,13 +105,28 @@ public class ExploreActivity extends ActionBarActivity {
     private View llErrorContainer;
     private Button btnRetry;
 
+    private TextView tvUserFullname;
+    private ImageView imgUserAvatar;
+    private View rlUserInfoContainer;
+    private View tvWelcomeMessage;
+    private ListView lstNavigationMenu;
+    private View rlFooterContainer;
+    private DrawerItemsListAdapter menuItemsListAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.context = this;
         setContentView(R.layout.activity_explore);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         this.llErrorContainer = findViewById(R.id.llErrorContainer);
         this.btnRetry = (Button) findViewById(R.id.btnRetry);
+        this.tvUserFullname = (TextView) findViewById(R.id.tvUserFullName);
+        this.rlUserInfoContainer = findViewById(R.id.rlUserProfileInfoContainer);
+        this.imgUserAvatar = (ImageView) findViewById(R.id.imgUserAvatar);
+        this.tvWelcomeMessage = findViewById(R.id.tvWelcomeMessage);
+        this.lstNavigationMenu = (ListView) findViewById(R.id.lstDrawerItemsList);
+        this.rlFooterContainer = findViewById(R.id.tvHostingText);
         this.btnRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,9 +144,9 @@ public class ExploreActivity extends ActionBarActivity {
         if (accessToken.length() > 0 && username.length() > 0) {
 //            System.err.println("\n\n\naccessToken : " + accessToken);
 //            System.err.println("\n\nusername : " + username + "\n\n");
-            setupNavigationView(true);
+            setupDrawerView(true);
         } else {
-            setupNavigationView(false);
+            setupDrawerView(false);
         }
 
         forceRTLIfSupported();
@@ -190,16 +210,16 @@ public class ExploreActivity extends ActionBarActivity {
         if (requestCode == 301) {
             if (resultCode == 302) {
                 //user registered, update menu and open sign up confirm
-                setupNavigationView(true);
+                setupDrawerView(true);
                 openSignUpConfirm();
             } else if (resultCode == 303) {
                 //user logged in, update menu
-                setupNavigationView(true);
+                setupDrawerView(true);
             }
         }
 
         if (resultCode == 401) {
-            setupNavigationView(true);
+            setupDrawerView(true);
             Intent intent = new Intent(this, ViewProfileActivity.class);
             startActivity(intent);
         }
@@ -210,122 +230,62 @@ public class ExploreActivity extends ActionBarActivity {
         startActivityForResult(intent, 101);
     }
 
-    private void setupNavigationView(boolean loggedIn) {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.explore_navigationView);
-        View oldHeaderView = navigationView.getHeaderView(0);
-        if (oldHeaderView != null)
-            navigationView.removeHeaderView(oldHeaderView);
+    private void setupDrawerView(final boolean loggedIn) {
+        rlUserInfoContainer.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
+        tvWelcomeMessage.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
 
-        if (navigationView.getMenu() != null)
-            navigationView.getMenu().clear();
-
+        // TODO: 9/22/2016 AD load user full name and avatar
+        List<DrawerItem> drawerItems = new ArrayList<>();
         if (loggedIn) {
-
-            navigationView.inflateMenu(R.menu.drawer_logged_in);
-            navigationView.inflateHeaderView(R.layout.drawer_header_logged_in);//TODO : change this header layout
-
-
-            View headerView = navigationView.getHeaderView(0);
-
-//            ViewGroup.LayoutParams params = headerView.getLayoutParams();
-//            if (params != null && navigationView.getLayoutParams() != null)
-//                params.height = navigationView.getLayoutParams().width * 9 / 16;
-
-            TextView titleTextView = (TextView) headerView.findViewById(R.id.drawer_header_userTitle);
-            SharedPreferences preferences = getSharedPreferences("profile", 0);
-            String title = preferences.getString("displayName", "");
-            if (title.length() > 0) {
-                titleTextView.setText(title);
-            }
-
-            final ImageView userImageView = (ImageView) headerView.findViewById(R.id.drawer_header_userPicture);
-            Handler handler = new Handler();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    getProfilePicture(userImageView);
-                }
-            });
-
-            headerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    openViewProfile();
-                }
-            });
-
-            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                    //Checking if the item is in checked state or not, if not make it in checked state
-                    if (menuItem.isChecked())
-                        menuItem.setChecked(false);
-                    else
-                        menuItem.setChecked(true);
-
-                    //Closing drawer on item click
-                    drawerLayout.closeDrawers();
-
-                    switch (menuItem.getItemId()) {
-
-                        case R.id.navigation_item_logout:
-//                            logout();
-                            showLogoutAlert();
-                            break;
-                        case R.id.navigation_item_hosting:
-                            openHostHouses();
-                            break;
-                        case R.id.navigation_item_book_requests:
-                            openBookRequests();
-                            break;
-                        default:
-                            break;
-                    }
-                    return false;
-                }
-            });
-
+            // TODO: 9/22/2016 AD fix icon and string
+            drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_HOME));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_inbox), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_INBOX));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_favorites), R.drawable.ic_action_favorite_list, DrawerItem.DrawerAction.ACTION_FAVORITES));
+            drawerItems.add(new DrawerItem(getString(R.string.profile), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_PROFILE));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_settings), R.drawable.ic_action_settings, DrawerItem.DrawerAction.ACTION_SETTINGS));
+            drawerItems.add(new DrawerItem(getString(R.string.user_guide), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_USER_GUIDE));
         } else {
-            navigationView.inflateMenu(R.menu.drawer);
-            navigationView.inflateHeaderView(R.layout.drawer_header);
-
-
-            View headerView = navigationView.getHeaderView(0);
-
-//            ViewGroup.LayoutParams params = headerView.getLayoutParams();
-//            if (params != null && navigationView.getLayoutParams() != null)
-//                params.height = navigationView.getLayoutParams().width * 9 / 16;
-
-            TextView titleTextView = (TextView) headerView.findViewById(R.id.drawer_header_welcomeMessage);
-            titleTextView.setText(getString(R.string.drawer_welcome_message));
-
-            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                    //Checking if the item is in checked state or not, if not make it in checked state
-                    if (menuItem.isChecked())
-                        menuItem.setChecked(false);
-                    else
-                        menuItem.setChecked(true);
-
-                    //Closing drawer on item click
-                    drawerLayout.closeDrawers();
-
-                    switch (menuItem.getItemId()) {
-
-                        case R.id.navigation_item_login_register:
-                            openSignInSignUp();
-                            break;
-                        default:
-                            break;
-                    }
-                    return false;
-                }
-            });
-
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_login_register), R.drawable.ic_action_login_signup, DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP));
+            drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_HOME));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_settings), R.drawable.ic_action_settings, DrawerItem.DrawerAction.ACTION_SETTINGS));
+            drawerItems.add(new DrawerItem(getString(R.string.user_guide), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_USER_GUIDE));
         }
+
+        menuItemsListAdapter = new DrawerItemsListAdapter(context, drawerItems);
+        lstNavigationMenu.setAdapter(menuItemsListAdapter);
+
+        lstNavigationMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                drawerLayout.closeDrawers();
+                DrawerItem selectedItem = (DrawerItem) menuItemsListAdapter.getItem(position);
+                if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_HOME) {
+                    // TODO: 9/22/2016 AD back to home
+                } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_INBOX) {
+
+                } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_FAVORITES) {
+
+                } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_PROFILE) {
+
+                } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP) {
+                    openSignInSignUp();
+                } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_USER_GUIDE) {
+
+                } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_SETTINGS) {
+
+                }
+            }
+        });
+        rlFooterContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (loggedIn) {
+
+                } else {
+                    openSignInSignUp();
+                }
+            }
+        });
     }
 
     private void showLogoutAlert() {
@@ -397,7 +357,7 @@ public class ExploreActivity extends ActionBarActivity {
         editor.clear();
         editor.commit();
 
-        setupNavigationView(false);
+        setupDrawerView(false);
         finish();
     }
 

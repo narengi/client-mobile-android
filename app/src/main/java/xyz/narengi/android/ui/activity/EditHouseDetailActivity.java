@@ -329,16 +329,10 @@ public class EditHouseDetailActivity extends AppCompatActivity {
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        updateHouseRetrofitCall = apiEndpoints.updateHouse(authorizationJson, house.getURL(), houseEntryInput);
+        updateHouseRetrofitCall = apiEndpoints.updateHouse(house.getURL(), houseEntryInput);
 
         updateHouseRetrofitCall.enqueue(new Callback<House>() {
             @Override

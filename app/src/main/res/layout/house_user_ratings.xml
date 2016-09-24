@@ -37,7 +37,7 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="0dp"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="@android:color/tertiary_text_dark"
             style="@style/TextAppearance.AppCompat.Small" />
 

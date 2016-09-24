@@ -188,16 +188,10 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<House> call = apiEndpoints.addHouse(authorizationJson, houseEntryInput);
+        Call<House> call = apiEndpoints.addHouse(houseEntryInput);
 
         call.enqueue(new Callback<House>() {
             @Override
@@ -290,16 +284,10 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<House> call = apiEndpoints.updateHouse(authorizationJson, house.getURL(), houseEntryInput);
+        Call<House> call = apiEndpoints.updateHouse(house.getURL(), houseEntryInput);
 
         call.enqueue(new Callback<House>() {
             @Override

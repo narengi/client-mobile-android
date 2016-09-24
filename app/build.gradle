@@ -64,13 +64,14 @@ dependencies {
     compile 'com.bignerdranch.android:expandablerecyclerview:1.0.3'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'info.semsamot:actionbar-rtlizer:2.1.0@aar'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
     compile project(':persianDatePickermaster')
 }
 
 
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.3'
+        classpath 'com.android.tools.build:gradle:2.2.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
     }
     repositories {
