@@ -621,7 +621,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
     }
 
     private void openHouseDetail(AroundPlaceHouse house) {
-        String houseUrl = house.getURL();
+        String houseUrl = house.getDetailUrl();
         Intent intent = new Intent(this, HouseActivity.class);
         intent.putExtra("houseUrl", houseUrl);
         startActivity(intent);
@@ -984,11 +984,11 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
                             .findViewById(R.id.map_house_info_window_featureSummary));
                     featureSummaryTextView.setText("\u200e" + house.getFeatureSummray());
 
-                    if (house.getImages() != null && house.getImages().length > 0) {
+                    if (house.getPictures() != null && house.getPictures().length > 0) {
 
                         ImageView houseImageView = (ImageView) myContentsView
                                 .findViewById(R.id.map_house_info_window_image);
-                        Picasso.with(getApplicationContext()).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(houseImageView);
+                        Picasso.with(getApplicationContext()).load(house.getPictures()[0].getUrl()).resize(imageWidth, imageHeight).into(houseImageView);
                     }
 
 

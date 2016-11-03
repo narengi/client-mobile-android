@@ -1,26 +1,18 @@
 package xyz.narengi.android.ui.activity;
 
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -33,9 +25,9 @@ import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.AccessToken;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountVerification;
-import xyz.narengi.android.common.dto.Authorization;
 
 /**
  * @author Siavash Mahmoudpour
@@ -77,7 +69,7 @@ public class VerificationViewActivity extends AppCompatActivity {
         });*/
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton)toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -104,7 +96,7 @@ public class VerificationViewActivity extends AppCompatActivity {
     private void setPageTitle(String title) {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.verification_view_toolbar);
         if (toolbar != null) {
-            TextView titleTextView = (TextView)toolbar.findViewById(R.id.text_toolbar_title);
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
             titleTextView.setText(title);
         }
     }
@@ -113,13 +105,13 @@ public class VerificationViewActivity extends AppCompatActivity {
 
         if (getIntent() != null && getIntent().getSerializableExtra("accountProfile") != null) {
             AccountProfile accountProfile = (AccountProfile) getIntent().getSerializableExtra("accountProfile");
-            if (accountProfile.getVerification() != null && accountProfile.getVerification().length >0) {
+            if (accountProfile.getVerifications() != null && accountProfile.getVerifications().size() > 0) {
 
-                TextView emailTextView = (TextView)findViewById(R.id.verification_view_email);
-                TextView cellNumberTextView = (TextView)findViewById(R.id.verification_view_cellNumber);
-                final ImageView identityCardImageView = (ImageView)findViewById(R.id.verification_view_identityCardImage);
+                TextView emailTextView = (TextView) findViewById(R.id.verification_view_email);
+                TextView cellNumberTextView = (TextView) findViewById(R.id.verification_view_cellNumber);
+                final ImageView identityCardImageView = (ImageView) findViewById(R.id.verification_view_identityCardImage);
 
-                for (AccountVerification verification:accountProfile.getVerification()) {
+                for (AccountVerification verification : accountProfile.getVerifications()) {
                     if (verification.getVerificationType() != null && verification.getHandle() != null) {
                         if (verification.getVerificationType().equalsIgnoreCase("Email")) {
                             emailTextView.setText(verification.getHandle());
@@ -149,7 +141,8 @@ public class VerificationViewActivity extends AppCompatActivity {
     protected void rtlizeActionBar() {
         if (getSupportActionBar() != null) {
 //            rtlizer = new ActionBarRtlizer(this, "toolbar_actionbar");
-            rtlizer = new ActionBarRtlizer(this);;
+            rtlizer = new ActionBarRtlizer(this);
+            ;
             ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
             RtlizeEverything.rtlize(rtlizer.getActionBarView());
             if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
@@ -161,25 +154,10 @@ public class VerificationViewActivity extends AppCompatActivity {
     }
 
 
+    @SuppressWarnings("ConstantConditions")
     private void getIdentityCardImage(ImageView identityCardImageView) {
 
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
-        final String authorizationJsonHeader = authorizationJson;
+        final String authorizationJsonHeader = AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString();
         OkHttpClient picassoClient = new OkHttpClient();
 
         picassoClient.networkInterceptors().add(new Interceptor() {

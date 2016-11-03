@@ -66,6 +66,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.AccessToken;
+import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
@@ -212,7 +214,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //        if (imageInfoList != null && imageInfoList.size() > position) {
 //            ImageInfo[] imageInfoArray = imageInfoList.get(position);
 //            if (imageInfoArray != null && imageInfoArray.length > 0) {
-//                imageInfoArraysMap.put(house.getURL(), imageInfoArray);
+//                imageInfoArraysMap.put(house.getDetailUrl(), imageInfoArray);
 //                getHouseImage(viewHolder, imageInfoArray[0]);
 //            } else
 //                getHouseImage(viewHolder, null);
@@ -231,7 +233,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             getHouseImage(viewHolder, null);
         }
 
-//        getHouseImages(house.getURL(), viewHolder);
+//        getHouseImages(house.getDetailUrl(), viewHolder);
 
         if (house.getType() != null) {
             switch (house.getType()) {
@@ -263,7 +265,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
 //        if (houseAvailableDatesList != null && houseAvailableDatesList.size() > position) {
 //            HouseAvailableDates houseAvailableDates = houseAvailableDatesList.get(position);
-//            setFirstAvailableDate(viewHolder, houseAvailableDates, house.getURL());
+//            setFirstAvailableDate(viewHolder, houseAvailableDates, house.getDetailUrl());
 //        } else {
 //            viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
 //        }
@@ -296,28 +298,6 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     }
 
     private void getHouseImage(final HostHousesItemViewHolder viewHolder, ImageInfo imageInfo) {
-
-        final SharedPreferences preferences = context.getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        StringBuilder authorizationBuilder = new StringBuilder();
-        authorizationBuilder.append(gson.toJson(authorization));
-
-        String tempJson = "";
-        if (authorizationBuilder.toString().length() > 0) {
-            tempJson = authorizationBuilder.toString();
-            tempJson = tempJson.replace("{", "");
-            tempJson = tempJson.replace("}", "");
-        }
-
-        final String authorizationJson = tempJson;
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
@@ -465,29 +445,10 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void getHouseImages(final String houseUrl, final HostHousesItemViewHolder viewHolder) {
 
-        final SharedPreferences preferences = context.getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        StringBuilder authorizationBuilder = new StringBuilder();
-        authorizationBuilder.append(gson.toJson(authorization));
-
-        String tempJson = "";
-        if (authorizationBuilder.toString().length() > 0) {
-            tempJson = authorizationBuilder.toString();
-            tempJson = tempJson.replace("{", "");
-            tempJson = tempJson.replace("}", "");
-        }
-
-        final String authorizationJson = tempJson;
+        final String authorizationJson = AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString();
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 

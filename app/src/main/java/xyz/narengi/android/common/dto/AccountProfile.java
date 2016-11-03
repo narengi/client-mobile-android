@@ -1,41 +1,113 @@
 package xyz.narengi.android.common.dto;
 
 import android.content.Context;
-import android.text.TextUtils;
 
-import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.List;
 
-import xyz.narengi.android.ui.NarengiApplication;
 import xyz.narengi.android.util.SharedPref;
 
 /**
  * @author Siavash Mahmoudpour
  */
 public class AccountProfile implements Serializable {
-    private static final String REGISTRATION_SOURCE_PREF_KEY = "registration_source";
-    private static final String CELL_NUMBER_PREF_KEY = "cell_number";
-    private static final String DISPLAY_NAME_PREF_KEY = "display_name";
-    private static final String CREATED_AT_PREF_KEY = "created_at";
-    private static final String ENABLED_PREF_KEY = "enabled";
-    private static final String LAST_LOGIN_DATE_PREF_KEY = "last_login_date";
-    private static final String EMAIL_PREF_KEY = "email";
-    private static final String PROFILE_PREF_KEY = "profile";
-    private static final String TOKEN_PREF_KEY = "token";
-    private static final String VERIFICATION_PREF_KEY = "verification";
+    private static final String ACCOUNT_PROFILE_JSON_STRING_SHARED_PREF_KEY = "accountProfile";
 
+    private static final String REGISTRATION_SOURCE_JSON_KEY = "registrationSource";
+    private static final String USERNAME_SOURCE_JSON_KEY = "username";
+    private static final String CELL_NUMBER_JSON_KEY = "cellNumber";
+    private static final String DISPLAY_NAME_JSON_KEY = "displayName";
+    private static final String CREATED_AT_JSON_KEY = "createdAt";
+    private static final String UPDATED_AT_JSON_KEY = "updatedAt";
+    private static final String ENABLED_JSON_KEY = "enabled";
+    private static final String LAST_LOGIN_DATE_JSON_KEY = "lastLoginDate";
+    private static final String EMAIL_JSON_KEY = "email";
+    private static final String PROFILE_JSON_KEY = "profile";
+    private static final String TOKEN_JSON_KEY = "token";
+    private static final String VERIFICATION_JSON_KEY = "verifications";
+    private static AccountProfile loggedInAccountProfile;
     private String registrationSource;
     private String cellNumber;
     private String displayName;
     private String createdAt;
+    private String updatedAt;
     private boolean enabled;
     private String lastLoginDate;
     private String email;
+    private String username;
     private Profile profile;
     private AccessToken token;
-    private AccountVerification[] verification;
+    private List<AccountVerification> verifications;
 
+    public static AccountProfile fromJsonObject(JSONObject object) {
+        if (object == null)
+            return null;
+        AccountProfile result = new AccountProfile();
+        try {
+            result.username = object.isNull(USERNAME_SOURCE_JSON_KEY) ? "" : object.getString(USERNAME_SOURCE_JSON_KEY);
+            result.email = object.isNull(EMAIL_JSON_KEY) ? "" : object.getString(EMAIL_JSON_KEY);
+            result.displayName = object.isNull(DISPLAY_NAME_JSON_KEY) ? "" : object.getString(DISPLAY_NAME_JSON_KEY);
+            result.cellNumber = object.isNull(CELL_NUMBER_JSON_KEY) ? "" : object.getString(CELL_NUMBER_JSON_KEY);
+            result.enabled = !object.isNull(ENABLED_JSON_KEY) && object.getBoolean(ENABLED_JSON_KEY);
+            result.lastLoginDate = object.isNull(LAST_LOGIN_DATE_JSON_KEY) ? "" : object.getString(LAST_LOGIN_DATE_JSON_KEY);
+            result.registrationSource = object.isNull(REGISTRATION_SOURCE_JSON_KEY) ? "" : object.getString(REGISTRATION_SOURCE_JSON_KEY);
+            result.createdAt = object.isNull(CREATED_AT_JSON_KEY) ? "" : object.getString(CREATED_AT_JSON_KEY);
+            result.updatedAt = object.isNull(UPDATED_AT_JSON_KEY) ? "" : object.getString(UPDATED_AT_JSON_KEY);
+            result.profile = Profile.fromJsonObject(object.isNull(PROFILE_JSON_KEY) ? new JSONObject() : object.getJSONObject(PROFILE_JSON_KEY));
+            result.token = AccessToken.fromJsonObject(object.isNull(TOKEN_JSON_KEY) ? new JSONObject() : object.getJSONObject(TOKEN_JSON_KEY));
+            result.verifications = AccountVerification.fromJsonArray(object.isNull(VERIFICATION_JSON_KEY) ? new JSONArray() : object.getJSONArray(VERIFICATION_JSON_KEY));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static AccountProfile getLoggedInAccountProfile(Context context) {
+        if (loggedInAccountProfile != null)
+            return loggedInAccountProfile;
+        SharedPref pref = SharedPref.getInstance(context);
+        String accountProfileJsonString = pref.getString(ACCOUNT_PROFILE_JSON_STRING_SHARED_PREF_KEY, "");
+        try {
+            loggedInAccountProfile = AccountProfile.fromJsonObject(new JSONObject(accountProfileJsonString));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return loggedInAccountProfile;
+    }
+
+    public JSONObject toJsonObject() {
+        JSONObject result = new JSONObject();
+        try {
+            result.put(USERNAME_SOURCE_JSON_KEY, username == null ? JSONObject.NULL : username);
+            result.put(EMAIL_JSON_KEY, email == null ? JSONObject.NULL : email);
+            result.put(DISPLAY_NAME_JSON_KEY, displayName == null ? JSONObject.NULL : displayName);
+            result.put(CELL_NUMBER_JSON_KEY, cellNumber == null ? JSONObject.NULL : cellNumber);
+            result.put(ENABLED_JSON_KEY, enabled);
+            result.put(LAST_LOGIN_DATE_JSON_KEY, lastLoginDate == null ? JSONObject.NULL : lastLoginDate);
+            result.put(REGISTRATION_SOURCE_JSON_KEY, registrationSource == null ? JSONObject.NULL : registrationSource);
+            result.put(CREATED_AT_JSON_KEY, createdAt == null ? JSONObject.NULL : createdAt);
+            result.put(UPDATED_AT_JSON_KEY, updatedAt == null ? JSONObject.NULL : updatedAt);
+            result.put(PROFILE_JSON_KEY, profile == null ? JSONObject.NULL : profile.toJsonObject());
+            result.put(TOKEN_JSON_KEY, token == null ? JSONObject.NULL : token.toJsonObject());
+            JSONArray verificationArray = AccountVerification.toJsonArray(verifications);
+            result.put(VERIFICATION_JSON_KEY, verificationArray == null ? JSONObject.NULL : verificationArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public void saveToSharedPref(Context context) {
+        SharedPref pref = SharedPref.getInstance(context);
+        String accountJsonString = toJsonObject().toString();
+        pref.save(ACCOUNT_PROFILE_JSON_STRING_SHARED_PREF_KEY, accountJsonString);
+        loggedInAccountProfile = this;
+    }
 
     public String getRegistrationSource() {
         return registrationSource;
@@ -109,20 +181,18 @@ public class AccountProfile implements Serializable {
         this.token = token;
     }
 
-    public AccountVerification[] getVerification() {
-        return verification;
+    public List<AccountVerification> getVerifications() {
+        return verifications;
     }
 
-    public void setVerification(AccountVerification[] verification) {
-        this.verification = verification;
+    public void setVerifications(List<AccountVerification> verifications) {
+        this.verifications = verifications;
     }
 
-    public String getTokenString() {
-        return token == null ? "" : TextUtils.isEmpty(token.getToken()) ? "" : token.getToken();
+    public static void logout(Context context) {
+        loggedInAccountProfile = null;
+        SharedPref pref = SharedPref.getInstance(context);
+        pref.remove(ACCOUNT_PROFILE_JSON_STRING_SHARED_PREF_KEY);
     }
 
-    public static AccountProfile getLoggedInProfile(Context context) {
-        return null;
-        // TODO: 9/22/2016 AD implement
-    }
 }

@@ -41,4 +41,10 @@ public class SharedPref {
 
     public void getSerial(String key) {
     }
+
+    public void remove(String key) {
+        SharedPreferences.Editor edit = this.preferences.edit();
+        edit.remove(key);
+        edit.apply();
+    }
 }

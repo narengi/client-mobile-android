@@ -74,7 +74,7 @@ public interface RetrofitApiEndpoints {
     Call<AccountVerification> verifyAccount(@Path("type") String type,
                                             @Path("code") String code);
 
-    @GET("/api/user-profiles")
+    @GET("/api/accounts/me")
     Call<AccountProfile> getProfile();
 
     @PUT("/api/user-profiles")

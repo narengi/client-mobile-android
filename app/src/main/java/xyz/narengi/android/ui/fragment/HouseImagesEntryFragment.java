@@ -254,23 +254,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             return;
         }
 
-        final SharedPreferences preferences = getActivity().getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
-        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
 //        File file = new File(resultUri.getPath());
 
@@ -332,22 +316,6 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
     private void removeHouseImage(ImageInfo imageInfo) {
 
         showProgress();
-
-        final SharedPreferences preferences = getActivity().getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 

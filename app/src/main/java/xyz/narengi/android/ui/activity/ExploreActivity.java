@@ -47,8 +47,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,11 +65,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.AccessToken;
+import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
-import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.DrawerItem;
 import xyz.narengi.android.common.dto.SuggestionsResult;
 import xyz.narengi.android.content.AroundLocationDeserializer;
@@ -77,6 +81,8 @@ import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
+import xyz.narengi.android.service.WebService;
+import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.adapter.DrawerItemsListAdapter;
 import xyz.narengi.android.ui.adapter.RecyclerAdapter;
 import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
@@ -126,7 +132,7 @@ public class ExploreActivity extends ActionBarActivity {
         this.imgUserAvatar = (ImageView) findViewById(R.id.imgUserAvatar);
         this.tvWelcomeMessage = findViewById(R.id.tvWelcomeMessage);
         this.lstNavigationMenu = (ListView) findViewById(R.id.lstDrawerItemsList);
-        this.rlFooterContainer = findViewById(R.id.tvHostingText);
+        this.rlFooterContainer = findViewById(R.id.rlFooterContainer);
         this.btnRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,23 +141,51 @@ public class ExploreActivity extends ActionBarActivity {
                 loadDataAsyncTask.execute();
             }
         });
-
+        this.rlUserInfoContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openViewProfile();
+            }
+        });
         setupToolbar();
 
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-        if (accessToken.length() > 0 && username.length() > 0) {
-//            System.err.println("\n\n\naccessToken : " + accessToken);
-//            System.err.println("\n\nusername : " + username + "\n\n");
-            setupDrawerView(true);
+        if (AccountProfile.getLoggedInAccountProfile(context) != null) {
+            WebService service = new WebService();
+            service.setToken(AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString());
+            service.setResponseHandler(new WebService.ResponseHandler() {
+                @Override
+                public void onPreRequest(String requestUrl) {
+
+                }
+
+                @Override
+                public void onSuccess(String requestUrl, Object response) {
+                    JSONObject responseObject = (JSONObject) response;
+                    AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
+                    if (loggedInProfile != null) {
+                        loggedInProfile.saveToSharedPref(context);
+                    }
+                    setupDrawerView(true);
+                }
+
+                @Override
+                public void onError(String requestUrl, VolleyError error) {
+                    if (error.networkResponse.statusCode == 401 || error.networkResponse.statusCode == 403) {
+                        AccountProfile.logout(context);
+                        setupDrawerView(false);
+                    } else {
+                        setupDrawerView(true);
+                    }
+                }
+            });
+            service.getJsonObject(WebServiceConstants.Accounts.ME);
         } else {
             setupDrawerView(false);
         }
 
         forceRTLIfSupported();
 
-        aroundLocationList = new ArrayList<AroundLocation>();
+        aroundLocationList = new ArrayList<>();
         setupListView(aroundLocationList);
 
         LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask("ت");
@@ -207,27 +241,28 @@ public class ExploreActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 301) {
-            if (resultCode == 302) {
+        if (requestCode == SignInSignUpActivity.REQUEST_CODE) {
+            if (resultCode == SignInSignUpActivity.RESULT_SIGN_UP_SUCCESS) {
                 //user registered, update menu and open sign up confirm
                 setupDrawerView(true);
                 openSignUpConfirm();
-            } else if (resultCode == 303) {
+            } else if (resultCode == SignInSignUpActivity.RESULT_LOGIN_SUCCESS) {
                 //user logged in, update menu
                 setupDrawerView(true);
             }
+        } else if (requestCode == ViewProfileActivity.REQUEST_CODE && resultCode == ViewProfileActivity.RESULT_LOGOUT) {
+            setupDrawerView(false);
         }
 
         if (resultCode == 401) {
             setupDrawerView(true);
-            Intent intent = new Intent(this, ViewProfileActivity.class);
-            startActivity(intent);
+            openViewProfile();
         }
     }
 
     private void openSignUpConfirm() {
         Intent intent = new Intent(this, SignUpConfirmActivity.class);
-        startActivityForResult(intent, 101);
+        startActivityForResult(intent, SignInSignUpActivity.REQUEST_CODE);
     }
 
     private void setupDrawerView(final boolean loggedIn) {
@@ -266,7 +301,7 @@ public class ExploreActivity extends ActionBarActivity {
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_FAVORITES) {
 
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_PROFILE) {
-
+                    openViewProfile();
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP) {
                     openSignInSignUp();
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_USER_GUIDE) {
@@ -280,7 +315,7 @@ public class ExploreActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (loggedIn) {
-
+                    openHostHouses();
                 } else {
                     openSignInSignUp();
                 }
@@ -302,29 +337,14 @@ public class ExploreActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    @SuppressWarnings({"ConstantConditions", "unchecked"})
     private void getProfilePicture(ImageView profileImageView) {
-
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
 
         Bitmap bitmap;
 
-        String imageUrl = Constants.SERVER_BASE_URL + "/api/v1/user-profiles/picture";
+        String imageUrl = Constants.SERVER_BASE_URL + "/api/user-profiles/picture";
 
-        ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(this, authorizationJson, imageUrl);
+        ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(this, AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString(), imageUrl);
         AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
 
         try {
@@ -355,7 +375,7 @@ public class ExploreActivity extends ActionBarActivity {
         SharedPreferences preferences = getSharedPreferences("profile", 0);
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
 
         setupDrawerView(false);
         finish();
@@ -363,7 +383,7 @@ public class ExploreActivity extends ActionBarActivity {
 
     private void openViewProfile() {
         Intent intent = new Intent(this, ViewProfileActivity.class);
-        startActivityForResult(intent, 104);
+        startActivityForResult(intent, ViewProfileActivity.REQUEST_CODE);
     }
 
     private void setupNavigationView() {
@@ -412,7 +432,7 @@ public class ExploreActivity extends ActionBarActivity {
 
     private void openSignInSignUp() {
         Intent intent = new Intent(this, SignInSignUpActivity.class);
-        startActivityForResult(intent, 301);
+        startActivityForResult(intent, SignInSignUpActivity.REQUEST_CODE);
     }
 
     private void showProgress() {
@@ -1114,7 +1134,7 @@ public class ExploreActivity extends ActionBarActivity {
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.scrollRecyclerView);
 
         // use a linear layout manager
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
 //        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -1203,7 +1223,7 @@ public class ExploreActivity extends ActionBarActivity {
     }
 
     private void openHouseDetail(AroundPlaceHouse house) {
-        String houseUrl = house.getURL();
+        String houseUrl = house.getDetailUrl();
         Intent intent = new Intent(this, HouseActivity.class);
         intent.putExtra("houseUrl", houseUrl);
         intent.putExtra("house", house);

@@ -20,6 +20,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.AccessToken;
+import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.ui.NarengiApplication;
 
 /**
@@ -119,24 +121,16 @@ public class RetrofitService {
 //        });
     }
 
-    private static class RequestAuthorizationInterceptor implements Interceptor {
+    public static class RequestAuthorizationInterceptor implements Interceptor {
 
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request.Builder builder = chain.request().newBuilder();
-            SharedPreferences preferences = NarengiApplication.getInstance().getSharedPreferences("profile", Context.MODE_PRIVATE);
-            String accessToken = preferences.getString("accessToken", "");
-            String username = preferences.getString("username", "");
 
-            JSONObject authObject = new JSONObject();
-            try {
-                authObject.put("token", accessToken);
-                authObject.put("username", username);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            AccountProfile loggedInProfile = AccountProfile.getLoggedInAccountProfile(NarengiApplication.getInstance());
+            if(loggedInProfile != null && loggedInProfile.getToken() != null) {
+                builder.addHeader("authorization", loggedInProfile.getToken().getAuthString());
             }
-            builder.addHeader("authorization", authObject.toString().replace("{", "").replace("}", ""));
-
             return chain.proceed(builder.build());
         }
     }

@@ -71,6 +71,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.AccessToken;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.Credential;
@@ -613,25 +614,10 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void getProfilePicture() {
 
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
-        final String authorizationJsonHeader = authorizationJson;
+        final String authorizationJsonHeader = AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString();
         OkHttpClient picassoClient = new OkHttpClient();
 
         picassoClient.networkInterceptors().add(new Interceptor() {
@@ -708,19 +694,6 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void getProfile() {
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
@@ -752,14 +725,6 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void uploadProfilePicture(Uri resultUri) {
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         File file = new File(resultUri.getPath());
@@ -841,21 +806,6 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         profile.setBio(bioEditText.getText().toString());
-
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
@@ -1005,8 +955,8 @@ public class EditProfileActivity extends AppCompatActivity {
         Spinner citySpinner = (Spinner) findViewById(R.id.edit_profile_city);
         EditText bioEditText = (EditText) findViewById(R.id.edit_profile_bio);
 
-//        if (accountProfile.getVerification() != null && accountProfile.getVerification().length > 0) {
-//            for (AccountVerification verification : accountProfile.getVerification()) {
+//        if (accountProfile.getVerifications() != null && accountProfile.getVerifications().length > 0) {
+//            for (AccountVerification verification : accountProfile.getVerifications()) {
 //                if (verification.getVerificationType() != null) {
 //                    if (verification.getVerificationType().equals("SMS")) {
 //                        citySpinner.setText(verification.getHandle());

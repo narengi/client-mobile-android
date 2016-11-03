@@ -58,5 +58,6 @@
     <string name="view_profile_reservations_button">سوابق رزرواسيون</string>
     <string name="view_profile_comments_button">نظرات من</string>
     <string name="view_profile_introduce_button">معرفی به دوستان</string>
+    <string name="view_profile_logout">خروج از حساب کاربری</string>
 
 </resources>

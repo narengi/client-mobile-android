@@ -2,7 +2,6 @@ package xyz.narengi.android.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,8 +20,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,10 +40,11 @@ import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.Credential;
-import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.service.WebService;
+import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.fragment.SignInFragment;
 import xyz.narengi.android.ui.fragment.SignUpFragment;
 import xyz.narengi.android.ui.util.AlertUtils;
@@ -51,6 +55,10 @@ import xyz.narengi.android.util.Util;
  * @author Siavash Mahmoudpour
  */
 public class SignInSignUpActivity extends AppCompatActivity implements SignUpFragment.OnRegisterButtonClickListener, SignInFragment.OnLoginButtonClickListener {
+
+    public static final int RESULT_SIGN_UP_SUCCESS = 302;
+    public static final int RESULT_LOGIN_SUCCESS = 303;
+    public static final int REQUEST_CODE = 101;
 
     private Context context;
     private Toolbar toolbar;
@@ -166,7 +174,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                if(state == ViewPager.SCROLL_STATE_SETTLING) {
+                if (state == ViewPager.SCROLL_STATE_SETTLING) {
                     Util.hideSoftKeyboard(context, getCurrentFocus() == null ? viewPager : getCurrentFocus());
                 }
             }
@@ -195,168 +203,69 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     }
 
     private void login(String email, String password) {
-        Credential credential = new Credential();
-
-        credential.setUsername(email);
-        credential.setPassword(password);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.login(credential);
-
-        call.enqueue(new Callback<AccountProfile>() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("username", email);
+            params.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        WebService service = new WebService();
+        service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
-            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
-                int statusCode = response.code();
-                AccountProfile accountProfile = response.body();
-                if (accountProfile != null && accountProfile.getToken() != null) {
-                    loginUser(accountProfile);
-                } else {
-                    try {
-                        if (response.errorBody() != null) {
-                            String failureMessage = response.errorBody().string();
-                            Toast.makeText(SignInSignUpActivity.this, "Login failure, status code : " + String.valueOf(statusCode) + "\n" + failureMessage, Toast.LENGTH_LONG).show();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+            public void onPreRequest(String requestUrl) {
 
-
-                if (statusCode != 200) {
-                    Toast.makeText(SignInSignUpActivity.this, "Login failure, status code : " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
-                    //Failure
-                }
             }
 
             @Override
-            public void onFailure(Call<AccountProfile> call, Throwable t) {
-                t.printStackTrace();
+            public void onSuccess(String requestUrl, Object response) {
+                JSONObject responseObject = (JSONObject) response;
+                AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
+                loggedInProfile.saveToSharedPref(context);
+
+                setResult(RESULT_LOGIN_SUCCESS);
+                finish();
+            }
+
+            @Override
+            public void onError(String requestUrl, VolleyError error) {
+
             }
         });
+        service.postJsonObject(WebServiceConstants.Accounts.LOGIN, params);
     }
 
     private void register(String email, String password) {
 
-        Credential credential = new Credential();
-
-        credential.setEmail(email);
-        credential.setPassword(password);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.register(credential);
-
-        call.enqueue(new Callback<AccountProfile>() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("username", email);
+            params.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        WebService service = new WebService();
+        service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
-            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
-                int statusCode = response.code();
-                if (statusCode != 201) {
-                    Toast.makeText(SignInSignUpActivity.this, "Register failure, status code : " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
-                    //Failure
-                } else {
-                    AccountProfile accountProfile = response.body();
-                    if (accountProfile != null && accountProfile.getToken() != null) {
-//                        Toast.makeText(SignInSignUpActivity.this, "Register success, getCreatedAt : " + accountProfile.getCreatedAt(), Toast.LENGTH_LONG).show();
-                        createUser(accountProfile);
-                    }
-                }
+            public void onPreRequest(String requestUrl) {
+
             }
 
             @Override
-            public void onFailure(Call<AccountProfile> call, Throwable t) {
-                t.printStackTrace();
+            public void onSuccess(String requestUrl, Object response) {
+                JSONObject responseObject = (JSONObject) response;
+                AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
+                loggedInProfile.saveToSharedPref(context);
+                setResult(RESULT_SIGN_UP_SUCCESS);
+                finish();
+            }
+
+            @Override
+            public void onError(String requestUrl, VolleyError error) {
+                error.printStackTrace();
             }
         });
-    }
-
-    private void loginUser(AccountProfile accountProfile) {
-        SharedPreferences preferences = getSharedPreferences("profile", 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("accessToken", accountProfile.getToken().getToken());
-        editor.putString("username", accountProfile.getToken().getUsername());
-        editor.apply();
-
-        if (accountProfile.getProfile() != null) {
-            Profile profile = accountProfile.getProfile();
-            String displayName = "";
-            if (profile.getFirstName() != null)
-                displayName += profile.getFirstName();
-            if (profile.getLastName() != null)
-                displayName += " " + profile.getLastName();
-
-            editor.putString("displayName", displayName);
-            editor.commit();
-
-            boolean isPictureUploaded = true;
-            if (profile.getStatus() != null && profile.getStatus().getFields() != null) {
-                for (String field : profile.getStatus().getFields()) {
-                    if (field.equalsIgnoreCase("picture")) {
-                        isPictureUploaded = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isPictureUploaded) {
-                //TODO : get profile picture form server.
-            }
-        }
-
-        setResult(303);
-        finish();
-
-        /*if (accountProfile.getProfile() != null && accountProfile.getProfile().getStatus() != null &&
-                accountProfile.getProfile().getStatus().getCompleted() == 100) {
-            //TODO : finish();
-        } else {
-            if (accountProfile.getVerification() == null || accountProfile.getVerification().length == 0) {
-                //TODO : open mobile verification
-            } else {
-                AccountVerification mobileVerification = null;
-                for (AccountVerification verification : accountProfile.getVerification()) {
-                    if (verification.getVerificationType() != null && verification.getVerificationType().equalsIgnoreCase("SMS")) {
-                        mobileVerification = verification;
-                        break;
-                    }
-                }
-
-                if (mobileVerification != null && mobileVerification.isVerified()) {
-                    //TODO : open edit profile
-                } else {
-                    //TODO : open mobile verification
-                }
-            }
-        }
-
-        Intent intent = new Intent(this, MobileInputActivity.class);
-        startActivityForResult(intent, 101);*/
-    }
-
-    private void createUser(AccountProfile accountProfile) {
-        SharedPreferences preferences = getSharedPreferences("profile", 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("accessToken", accountProfile.getToken().getToken());
-        editor.putString("username", accountProfile.getToken().getUsername());
-        editor.commit();
-
-        setResult(302);
-        finish();
-
-//        Intent intent = new Intent(this, SignUpConfirmActivity.class);
-//        startActivityForResult(intent, 101);
+        service.postJsonObject(WebServiceConstants.Accounts.REGISTER, params);
     }
 
     @Override
@@ -376,36 +285,6 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         } else {
             AlertUtils.getInstance().showNetworkErrorDialog(this, getString(R.string.network_error_alert_message));
         }
-
-//        Snackbar snack = Snackbar.make(findViewById(android.R.id.content), "Registration Successful!", Snackbar.LENGTH_LONG);
-//        View view = snack.getView();
-//        FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
-//        params.gravity = Gravity.CENTER;
-//        params.rightMargin = 100;
-//        params.leftMargin = 100;
-//        view.setLayoutParams(params);
-//        snack.show();
-
-
-//        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "", Snackbar.LENGTH_LONG);
-//        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-//        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
-//        textView.setVisibility(View.INVISIBLE);
-//
-//        LayoutInflater inflater = LayoutInflater.from(this);
-//        View snackView = inflater.inflate(R.layout.dialog_sign_up_success, null);
-//        layout.setGravity(Gravity.CENTER);
-//
-//        layout.addView(snackView, 0);
-//
-//        FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)layout.getLayoutParams();
-//        params.gravity = Gravity.CENTER;
-//        params.rightMargin = 100;
-//        params.leftMargin = 100;
-//        layout.setLayoutParams(params);
-//        layout.setBackgroundResource(R.drawable.snackbar_bg);
-//
-//        snackbar.show();
     }
 
     @Override

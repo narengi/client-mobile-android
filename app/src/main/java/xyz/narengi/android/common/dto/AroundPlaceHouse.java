@@ -10,32 +10,32 @@ import java.io.Serializable;
 @Parcel
 public class AroundPlaceHouse implements Serializable {
 
-    private String Name;
-    private String[] Images;
+    private String name;
+    private Picture[] pictures;
     private String Cost;
     private GeoPoint Position;
     private Host Host;
     private String Rating;
-    private String Summary;
+    private String summary;
     private String CityName;
     private String FeatureSummray;
-    private String URL;
+    private String detailUrl;
 
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
-    public String[] getImages() {
-        return Images;
+    public Picture[] getPictures() {
+        return pictures;
     }
 
-    public void setImages(String[] images) {
-        Images = images;
+    public void setPictures(Picture[] pictures) {
+        this.pictures = pictures;
     }
 
     public String getCost() {
@@ -71,11 +71,11 @@ public class AroundPlaceHouse implements Serializable {
     }
 
     public String getSummary() {
-        return Summary;
+        return summary;
     }
 
     public void setSummary(String summary) {
-        Summary = summary;
+        this.summary = summary;
     }
 
     public String getCityName() {
@@ -94,11 +94,73 @@ public class AroundPlaceHouse implements Serializable {
         FeatureSummray = featureSummray;
     }
 
-    public String getURL() {
-        return URL;
+    public String getDetailUrl() {
+        return detailUrl;
     }
 
-    public void setURL(String URL) {
-        this.URL = URL;
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
     }
+
+    public class Picture implements Serializable {
+        private String url;
+        private Styles styles;
+
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public Styles getStyles() {
+            return styles;
+        }
+
+        public void setStyles(Styles styles) {
+            this.styles = styles;
+        }
+
+        class Styles implements Serializable {
+            private String original;
+            private int w64;
+            private int w480;
+            private int w1024;
+
+            public String getOriginal() {
+                return original;
+            }
+
+            public void setOriginal(String original) {
+                this.original = original;
+            }
+
+            public int getW64() {
+                return w64;
+            }
+
+            public void setW64(int w64) {
+                this.w64 = w64;
+            }
+
+            public int getW480() {
+                return w480;
+            }
+
+            public void setW480(int w480) {
+                this.w480 = w480;
+            }
+
+            public int getW1024() {
+                return w1024;
+            }
+
+            public void setW1024(int w1024) {
+                this.w1024 = w1024;
+            }
+        }
+    }
+
 }

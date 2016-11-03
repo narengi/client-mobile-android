@@ -174,12 +174,12 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 
         AroundPlaceHouse house = city.getHouses()[index];
 
-        if (house.getImages() != null && house.getImages().length > 0) {
+        if (house.getPictures() != null && house.getPictures().length > 0) {
             Display display= ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
             int width = display.getWidth();
             int imageWidth = width * 38 / 62;
             int imageHeight = (imageWidth / 2);
-            Picasso.with(context).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
+            Picasso.with(context).load(house.getPictures()[0].getUrl()).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
         }
         viewHolder.housePriceTextView.setText(house.getCost());
         if (house.getHost() != null && house.getHost().getImageUrl() != null) {

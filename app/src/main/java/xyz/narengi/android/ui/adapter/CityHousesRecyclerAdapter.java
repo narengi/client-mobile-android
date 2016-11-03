@@ -4,13 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
@@ -26,7 +24,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -102,12 +99,12 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
 
         AroundPlaceHouse house = objects.get(position);
 
-        if (house.getImages() != null && house.getImages().length > 0) {
+        if (house.getPictures() != null && house.getPictures().length > 0) {
             Display display= ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
             int width = display.getWidth();
             int imageWidth = width * 38 / 62;
             int imageHeight = (imageWidth / 2);
-            Picasso.with(context).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
+            Picasso.with(context).load(house.getPictures()[0].getUrl()).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
         }
         viewHolder.housePriceTextView.setText(house.getCost());
         if (house.getHost() != null && house.getHost().getImageUrl() != null) {

@@ -2,14 +2,9 @@ package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,20 +16,13 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
-import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 
 /**
  * @author Siavash Mahmoudpour
@@ -108,7 +96,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 summary = attraction.getAroundHousesText();
             } else if (aroundLocation.getData() instanceof AroundPlaceHouse) {
                 AroundPlaceHouse house = (AroundPlaceHouse)aroundLocation.getData();
-                imageUrls = house.getImages();
+                AroundPlaceHouse.Picture[] pictures = house.getPictures();
+                imageUrls = new String[pictures.length];
+                for (int i = 0; i < pictures.length; i++)
+                    imageUrls[i] = pictures[i].getUrl();
                 title = house.getName();
                 summary = house.getSummary();
             }

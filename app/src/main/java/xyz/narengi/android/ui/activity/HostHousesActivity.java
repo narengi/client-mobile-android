@@ -242,19 +242,6 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     }
 
     private void getHostHouses() {
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
@@ -296,25 +283,6 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     }
 
     private void readImageInfo(final House house) {
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
@@ -409,7 +377,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 
             readImageInfo(house);
 
-//            Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getURL() + "/pictures");
+//            Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getDetailUrl() + "/pictures");
 //
 //            try {
 //                Response<ImageInfo[]> imageCallResponse = imagesCall.execute();
@@ -420,7 +388,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 //                e.printStackTrace();
 //            }
 
-            /*String url = house.getURL();
+            /*String url = house.getDetailUrl();
             url = url + "/available-dates/start-" + startDateString + "/end-" + endDateString;
 
             Call<HouseAvailableDates> datesCall = apiEndpoints.getHouseAvailableDates(url);
@@ -460,20 +428,6 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     }
 
     private void removeHouse(House house) {
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);

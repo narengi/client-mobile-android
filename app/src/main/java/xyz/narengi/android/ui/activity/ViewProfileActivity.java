@@ -1,7 +1,6 @@
 package xyz.narengi.android.ui.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -15,14 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -39,12 +36,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
+import xyz.narengi.android.common.dto.AccessToken;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountVerification;
-import xyz.narengi.android.common.dto.Authorization;
-import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.Profile;
-import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 
@@ -52,6 +47,8 @@ import xyz.narengi.android.service.RetrofitService;
  * @author Siavash Mahmoudpour
  */
 public class ViewProfileActivity extends AppCompatActivity {
+    public static final int REQUEST_CODE = 123;
+    public static final int RESULT_LOGOUT = 122;
 
     private ActionBarRtlizer rtlizer;
 
@@ -135,7 +132,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageView backButton = (ImageView) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -182,21 +179,8 @@ public class ViewProfileActivity extends AppCompatActivity {
     }
 
     private void getProfile() {
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
 
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-
-        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AccountProfile> call = apiEndpoints.getProfile();
@@ -220,27 +204,12 @@ public class ViewProfileActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void getProfilePicture() {
 
         ImageView profileImageView = (ImageView) findViewById(R.id.view_profile_profileImage);
 
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
-        final String authorizationJsonHeader = authorizationJson;
+        final String authorizationJsonHeader = AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString();
         OkHttpClient picassoClient = new OkHttpClient();
 
         picassoClient.networkInterceptors().add(new Interceptor() {
@@ -320,7 +289,16 @@ public class ViewProfileActivity extends AppCompatActivity {
             memberFromTextView.setText(getString(R.string.view_profile_member_from));
         }
 
-        if (accountProfile.getVerification() == null || accountProfile.getVerification().length <= 1) {
+        findViewById(R.id.view_profile_logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AccessToken.removeAccessToken(ViewProfileActivity.this);
+                setResult(RESULT_LOGOUT);
+                finish();
+            }
+        });
+
+        if (accountProfile.getVerifications() == null || accountProfile.getVerifications().size() <= 1) {
             verificationButton.setText(getString(R.string.view_profile_verification_unverified_button));
             verificationButton.setTextColor(getResources().getColor(R.color.green));
             Drawable[] compoundDrawables = verificationButton.getCompoundDrawables();
@@ -339,8 +317,8 @@ public class ViewProfileActivity extends AppCompatActivity {
         } else {
 
             boolean isVerified = true;
-            if (accountProfile.getVerification().length == 3) {
-                for (AccountVerification verification : accountProfile.getVerification()) {
+            if (accountProfile.getVerifications().size() == 3) {
+                for (AccountVerification verification : accountProfile.getVerifications()) {
                     if (!verification.isVerified())
                         isVerified = false;
                 }
