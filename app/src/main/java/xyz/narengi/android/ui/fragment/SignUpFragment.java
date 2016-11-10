@@ -1,18 +1,19 @@
 package xyz.narengi.android.ui.fragment;
 
 import android.content.Context;
-import android.net.Uri;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.util.SimpleTextWatcher;
@@ -77,12 +78,22 @@ public class SignUpFragment extends Fragment {
             return null;
 
 
-
         this.tilPassword = (TextInputLayout) view.findViewById(R.id.tilPasswordInputLayout);
         this.tilEmail = (TextInputLayout) view.findViewById(R.id.tilEmailInputLayout);
         this.etEmail = (EditText) view.findViewById(R.id.etEmail);
         this.etPassword = (EditText) view.findViewById(R.id.etPassword);
         this.btnRegister = (Button) view.findViewById(R.id.btnRegister);
+
+        final Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans.ttf");
+
+        int childCount = tilPassword.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = tilPassword.getChildAt(i);
+            if (child instanceof TextView)
+                ((TextView) child).setTypeface(tf);
+        }
+        tilPassword.setTypeface(tf);
+
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,8 +121,18 @@ public class SignUpFragment extends Fragment {
         return view;
     }
 
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        etEmail.clearFocus();
+        etPassword.clearFocus();
+
+        etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+    }
+
     public void onRegisterButtonPressed(String email, String password) {
-        if(!checkForInputError())
+        if (!checkForInputError())
             return;
 
         if (mListener != null) {
@@ -121,16 +142,16 @@ public class SignUpFragment extends Fragment {
 
     private boolean checkForInputError() {
         boolean result = true;
-        if(TextUtils.isEmpty(etEmail.getText().toString())) {
+        if (TextUtils.isEmpty(etEmail.getText().toString())) {
             result = false;
             tilEmail.setError("لطفا ایمیل را وارد کنید");
         } else {
-            if(!etEmail.getText().toString().matches(EMAIL_REGEX)) {
+            if (!etEmail.getText().toString().matches(EMAIL_REGEX)) {
                 result = false;
                 tilEmail.setError("لطفا ایمیل را به صورت صحیح وارد کنید");
             }
         }
-        if(TextUtils.isEmpty(etPassword.getText().toString())) {
+        if (TextUtils.isEmpty(etPassword.getText().toString())) {
             result = false;
             tilPassword.setError("لطفا رمز عبور را وارد کنید");
         }
@@ -165,7 +186,10 @@ public class SignUpFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnRegisterButtonClickListener {
-
         void onRegisterButtonPressed(String email, String password);
+    }
+
+    public interface OnTextFocusingChanged {
+        void onFocusingChanged(boolean hasFocus);
     }
 }

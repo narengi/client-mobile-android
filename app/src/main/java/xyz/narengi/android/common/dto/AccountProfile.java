@@ -79,6 +79,12 @@ public class AccountProfile implements Serializable {
         return loggedInAccountProfile;
     }
 
+    public static void logout(Context context) {
+        loggedInAccountProfile = null;
+        SharedPref pref = SharedPref.getInstance(context);
+        pref.remove(ACCOUNT_PROFILE_JSON_STRING_SHARED_PREF_KEY);
+    }
+
     public JSONObject toJsonObject() {
         JSONObject result = new JSONObject();
         try {
@@ -103,6 +109,8 @@ public class AccountProfile implements Serializable {
     }
 
     public void saveToSharedPref(Context context) {
+        if (loggedInAccountProfile != null)
+            setToken(loggedInAccountProfile.getToken());
         SharedPref pref = SharedPref.getInstance(context);
         String accountJsonString = toJsonObject().toString();
         pref.save(ACCOUNT_PROFILE_JSON_STRING_SHARED_PREF_KEY, accountJsonString);
@@ -187,12 +195,6 @@ public class AccountProfile implements Serializable {
 
     public void setVerifications(List<AccountVerification> verifications) {
         this.verifications = verifications;
-    }
-
-    public static void logout(Context context) {
-        loggedInAccountProfile = null;
-        SharedPref pref = SharedPref.getInstance(context);
-        pref.remove(ACCOUNT_PROFILE_JSON_STRING_SHARED_PREF_KEY);
     }
 
 }

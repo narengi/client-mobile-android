@@ -96,10 +96,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 summary = attraction.getAroundHousesText();
             } else if (aroundLocation.getData() instanceof AroundPlaceHouse) {
                 AroundPlaceHouse house = (AroundPlaceHouse)aroundLocation.getData();
-                AroundPlaceHouse.Picture[] pictures = house.getPictures();
-                imageUrls = new String[pictures.length];
-                for (int i = 0; i < pictures.length; i++)
-                    imageUrls[i] = pictures[i].getUrl();
+                String[] pictures = house.getPictures();
+                imageUrls = pictures;
                 title = house.getName();
                 summary = house.getSummary();
             }

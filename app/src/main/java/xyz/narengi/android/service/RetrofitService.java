@@ -61,7 +61,7 @@ public class RetrofitService {
             instance.retrofit = new Retrofit.Builder()
                     .client(builder.build())
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl(Constants.SERVER_BASE_URL)
+                    .baseUrl(WebServiceConstants.HOST_NAME)
                     .build();
         }
         return instance;
@@ -81,7 +81,7 @@ public class RetrofitService {
         result.retrofit = new Retrofit.Builder()
                 .client(builder.build())
                 .addConverterFactory(GsonConverterFactory.create(customGson))
-                .baseUrl(Constants.SERVER_BASE_URL)
+                .baseUrl(WebServiceConstants.HOST_NAME)
                 .build();
         return result;
     }
@@ -129,7 +129,7 @@ public class RetrofitService {
 
             AccountProfile loggedInProfile = AccountProfile.getLoggedInAccountProfile(NarengiApplication.getInstance());
             if(loggedInProfile != null && loggedInProfile.getToken() != null) {
-                builder.addHeader("authorization", loggedInProfile.getToken().getAuthString());
+                builder.addHeader("access-token", loggedInProfile.getToken().getAuthString());
             }
             return chain.proceed(builder.build());
         }

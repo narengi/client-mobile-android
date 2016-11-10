@@ -15,7 +15,7 @@ public class Profile implements Serializable {
     public static final String GENDER_JSON_KEY = "gender";
     public static final String PROVINCE_JSON_KEY = "province";
     public static final String CITY_JSON_KEY = "city";
-    public static final String BIRTHDAY_JSON_KEY = "birthday";
+    public static final String BIRTHDAY_JSON_KEY = "birthDate";
     public static final String BIO_JSON_KEY = "bio";
     public static final String AVATAR_JSON_KEY = "avatar";
     public static final String STATUS_JSON_KEY = "status";

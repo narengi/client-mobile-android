@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class AroundPlaceHouse implements Serializable {
 
     private String name;
-    private Picture[] pictures;
+    private String[] pictures;
     private String Cost;
     private GeoPoint Position;
     private Host Host;
@@ -30,11 +30,11 @@ public class AroundPlaceHouse implements Serializable {
         this.name = name;
     }
 
-    public Picture[] getPictures() {
+    public String[] getPictures() {
         return pictures;
     }
 
-    public void setPictures(Picture[] pictures) {
+    public void setPictures(String[] pictures) {
         this.pictures = pictures;
     }
 

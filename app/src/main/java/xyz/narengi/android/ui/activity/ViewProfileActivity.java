@@ -19,29 +19,26 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.android.volley.VolleyError;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AccessToken;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.Profile;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
-import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.service.WebService;
 
 /**
  * @author Siavash Mahmoudpour
@@ -180,26 +177,28 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private void getProfile() {
 
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.getProfile();
-
-        call.enqueue(new Callback<AccountProfile>() {
+        WebService service = new WebService();
+        service.setToken(AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString());
+        service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
-            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
+            public void onPreRequest(String requestUrl) {
+                showProgress();
+            }
+
+            @Override
+            public void onSuccess(String requestUrl, Object response) {
                 hideProgress();
-                int statusCode = response.code();
-                AccountProfile accountProfile = response.body();
-                if (accountProfile != null) {
-                    setProfile(accountProfile);
+                JSONObject responseObject = (JSONObject) response;
+                AccountProfile profile = AccountProfile.fromJsonObject(responseObject);
+                if (profile != null) {
+                    setProfile(profile);
                 }
             }
 
             @Override
-            public void onFailure(Call<AccountProfile> call, Throwable t) {
+            public void onError(String requestUrl, VolleyError error) {
                 hideProgress();
-                t.printStackTrace();
             }
         });
     }
@@ -217,7 +216,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             @Override
             public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                 Request newRequest = chain.request().newBuilder()
-                        .addHeader("authorization", authorizationJsonHeader)
+                        .addHeader("access-token", authorizationJsonHeader)
                         .build();
                 return chain.proceed(newRequest);
             }

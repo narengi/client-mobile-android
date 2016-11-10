@@ -165,7 +165,7 @@ public class VerificationViewActivity extends AppCompatActivity {
             @Override
             public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                 Request newRequest = chain.request().newBuilder()
-                        .addHeader("authorization", authorizationJsonHeader)
+                        .addHeader("access-token", authorizationJsonHeader)
                         .build();
                 return chain.proceed(newRequest);
             }

@@ -3,8 +3,11 @@ package xyz.narengi.android.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,36 +16,27 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AccountProfile;
-import xyz.narengi.android.common.dto.Credential;
-import xyz.narengi.android.content.CredentialDeserializer;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
-import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.service.WebService;
 import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.fragment.SignInFragment;
@@ -65,6 +59,9 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ActionBarRtlizer rtlizer;
+    private ImageView imgBackground;
+    private View loadingLayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +70,72 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         setContentView(R.layout.activity_sign_in_sign_up);
         setupToolbar();
 //        initViews();
-        setPageTitle(getString(R.string.login_register_page_title));
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED);
 
         viewPager = (ViewPager) findViewById(R.id.login_viewpager);
+        loadingLayer = findViewById(R.id.llLoadingLayer);
+        imgBackground = (ImageView) findViewById(R.id.imgBackground);
         setupViewPager();
 
         tabLayout = (TabLayout) findViewById(R.id.login_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        findViewById(R.id.rootLayout).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = findViewById(R.id.rootLayout).getRootView().getHeight() - findViewById(R.id.rootLayout).getHeight();
+                if (heightDiff > Util.convertDpToPx(SignInSignUpActivity.this, 200)) { // if more than 200 dp, it's probably a keyboard...
+                    toolbar.setVisibility(View.GONE);
+                    findViewById(R.id.llWelcomeContainer).setVisibility(View.GONE);
+                } else {
+                    toolbar.setVisibility(View.VISIBLE);
+                    findViewById(R.id.llWelcomeContainer).setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        imgBackground.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    imgBackground.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    imgBackground.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+
+                DisplayMetrics screenMetric = Util.getScreenMetrics(context);
+                int screenHeight = screenMetric.heightPixels;
+                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) imgBackground.getLayoutParams();
+                params.height = screenHeight;
+            }
+        });
+
+
+        tabLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    tabLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    tabLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+                int tabsCount = vg.getChildCount();
+                for (int j = 0; j < tabsCount; j++) {
+                    ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+                    int tabChildsCount = vgTab.getChildCount();
+                    for (int i = 0; i < tabChildsCount; i++) {
+                        View tabViewChild = vgTab.getChildAt(i);
+                        if (tabViewChild instanceof TextView) {
+                            ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/IRAN-Sans.ttf"));
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     private void setPageTitle(String title) {
@@ -121,7 +177,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
 
     private void setupToolbar() {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.login_toolbar);
 
         /*Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
@@ -136,7 +192,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageView backButton = (ImageView) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -174,9 +230,9 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager.SCROLL_STATE_SETTLING) {
-                    Util.hideSoftKeyboard(context, getCurrentFocus() == null ? viewPager : getCurrentFocus());
-                }
+//                if (state == ViewPager.SCROLL_STATE_SETTLING) {
+//                    Util.hideSoftKeyboard(context, getCurrentFocus() == null ? viewPager : getCurrentFocus());
+//                }
             }
         });
         viewPager.setCurrentItem(1);
@@ -200,6 +256,11 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 //                register();
 //                break;
 //        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void login(String email, String password) {

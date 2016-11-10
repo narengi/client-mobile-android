@@ -92,6 +92,7 @@ import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
+import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
 
 /**
@@ -1349,7 +1350,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 
                         ImageView houseImageView = (ImageView) myContentsView
                                 .findViewById(R.id.map_house_info_window_image);
-                        Picasso.with(getApplicationContext()).load(house.getPictures()[0].getUrl()).resize(imageWidth, imageHeight).into(houseImageView);
+                        Picasso.with(getApplicationContext()).load(WebServiceConstants.HOST_NAME + house.getPictures()[0]).resize(imageWidth, imageHeight).into(houseImageView);
                     }
 
 

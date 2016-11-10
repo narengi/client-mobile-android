@@ -18,7 +18,7 @@
 
     <!-- Drawer menu, logged in -->
     <string name="drawer_menu_inbox">پيام ها</string>
-    <string name="drawer_menu_favorites">علاقه مندی ها</string>
+    <string name="drawer_menu_favorites">علاقه‌مندی‌ها (لاگ‌آوت)</string>
     <string name="drawer_menu_logout">خروج از حساب کاربری</string>
 
     <string-array name="search_history_array">
@@ -56,5 +56,7 @@
     <string name="home">خانه</string>
     <string name="profile">پروفایل</string>
     <string name="user_guide">راهنمایی</string>
+    <string name="please_wait">لطفا کمی صبر کنید...</string>
+    <string name="i_forgot_my_password">رمز عبورم را فراموش کرده‌ام!</string>
 
 </resources>

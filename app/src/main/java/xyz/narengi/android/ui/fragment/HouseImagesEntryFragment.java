@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,8 +33,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.MediaType;
@@ -59,7 +56,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
@@ -812,7 +808,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                         @Override
                         public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                             Request newRequest = chain.request().newBuilder()
-                                    .addHeader("authorization", authorization)
+                                    .addHeader("access-token", authorization)
                                     .build();
                             return chain.proceed(newRequest);
                         }

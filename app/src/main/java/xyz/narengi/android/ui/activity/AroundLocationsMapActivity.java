@@ -82,6 +82,7 @@ import xyz.narengi.android.content.AroundPlaceCityDeserializer;
 import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.service.WebServiceConstants;
 
 /**
  * @author Siavash Mahmoudpour
@@ -988,7 +989,7 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
 
                         ImageView houseImageView = (ImageView) myContentsView
                                 .findViewById(R.id.map_house_info_window_image);
-                        Picasso.with(getApplicationContext()).load(house.getPictures()[0].getUrl()).resize(imageWidth, imageHeight).into(houseImageView);
+                        Picasso.with(getApplicationContext()).load(WebServiceConstants.HOST_NAME + house.getPictures()[0]).resize(imageWidth, imageHeight).into(houseImageView);
                     }
 
 

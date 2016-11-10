@@ -511,7 +511,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                             @Override
                             public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                                 Request newRequest = chain.request().newBuilder()
-                                        .addHeader("authorization", authorizationJson)
+                                        .addHeader("access-token", authorizationJson)
                                         .build();
                                 return chain.proceed(newRequest);
                             }
@@ -854,7 +854,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                     @Override
                     public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                         Request newRequest = chain.request().newBuilder()
-                                .addHeader("authorization", authorization)
+                                .addHeader("access-token", authorization)
                                 .build();
                         return chain.proceed(newRequest);
                     }

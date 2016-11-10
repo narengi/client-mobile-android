@@ -3,7 +3,6 @@ package xyz.narengi.android.common.dto;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +14,7 @@ import java.io.Serializable;
  */
 public class AccessToken implements Serializable {
     private static final String USERNAME_JSON_KEY = "username";
-    private static final String TOKEN_JSON_KEY = "accessToken";
+    private static final String TOKEN_JSON_KEY = "token";
     private static final String TYPE_JSON_KEY = "type";
 
     private String username;
@@ -68,8 +67,7 @@ public class AccessToken implements Serializable {
 
     @NonNull
     public String getAuthString() {
-        JSONObject resultObject = toJsonObject();
-        return resultObject.toString().replace("{", "").replace("}", "");
+        return token;
     }
 
     public JSONObject toJsonObject() {

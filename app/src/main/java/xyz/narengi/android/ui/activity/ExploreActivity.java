@@ -65,7 +65,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AccessToken;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
@@ -275,10 +274,12 @@ public class ExploreActivity extends ActionBarActivity {
             // TODO: 9/22/2016 AD fix icon and string
             drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_HOME));
             drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_inbox), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_INBOX));
-            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_favorites), R.drawable.ic_action_favorite_list, DrawerItem.DrawerAction.ACTION_FAVORITES));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_favorites), R.drawable.ic_action_favorite_list, DrawerItem.DrawerAction.ACTION_LOGOUT));
             drawerItems.add(new DrawerItem(getString(R.string.profile), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_PROFILE));
             drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_settings), R.drawable.ic_action_settings, DrawerItem.DrawerAction.ACTION_SETTINGS));
             drawerItems.add(new DrawerItem(getString(R.string.user_guide), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_USER_GUIDE));
+            TextView tvFullName = (TextView) findViewById(R.id.tvUserFullName);
+            tvFullName.setText(AccountProfile.getLoggedInAccountProfile(context).getDisplayName());
         } else {
             drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_login_register), R.drawable.ic_action_login_signup, DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP));
             drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_HOME));
@@ -308,6 +309,9 @@ public class ExploreActivity extends ActionBarActivity {
 
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_SETTINGS) {
 
+                } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_LOGOUT) {
+                    AccountProfile.logout(context);
+                    setupDrawerView(false);
                 }
             }
         });

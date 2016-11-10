@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.service.ImageDownloaderAsyncTask;
+import xyz.narengi.android.service.WebServiceConstants;
 
 /**
  * @author Siavash Mahmoudpour
@@ -104,7 +105,7 @@ public class CityHousesRecyclerAdapter  extends RecyclerView.Adapter<CityHousesR
             int width = display.getWidth();
             int imageWidth = width * 38 / 62;
             int imageHeight = (imageWidth / 2);
-            Picasso.with(context).load(house.getPictures()[0].getUrl()).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
+            Picasso.with(context).load(WebServiceConstants.HOST_NAME + house.getPictures()[0]).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
         }
         viewHolder.housePriceTextView.setText(house.getCost());
         if (house.getHost() != null && house.getHost().getImageUrl() != null) {

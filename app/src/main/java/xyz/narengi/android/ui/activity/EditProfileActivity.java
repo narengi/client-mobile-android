@@ -23,11 +23,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -41,8 +40,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.android.volley.VolleyError;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.MediaType;
@@ -54,11 +52,17 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
@@ -71,15 +75,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AccessToken;
 import xyz.narengi.android.common.dto.AccountProfile;
-import xyz.narengi.android.common.dto.Authorization;
-import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.common.dto.ProvinceCity;
-import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.service.WebService;
+import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.adapter.SpinnerArrayAdapter;
 import xyz.narengi.android.util.SecurityUtils;
 
@@ -118,48 +120,12 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.edit_profile_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        } else if (id == R.id.edit_profile_save) {
-            updateProfile();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onBackPressed() {
         setResult(102);
         finish();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            Bitmap photo = (Bitmap) data.getExtras().get("data");
-//            profileImageView.setImageBitmap(photo);
-//        }
-
-
-//        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-//            final Uri resultUri = UCrop.getOutput(data);
-//            handleCropResult(data);
-//        } else if (resultCode == UCrop.RESULT_ERROR) {
-//            final Throwable cropError = UCrop.getError(data);
-//            handleCropResult(data);
-//        }
 
         if (requestCode == 102 || resultCode == 102) {
             setResult(102);
@@ -180,26 +146,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 handleCropError(data);
             }
         }
-
-//        if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
-//            handleCropResult(data);
-//        }
-
-        /*if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_SELECT_PICTURE) {
-                final Uri selectedUri = data.getData();
-                if (selectedUri != null) {
-                    startCropActivity(data.getData());
-                } else {
-                    Toast.makeText(EditProfileActivity.this, "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
-                }
-            } else if (requestCode == UCrop.REQUEST_CROP) {
-                handleCropResult(data);
-            }
-        }
-        if (resultCode == UCrop.RESULT_ERROR) {
-            handleCropError(data);
-        }*/
     }
 
     /**
@@ -259,67 +205,11 @@ public class EditProfileActivity extends AppCompatActivity {
      */
     private UCrop advancedConfig(@NonNull UCrop uCrop) {
         UCrop.Options options = new UCrop.Options();
-
-//        switch (mRadioGroupCompressionSettings.getCheckedRadioButtonId()) {
-//            case R.id.radio_png:
-//                options.setCompressionFormat(Bitmap.CompressFormat.PNG);
-//                break;
-//            case R.id.radio_webp:
-//                options.setCompressionFormat(Bitmap.CompressFormat.WEBP);
-//                break;
-//            case R.id.radio_jpeg:
-//            default:
-//                options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
-//                break;
-//        }
-//        options.setCompressionQuality(mSeekBarQuality.getProgress());
-
-
-
-        /*
-        If you want to configure how gestures work for all UCropActivity tabs
-        options.setAllowedGestures(UCropActivity.SCALE, UCropActivity.ROTATE, UCropActivity.ALL);
-        * */
-
-        /*
-        This sets max size for bitmap that will be decoded from source Uri.
-        More size - more memory allocation, default implementation uses screen diagonal.
-        options.setMaxBitmapSize(640);
-        * */
-
-
-       /*
-        Tune everything (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧
-        options.setMaxScaleMultiplier(5);
-        options.setImageToCropBoundsAnimDuration(666);
-        options.setDimmedLayerColor(Color.CYAN);
-        options.setOvalDimmedLayer(true);
-        options.setShowCropFrame(false);
-        options.setCropGridStrokeWidth(20);
-        options.setCropGridColor(Color.GREEN);
-        options.setCropGridColumnCount(2);
-        options.setCropGridRowCount(1);
-        // Color palette
-        options.setToolbarColor(ContextCompat.getColor(this, R.color.your_color_res));
-        options.setStatusBarColor(ContextCompat.getColor(this, R.color.your_color_res));
-        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.your_color_res));
-		options.setToolbarTitleTextColor(ContextCompat.getColor(this, R.color.your_color_res));
-       */
-
         return uCrop.withOptions(options);
     }
 
     private void startCropActivity(@NonNull Uri uri) {
-//        UCrop uCrop = UCrop.of(uri, mDestinationUri);
-//        uCrop = basisConfig(uCrop);
-//        uCrop.start(this);
-
         Crop.of(uri, mDestinationUri).asSquare().start(this, Crop.REQUEST_CROP);
-
-//        UCrop.of(uri, mDestinationUri)
-//                .withAspectRatio(16, 9)
-//                .withMaxResultSize(getScreenWidth(this), getScreenWidth(this))
-//                .start(this);
     }
 
     private void handleCropResult(@NonNull Intent result) {
@@ -382,18 +272,15 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void setPageTitle(String title) {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.edit_profile_toolbar);
-        if (toolbar != null) {
-            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
-            titleTextView.setText(title);
-        }
+        TextView titleTextView = (TextView) findViewById(R.id.text_toolbar_title);
+        titleTextView.setText(title);
     }
 
     private void initViews() {
 
         profileImageView = (ImageView) findViewById(R.id.edit_profile_image);
 
-        Spinner genderSpinner = (Spinner) findViewById(R.id.edit_profile_gender);
+        final Spinner genderSpinner = (Spinner) findViewById(R.id.edit_profile_gender);
         String[] genderArray = getResources().getStringArray(R.array.gender_array);
 
         SpinnerArrayAdapter<CharSequence> arrayAdapter = new SpinnerArrayAdapter<CharSequence>(this,
@@ -402,11 +289,34 @@ public class EditProfileActivity extends AppCompatActivity {
         genderSpinner.setAdapter(arrayAdapter);
         genderSpinner.setPromptId(R.string.edit_profile_gender_hint);
 
-        EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
-        birthDateEditText.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.llBirthdayContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showBirthDateDialog();
+            }
+        });
+        findViewById(R.id.edit_profile_birthDate).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.llBirthdayContainer).performClick();
+            }
+        });
+        findViewById(R.id.llGenderContainer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                genderSpinner.performClick();
+            }
+        });
+        findViewById(R.id.llProvinceContainer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.edit_profile_province).performClick();
+            }
+        });
+        findViewById(R.id.llCityContainer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.edit_profile_city).performClick();
             }
         });
 
@@ -416,6 +326,13 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                dispatchTakePictureIntent();
                 selectImage();
+            }
+        });
+
+        findViewById(R.id.tvSave).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateProfile();
             }
         });
     }
@@ -625,7 +542,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                 Request newRequest = chain.request().newBuilder()
-                        .addHeader("authorization", authorizationJsonHeader)
+                        .addHeader("access-token", authorizationJsonHeader)
                         .build();
                 return chain.proceed(newRequest);
             }
@@ -636,26 +553,54 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void getProvinces() {
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<Map<String, ProvinceCity[]>> call = apiEndpoints.getProvinces();
-
-        call.enqueue(new Callback<Map<String, ProvinceCity[]>>() {
+        provincesMap = new HashMap<>();
+        provincesMap.clear();
+        WebService service = new WebService();
+        service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
-            public void onResponse(Call<Map<String, ProvinceCity[]>> call, Response<Map<String, ProvinceCity[]>> response) {
-                int statusCode = response.code();
-                provincesMap = response.body();
+            public void onPreRequest(String requestUrl) {
+
+            }
+
+            @Override
+            public void onSuccess(String requestUrl, Object response) {
+                JSONObject responseObject = (JSONObject) response;
+                Iterator<String> keys = responseObject.keys();
+                while (keys.hasNext()) {
+                    try {
+                        String provinceName = keys.next();
+                        JSONArray provinceCitiesArray = responseObject.getJSONArray(provinceName);
+                        ProvinceCity[] cities = new ProvinceCity[provinceCitiesArray.length()];
+                        for (int i = 0; i < provinceCitiesArray.length(); i++) {
+                            JSONObject cityObject = provinceCitiesArray.getJSONObject(i);
+                            String cityName = cityObject.getString("city");
+                            ProvinceCity result = new ProvinceCity();
+                            result.setCity(cityName);
+
+                            cities[i] = result;
+                        }
+
+                        provincesMap.put(provinceName, cities);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 if (provincesMap != null && !provincesMap.isEmpty()) {
                     initProvinceSpinner(provincesMap);
                 }
+
             }
 
             @Override
-            public void onFailure(Call<Map<String, ProvinceCity[]>> call, Throwable t) {
-                t.printStackTrace();
+            public void onError(String requestUrl, VolleyError error) {
+
             }
         });
+
+        service.getJsonObject(WebServiceConstants.ProvinceCity.GET_PROVINCE_CITIES);
     }
 
     private void initProvinceSpinner(final Map<String, ProvinceCity[]> provincesMap) {
@@ -694,34 +639,33 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void getProfile() {
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.getProfile();
-
-        call.enqueue(new Callback<AccountProfile>() {
+        WebService service = new WebService();
+        service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
-            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
-                int statusCode = response.code();
-                AccountProfile accountProfile = response.body();
-                if (accountProfile != null && accountProfile.getProfile() != null) {
-                    /*if (accountProfile.getProfile().getBirthDate() == null ||
-                            accountProfile.getProfile().getBirthDate().length() == 0) {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                        Date date = new Date();
-                        String dateString = dateFormat.format(date);
-                        accountProfile.getProfile().setBirthDate(dateString);
+            public void onPreRequest(String requestUrl) {
 
-                    }*/
-                    setProfile(accountProfile);
+            }
+
+            @Override
+            public void onSuccess(String requestUrl, Object response) {
+                JSONObject responseObject = (JSONObject) response;
+                AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
+                if (loggedInProfile != null) {
+                    loggedInProfile.saveToSharedPref(EditProfileActivity.this);
+                    setProfile(loggedInProfile);
+                } else {
+                    // TODO: 11/3/2016 AD show error
+                    Log.d("User", "logged in user is empty");
                 }
             }
 
             @Override
-            public void onFailure(Call<AccountProfile> call, Throwable t) {
-                t.printStackTrace();
+            public void onError(String requestUrl, VolleyError error) {
+                error.printStackTrace();
             }
         });
+        service.setToken(AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString());
+        service.getJsonObject(WebServiceConstants.Accounts.ME);
     }
 
     private void uploadProfilePicture(Uri resultUri) {

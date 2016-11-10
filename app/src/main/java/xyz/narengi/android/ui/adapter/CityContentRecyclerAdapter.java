@@ -37,6 +37,7 @@ import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.service.ImageDownloaderAsyncTask;
+import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.activity.AttractionActivity;
 
 /**
@@ -179,7 +180,7 @@ public class CityContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
             int width = display.getWidth();
             int imageWidth = width * 38 / 62;
             int imageHeight = (imageWidth / 2);
-            Picasso.with(context).load(house.getPictures()[0].getUrl()).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
+            Picasso.with(context).load(WebServiceConstants.HOST_NAME + house.getPictures()[0]).resize(imageWidth, imageHeight).into(viewHolder.houseImageView);
         }
         viewHolder.housePriceTextView.setText(house.getCost());
         if (house.getHost() != null && house.getHost().getImageUrl() != null) {

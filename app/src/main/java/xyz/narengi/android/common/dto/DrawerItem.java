@@ -51,6 +51,7 @@ public class DrawerItem {
         ACTION_PROFILE,
         ACTION_LOGIN_SIGN_UP,
         ACTION_USER_GUIDE,
-        ACTION_SETTINGS
+        ACTION_SETTINGS,
+        ACTION_LOGOUT
     }
 }
