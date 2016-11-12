@@ -2,7 +2,6 @@ package xyz.narengi.android.ui.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -22,9 +21,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +32,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.dto.Authorization;
-import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.ImageInfo;
-import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.HostHousesContentRecyclerAdapter;
@@ -286,13 +279,13 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getURL() + "/pictures");
+        Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getDetailUrl() + "/pictures");
 
         imagesCall.enqueue(new Callback<ImageInfo[]>() {
             @Override
             public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
                 ImageInfo[] result = response.body();
-                allImageInfoArraysMap.put(house.getURL(), result);
+                allImageInfoArraysMap.put(house.getDetailUrl(), result);
 
                 if (allImageInfoArraysMap.size() == hostHouses.length) {
                     HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
@@ -307,7 +300,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 
             @Override
             public void onFailure(Call<ImageInfo[]> call, Throwable t) {
-                allImageInfoArraysMap.put(house.getURL(), null);
+                allImageInfoArraysMap.put(house.getDetailUrl(), null);
                 if (allImageInfoArraysMap.size() == hostHouses.length) {
                     HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
                             hostHouses, null, null, HostHousesActivity.this, allImageInfoArraysMap, allHouseAvailableDatesMap);
@@ -431,7 +424,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<Object> call = apiEndpoints.removeHouse(house.getURL());
+        Call<Object> call = apiEndpoints.removeHouse(house.getDetailUrl());
 
         call.enqueue(new Callback<Object>() {
             @Override

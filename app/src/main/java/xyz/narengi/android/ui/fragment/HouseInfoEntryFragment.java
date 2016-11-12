@@ -1,5 +1,6 @@
 package xyz.narengi.android.ui.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -291,6 +292,9 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 //                }
 //
 //                ((TextView)v.findViewById(android.R.id.text1)).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    v.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                }
                 ((TextView) v).setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 return v;
 
@@ -307,6 +311,9 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 //                } else {
 //                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_gray_dark));
 //                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    v.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                }
                 return v;
             }
         };

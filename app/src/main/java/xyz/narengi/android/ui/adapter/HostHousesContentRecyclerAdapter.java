@@ -2,7 +2,6 @@ package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
@@ -66,9 +65,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AccessToken;
 import xyz.narengi.android.common.dto.AccountProfile;
-import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.ImageInfo;
@@ -222,10 +219,10 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //            getHouseImage(viewHolder, null);
 //        }
 
-        if (allImageInfoArraysMap != null && allImageInfoArraysMap.get(house.getURL()) != null) {
-            ImageInfo[] imageInfoArray = allImageInfoArraysMap.get(house.getURL());
+        if (allImageInfoArraysMap != null && allImageInfoArraysMap.get(house.getDetailUrl()) != null) {
+            ImageInfo[] imageInfoArray = allImageInfoArraysMap.get(house.getDetailUrl());
             if (imageInfoArray != null && imageInfoArray.length > 0) {
-                imageInfoArraysMap.put(house.getURL(), imageInfoArray);
+                imageInfoArraysMap.put(house.getDetailUrl(), imageInfoArray);
                 getHouseImage(viewHolder, imageInfoArray[0]);
             } else
                 getHouseImage(viewHolder, null);
@@ -276,7 +273,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         viewHolder.viewHouseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openHouseDetail(house.getURL());
+                openHouseDetail(house.getDetailUrl());
             }
         });
 
@@ -608,7 +605,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         String startDateString = simpleDateFormat.format(startDate);
         String endDateString = simpleDateFormat.format(endDate);
 
-        String url = house.getURL();
+        String url = house.getDetailUrl();
         url = url + "/available-dates/start-" + startDateString + "/end-" + endDateString;
 
         Call<HouseAvailableDates> call = apiEndpoints.getHouseAvailableDates(url);
@@ -620,7 +617,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
                     HashMap<String, List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
                     if (selectedDaysMap != null) {
-                        housesSelectedDaysMap.put(house.getURL(), selectedDaysMap);
+                        housesSelectedDaysMap.put(house.getDetailUrl(), selectedDaysMap);
                     }
 
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -727,11 +724,11 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     private void openEditHouse(House house) {
         Intent intent = new Intent(context, EditHouseActivity.class);
         intent.putExtra("house", house);
-        if (imageInfoArraysMap != null && imageInfoArraysMap.get(house.getURL()) != null)
-            intent.putExtra("imageInfoArray", imageInfoArraysMap.get(house.getURL()));
+        if (imageInfoArraysMap != null && imageInfoArraysMap.get(house.getDetailUrl()) != null)
+            intent.putExtra("imageInfoArray", imageInfoArraysMap.get(house.getDetailUrl()));
 
-        if (housesSelectedDaysMap != null && housesSelectedDaysMap.get(house.getURL()) != null)
-            intent.putExtra("selectedDaysMap", housesSelectedDaysMap.get(house.getURL()));
+        if (housesSelectedDaysMap != null && housesSelectedDaysMap.get(house.getDetailUrl()) != null)
+            intent.putExtra("selectedDaysMap", housesSelectedDaysMap.get(house.getDetailUrl()));
 
         if (context instanceof AppCompatActivity)
             ((AppCompatActivity) context).startActivityForResult(intent, 2002);

@@ -3,7 +3,6 @@ package xyz.narengi.android.ui.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -32,8 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.byagowi.persiancalendar.Entity.Day;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -51,14 +48,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.HouseEntryStep;
-import xyz.narengi.android.common.dto.Authorization;
-import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseEntryInput;
 import xyz.narengi.android.common.dto.HouseEntryPrice;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.Location;
-import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.fragment.HouseDatesEntryFragment;
@@ -317,7 +311,7 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        updateHouseRetrofitCall = apiEndpoints.updateHouse(house.getURL(), houseEntryInput);
+        updateHouseRetrofitCall = apiEndpoints.updateHouse(house.getDetailUrl(), houseEntryInput);
 
         updateHouseRetrofitCall.enqueue(new Callback<House>() {
             @Override

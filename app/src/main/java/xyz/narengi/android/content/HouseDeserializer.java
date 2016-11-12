@@ -60,7 +60,7 @@ public class HouseDeserializer implements JsonDeserializer<House> {
 
         JsonElement urlElement = jsonElement.getAsJsonObject().get("URL");
         String url = urlElement.getAsString();
-        house.setURL(url);
+        house.setDetailUrl(url);
 
         JsonElement featureSummaryElement = jsonElement.getAsJsonObject().get("featureSummary");
         String featureSummary = featureSummaryElement.getAsString();

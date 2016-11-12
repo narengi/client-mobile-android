@@ -796,28 +796,6 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void showUpdateProfileResultDialog(String message, final boolean isSuccessful) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//        builder.setTitle("Update Profile Result");
-//        if (message != null) {
-//            builder.setMessage(message);
-//        } else {
-//            builder.setMessage("Profile updated successfully!");
-//        }
-//
-//        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//                if (isSuccessful) {
-//                    setResult(102);
-//                    finish();
-//                }
-//            }
-//        });
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.setCanceledOnTouchOutside(false);
-//        dialog.show();
-
 
         Toast toast = new Toast(getApplicationContext());
         View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
@@ -842,9 +820,8 @@ public class EditProfileActivity extends AppCompatActivity {
 //                openViewProfile();
                 setResult(401);
                 finish();
-                //??? finish this, and go to explore activity, and start view profile activity from there ???
             }
-        }, 3000);
+        }, 1000);
     }
 
     private void openViewProfile() {

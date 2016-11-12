@@ -62,7 +62,7 @@ public class BookActivity extends AppCompatActivity {
             Serializable houseSerializable = getIntent().getSerializableExtra("house");
             if (houseSerializable instanceof House) {
                 house = (House) houseSerializable;
-                if (house.getURL() != null) {
+                if (house.getDetailUrl() != null) {
                     getHouseAvailableDates();
                 }
             }
@@ -181,7 +181,7 @@ public class BookActivity extends AppCompatActivity {
         String startDateString = dateFormat.format(startDate);
         String endDateString = dateFormat.format(endDate);
 
-        String url = house.getURL();
+        String url = house.getDetailUrl();
         url = url + "/available-dates/start-" + startDateString + "/end-" + endDateString;
 
 //        System.out.println("getHouseAvailableDates url : " + url);

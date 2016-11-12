@@ -82,7 +82,7 @@ public interface RetrofitApiEndpoints {
     Call<AccountProfile> uploadProfilePicture(@Body RequestBody picture);
 //    Call<AccountProfile> uploadProfilePicture(, @Part("picture") RequestBody picture);
 
-    @GET("/api/basic-info/provinces")
+    @GET("/api/settings/provinces")
     Call<Map<String, ProvinceCity[]>> getProvinces();
 
     @POST("/api/accounts/verifications/request/{type}")

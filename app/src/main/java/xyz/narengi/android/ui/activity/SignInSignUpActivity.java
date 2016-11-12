@@ -1,5 +1,6 @@
 package xyz.narengi.android.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,6 +25,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
@@ -61,6 +63,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     private ActionBarRtlizer rtlizer;
     private ImageView imgBackground;
     private View loadingLayer;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -275,11 +278,12 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
             public void onPreRequest(String requestUrl) {
-
+                showLoadingProgress();
             }
 
             @Override
             public void onSuccess(String requestUrl, Object response) {
+                hideLoadingProgress();
                 JSONObject responseObject = (JSONObject) response;
                 AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
                 loggedInProfile.saveToSharedPref(context);
@@ -290,7 +294,11 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
             @Override
             public void onError(String requestUrl, VolleyError error) {
-
+                hideLoadingProgress();
+                String errorMessage = Util.getErrorMessage(error);
+                if (errorMessage != null) {
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         service.postJsonObject(WebServiceConstants.Accounts.LOGIN, params);
@@ -309,11 +317,12 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
             public void onPreRequest(String requestUrl) {
-
+                showLoadingProgress();
             }
 
             @Override
             public void onSuccess(String requestUrl, Object response) {
+                hideLoadingProgress();
                 JSONObject responseObject = (JSONObject) response;
                 AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
                 loggedInProfile.saveToSharedPref(context);
@@ -323,10 +332,27 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
             @Override
             public void onError(String requestUrl, VolleyError error) {
+                hideLoadingProgress();
                 error.printStackTrace();
+                String errorMessage = Util.getErrorMessage(error);
+                if (errorMessage != null) {
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         service.postJsonObject(WebServiceConstants.Accounts.REGISTER, params);
+    }
+
+    private void showLoadingProgress() {
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("لطفا کمی صبر کنید...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+    }
+
+    private void hideLoadingProgress() {
+        if (progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismiss();
     }
 
     @Override

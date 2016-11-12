@@ -148,6 +148,25 @@ public class ExploreActivity extends ActionBarActivity {
         });
         setupToolbar();
 
+        forceRTLIfSupported();
+
+        aroundLocationList = new ArrayList<>();
+        setupListView(aroundLocationList);
+
+        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask("ت");
+        loadDataAsyncTask.execute();
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void forceRTLIfSupported() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (AccountProfile.getLoggedInAccountProfile(context) != null) {
             WebService service = new WebService();
             service.setToken(AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString());
@@ -181,38 +200,6 @@ public class ExploreActivity extends ActionBarActivity {
         } else {
             setupDrawerView(false);
         }
-
-        forceRTLIfSupported();
-
-        aroundLocationList = new ArrayList<>();
-        setupListView(aroundLocationList);
-
-        LoadDataAsyncTask loadDataAsyncTask = new LoadDataAsyncTask("ت");
-        loadDataAsyncTask.execute();
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void forceRTLIfSupported() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        }
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-//        if (SecurityUtils.getInstance(this).isUpdateUserTitleNeeded()) {
-//            NavigationView navigationView = (NavigationView)findViewById(R.id.explore_navigationView);
-//
-//            View headerView = navigationView.getHeaderView(0);
-//            TextView titleTextView = (TextView)headerView.findViewById(R.id.drawer_header_title);
-//            SharedPreferences preferences = getSharedPreferences("profile", 0);
-//            String title = preferences.getString("displayName", "");
-//            if (title.length() > 0) {
-//                titleTextView.setText(title);
-//            }
-//            SecurityUtils.getInstance(this).setUpdateUserTitleNeeded(false);
-//        }
     }
 
     @Override
