@@ -1,7 +1,10 @@
 package xyz.narengi.android.ui.activity;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -9,9 +12,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -64,6 +71,7 @@ import xyz.narengi.android.ui.fragment.HouseMapEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseRoomEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseTypeEntryFragment;
 import xyz.narengi.android.util.DateUtils;
+import xyz.narengi.android.util.Util;
 
 /**
  * @author Siavash Mahmoudpour
@@ -80,6 +88,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     private List<Uri> imageUris;
     private ImageInfo[] imageInfoArray;
     private Map<String, List<Day>> selectedDaysMap;
+    private long requestMillis = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +112,43 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 
         TextView indicatorTextView1 = (TextView) findViewById(R.id.add_house_indicator1);
         indicatorTextView1.setTextColor(getResources().getColor(android.R.color.white));
-        indicatorTextView1.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_orange));
+        indicatorTextView1.setBackgroundResource(R.drawable.circle_bg_orange);
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            new AlertDialog.Builder(this)
+                    .setTitle("دسترسی")
+                    .setMessage("برای اضافه کردن خانه، برنامه نیاز به داشتن دسترسی به مکان‌یاب شما دارد")
+                    .setPositiveButton("دادن دسترسی", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+                            requestMillis = System.currentTimeMillis();
+                            ActivityCompat.requestPermissions(AddHouseActivity.this, permissions, 12);
+                        }
+                    })
+                    .setNegativeButton("انصراف", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    })
+                    .setCancelable(false)
+                    .create().show();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        long now = System.currentTimeMillis();
+        if (grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED) {
+            if (now - requestMillis <= 100) {
+                Util.startInstalledAppDetailsActivity(this);
+            }
+            finish();
+        }
     }
 
     private void setPageTitle(String title) {
