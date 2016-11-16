@@ -55,7 +55,6 @@ public class RetrofitService {
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
                     .addInterceptor(bodyLoggingInterceptor)
                     .addInterceptor(new RequestAuthorizationInterceptor())
-                    .addInterceptor(new ResponseInterceptor())
                     .connectTimeout(5, TimeUnit.SECONDS)
                     .readTimeout(15, TimeUnit.SECONDS);
             instance.retrofit = new Retrofit.Builder()
@@ -75,7 +74,6 @@ public class RetrofitService {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(bodyLoggingInterceptor)
                 .addInterceptor(new RequestAuthorizationInterceptor())
-                .addInterceptor(new ResponseInterceptor())
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS);
         result.retrofit = new Retrofit.Builder()

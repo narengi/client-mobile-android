@@ -4,12 +4,15 @@ import com.squareup.okhttp.RequestBody;
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
@@ -77,9 +80,9 @@ public interface RetrofitApiEndpoints {
     @PUT("/api/accounts/update")
     Call<AccountProfile> updateProfile(@Body Profile profile);
 
-    //    @Multipart
+    @Multipart
     @POST("/api/user-profiles/picture")
-    Call<AccountProfile> uploadProfilePicture(@Body RequestBody picture);
+    Call<AccountProfile> uploadProfilePicture(@Part MultipartBody.Part picture);
 //    Call<AccountProfile> uploadProfilePicture(, @Part("picture") RequestBody picture);
 
     @GET("/api/settings/provinces")

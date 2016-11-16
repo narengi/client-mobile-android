@@ -43,11 +43,9 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
@@ -69,6 +67,9 @@ import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import ir.smartlab.persindatepicker.PersianDatePicker;
 import ir.smartlab.persindatepicker.util.PersianCalendar;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -675,14 +676,11 @@ public class EditProfileActivity extends AppCompatActivity {
 //        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
 
 
-        RequestBody photoRequestBody = RequestBody.create(MediaType.parse("application/image"), file);
-        RequestBody requestBody = new MultipartBuilder()
-                .type(MultipartBuilder.FORM)
-                .addFormDataPart("picture", file.getName(), photoRequestBody)
-                .build();
+        RequestBody photoRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part photoPart = MultipartBody.Part.createFormData("picture", file.getName(), photoRequestBody);
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.uploadProfilePicture(requestBody);
+        Call<AccountProfile> call = apiEndpoints.uploadProfilePicture(photoPart);
 
         call.enqueue(new Callback<AccountProfile>() {
             @Override
