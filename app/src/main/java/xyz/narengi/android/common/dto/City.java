@@ -1,5 +1,9 @@
 package xyz.narengi.android.common.dto;
 
+import java.util.Locale;
+
+import xyz.narengi.android.service.WebServiceConstants;
+
 /**
  * @author Siavash Mahmoudpour
  */
@@ -15,6 +19,9 @@ public class City {
     private AroundPlaceAttraction[] Attractions;
     private AroundPlaceHouse[] Houses;
 
+    public static String getURL(String cityId) {
+        return String.format(Locale.ENGLISH, WebServiceConstants.City.CITY_DETAILS_API_FORMAT, cityId);
+    }
 
     public String getName() {
         return Name;

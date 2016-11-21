@@ -8,6 +8,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,6 +96,59 @@ public class WebService {
         getJsonObject(parametrizedUrl);
     }
 
+    public void getJsonArray(String url, JSONObject params) {
+        String parametrizedUrl = url;
+        if (params != null && params.length() > 0) {
+            boolean firstTime = true;
+            if (parametrizedUrl.contains("?"))
+                firstTime = false;
+            Iterator<String> keys = params.keys();
+            while (keys.hasNext()) {
+                try {
+                    String key = keys.next();
+                    String value = params.getString(key);
+                    parametrizedUrl += String.format(Locale.ENGLISH, "%s%s=%s", firstTime ? "?" : "&", key, URLEncoder.encode(value, "utf-8"));
+                    firstTime = false;
+                } catch (JSONException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        getJsonArray(parametrizedUrl);
+    }
+
+    public void getJsonArray(final String url) {
+        if (mainResponseHandler != null)
+            mainResponseHandler.onPreRequest(url);
+
+        Request request;
+
+        //log url
+        Log.d(REQUEST_LOG_KEY, "GET : " + url);
+
+        request = new CustomJsonObjectRequestJsonArrayResponse(Request.Method.GET, url, token, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response != null) {
+                    Log.d(REQUEST_LOG_KEY, "Response : " + response.toString());
+                }
+                if (mainResponseHandler != null)
+                    mainResponseHandler.onSuccess(url, response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    Log.d(REQUEST_LOG_KEY, "ERROR : " + error.toString());
+                }
+                if (mainResponseHandler != null)
+                    mainResponseHandler.onError(url, error);
+            }
+        });
+        request.setRetryPolicy(new DefaultRetryPolicy(15000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        mRequestQueue.add(request);
+    }
+
     public void postJsonObject(final String url, JSONObject params) {
         if (mainResponseHandler != null)
             mainResponseHandler.onPreRequest(url);
@@ -130,6 +184,14 @@ public class WebService {
         mRequestQueue.add(request);
     }
 
+    public interface ResponseHandler {
+        void onPreRequest(String requestUrl);
+
+        void onSuccess(String requestUrl, Object response);
+
+        void onError(String requestUrl, VolleyError error);
+    }
+
     public abstract class SimpleResponseHandler implements ResponseHandler {
 
         @Override
@@ -146,14 +208,6 @@ public class WebService {
         public void onError(String requestUrl, VolleyError error) {
 
         }
-    }
-
-    public interface ResponseHandler {
-        void onPreRequest(String requestUrl);
-
-        void onSuccess(String requestUrl, Object response);
-
-        void onError(String requestUrl, VolleyError error);
     }
 
 }

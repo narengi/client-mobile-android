@@ -7,8 +7,7 @@
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
-    <ir.smartlab.persindatepicker.PersianDatePicker
-        xmlns:persianDatePicker="http://schemas.android.com/apk/res-auto"
+    <ir.smartlab.persindatepicker.PersianDatePicker xmlns:persianDatePicker="http://schemas.android.com/apk/res-auto"
         android:id="@+id/edit_profile_birthDatePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,5 +15,8 @@
         android:layout_margin="10dp"
         android:background="@android:color/transparent"
         android:gravity="center"
-        persianDatePicker:displayMonthNames="true" />
+        persianDatePicker:displayMonthNames="true"
+        persianDatePicker:maxYear="1395"
+        persianDatePicker:minYear="1300"
+        persianDatePicker:yearRange="100" />
 </LinearLayout>

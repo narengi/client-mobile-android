@@ -159,7 +159,7 @@
                 android:background="@android:color/transparent"
                 android:editable="false"
                 android:gravity="left|center_vertical"
-                android:hint="1395/08/20"
+                android:hint="1374/08/20"
                 android:imeOptions="actionNext"
                 android:maxLines="1" />
 

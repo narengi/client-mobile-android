@@ -1,6 +1,9 @@
 package xyz.narengi.android.common.dto;
 
 import java.io.Serializable;
+import java.util.Locale;
+
+import xyz.narengi.android.service.WebServiceConstants;
 
 /**
  * @author Siavash Mahmoudpour
@@ -32,6 +35,9 @@ public class House implements Serializable {
     private Location location;
     private String address;
 
+    public static String getDetailUrl(String houseId) {
+        return String.format(Locale.ENGLISH, WebServiceConstants.House.HOUSE_DETAILS_API_FORMAT, houseId);
+    }
 
     public String getName() {
         return Name;

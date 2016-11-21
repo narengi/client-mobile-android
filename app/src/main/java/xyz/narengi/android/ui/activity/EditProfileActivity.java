@@ -14,15 +14,18 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -43,7 +46,6 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.picasso.OkHttpDownloader;
@@ -74,8 +76,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import xyz.narengi.android.BuildConfig;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.common.dto.ProvinceCity;
@@ -105,6 +107,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private Map<String, ProvinceCity[]> provincesMap;
 
     private AlertDialog mAlertDialog;
+    private String mCurrentPhotoPath;
 
 
     @Override
@@ -116,7 +119,6 @@ public class EditProfileActivity extends AppCompatActivity {
         setupToolbar();
         initViews();
         getProvinces();
-        getProfilePicture();
         getProfile();
     }
 
@@ -133,9 +135,15 @@ public class EditProfileActivity extends AppCompatActivity {
             finish();
         } else {
             if (resultCode == RESULT_OK) {
-                if (requestCode == REQUEST_SELECT_PICTURE || requestCode == REQUEST_IMAGE_CAPTURE) {
-                    final Uri selectedUri = data.getData();
-                    if (selectedUri != null) {
+                if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                    if (!TextUtils.isEmpty(mCurrentPhotoPath)) {
+                        startCropActivity(Uri.fromFile(new File(mCurrentPhotoPath)));
+
+                    } else {
+                        Toast.makeText(EditProfileActivity.this, "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (requestCode == REQUEST_SELECT_PICTURE) {
+                    if (data != null && data.getData() != null) {
                         startCropActivity(data.getData());
                     } else {
                         Toast.makeText(EditProfileActivity.this, "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
@@ -360,7 +368,12 @@ public class EditProfileActivity extends AppCompatActivity {
         View view = inflater.inflate(R.layout.dialog_birth_date, null);
 
         final PersianDatePicker birthDatePicker = (PersianDatePicker) view.findViewById(R.id.edit_profile_birthDatePicker);
-        birthDatePicker.setDisplayDate(new Date());
+
+        if (selectedBirthDate != null) {
+            birthDatePicker.setDisplayDate(selectedBirthDate);
+        } else {
+            birthDatePicker.setDisplayDate(new Date());
+        }
 
         builder.setView(view);
 
@@ -449,8 +462,36 @@ public class EditProfileActivity extends AppCompatActivity {
 //
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                return;
+            }
+            Uri photoURI = FileProvider.getUriForFile(EditProfileActivity.this,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     private void pickFromGallery() {
@@ -550,7 +591,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
         Picasso picasso = new Picasso.Builder(this).downloader(new OkHttpDownloader(picassoClient)).build();
-        picasso.load(Constants.SERVER_BASE_URL + "/api/v1/user-profiles/picture").into(profileImageView);
+        picasso.load(AccountProfile.getLoggedInAccountProfile(this).getProfile().getAvatar()).into(profileImageView);
     }
 
     private void getProvinces() {
@@ -591,6 +632,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 if (provincesMap != null && !provincesMap.isEmpty()) {
                     initProvinceSpinner(provincesMap);
+                    setProfile(AccountProfile.getLoggedInAccountProfile(EditProfileActivity.this));
                 }
 
             }
@@ -848,7 +890,8 @@ public class EditProfileActivity extends AppCompatActivity {
         return measuredWidth;
     }
 
-    private void setProfile(AccountProfile accountProfile) {
+    private void setProfile(final AccountProfile accountProfile) {
+        getProfilePicture();
         this.accountProfile = accountProfile;
 
         setPageTitle(accountProfile.getDisplayName());
@@ -871,7 +914,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }
         Spinner provinceSpinner = (Spinner) findViewById(R.id.edit_profile_province);
-        Spinner citySpinner = (Spinner) findViewById(R.id.edit_profile_city);
+        final Spinner citySpinner = (Spinner) findViewById(R.id.edit_profile_city);
         EditText bioEditText = (EditText) findViewById(R.id.edit_profile_bio);
 
 //        if (accountProfile.getVerifications() != null && accountProfile.getVerifications().length > 0) {
@@ -907,15 +950,32 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             }
 
-            if (cityArray != null && accountProfile.getProfile().getCity() != null &&
-                    accountProfile.getProfile().getCity().length() > 0) {
-                for (int i = 0; i < cityArray.length; i++) {
-                    ProvinceCity provinceCity = cityArray[i];
-                    if (accountProfile.getProfile().getCity().equalsIgnoreCase(provinceCity.getCity())) {
-                        citySpinner.setSelection(i);
+            final ProvinceCity[] finalCityArray = cityArray;
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (finalCityArray != null && accountProfile.getProfile().getCity() != null &&
+                                    accountProfile.getProfile().getCity().length() > 0) {
+                                for (int i = 0; i < finalCityArray.length; i++) {
+                                    ProvinceCity provinceCity = finalCityArray[i];
+                                    if (accountProfile.getProfile().getCity().equalsIgnoreCase(provinceCity.getCity())) {
+                                        citySpinner.setSelection(i);
+                                    }
+                                }
+                            }
+                        }
+                    });
                 }
-            }
+            }.start();
+
         }
 
 //        if (accountProfile.getProfile().getBirthDate() != null)

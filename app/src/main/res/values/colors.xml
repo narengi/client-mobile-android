@@ -13,4 +13,5 @@
     <color name="orange_dark">#D06A1D</color>
     <color name="orange_light_alpha">#77FD8023</color>
     <color name="translucent_dialog_bg">#000000ff</color>
+    <color name="primary">@color/orange_light</color>
 </resources>

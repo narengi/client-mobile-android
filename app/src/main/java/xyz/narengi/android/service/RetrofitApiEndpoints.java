@@ -95,10 +95,10 @@ public interface RetrofitApiEndpoints {
     @GET
     Call<HouseAvailableDates> getHouseAvailableDates(@Url String url);
 
-    @GET("/api/houses/settings/house-types")
+    @GET("/api/house-types")
     Call<Map<String, String>[]> getHouseTypes();
 
-    @GET("/api/houses/settings/features")
+    @GET("http://api.narengi.xyz/api/house-features")
     Call<Map<String, String>[]> getHouseFeatures();
 
     @GET("/api/houses/my-houses")

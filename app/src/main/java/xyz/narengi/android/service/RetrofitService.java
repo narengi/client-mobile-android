@@ -55,8 +55,8 @@ public class RetrofitService {
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
                     .addInterceptor(bodyLoggingInterceptor)
                     .addInterceptor(new RequestAuthorizationInterceptor())
-                    .connectTimeout(5, TimeUnit.SECONDS)
-                    .readTimeout(15, TimeUnit.SECONDS);
+                    .connectTimeout(15, TimeUnit.SECONDS)
+                    .readTimeout(25, TimeUnit.SECONDS);
             instance.retrofit = new Retrofit.Builder()
                     .client(builder.build())
                     .addConverterFactory(GsonConverterFactory.create())
@@ -74,8 +74,8 @@ public class RetrofitService {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(bodyLoggingInterceptor)
                 .addInterceptor(new RequestAuthorizationInterceptor())
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS);
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(25, TimeUnit.SECONDS);
         result.retrofit = new Retrofit.Builder()
                 .client(builder.build())
                 .addConverterFactory(GsonConverterFactory.create(customGson))

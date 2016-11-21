@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
+import xyz.narengi.android.service.WebServiceConstants;
+
 /**
  * @author Siavash Mahmoudpour
  */
@@ -42,7 +44,11 @@ public class Profile implements Serializable {
             result.city = object.isNull(CITY_JSON_KEY) ? "" : object.getString(CITY_JSON_KEY);
             result.birthDate = object.isNull(BIRTHDAY_JSON_KEY) ? "" : object.getString(BIRTHDAY_JSON_KEY);
             result.bio = object.isNull(BIO_JSON_KEY) ? "" : object.getString(BIO_JSON_KEY);
-            result.avatar = object.isNull(AVATAR_JSON_KEY) ? "" : object.getString(AVATAR_JSON_KEY);
+            try {
+                result.avatar = object.getJSONObject("picture").getString("url");
+            } catch (JSONException erx) {
+                erx.printStackTrace();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -59,7 +65,9 @@ public class Profile implements Serializable {
             result.put(CITY_JSON_KEY, city == null ? JSONObject.NULL : city);
             result.put(BIRTHDAY_JSON_KEY, birthDate == null ? JSONObject.NULL : birthDate);
             result.put(BIO_JSON_KEY, bio == null ? JSONObject.NULL : bio);
-            result.put(AVATAR_JSON_KEY, avatar == null ? JSONObject.NULL : avatar);
+            JSONObject picObject = new JSONObject();
+            picObject.put("url", avatar == null ? "" : avatar);
+            result.put("picture", picObject);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -112,6 +120,14 @@ public class Profile implements Serializable {
 
     public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public String getAvatar() {
+        return WebServiceConstants.HOST_NAME + "/api" +  avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getBio() {
