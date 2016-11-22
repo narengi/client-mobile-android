@@ -13,6 +13,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
@@ -113,8 +114,9 @@ public interface RetrofitApiEndpoints {
     @DELETE
     Call<Object> removeHouse(@Url String url);
 
+    @Multipart
     @POST
-    Call<ImageInfo[]> uploadHouseImages(@Url String url, @Body RequestBody picture);
+    Call<ImageInfo[]> uploadHouseImages(@Url String url, @PartMap() Map<String, RequestBody> picture);
 
     @POST
     Call<ImageInfo[]> removeHouseImages(@Url String url, @Body RemoveHouseImagesInfo removeHouseImagesInfo);

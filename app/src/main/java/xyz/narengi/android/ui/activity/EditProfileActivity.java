@@ -63,12 +63,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import ir.smartlab.persindatepicker.PersianDatePicker;
-import ir.smartlab.persindatepicker.util.PersianCalendar;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -87,6 +87,7 @@ import xyz.narengi.android.service.WebService;
 import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.adapter.SpinnerArrayAdapter;
 import xyz.narengi.android.util.SecurityUtils;
+import xyz.narengi.android.util.Util;
 
 /**
  * @author Siavash Mahmoudpour
@@ -906,8 +907,9 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (birthDate != null) {
                     selectedBirthDate = birthDate;
                     EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
-                    PersianCalendar calendar = new PersianCalendar(birthDate.getTime());
-                    birthDateEditText.setText(calendar.getPersianShortDate());
+
+                    Util.SolarCalendar calendar = new Util.SolarCalendar(birthDate);
+                    birthDateEditText.setText(String.format(Locale.ENGLISH, "%d/%02d/%02d", calendar.year, calendar.month, calendar.date));
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
