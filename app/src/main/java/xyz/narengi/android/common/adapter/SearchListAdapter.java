@@ -1,6 +1,7 @@
 package xyz.narengi.android.common.adapter;
 
 import android.content.Context;
+import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +12,29 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Random;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.model.AroundLocation;
 import xyz.narengi.android.common.model.AroundLocationDataAttraction;
 import xyz.narengi.android.common.model.AroundLocationDataCity;
 import xyz.narengi.android.common.model.AroundLocationDataHouse;
+import xyz.narengi.android.ui.widget.AutoScrollViewPager;
 
 /**
  * Created by Sepehr Behroozi on 11/20/16.
  */
 
 public class SearchListAdapter extends BaseAdapter {
+    private static final long[] autoScrollIntervals = {
+            1500,
+            2000,
+            3000,
+            3500,
+            4000,
+            2500,
+            4500
+    };
     private Context context;
     private List<AroundLocation> locations;
 
@@ -49,66 +61,106 @@ public class SearchListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AroundLocation location = locations.get(position);
-        if (location.getType() == AroundLocation.Type.CITY) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.list_item_search_city_attraction, parent, false);
-
-            TextView tvCityName = (TextView) convertView.findViewById(R.id.tvCityName);
-            TextView tvCityDescription = (TextView) convertView.findViewById(R.id.tvCityDescription);
-            ImageView imgCityImage = (ImageView) convertView.findViewById(R.id.imgCityImage);
-
-            AroundLocationDataCity cityData = (AroundLocationDataCity) location.getData();
-
-            tvCityName.setText(cityData.getName());
-            tvCityDescription.setText(cityData.getDescription());
-            if (cityData.getPictures() != null && cityData.getPictures().length > 0) {
-                Picasso.with(context).load(cityData.getPictures()[0]).error(R.drawable.city_default_image).into(imgCityImage);
-            } else {
-                imgCityImage.setImageResource(R.drawable.city_default_image);
-            }
-
-        } else if (location.getType() == AroundLocation.Type.HOUSE) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.list_item_search_house, parent, false);
-            View llNarengiSuggestion = convertView.findViewById(R.id.llNarengiSuggestionContainer);
-            ImageView imgHouseImage = (ImageView) convertView.findViewById(R.id.imgHouseImage);
-            TextView tvHouseName = (TextView) convertView.findViewById(R.id.tvHouseName);
-            TextView tvHouseSummary = (TextView) convertView.findViewById(R.id.tvHouseSummary);
-            TextView tvHousePrice = (TextView) convertView.findViewById(R.id.tvHousePricePerNight);
-
-            AroundLocationDataHouse houseData = (AroundLocationDataHouse) location.getData();
-
-            tvHousePrice.setVisibility(View.GONE);
-            llNarengiSuggestion.setVisibility(View.GONE);
-
-            tvHouseName.setText(houseData.getName());
-            tvHouseSummary.setText(houseData.getSummary());
-
-            if (houseData.getPictures() != null && houseData.getPictures().length > 0) {
-                Picasso.with(context).load(houseData.getPictures()[0]).error(R.drawable.house_default_image).into(imgHouseImage);
-            } else {
-                imgHouseImage.setImageResource(R.drawable.house_default_image);
-            }
-        } else if (location.getType() == AroundLocation.Type.ATTRACTION) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.list_item_search_city_attraction, parent, false);
-
-            TextView tvAttractionName = (TextView) convertView.findViewById(R.id.tvCityName);
-            TextView tvAttractionDescription = (TextView) convertView.findViewById(R.id.tvCityDescription);
-            ImageView imgAttractionImage = (ImageView) convertView.findViewById(R.id.imgCityImage);
-
-            AroundLocationDataAttraction attractionData = (AroundLocationDataAttraction) location.getData();
-
-            tvAttractionName.setText(attractionData.getName());
-            tvAttractionDescription.setText(attractionData.getDescription());
-            if (attractionData.getPictures() != null && attractionData.getPictures().length > 0) {
-                Picasso.with(context).load(attractionData.getPictures()[0]).error(R.drawable.attraction_default_image).into(imgAttractionImage);
-            } else {
-                imgAttractionImage.setImageResource(R.drawable.attraction_default_image);
-            }
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.list_item_search, parent, false);
+            holder = new ViewHolder();
+            holder.vpImages = (AutoScrollViewPager) convertView.findViewById(R.id.vpImages);
+            holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+            holder.tvSummary = (TextView) convertView.findViewById(R.id.tvSummary);
+            holder.tvHousePrice = (TextView) convertView.findViewById(R.id.tvHousePricePerNight);
+            holder.llNarengiSuggestion = convertView.findViewById(R.id.llNarengiSuggestionContainer);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
+        AroundLocation location = locations.get(position);
+        holder.tvHousePrice.setVisibility(location.getType() == AroundLocation.Type.HOUSE ? View.VISIBLE : View.GONE);
+        holder.llNarengiSuggestion.setVisibility(location.getType() == AroundLocation.Type.HOUSE ? View.VISIBLE : View.GONE);
 
+        if (location.getType() == AroundLocation.Type.HOUSE) {
+            holder.tvHousePrice.setVisibility(View.GONE);
+            holder.llNarengiSuggestion.setVisibility(View.GONE);
+            holder.tvName.setText(((AroundLocationDataHouse) location.getData()).getName());
+            holder.tvSummary.setText(((AroundLocationDataHouse) location.getData()).getSummary());
+
+            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataHouse) location.getData()).getPictures(), AroundLocation.Type.HOUSE);
+            holder.vpImages.setAdapter(adapter);
+        } else if (location.getType() == AroundLocation.Type.CITY) {
+            holder.tvName.setText(((AroundLocationDataCity) location.getData()).getName());
+            holder.tvSummary.setText(((AroundLocationDataCity) location.getData()).getDescription());
+
+            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataCity) location.getData()).getPictures(), AroundLocation.Type.CITY);
+            holder.vpImages.setAdapter(adapter);
+        } else if (location.getType() == AroundLocation.Type.ATTRACTION) {
+            holder.tvName.setText(((AroundLocationDataAttraction) location.getData()).getName());
+            holder.tvSummary.setText(((AroundLocationDataAttraction) location.getData()).getDescription());
+
+            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataAttraction) location.getData()).getPictures(), AroundLocation.Type.ATTRACTION);
+            holder.vpImages.setAdapter(adapter);
+
+        }
+        holder.vpImages.setInterval(autoScrollIntervals[new Random().nextInt(autoScrollIntervals.length)]);
+        holder.vpImages.startAutoScroll();
+        holder.vpImages.setStopScrollWhenTouch(false);
+
+        convertView.setTag(holder);
         return convertView;
     }
 
 
+    class ViewHolder {
+        AutoScrollViewPager vpImages;
+        TextView tvName;
+        TextView tvSummary;
+        TextView tvHousePrice;
+        View llNarengiSuggestion;
+    }
+
+    class PicturesPagerAdapter extends PagerAdapter {
+        private String[] pictures;
+        private AroundLocation.Type type;
+
+        public PicturesPagerAdapter(String[] pictures, AroundLocation.Type type) {
+            this.pictures = pictures;
+            this.type = type;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ImageView img = new ImageView(context);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            img.setLayoutParams(params);
+            img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            Picasso
+                    .with(context)
+                    .load(pictures == null || pictures.length <= position ? "http://google.com" : pictures[position])
+                    .error(
+                            type == AroundLocation.Type.HOUSE ? R.drawable.house_default_image :
+                                    type == AroundLocation.Type.ATTRACTION ? R.drawable.attraction_default_image :
+                                            type == AroundLocation.Type.CITY ? R.drawable.city_default_image :
+                                                    R.drawable.city_default_image
+                    )
+                    .into(img);
+
+            container.addView(img);
+            return img;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public int getCount() {
+            return pictures == null || pictures.length == 0 ? 1 : pictures.length;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+    }
 }

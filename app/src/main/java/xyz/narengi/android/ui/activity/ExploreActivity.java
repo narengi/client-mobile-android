@@ -412,7 +412,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.btnRetry) {
-
+            startDefaultSearch();
         } else if (id == R.id.imgDrawerMenu) {
             drawerLayout.openDrawer(Gravity.RIGHT, true);
         }
