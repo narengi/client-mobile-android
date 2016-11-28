@@ -2,7 +2,6 @@ package xyz.narengi.android.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -46,6 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
+import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.service.ImageDownloaderAsyncTask;
@@ -307,8 +307,8 @@ public class HouseActivity extends ActionBarActivity {
 //            getHouseMapImage(mapUrl);
 //        }
 
-//        if (house.getImages() != null && house.getImages().length > 0) {
-//            setupImageViewPager(house.getImages());
+//        if (house.getPictures() != null && house.getPictures().length > 0) {
+//            setupImageViewPager(house.getPictures());
 //        }
 
 //        setupTitleInfoLayout(house);
@@ -321,7 +321,7 @@ public class HouseActivity extends ActionBarActivity {
         houseHostFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                house.getHost().setImageUrl(house.getImages()[0]);
+//                house.getHost().setImageUrl(house.getPictures()[0]);
                 if (house.getHost() != null && house.getHost().getHostURL() != null)
                     openHostActivity(house.getHost().getHostURL());
             }
@@ -366,11 +366,7 @@ public class HouseActivity extends ActionBarActivity {
     }
 
     private void openBookHouse() {
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        if (accessToken.length() > 0 && username.length() > 0 && house != null && house.getURL() != null && house.getBookingUrl() != null) {
+        if (AccountProfile.getLoggedInAccountProfile(this) != null && house != null && house.getDetailUrl() != null && house.getBookingUrl() != null) {
 
             Intent intent = new Intent(this, BookActivity.class);
             intent.putExtra("house", house);

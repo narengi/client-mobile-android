@@ -18,7 +18,7 @@
 
     <!-- Drawer menu, logged in -->
     <string name="drawer_menu_inbox">پيام ها</string>
-    <string name="drawer_menu_favorites">علاقه مندی ها</string>
+    <string name="drawer_menu_favorites">علاقه‌مندی‌ها (لاگ‌آوت)</string>
     <string name="drawer_menu_logout">خروج از حساب کاربری</string>
 
     <string-array name="search_history_array">
@@ -52,5 +52,12 @@
     <string name="enable_location_alert_title">تنظيمات مکان يابی</string>
     <string name="enable_location_alert_message">سرويس مکان يابی گوشی شما غير فعال می باشد. برای دريافت مختصات مکان فعلی تان، بايد سرويس مکان يابی را از بخش تنظيمات گوشی فعال نماييد.</string>
     <string name="title_activity_book_requests">BookRequestsActivity</string>
+    <string name="user_avatar">عکس پروفایل</string>
+    <string name="home">خانه</string>
+    <string name="profile">پروفایل</string>
+    <string name="user_guide">راهنمایی</string>
+    <string name="please_wait">لطفا کمی صبر کنید...</string>
+    <string name="i_forgot_my_password">رمز عبورم را فراموش کرده‌ام!</string>
+    <string name="retry">تلاش مجدد</string>
 
 </resources>

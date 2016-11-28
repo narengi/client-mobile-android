@@ -39,6 +39,7 @@ import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.util.SharedPref;
 
 
 /**
@@ -150,29 +151,10 @@ public class MobileVerificationActivity extends AppCompatActivity {
 
     private void verifyAccount(String verificationCode) {
 
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
-        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountVerification> call = apiEndpoints.verifyAccount("SMS", verificationCode, authorizationJson);
+        Call<AccountVerification> call = apiEndpoints.verifyAccount("SMS", verificationCode);
 
         call.enqueue(new Callback<AccountVerification>() {
             @Override
@@ -180,9 +162,10 @@ public class MobileVerificationActivity extends AppCompatActivity {
                 int statusCode = response.code();
                 AccountVerification accountVerification = response.body();
                 if (accountVerification != null && accountVerification.isVerified()) {
+                    SharedPreferences preferences = getSharedPreferences("profile", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("mobileVerified", true);
-                    editor.commit();
+                    editor.apply();
                     showResultDialog("", true);
                 }
             }

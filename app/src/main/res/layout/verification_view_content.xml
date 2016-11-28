@@ -110,7 +110,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:gravity="right|center_vertical"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:text="@string/verification_view_email_caption"
                 style="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/text_gray_dark"

@@ -154,29 +154,10 @@ public class MobileInputActivity extends AppCompatActivity {
         final RequestVerification requestVerification = new RequestVerification();
         requestVerification.setHandle(mobileNo);
 
-        SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
-        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountVerification> call = apiEndpoints.requestVerification("SMS", requestVerification, authorizationJson);
+        Call<AccountVerification> call = apiEndpoints.requestVerification("SMS", requestVerification);
 
         call.enqueue(new Callback<AccountVerification>() {
             @Override

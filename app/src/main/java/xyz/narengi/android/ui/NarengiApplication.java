@@ -11,9 +11,12 @@ import net.danlew.android.joda.JodaTimeAndroid;
  */
 public class NarengiApplication extends Application {
 
+    private static NarengiApplication instance;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         JodaTimeAndroid.init(this);
     }
 
@@ -21,5 +24,9 @@ public class NarengiApplication extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+    }
+
+    public static NarengiApplication getInstance() {
+        return instance;
     }
 }

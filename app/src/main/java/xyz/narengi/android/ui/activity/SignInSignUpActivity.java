@@ -1,10 +1,14 @@
 package xyz.narengi.android.ui.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,61 +17,128 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.android.volley.VolleyError;
 
-import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AccountProfile;
-import xyz.narengi.android.common.dto.Credential;
-import xyz.narengi.android.common.dto.Profile;
-import xyz.narengi.android.content.CredentialDeserializer;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
-import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.service.WebService;
+import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.fragment.SignInFragment;
 import xyz.narengi.android.ui.fragment.SignUpFragment;
 import xyz.narengi.android.ui.util.AlertUtils;
 import xyz.narengi.android.util.NetworkUtil;
+import xyz.narengi.android.util.Util;
 
 /**
  * @author Siavash Mahmoudpour
  */
 public class SignInSignUpActivity extends AppCompatActivity implements SignUpFragment.OnRegisterButtonClickListener, SignInFragment.OnLoginButtonClickListener {
 
+    public static final int RESULT_SIGN_UP_SUCCESS = 302;
+    public static final int RESULT_LOGIN_SUCCESS = 303;
+    public static final int REQUEST_CODE = 101;
+
+    private Context context;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ActionBarRtlizer rtlizer;
+    private ImageView imgBackground;
+    private View loadingLayer;
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.context = this;
         setContentView(R.layout.activity_sign_in_sign_up);
         setupToolbar();
 //        initViews();
-        setPageTitle(getString(R.string.login_register_page_title));
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED);
 
         viewPager = (ViewPager) findViewById(R.id.login_viewpager);
-        setupViewPager(viewPager);
+        loadingLayer = findViewById(R.id.llLoadingLayer);
+        imgBackground = (ImageView) findViewById(R.id.imgBackground);
+        setupViewPager();
 
         tabLayout = (TabLayout) findViewById(R.id.login_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        findViewById(R.id.rootLayout).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = findViewById(R.id.rootLayout).getRootView().getHeight() - findViewById(R.id.rootLayout).getHeight();
+                if (heightDiff > Util.convertDpToPx(SignInSignUpActivity.this, 200)) { // if more than 200 dp, it's probably a keyboard...
+                    toolbar.setVisibility(View.GONE);
+                    findViewById(R.id.llWelcomeContainer).setVisibility(View.GONE);
+                } else {
+                    toolbar.setVisibility(View.VISIBLE);
+                    findViewById(R.id.llWelcomeContainer).setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        imgBackground.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    imgBackground.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    imgBackground.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+
+                DisplayMetrics screenMetric = Util.getScreenMetrics(context);
+                int screenHeight = screenMetric.heightPixels;
+                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) imgBackground.getLayoutParams();
+                params.height = screenHeight;
+            }
+        });
+
+
+        tabLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    tabLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    tabLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+                int tabsCount = vg.getChildCount();
+                for (int j = 0; j < tabsCount; j++) {
+                    ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+                    int tabChildsCount = vgTab.getChildCount();
+                    for (int i = 0; i < tabChildsCount; i++) {
+                        View tabViewChild = vgTab.getChildAt(i);
+                        if (tabViewChild instanceof TextView) {
+                            ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/IRAN-Sans.ttf"));
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     private void setPageTitle(String title) {
@@ -109,7 +180,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 
 
     private void setupToolbar() {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.login_toolbar);
 
         /*Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
@@ -124,7 +195,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
-            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
+            ImageView backButton = (ImageView) toolbar.findViewById(R.id.icon_toolbar_back);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -144,12 +215,29 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         }
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new SignUpFragment(), getString(R.string.register_button));
         adapter.addFragment(new SignInFragment(), getString(R.string.login_button));
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+//                if (state == ViewPager.SCROLL_STATE_SETTLING) {
+//                    Util.hideSoftKeyboard(context, getCurrentFocus() == null ? viewPager : getCurrentFocus());
+//                }
+            }
+        });
         viewPager.setCurrentItem(1);
     }
 
@@ -173,169 +261,98 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
 //        }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void login(String email, String password) {
-        Credential credential = new Credential();
-
-        credential.setUsername(email);
-        credential.setPassword(password);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.login(credential);
-
-        call.enqueue(new Callback<AccountProfile>() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("username", email);
+            params.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        WebService service = new WebService();
+        service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
-            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
-                int statusCode = response.code();
-                AccountProfile accountProfile = response.body();
-                if (accountProfile != null && accountProfile.getToken() != null) {
-                    loginUser(accountProfile);
-                } else {
-                    try {
-                        if (response.errorBody() != null) {
-                            String failureMessage = response.errorBody().string();
-                            Toast.makeText(SignInSignUpActivity.this, "Login failure, status code : " + String.valueOf(statusCode) + "\n" + failureMessage, Toast.LENGTH_LONG).show();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                if (statusCode != 200) {
-                    Toast.makeText(SignInSignUpActivity.this, "Login failure, status code : " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
-                    //Failure
-                }
+            public void onPreRequest(String requestUrl) {
+                showLoadingProgress();
             }
 
             @Override
-            public void onFailure(Call<AccountProfile> call, Throwable t) {
-                t.printStackTrace();
+            public void onSuccess(String requestUrl, Object response) {
+                hideLoadingProgress();
+                JSONObject responseObject = (JSONObject) response;
+                AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
+                loggedInProfile.saveToSharedPref(context);
+
+                setResult(RESULT_LOGIN_SUCCESS);
+                finish();
+            }
+
+            @Override
+            public void onError(String requestUrl, VolleyError error) {
+                hideLoadingProgress();
+                String errorMessage = Util.getErrorMessage(error);
+                if (errorMessage != null) {
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+        service.postJsonObject(WebServiceConstants.Accounts.LOGIN, params);
     }
 
     private void register(String email, String password) {
 
-        Credential credential = new Credential();
-
-        credential.setEmail(email);
-        credential.setPassword(password);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountProfile> call = apiEndpoints.register(credential);
-
-        call.enqueue(new Callback<AccountProfile>() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("username", email);
+            params.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        WebService service = new WebService();
+        service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
-            public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
-                int statusCode = response.code();
-                if (statusCode != 201) {
-                    Toast.makeText(SignInSignUpActivity.this, "Register failure, status code : " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
-                    //Failure
-                } else {
-                    AccountProfile accountProfile = response.body();
-                    if (accountProfile != null && accountProfile.getToken() != null) {
-//                        Toast.makeText(SignInSignUpActivity.this, "Register success, getCreatedAt : " + accountProfile.getCreatedAt(), Toast.LENGTH_LONG).show();
-                        createUser(accountProfile);
-                    }
-                }
+            public void onPreRequest(String requestUrl) {
+                showLoadingProgress();
             }
 
             @Override
-            public void onFailure(Call<AccountProfile> call, Throwable t) {
-                t.printStackTrace();
+            public void onSuccess(String requestUrl, Object response) {
+                hideLoadingProgress();
+                JSONObject responseObject = (JSONObject) response;
+                AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
+                loggedInProfile.saveToSharedPref(context);
+                setResult(RESULT_SIGN_UP_SUCCESS);
+                finish();
+            }
+
+            @Override
+            public void onError(String requestUrl, VolleyError error) {
+                hideLoadingProgress();
+                error.printStackTrace();
+                String errorMessage = Util.getErrorMessage(error);
+                if (errorMessage != null) {
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+        service.postJsonObject(WebServiceConstants.Accounts.REGISTER, params);
     }
 
-    private void loginUser(AccountProfile accountProfile) {
-        SharedPreferences preferences = getSharedPreferences("profile", 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("accessToken", accountProfile.getToken().getToken());
-        editor.putString("username", accountProfile.getToken().getUsername());
-        editor.commit();
-
-        if (accountProfile.getProfile() != null) {
-            Profile profile = accountProfile.getProfile();
-            String displayName = "";
-            if (profile.getFirstName() != null)
-                displayName += profile.getFirstName();
-            if (profile.getLastName() != null)
-                displayName += " " + profile.getLastName();
-
-            editor.putString("displayName", displayName);
-            editor.commit();
-
-            boolean isPictureUploaded = true;
-            if (profile.getStatus() != null && profile.getStatus().getFields() != null) {
-                for (String field : profile.getStatus().getFields()) {
-                    if (field.equalsIgnoreCase("picture")) {
-                        isPictureUploaded = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isPictureUploaded) {
-                //TODO : get profile picture form server.
-            }
-        }
-
-        setResult(303);
-        finish();
-
-        /*if (accountProfile.getProfile() != null && accountProfile.getProfile().getStatus() != null &&
-                accountProfile.getProfile().getStatus().getCompleted() == 100) {
-            //TODO : finish();
-        } else {
-            if (accountProfile.getVerification() == null || accountProfile.getVerification().length == 0) {
-                //TODO : open mobile verification
-            } else {
-                AccountVerification mobileVerification = null;
-                for (AccountVerification verification : accountProfile.getVerification()) {
-                    if (verification.getVerificationType() != null && verification.getVerificationType().equalsIgnoreCase("SMS")) {
-                        mobileVerification = verification;
-                        break;
-                    }
-                }
-
-                if (mobileVerification != null && mobileVerification.isVerified()) {
-                    //TODO : open edit profile
-                } else {
-                    //TODO : open mobile verification
-                }
-            }
-        }
-
-        Intent intent = new Intent(this, MobileInputActivity.class);
-        startActivityForResult(intent, 101);*/
+    private void showLoadingProgress() {
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("لطفا کمی صبر کنید...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
     }
 
-    private void createUser(AccountProfile accountProfile) {
-        SharedPreferences preferences = getSharedPreferences("profile", 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("accessToken", accountProfile.getToken().getToken());
-        editor.putString("username", accountProfile.getToken().getUsername());
-        editor.commit();
-
-        setResult(302);
-        finish();
-
-//        Intent intent = new Intent(this, SignUpConfirmActivity.class);
-//        startActivityForResult(intent, 101);
+    private void hideLoadingProgress() {
+        if (progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismiss();
     }
 
     @Override
@@ -355,36 +372,6 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         } else {
             AlertUtils.getInstance().showNetworkErrorDialog(this, getString(R.string.network_error_alert_message));
         }
-
-//        Snackbar snack = Snackbar.make(findViewById(android.R.id.content), "Registration Successful!", Snackbar.LENGTH_LONG);
-//        View view = snack.getView();
-//        FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
-//        params.gravity = Gravity.CENTER;
-//        params.rightMargin = 100;
-//        params.leftMargin = 100;
-//        view.setLayoutParams(params);
-//        snack.show();
-
-
-//        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "", Snackbar.LENGTH_LONG);
-//        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-//        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
-//        textView.setVisibility(View.INVISIBLE);
-//
-//        LayoutInflater inflater = LayoutInflater.from(this);
-//        View snackView = inflater.inflate(R.layout.dialog_sign_up_success, null);
-//        layout.setGravity(Gravity.CENTER);
-//
-//        layout.addView(snackView, 0);
-//
-//        FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)layout.getLayoutParams();
-//        params.gravity = Gravity.CENTER;
-//        params.rightMargin = 100;
-//        params.leftMargin = 100;
-//        layout.setLayoutParams(params);
-//        layout.setBackgroundResource(R.drawable.snackbar_bg);
-//
-//        snackbar.show();
     }
 
     @Override

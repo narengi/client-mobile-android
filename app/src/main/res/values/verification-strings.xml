@@ -25,14 +25,14 @@
     <string name="mobile_input_mobile_hint">۰۹*********</string>
     <string name="mobile_input_send_button">تاييد شماره تلفن همراه</string>
 
-    <!-- Mobile verification -->
+    <!-- Mobile verifications -->
     <string name="mobile_verification_page_title">تاييد تلفن همراه</string>
     <string name="mobile_verification_caption">کد ۴ رقمی ارسال شده را اينجا وارد کنيد.</string>
     <string name="mobile_verification_resend_caption">در صورت دريافت نکردن پيامک، عليات را دوباره تکرار نماييد.</string>
     <string name="mobile_verification_send_button">ارسال</string>
     <string name="mobile_verification_success_message">تاييد شد</string>
 
-    <!-- Identity card verification -->
+    <!-- Identity card verifications -->
     <string name="identity_card_page_title">ارسال مدرک شناسايی</string>
     <string name="identity_card_message_one">از مدرک شناسايی خود مانند کارت ملی يا شناسنامه عکس بگيريد و يا اگر از قبل تصوير آن را در گالری خود داريد آن را انتخاب کنيد.</string>
     <string name="identity_card_message_two">اطلاعات مدرک شناسايی شما بايد با اطلاعات کاربری شما در نارنگی همخوانی داشته باشد. در غير اينصورت نارنگی قادر به احراز هويت شما نيست.</string>

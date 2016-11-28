@@ -225,7 +225,7 @@ public class AttractionActivity extends ActionBarActivity {
     }
 
     private void openHouseDetail(AroundPlaceHouse house) {
-        String houseUrl = house.getURL();
+        String houseUrl = house.getDetailUrl();
         Intent intent = new Intent(this, HouseActivity.class);
         intent.putExtra("houseUrl", houseUrl);
         startActivity(intent);

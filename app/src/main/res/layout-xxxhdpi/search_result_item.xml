@@ -28,7 +28,7 @@
     <!--<xyz.narengi.android.ui.widget.CustomTextView-->
         <!--android:id="@+id/search_result_item_summary"-->
         <!--style="@android:style/TextAppearance.Small"-->
-        <!--android:singleLine="true"-->
+        <!--android:maxLines="1"-->
         <!--android:layout_width="fill_parent"-->
         <!--android:layout_height="wrap_content"-->
         <!--android:gravity="right|center_vertical"-->

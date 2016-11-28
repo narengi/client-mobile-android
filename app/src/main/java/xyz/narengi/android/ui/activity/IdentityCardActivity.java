@@ -293,21 +293,6 @@ public class IdentityCardActivity extends AppCompatActivity {
 
     private void uploadIdCardPhoto(Uri resultUri) {
         final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         File file = new File(resultUri.getPath());
@@ -319,7 +304,7 @@ public class IdentityCardActivity extends AppCompatActivity {
                 .build();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountVerification> call = apiEndpoints.requestIdVerification(authorizationJson, "ID", requestBody);
+        Call<AccountVerification> call = apiEndpoints.requestIdVerification("ID", requestBody);
 
         call.enqueue(new Callback<AccountVerification>() {
             @Override
@@ -333,7 +318,7 @@ public class IdentityCardActivity extends AppCompatActivity {
 
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("isIdCardPhotoUploaded", true);
-                    editor.commit();
+                    editor.apply();
 
                     openVerificationConfirm();
                 } else {

@@ -92,6 +92,7 @@ import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
+import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.adapter.SuggestionsRecyclerAdapter;
 
 /**
@@ -968,7 +969,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
     }
 
     private void openHouseDetail(AroundPlaceHouse house) {
-        String houseUrl = house.getURL();
+        String houseUrl = house.getDetailUrl();
         Intent intent = new Intent(this, HouseActivity.class);
         intent.putExtra("houseUrl", houseUrl);
 //        closeSearchSuggestions("");
@@ -1280,7 +1281,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 //                        viewPager.getLayoutParams().height = viewPagerHeight;
                     }
 
-                    ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(SearchResultMapActivity.this, city.getImages());
+                    ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(SearchResultMapActivity.this, city.getPictures());
                     viewPager.setAdapter(adapter);
 
                     CirclePageIndicator pageIndicator = (CirclePageIndicator)myContentsView.findViewById(R.id.map_city_info_window_imagePageIndicator);
@@ -1318,7 +1319,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 //                        viewPager.getLayoutParams().height = viewPagerHeight;
                     }
 
-                    ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(SearchResultMapActivity.this, attraction.getImages());
+                    ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(SearchResultMapActivity.this, attraction.getPictures());
                     viewPager.setAdapter(adapter);
 
                     CirclePageIndicator pageIndicator = (CirclePageIndicator)myContentsView.findViewById(R.id.map_attraction_info_window_imagePageIndicator);
@@ -1345,11 +1346,11 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
                             .findViewById(R.id.map_house_info_window_featureSummary));
                     featureSummaryTextView.setText("\u200e" + house.getFeatureSummray());
 
-                    if (house.getImages() != null && house.getImages().length > 0) {
+                    if (house.getPictures() != null && house.getPictures().length > 0) {
 
                         ImageView houseImageView = (ImageView) myContentsView
                                 .findViewById(R.id.map_house_info_window_image);
-                        Picasso.with(getApplicationContext()).load(house.getImages()[0]).resize(imageWidth, imageHeight).into(houseImageView);
+                        Picasso.with(getApplicationContext()).load(WebServiceConstants.HOST_NAME + house.getPictures()[0]).resize(imageWidth, imageHeight).into(houseImageView);
                     }
 
 

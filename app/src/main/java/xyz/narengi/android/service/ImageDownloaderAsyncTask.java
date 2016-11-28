@@ -66,7 +66,7 @@ public class ImageDownloaderAsyncTask extends AsyncTask {
                     @Override
                     public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                         Request newRequest = chain.request().newBuilder()
-                                .addHeader("authorization", authorization)
+                                .addHeader("access-token", authorization)
                                 .build();
                         return chain.proceed(newRequest);
                     }

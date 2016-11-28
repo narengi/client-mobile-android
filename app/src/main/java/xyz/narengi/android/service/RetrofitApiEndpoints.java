@@ -2,17 +2,18 @@ package xyz.narengi.android.service;
 
 import com.squareup.okhttp.RequestBody;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
@@ -34,27 +35,26 @@ import xyz.narengi.android.common.dto.ProvinceCity;
 import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
 import xyz.narengi.android.common.dto.RequestVerification;
 import xyz.narengi.android.common.dto.SuggestionsResult;
-import xyz.narengi.android.ui.fragment.HouseImagesEntryFragment;
 
 /**
  * @author Siavash Mahmoudpour
  */
 public interface RetrofitApiEndpoints {
 
-    @GET("/api/v1/search")
+    @GET("/api/search")
     Call<AroundLocation[]> getAroundLocations(@Query("term") String searchTerm, @Query("filter[limit]") String filterLimit, @Query("filter[skip]") String filterSkip);
 
-    @GET("/api/v1/search")
+    @GET("/api/search")
     Call<AroundLocation[]> getAroundLocations(@Query("term") String searchTerm, @Query("filter[limit]") String filterLimit, @Query("filter[skip]") String filterSkip,
                                               @Query("position[lat]") double lat, @Query("position[lng]") double lng);
 
-    @GET("/api/v1/suggestion")
+    @GET("/api/suggestion")
     Call<SuggestionsResult> getAroundLocationSuggestions(@Query("term") String searchTerm,
                                                          @Query("filter[selection][city]") String cityCount,
                                                          @Query("filter[selection][attraction]") String attractionCount,
                                                          @Query("filter[selection][house]") String houseCount);
 
-//    @GET("/api/v1/cities/3")
+    //    @GET("/api/cities/3")
     @GET
     Call<City> getCity(@Url String url);
 
@@ -70,82 +70,71 @@ public interface RetrofitApiEndpoints {
     @POST("/api/accounts/register")
     Call<AccountProfile> register(@Body Credential credential);
 
-    @POST("/api/v1/accounts/verifications/request/{type}")
-    Call<AccountVerification> requestVerification(@Path("type") String type, @Body RequestVerification requestVerification,
-                                                  @Header("authorization") String authorization);
+    @POST("/api/accounts/verifications/request/{type}")
+    Call<AccountVerification> requestVerification(@Path("type") String type,
+                                                  @Body RequestVerification requestVerification);
 
-    @POST("/api/v1/accounts/verify/{type}/{code}")
-    Call<AccountVerification> verifyAccount(@Path("type") String type, @Path("code") String code,
-                                                  @Header("authorization") String authorization);
+    @POST("/api/accounts/verify/{type}/{code}")
+    Call<AccountVerification> verifyAccount(@Path("type") String type,
+                                            @Path("code") String code);
 
-    @GET("/api/v1/user-profiles")
-    Call<AccountProfile> getProfile(@Header("authorization") String authorization);
+    @PUT("/api/accounts/update")
+    Call<AccountProfile> updateProfile(@Body Profile profile);
 
-    @PUT("/api/v1/user-profiles")
-    Call<AccountProfile> updateProfile(@Header("authorization") String authorization,
-                                       @Body Profile profile);
+    @Multipart
+    @POST("/api/user-profiles/picture")
+    Call<AccountProfile> uploadProfilePicture(@Part MultipartBody.Part picture);
+//    Call<AccountProfile> uploadProfilePicture(, @Part("picture") RequestBody picture);
 
-    @POST("/api/v1/accounts/login")
-    Call<AccountProfile> login(@Body Credential credential);
+    @GET("/api/settings/provinces")
+    Call<Map<String, ProvinceCity[]>> getProvinces();
 
-//    @Multipart
-    @POST("/api/v1/user-profiles/picture")
-    Call<AccountProfile> uploadProfilePicture(@Header("authorization") String authorization, @Body RequestBody picture);
-//    Call<AccountProfile> uploadProfilePicture(@Header("authorization") String authorization, @Part("picture") RequestBody picture);
-
-    @GET("/api/v1/basic-info/provinces")
-    Call<Map<String,ProvinceCity[]>> getProvinces();
-
-    @POST("/api/v1/accounts/verifications/request/{type}")
-    Call<AccountVerification> requestIdVerification(@Header("authorization") String authorization, @Path("type") String type,
+    @POST("/api/accounts/verifications/request/{type}")
+    Call<AccountVerification> requestIdVerification(@Path("type") String type,
                                                     @Body RequestBody picture);
 
     @GET
     Call<HouseAvailableDates> getHouseAvailableDates(@Url String url);
 
-    @GET("/api/v1/houses/settings/house-types")
+    @GET("/api/house-types")
     Call<Map<String, String>[]> getHouseTypes();
 
-    @GET("/api/v1/houses/settings/features")
+    @GET("http://api.narengi.xyz/api/house-features")
     Call<Map<String, String>[]> getHouseFeatures();
 
-    @GET("/api/v1/houses/my-houses")
-    Call<House[]> getHostHouses(@Header("authorization") String authorization);
+    @GET("/api/houses/my-houses")
+    Call<House[]> getHostHouses();
 
-    @POST("/api/v1/houses")
-    Call<House> addHouse(@Header("authorization") String authorization, @Body HouseEntryInput houseEntryInput);
+    @POST("/api/houses")
+    Call<House> addHouse(@Body HouseEntryInput houseEntryInput);
 
     @PUT
-    Call<House> updateHouse(@Header("authorization") String authorization,@Url String url, @Body HouseEntryInput houseEntryInput);
+    Call<House> updateHouse(@Url String url, @Body HouseEntryInput houseEntryInput);
 
     @DELETE
-    Call<Object> removeHouse(@Header("authorization") String authorization,@Url String url);
+    Call<Object> removeHouse(@Url String url);
+
+    @Multipart
+    @POST
+    Call<ImageInfo[]> uploadHouseImages(@Url String url, @PartMap() Map<String, RequestBody> picture);
 
     @POST
-    Call<ImageInfo[]> uploadHouseImages(@Header("authorization") String authorization, @Url String url, @Body RequestBody picture);
-
-    @POST
-    Call<ImageInfo[]> removeHouseImages(@Header("authorization") String authorization, @Url String url, @Body RemoveHouseImagesInfo removeHouseImagesInfo);
+    Call<ImageInfo[]> removeHouseImages(@Url String url, @Body RemoveHouseImagesInfo removeHouseImagesInfo);
 
     @GET
     Call<ImageInfo[]> getHouseImages(@Url String url);
 
-    @GET("/api/v1/me/book-requests")
-    Call<BookRequest[]> getBookRequests(@Header("authorization") String authorization);
+    @GET("/api/me/book-requests")
+    Call<BookRequest[]> getBookRequests();
 
 
-    /**
-     * This service should be removed or renamed after new services for book requests created in back-end
-     * @param authorization
-     * @return
-     */
-    @GET("/api/v1/me/book-requests")
-    Call<BookRequestDTO[]> getBookRequestDTOs(@Header("authorization") String authorization);
+    @GET("/api/me/book-requests")
+    Call<BookRequestDTO[]> getBookRequestDTOs();
 
-    @PUT("/api/v1/book-request/{request-id}/accept")
-    Call<BookRequest> approveBookRequest(@Header("authorization") String authorization, @Path("request-id") String requestId);
+    @PUT("/api/book-request/{request-id}/accept")
+    Call<BookRequest> approveBookRequest(@Path("request-id") String requestId);
 
-    @PUT("/api/v1/book-request/{request-id}/reject")
-    Call<BookRequest> rejectBookRequest(@Header("authorization") String authorization, @Path("request-id") String requestId);
+    @PUT("/api/book-request/{request-id}/reject")
+    Call<BookRequest> rejectBookRequest(@Path("request-id") String requestId);
 
 }

@@ -2,7 +2,6 @@ package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
@@ -66,7 +65,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.Authorization;
+import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.ImageInfo;
@@ -212,7 +211,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //        if (imageInfoList != null && imageInfoList.size() > position) {
 //            ImageInfo[] imageInfoArray = imageInfoList.get(position);
 //            if (imageInfoArray != null && imageInfoArray.length > 0) {
-//                imageInfoArraysMap.put(house.getURL(), imageInfoArray);
+//                imageInfoArraysMap.put(house.getDetailUrl(), imageInfoArray);
 //                getHouseImage(viewHolder, imageInfoArray[0]);
 //            } else
 //                getHouseImage(viewHolder, null);
@@ -220,10 +219,10 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //            getHouseImage(viewHolder, null);
 //        }
 
-        if (allImageInfoArraysMap != null && allImageInfoArraysMap.get(house.getURL()) != null) {
-            ImageInfo[] imageInfoArray = allImageInfoArraysMap.get(house.getURL());
+        if (allImageInfoArraysMap != null && allImageInfoArraysMap.get(house.getDetailUrl()) != null) {
+            ImageInfo[] imageInfoArray = allImageInfoArraysMap.get(house.getDetailUrl());
             if (imageInfoArray != null && imageInfoArray.length > 0) {
-                imageInfoArraysMap.put(house.getURL(), imageInfoArray);
+                imageInfoArraysMap.put(house.getDetailUrl(), imageInfoArray);
                 getHouseImage(viewHolder, imageInfoArray[0]);
             } else
                 getHouseImage(viewHolder, null);
@@ -231,7 +230,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             getHouseImage(viewHolder, null);
         }
 
-//        getHouseImages(house.getURL(), viewHolder);
+//        getHouseImages(house.getDetailUrl(), viewHolder);
 
         if (house.getType() != null) {
             switch (house.getType()) {
@@ -263,7 +262,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
 //        if (houseAvailableDatesList != null && houseAvailableDatesList.size() > position) {
 //            HouseAvailableDates houseAvailableDates = houseAvailableDatesList.get(position);
-//            setFirstAvailableDate(viewHolder, houseAvailableDates, house.getURL());
+//            setFirstAvailableDate(viewHolder, houseAvailableDates, house.getDetailUrl());
 //        } else {
 //            viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
 //        }
@@ -274,7 +273,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         viewHolder.viewHouseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openHouseDetail(house.getURL());
+                openHouseDetail(house.getDetailUrl());
             }
         });
 
@@ -296,28 +295,6 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     }
 
     private void getHouseImage(final HostHousesItemViewHolder viewHolder, ImageInfo imageInfo) {
-
-        final SharedPreferences preferences = context.getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        StringBuilder authorizationBuilder = new StringBuilder();
-        authorizationBuilder.append(gson.toJson(authorization));
-
-        String tempJson = "";
-        if (authorizationBuilder.toString().length() > 0) {
-            tempJson = authorizationBuilder.toString();
-            tempJson = tempJson.replace("{", "");
-            tempJson = tempJson.replace("}", "");
-        }
-
-        final String authorizationJson = tempJson;
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
@@ -465,29 +442,10 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void getHouseImages(final String houseUrl, final HostHousesItemViewHolder viewHolder) {
 
-        final SharedPreferences preferences = context.getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        StringBuilder authorizationBuilder = new StringBuilder();
-        authorizationBuilder.append(gson.toJson(authorization));
-
-        String tempJson = "";
-        if (authorizationBuilder.toString().length() > 0) {
-            tempJson = authorizationBuilder.toString();
-            tempJson = tempJson.replace("{", "");
-            tempJson = tempJson.replace("}", "");
-        }
-
-        final String authorizationJson = tempJson;
+        final String authorizationJson = AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString();
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
@@ -550,7 +508,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                             @Override
                             public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                                 Request newRequest = chain.request().newBuilder()
-                                        .addHeader("authorization", authorizationJson)
+                                        .addHeader("access-token", authorizationJson)
                                         .build();
                                 return chain.proceed(newRequest);
                             }
@@ -647,7 +605,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         String startDateString = simpleDateFormat.format(startDate);
         String endDateString = simpleDateFormat.format(endDate);
 
-        String url = house.getURL();
+        String url = house.getDetailUrl();
         url = url + "/available-dates/start-" + startDateString + "/end-" + endDateString;
 
         Call<HouseAvailableDates> call = apiEndpoints.getHouseAvailableDates(url);
@@ -659,7 +617,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
                     HashMap<String, List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
                     if (selectedDaysMap != null) {
-                        housesSelectedDaysMap.put(house.getURL(), selectedDaysMap);
+                        housesSelectedDaysMap.put(house.getDetailUrl(), selectedDaysMap);
                     }
 
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -766,11 +724,11 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     private void openEditHouse(House house) {
         Intent intent = new Intent(context, EditHouseActivity.class);
         intent.putExtra("house", house);
-        if (imageInfoArraysMap != null && imageInfoArraysMap.get(house.getURL()) != null)
-            intent.putExtra("imageInfoArray", imageInfoArraysMap.get(house.getURL()));
+        if (imageInfoArraysMap != null && imageInfoArraysMap.get(house.getDetailUrl()) != null)
+            intent.putExtra("imageInfoArray", imageInfoArraysMap.get(house.getDetailUrl()));
 
-        if (housesSelectedDaysMap != null && housesSelectedDaysMap.get(house.getURL()) != null)
-            intent.putExtra("selectedDaysMap", housesSelectedDaysMap.get(house.getURL()));
+        if (housesSelectedDaysMap != null && housesSelectedDaysMap.get(house.getDetailUrl()) != null)
+            intent.putExtra("selectedDaysMap", housesSelectedDaysMap.get(house.getDetailUrl()));
 
         if (context instanceof AppCompatActivity)
             ((AppCompatActivity) context).startActivityForResult(intent, 2002);
@@ -893,7 +851,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                     @Override
                     public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                         Request newRequest = chain.request().newBuilder()
-                                .addHeader("authorization", authorization)
+                                .addHeader("access-token", authorization)
                                 .build();
                         return chain.proceed(newRequest);
                     }

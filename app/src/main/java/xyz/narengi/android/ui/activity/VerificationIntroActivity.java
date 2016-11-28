@@ -2,9 +2,7 @@ package xyz.narengi.android.ui.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,8 +35,8 @@ public class VerificationIntroActivity extends AppCompatActivity {
 
         if (getIntent() != null && getIntent().getSerializableExtra("accountProfile") != null) {
             AccountProfile accountProfile = (AccountProfile)getIntent().getSerializableExtra("accountProfile");
-            if (accountProfile.getVerification() != null && accountProfile.getVerification().length >= 1) {
-                for (AccountVerification verification : accountProfile.getVerification()) {
+            if (accountProfile.getVerifications() != null && accountProfile.getVerifications().size() >= 1) {
+                for (AccountVerification verification : accountProfile.getVerifications()) {
                     if (verification.getVerificationType() != null && verification.getVerificationType().equalsIgnoreCase("sms") &&
                             verification.isVerified()) {
                         isMobileVerified = true;

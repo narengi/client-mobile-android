@@ -1,13 +1,12 @@
 package xyz.narengi.android.ui.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +95,6 @@ public class SignInFragment extends Fragment {
                 onLoginButtonPressed(email, password);
             }
         });
-
         this.etxtPassword.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -110,20 +108,31 @@ public class SignInFragment extends Fragment {
             }
         });
 
+
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        etxtEmail.clearFocus();
+        etxtPassword.clearFocus();
+
+        etxtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
     }
 
     public void onLoginButtonPressed(String email, String password) {
         boolean shouldReturn = false;
         if (TextUtils.isEmpty(password)) {
-            this.tilPasswordLayout.setError("Password Should not be empty");
+            this.tilPasswordLayout.setError("لطفا رمزعبور را وارد کنید");
             shouldReturn = true;
         }
         if (TextUtils.isEmpty(email)) {
-            this.tilEmailLayout.setError("Email should not be empty");
+            this.tilEmailLayout.setError("لطفا ایمیل را وارد کنید");
             shouldReturn = true;
         } else if (!email.matches(EMAIL_REGEX)) {
-            this.tilEmailLayout.setError("Email is not correct");
+            this.tilEmailLayout.setError("لطفا ایمیل را به صورت صحیح وارد کنید");
             shouldReturn = true;
         }
         if (shouldReturn)

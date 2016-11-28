@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,15 +13,18 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -34,8 +36,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.MediaType;
@@ -49,7 +49,10 @@ import com.viewpagerindicator.CirclePageIndicator;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -58,14 +61,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import xyz.narengi.android.BuildConfig;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.activity.AddHouseActivity;
 import xyz.narengi.android.ui.activity.EditHouseDetailActivity;
+import xyz.narengi.android.ui.activity.EditProfileActivity;
 import xyz.narengi.android.ui.adapter.HouseEntryImageThumbnailsRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.HouseImageEntryViewPagerAdapter;
 import xyz.narengi.android.ui.util.AlertUtils;
@@ -89,6 +93,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
     private HouseEntryImageThumbnailsRecyclerAdapter thumbnailsRecyclerAdapter;
     private ImageButton removeImageButton;
     private AlertDialog progressDialog;
+    private String mCurrentPhotoPath;
 
     public HouseImagesEntryFragment() {
         // Required empty public constructor
@@ -254,39 +259,25 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             return;
         }
 
-        final SharedPreferences preferences = getActivity().getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
 
-        Gson gson = new GsonBuilder().create();
+        final MediaType MEDIA_TYPE = MediaType.parse("image/png");
+        HashMap<String, RequestBody> map = new HashMap<>(imageUris.size());
 
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
-        Retrofit retrofit = RetrofitService.getInstance(gson).getRetrofit();
-
-//        File file = new File(resultUri.getPath());
 
         MultipartBuilder builder = new MultipartBuilder();
         builder.type(MultipartBuilder.FORM);
 
         for (Uri uri : imageUris) {
             File file = new File(uri.getPath());
-            RequestBody photoRequestBody = RequestBody.create(MediaType.parse("application/image"), file);
-            builder.addFormDataPart("pictures", file.getName(), photoRequestBody);
+            RequestBody photoRequestBody = RequestBody.create(MEDIA_TYPE, file);
+            map.put("pictures\"; filename=\"" + file.getName(), photoRequestBody);
         }
 
-        RequestBody requestBody = builder.build();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> call = apiEndpoints.uploadHouseImages(authorizationJson, getHouse().getURL() + "/pictures", requestBody);
+        Call<ImageInfo[]> call = apiEndpoints.uploadHouseImages(getHouse().getDetailUrl() + "/pictures", map);
 
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
@@ -333,22 +324,6 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
         showProgress();
 
-        final SharedPreferences preferences = getActivity().getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder().create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RemoveHouseImagesInfo removeHouseImagesInfo = new RemoveHouseImagesInfo();
@@ -357,7 +332,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         removeHouseImagesInfo.setPicture_names(imageNames);
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> call = apiEndpoints.removeHouseImages(authorizationJson, getHouse().getURL() + "/pictures", removeHouseImagesInfo);
+        Call<ImageInfo[]> call = apiEndpoints.removeHouseImages(getHouse().getDetailUrl() + "/pictures", removeHouseImagesInfo);
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
             public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
@@ -632,12 +607,18 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_SELECT_PICTURE || requestCode == REQUEST_IMAGE_CAPTURE) {
-                final Uri selectedUri = data.getData();
-                if (selectedUri != null) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                if (!TextUtils.isEmpty(mCurrentPhotoPath)) {
+                    startCropActivity(Uri.fromFile(new File(mCurrentPhotoPath)));
+
+                } else {
+                    Toast.makeText(getContext(), "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
+                }
+            } else if (requestCode == REQUEST_SELECT_PICTURE) {
+                if (data != null && data.getData() != null) {
                     startCropActivity(data.getData());
                 } else {
-                    Toast.makeText(getActivity(), "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
                 }
             } else if (requestCode == Crop.REQUEST_CROP) {
                 handleCropResult(data);
@@ -728,17 +709,44 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-//            startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), REQUEST_SELECT_PICTURE);
             startActivityForResult(Intent.createChooser(intent, "label_select_picture"), REQUEST_SELECT_PICTURE);
         }
     }
 
     private void dispatchTakePictureIntent() {
-//
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                return;
+            }
+            Uri photoURI = FileProvider.getUriForFile(getContext(),
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     protected void requestPermission(final String permission, String rationale, final int requestCode) {
@@ -844,7 +852,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                         @Override
                         public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
                             Request newRequest = chain.request().newBuilder()
-                                    .addHeader("authorization", authorization)
+                                    .addHeader("access-token", authorization)
                                     .build();
                             return chain.proceed(newRequest);
                         }

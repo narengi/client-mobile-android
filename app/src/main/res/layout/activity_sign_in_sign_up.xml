@@ -2,22 +2,65 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/imgBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/login_background" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/login_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/llLoadingLayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#88FFFFFF"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/please_wait" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/login_appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
 
         <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@+id/login_toolbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="?attr/actionBarSize"-->
-            <!--android:background="?attr/colorPrimary"-->
-            <!--app:layout_scrollFlags="scroll|enterAlways" />-->
+        <!--android:id="@+id/login_toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?attr/actionBarSize"-->
+        <!--android:background="?attr/colorPrimary"-->
+        <!--app:layout_scrollFlags="scroll|enterAlways" />-->
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/login_toolbar"
@@ -36,64 +79,64 @@
                 android:gravity="center_vertical">
 
                 <!--selectableItemBackgroundBorderless-->
-                <ImageButton
+                <ImageView
                     android:id="@+id/icon_toolbar_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/ic_action_back"
+                    android:background="@drawable/transparent_alpha_orange_background_selector"
                     android:clickable="true"
                     android:focusable="true"
-                    />
+                    android:padding="10dp"
+                    android:src="@drawable/ic_action_back" />
                 <!--style="@style/IconFont.XLarge"-->
 
                 <TextView
                     android:id="@+id/text_toolbar_title"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:layout_marginRight="16dp"
                     android:layout_toLeftOf="@+id/icon_toolbar_back"
-                    android:gravity="right|center_vertical"
-                    />
+                    android:gravity="right|center_vertical" />
                 <!--style="@style/Textview.Dark.MediumLarge"-->
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/llWelcomeContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             tools:context="xyz.narengi.android.ui.activity.SignInSignUpActivity">
 
             <xyz.narengi.android.ui.widget.CustomTextView
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center_vertical"
                 android:layout_marginBottom="0dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:layout_weight="0"
                 android:background="@android:color/transparent"
                 android:gravity="center"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:text="@string/login_title_1"
-                style="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@android:color/holo_orange_dark"
                 android:textStyle="bold" />
 
             <xyz.narengi.android.ui.widget.CustomTextView
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center_vertical"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="12dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="0"
                 android:background="@android:color/transparent"
                 android:gravity="center"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:text="@string/login_title_2"
-                style="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@android:color/holo_orange_dark"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -107,11 +150,5 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/login_viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
 
 </android.support.design.widget.CoordinatorLayout>

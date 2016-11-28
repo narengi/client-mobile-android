@@ -109,7 +109,7 @@
                 <!--android:minWidth="@dimen/abc_search_view_text_min_width"-->
                 <!--android:layout_gravity="bottom"-->
                 <!--android:gravity="right|center_vertical"-->
-                <!--android:singleLine="true"-->
+                <!--android:maxLines="1"-->
                 <!--android:ellipsize="end"-->
                 <!--android:background="@android:color/white"-->
                 <!--android:inputType="text|textAutoComplete|textNoSuggestions"-->

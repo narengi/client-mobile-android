@@ -1,8 +1,10 @@
 package xyz.narengi.android.ui.activity;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -10,9 +12,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -32,8 +38,6 @@ import android.widget.Toast;
 
 import com.byagowi.persiancalendar.Entity.Day;
 import com.byagowi.persiancalendar.Utils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -50,14 +54,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.HouseEntryStep;
-import xyz.narengi.android.common.dto.Authorization;
-import xyz.narengi.android.common.dto.Credential;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseEntryInput;
 import xyz.narengi.android.common.dto.HouseEntryPrice;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.Location;
-import xyz.narengi.android.content.CredentialDeserializer;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.fragment.HouseDatesEntryFragment;
@@ -70,6 +71,7 @@ import xyz.narengi.android.ui.fragment.HouseMapEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseRoomEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseTypeEntryFragment;
 import xyz.narengi.android.util.DateUtils;
+import xyz.narengi.android.util.Util;
 
 /**
  * @author Siavash Mahmoudpour
@@ -86,6 +88,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     private List<Uri> imageUris;
     private ImageInfo[] imageInfoArray;
     private Map<String, List<Day>> selectedDaysMap;
+    private long requestMillis = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +112,43 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 
         TextView indicatorTextView1 = (TextView) findViewById(R.id.add_house_indicator1);
         indicatorTextView1.setTextColor(getResources().getColor(android.R.color.white));
-        indicatorTextView1.setBackgroundDrawable(getResources().getDrawable(R.drawable.circle_bg_orange));
+        indicatorTextView1.setBackgroundResource(R.drawable.circle_bg_orange);
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            new AlertDialog.Builder(this)
+                    .setTitle("دسترسی")
+                    .setMessage("برای اضافه کردن خانه، برنامه نیاز به داشتن دسترسی به مکان‌یاب شما دارد")
+                    .setPositiveButton("دادن دسترسی", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+                            requestMillis = System.currentTimeMillis();
+                            ActivityCompat.requestPermissions(AddHouseActivity.this, permissions, 12);
+                        }
+                    })
+                    .setNegativeButton("انصراف", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    })
+                    .setCancelable(false)
+                    .create().show();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        long now = System.currentTimeMillis();
+        if (grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED) {
+            if (now - requestMillis <= 100) {
+                Util.startInstalledAppDetailsActivity(this);
+            }
+            finish();
+        }
     }
 
     private void setPageTitle(String title) {
@@ -133,7 +172,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     @Override
     public void onBackPressed() {
 //        backToPreviousSection(readCurrentFragmentHouse());
-        if (house == null || house.getURL() == null) {
+        if (house == null || house.getDetailUrl() == null) {
             super.onBackPressed();
         } else {
             setResult(2001);
@@ -174,30 +213,10 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         if (houseEntryInput == null)
             return;
 
-
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<House> call = apiEndpoints.addHouse(authorizationJson, houseEntryInput);
+        Call<House> call = apiEndpoints.addHouse(houseEntryInput);
 
         call.enqueue(new Callback<House>() {
             @Override
@@ -276,30 +295,10 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         if (houseEntryInput == null)
             return;
 
-
-        final SharedPreferences preferences = getSharedPreferences("profile", 0);
-        String accessToken = preferences.getString("accessToken", "");
-        String username = preferences.getString("username", "");
-
-        Authorization authorization = new Authorization();
-        authorization.setUsername(username);
-        authorization.setToken(accessToken);
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Credential.class, new CredentialDeserializer())
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .create();
-
-        String authorizationJson = gson.toJson(authorization);
-        if (authorizationJson != null) {
-            authorizationJson = authorizationJson.replace("{", "");
-            authorizationJson = authorizationJson.replace("}", "");
-        }
-
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<House> call = apiEndpoints.updateHouse(authorizationJson, house.getURL(), houseEntryInput);
+        Call<House> call = apiEndpoints.updateHouse(house.getDetailUrl(), houseEntryInput);
 
         call.enqueue(new Callback<House>() {
             @Override
@@ -333,7 +332,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     private void addUpdateHouse() {
 
         if (currentStep == HouseEntryStep.HOUSE_INFO) {
-            if (house == null || house.getURL() == null || house.getURL().length() == 0)
+            if (house == null || house.getDetailUrl() == null || house.getDetailUrl().length() == 0)
                 addHouse();
             else updateHouse();
         } else if (currentStep == HouseEntryStep.HOUSE_IMAGES) {
