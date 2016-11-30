@@ -33,13 +33,14 @@
     <string name="house_room_entry_rooms_caption">تعداد اتاق خواب</string>
     <string name="house_room_entry_beds_caption">تعداد تخت خواب</string>
     <string name="house_room_entry_price_caption">قیمت هر شب اقامت (هزار تومان)</string>
-    <string name="house_entry_price_hint">مثال : ۱۲۰</string>
+	<string name="house_entry_price_hint">مثال : ۱۲۰</string>
+	<string name="house_entry_price_hint1">مثال : ۵۰</string>
 
     <!-- House guests section -->
     <string name="house_guest_entry_counter_caption">%s نفر</string>
     <string name="house_guest_entry_guests_caption">تعداد مهمانان</string>
     <string name="house_guest_entry_max_guests_caption">تعداد حداکثر مهمان</string>
-    <string name="house_guest_entry_extra_guest_price_caption">هزینه هر مهمان اضافی (ریال)</string>
+    <string name="house_guest_entry_extra_guest_price_caption">هزینه هر مهمان اضافی (هزار تومان)</string>
 
     <!-- House pictures section -->
     <string name="house_images_entry_image_removed_alert">عکس مورد نظر حذف شد.</string>
