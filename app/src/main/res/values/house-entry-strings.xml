@@ -32,8 +32,8 @@
     <string name="house_room_entry_counter_caption">%s عدد</string>
     <string name="house_room_entry_rooms_caption">تعداد اتاق خواب</string>
     <string name="house_room_entry_beds_caption">تعداد تخت خواب</string>
-    <string name="house_room_entry_price_caption">قيمت هر شب اقامت (ريال)</string>
-    <string name="house_entry_price_hint">مثال : ۱،۰۰۰</string>
+    <string name="house_room_entry_price_caption">قيمت هر شب اقامت (هزار تومان)</string>
+    <string name="house_entry_price_hint">مثال : ۱۲۰</string>
 
     <!-- House guests section -->
     <string name="house_guest_entry_counter_caption">%s نفر</string>

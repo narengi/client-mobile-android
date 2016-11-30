@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HousePrice;
@@ -212,4 +213,13 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
 
         getHouse().getPrice().setPrice(price);
     }
+
+	@Override
+	protected boolean validate() {
+		if (getHouse() == null || getHouse().getPrice() == null || getHouse().getPrice().getPrice() == 0) {
+			Toast.makeText(getContext(), R.string.invalid_price, Toast.LENGTH_LONG).show();
+			return false;
+		}
+		return true;
+	}
 }
