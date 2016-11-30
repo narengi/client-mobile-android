@@ -219,7 +219,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_weight="0"
                 android:background="@drawable/round_rect_bg_white"
-                android:gravity="right|center_vertical"
+                android:gravity="center_vertical"
                 android:hint="@string/house_entry_price_hint"
                 android:imeOptions="actionDone"
                 android:inputType="number"
