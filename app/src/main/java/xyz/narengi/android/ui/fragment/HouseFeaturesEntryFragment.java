@@ -206,8 +206,11 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
             if (checked.get(i)) {
                 Map<String, String> selectedFeatureMap = houseFeatures[i];
                 HouseFeature houseFeature = new HouseFeature();
-                Map.Entry<String, String> entry = selectedFeatureMap.entrySet().iterator().next();
-                houseFeature.setType(entry.getKey());
+				Iterator<Map.Entry<String, String>> iterator = selectedFeatureMap.entrySet().iterator();
+                Map.Entry<String, String> entry = iterator.next();
+                houseFeature.setType(entry.getValue());
+
+				entry = iterator.next();
                 houseFeature.setName(entry.getValue());
                 houseFeature.setAvailable(true);
                 selectedHouseFeatures.add(houseFeature);
@@ -306,8 +309,11 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
             Map<String, String> houseFeatureMap = houseFeaturesMapArray[i];
             if (houseFeatureMap == null || houseFeatureMap.isEmpty())
                 continue;
-            Map.Entry<String, String> entry = houseFeatureMap.entrySet().iterator().next();
-            houseFeature.setType(entry.getKey());
+			Iterator<Map.Entry<String, String>> iterator = houseFeatureMap.entrySet().iterator();
+            Map.Entry<String, String> entry = iterator.next();
+            houseFeature.setType(entry.getValue());
+
+			entry = iterator.next();
             houseFeature.setName(entry.getValue());
 
             houseFeatureArray[i] = houseFeature;
