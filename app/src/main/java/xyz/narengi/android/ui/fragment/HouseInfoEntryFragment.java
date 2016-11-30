@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Map;
 
@@ -414,6 +415,12 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
     @Override
     protected boolean validate() {
-        return super.validate();
+		if (titleEditText.getText().toString().isEmpty()
+				|| summaryEditText.getText().toString().isEmpty()
+				|| addressEditText.getText().toString().isEmpty()) {
+			Toast.makeText(getContext(), R.string.invalid_data, Toast.LENGTH_LONG).show();
+			return false;
+		}
+		return true;
     }
 }
