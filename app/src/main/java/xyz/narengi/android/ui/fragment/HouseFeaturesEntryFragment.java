@@ -228,16 +228,20 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
         call.enqueue(new Callback<Map<String, String>[]>() {
             @Override
             public void onResponse(Call<Map<String, String>[]> call, Response<Map<String, String>[]> response) {
-                int statusCode = response.code();
-                houseFeatures = response.body();
-                if (houseFeatures != null && houseFeatures.length > 0) {
-                    setupHouseFeaturesList(houseFeatures);
-                }
+				if (isAdded()) {
+					int statusCode = response.code();
+					houseFeatures = response.body();
+					if (houseFeatures != null && houseFeatures.length > 0) {
+						setupHouseFeaturesList(houseFeatures);
+					}
+				}
             }
 
             @Override
             public void onFailure(Call<Map<String, String>[]> call, Throwable t) {
-                t.printStackTrace();
+				if (isAdded()) {
+					t.printStackTrace();
+				}
             }
         });
     }

@@ -204,7 +204,7 @@
                 android:layout_weight="0"
                 android:background="@drawable/round_rect_bg_white"
                 android:gravity="right|center_vertical"
-                android:hint="@string/house_entry_price_hint"
+                android:hint="@string/house_entry_price_hint1"
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:maxLength="10"
