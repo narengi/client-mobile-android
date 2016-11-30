@@ -62,5 +62,6 @@
 	<string name="invalid_data">اطلاعات به درستی وارد نشده است</string>
 	<string name="invalid_position">موقعیت رو بر روی نقشه مشخص کنید</string>
 	<string name="invalid_price">قیمت به درستی وارد نشده است</string>
+	<string name="invalid_day">حداقل ۱ روز را انتخاب کنید</string>
 
 </resources>

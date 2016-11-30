@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.byagowi.persiancalendar.Entity.Day;
 import com.byagowi.persiancalendar.Utils;
@@ -162,4 +163,13 @@ public class HouseDatesEntryFragment extends HouseEntryBaseFragment
         dayItemsCount = itemsCount;
     }
 
+
+	@Override
+	protected boolean validate() {
+		if (selectedDaysMap == null || selectedDaysMap.size() < 1) {
+			Toast.makeText(getContext(), R.string.invalid_day, Toast.LENGTH_LONG).show();
+			return false;
+		}
+		return true;
+	}
 }
