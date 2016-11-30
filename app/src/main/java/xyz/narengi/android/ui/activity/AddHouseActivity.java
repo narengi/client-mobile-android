@@ -207,7 +207,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 
 
     private void addHouse() {
-
+		showProgress();
         //TODO : user test1003@test.com has more than 224 houses. use it for list test.
         HouseEntryInput houseEntryInput = getHouseEntryInput();
         if (houseEntryInput == null)
@@ -233,8 +233,10 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                         e.printStackTrace();
                     }
                 } else {
-                    house = resultHouse;
-                    showUpdateHouseResultDialog();
+//                    house = resultHouse;
+//                    showUpdateHouseResultDialog();
+
+                openAddHouseConfirm();
                 }
             }
 
@@ -263,85 +265,85 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         return measuredWidth;
     }
 
-    public void showUpdateHouseResultDialog() {
+//    public void showUpdateHouseResultDialog() {
+//
+//        Toast toast = new Toast(getApplicationContext());
+//        View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
+//        ViewGroup.LayoutParams params = view.getLayoutParams();
+//        if (params != null) {
+//            int width = (getScreenWidth(this) * 3 / 5);
+//            params.width = width;
+//            params.height = width;
+//            view.setLayoutParams(params);
+//        }
+//
+//        toast.setView(view);
+//        toast.setDuration(Toast.LENGTH_SHORT);
+//
+//        int margin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+//        toast.setGravity(Gravity.CENTER, 0, margin);
+//        toast.show();
+//
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                goToNextSection();
+//            }
+//        }, 1000);
+//    }
 
-        Toast toast = new Toast(getApplicationContext());
-        View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        if (params != null) {
-            int width = (getScreenWidth(this) * 3 / 5);
-            params.width = width;
-            params.height = width;
-            view.setLayoutParams(params);
-        }
+//    private void updateHouse() {
+//        HouseEntryInput houseEntryInput = getHouseEntryInput();
+//        if (houseEntryInput == null)
+//            return;
+//
+//        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
+//
+//        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+//        Call<House> call = apiEndpoints.updateHouse(house.getDetailUrl(), houseEntryInput);
+//
+//        call.enqueue(new Callback<House>() {
+//            @Override
+//            public void onResponse(Call<House> call, Response<House> response) {
+//                int statusCode = response.code();
+//                House resultHouse = response.body();
+//                if (resultHouse == null) {
+//                    try {
+//                        if (response.errorBody() != null) {
+//                            Toast.makeText(AddHouseActivity.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    house = resultHouse;
+//                    showUpdateHouseResultDialog();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<House> call, Throwable t) {
+//                hideProgress();
+//                Toast.makeText(AddHouseActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
+//                t.printStackTrace();
+//            }
+//        });
+//    }
 
-        toast.setView(view);
-        toast.setDuration(Toast.LENGTH_SHORT);
-
-        int margin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        toast.setGravity(Gravity.CENTER, 0, margin);
-        toast.show();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                goToNextSection();
-            }
-        }, 1000);
-    }
-
-    private void updateHouse() {
-        HouseEntryInput houseEntryInput = getHouseEntryInput();
-        if (houseEntryInput == null)
-            return;
-
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<House> call = apiEndpoints.updateHouse(house.getDetailUrl(), houseEntryInput);
-
-        call.enqueue(new Callback<House>() {
-            @Override
-            public void onResponse(Call<House> call, Response<House> response) {
-                int statusCode = response.code();
-                House resultHouse = response.body();
-                if (resultHouse == null) {
-                    try {
-                        if (response.errorBody() != null) {
-                            Toast.makeText(AddHouseActivity.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    house = resultHouse;
-                    showUpdateHouseResultDialog();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<House> call, Throwable t) {
-                hideProgress();
-                Toast.makeText(AddHouseActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                t.printStackTrace();
-            }
-        });
-    }
-
-    private void addUpdateHouse() {
-
-        if (currentStep == HouseEntryStep.HOUSE_INFO) {
-            if (house == null || house.getDetailUrl() == null || house.getDetailUrl().length() == 0)
-                addHouse();
-            else updateHouse();
-        } else if (currentStep == HouseEntryStep.HOUSE_IMAGES) {
-            hideProgress();
-            showUpdateHouseResultDialog();
-        } else {
-            updateHouse();
-        }
-    }
+//    private void addUpdateHouse() {
+//
+//        if (currentStep == HouseEntryStep.HOUSE_INFO) {
+//            if (house == null || house.getDetailUrl() == null || house.getDetailUrl().length() == 0)
+//                addHouse();
+//            else updateHouse();
+//        } else if (currentStep == HouseEntryStep.HOUSE_IMAGES) {
+//            hideProgress();
+//            showUpdateHouseResultDialog();
+//        } else {
+//            updateHouse();
+//        }
+//    }
 
     private HouseEntryInput getHouseEntryInput() {
         if (house == null)
@@ -497,7 +499,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                 goToDatesSection();
                 break;
             case HOUSE_DATES:
-                openAddHouseConfirm();
+				addHouse();
+//                openAddHouseConfirm();
                 break;
         }
 
@@ -1199,8 +1202,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     @Override
     public void onGoToNextSection(House house) {
         this.house = house;
-        showProgress();
-        addUpdateHouse();
+
+		goToNextSection();
+//		showUpdateHouseResultDialog();
+//        showProgress();
+//        addUpdateHouse();
     }
 
     @Override
