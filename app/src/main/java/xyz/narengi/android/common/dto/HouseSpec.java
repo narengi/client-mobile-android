@@ -7,17 +7,17 @@ import java.io.Serializable;
  */
 public class HouseSpec implements Serializable {
 
-    private int bedroomCount;
+    private int bedroom;
     private int guestCount;
     private int maxGuestCount;
-    private int bedCount;
+    private int bed;
 
-    public int getBedroomCount() {
-        return bedroomCount;
+	public int getBedroomCount() {
+        return bedroom;
     }
 
     public void setBedroomCount(int bedroomCount) {
-        this.bedroomCount = bedroomCount;
+        this.bedroom = bedroomCount;
     }
 
     public int getGuestCount() {
@@ -37,10 +37,10 @@ public class HouseSpec implements Serializable {
     }
 
     public int getBedCount() {
-        return bedCount;
+        return bed;
     }
 
     public void setBedCount(int bedCount) {
-        this.bedCount = bedCount;
+        this.bed = bedCount;
     }
 }

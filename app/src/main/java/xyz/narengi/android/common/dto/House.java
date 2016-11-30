@@ -10,7 +10,7 @@ import xyz.narengi.android.service.WebServiceConstants;
  */
 public class House implements Serializable {
 
-    private String Name;
+    private String name;
     private String[] Images;
     private String Cost;
     private GeoPoint Position;
@@ -28,7 +28,7 @@ public class House implements Serializable {
     private String FeatureListURL;
     private int reviewsCount;
     private HousePrice Price;
-    private HouseSpec Spec;
+    private HouseSpec spec;
     private HouseExtraService[] ExtraServices;
     private String bookingUrl;
     private Commission Commission;
@@ -40,11 +40,11 @@ public class House implements Serializable {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+		name = name;
     }
 
     public String[] getImages() {
@@ -184,11 +184,11 @@ public class House implements Serializable {
     }
 
     public HouseSpec getSpec() {
-        return Spec;
+        return spec;
     }
 
     public void setSpec(HouseSpec spec) {
-        Spec = spec;
+		spec = spec;
     }
 
     public HouseExtraService[] getExtraServices() {
