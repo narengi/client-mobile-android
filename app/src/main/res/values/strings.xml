@@ -60,5 +60,6 @@
     <string name="i_forgot_my_password">رمز عبورم را فراموش کرده‌ام!</string>
     <string name="retry">تلاش مجدد</string>
 	<string name="invalid_data">اطلاعات به درستی وارد نشده است</string>
+	<string name="invalid_position">موقعیت رو بر روی نقشه مشخص کنید</string>
 
 </resources>

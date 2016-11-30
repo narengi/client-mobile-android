@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.byagowi.persiancalendar.Utils;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -320,4 +321,13 @@ public class HouseMapEntryFragment extends HouseEntryBaseFragment implements OnM
         geoPoint.setLng(latLng.longitude);
         getHouse().setPosition(geoPoint);
     }
+
+	@Override
+	protected boolean validate() {
+		if (getHouse().getPosition() == null) {
+			Toast.makeText(getContext(), R.string.invalid_position, Toast.LENGTH_LONG).show();
+			return false;
+		}
+		return true;
+	}
 }
