@@ -2,8 +2,8 @@
 <resources>
 
     <!-- logout dialog alerts -->
-    <string name="alert_logoutConfirm">آيا مي خواهيد خارج شويد ؟</string>
-    <string name="alert_logoutConfirmTitle">خروج از سيستم</string>
+    <string name="alert_logoutConfirm">آیا می خواهید خارج شوید ؟</string>
+    <string name="alert_logoutConfirmTitle">خروج از سیستم</string>
 
     <string name="error_alert_title">خطا</string>
     <string name="network_error_alert_message">خطا در ارتباط با اینترنت. لطفا تنظیمات مربوط به شبکه و اینترنت خود را بررسی نموده و دوباره تلاش نمایید.</string>

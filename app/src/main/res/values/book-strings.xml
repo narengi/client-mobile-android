@@ -2,7 +2,7 @@
 <resources>
 
     <string name="book_page_title">اجاره اقامتگاه</string>
-    <string name="book_arrive_date_caption">زمان رسيدن</string>
+    <string name="book_arrive_date_caption">زمان رسیدن</string>
     <string name="book_depart_date_caption">زمان ترک</string>
     <string name="book_day_night_count">%1$s شب و %2$s روز</string>
     <string name="book_guests_caption">تعداد مهمانان:</string>
@@ -10,22 +10,22 @@
     <string name="book_guests_remove_caption">-</string>
     <string name="book_extra_services_caption">خدمات اضافی:</string>
     <string name="book_extra_services_add_caption">+</string>
-    <string name="book_price_caption">قيمت:</string>
-    <string name="book_prices_service_fee">حق سرويس</string>
+    <string name="book_price_caption">قیمت:</string>
+    <string name="book_prices_service_fee">حق سرویس</string>
     <string name="book_prices_total">مجموع</string>
     <string name="book_continue_button">ادامه</string>
     <string name="book_extra_guests_caption">نفر مهمان اضافه</string>
-    <string name="book_max_guest_count_alert">حداکثر تعداد مهمان برای اين خانه %s نفر می باشد.</string>
-    <string name="book_dates_not_selected_alert">بايد زمان رسيدن و زمان ترک انتخاب شده باشد.</string>
+    <string name="book_max_guest_count_alert">حداکثر تعداد مهمان برای این خانه %s نفر می باشد.</string>
+    <string name="book_dates_not_selected_alert">باید زمان رسیدن و زمان ترک انتخاب شده باشد.</string>
 
     <!-- Service fee page -->
-    <string name="book_service_fee_page_title">حق سرويس</string>
-    <string name="book_service_fee_page_message">حق سرويس مبلغی است که به نارنگی کمک می کند سرويس خود را نگهداری کند و خدمت رسانی به شما را انجام دهد.</string>
+    <string name="book_service_fee_page_title">حق سرویس</string>
+    <string name="book_service_fee_page_message">حق سرویس مبلغی است که به نارنگی کمک می کند سرویس خود را نگهداری کند و خدمت رسانی به شما را انجام دهد.</string>
 
     <!-- Book result -->
-    <string name="book_result_success_message">پرداخت موفق رزرواسيون شما انجام شد</string>
-    <string name="book_result_success_description">از طرف مالک برای هماهنگی نهايی با شما تماس گرفته خواهد شد.</string>
-    <string name="book_result_failure_message">پرداخت رزرواسيون شما با موفقيت انجام نشد.</string>
-    <string name="book_result_fauilure_description">لطفا با مراجعه به پروفايل خود و وارد شدن به بخش رزروهای من> اقدام به پرداخت سفارش خود نماييد.</string>
+    <string name="book_result_success_message">پرداخت موفق رزرواسیون شما انجام شد</string>
+    <string name="book_result_success_description">از طرف مالک برای هماهنگی نهایی با شما تماس گرفته خواهد شد.</string>
+    <string name="book_result_failure_message">پرداخت رزرواسیون شما با موفقیت انجام نشد.</string>
+    <string name="book_result_fauilure_description">لطفا با مراجعه به پروفایل خود و وارد شدن به بخش رزروهای من> اقدام به پرداخت سفارش خود نمایید.</string>
 
 </resources>

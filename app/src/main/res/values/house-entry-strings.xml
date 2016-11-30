@@ -2,20 +2,20 @@
 <resources>
 
     <string name="house_info_entry_page_title">اطلاعات عمومی مسکن</string>
-    <string name="house_map_entry_page_title">موقعيت مکانی روی نقشه</string>
+    <string name="house_map_entry_page_title">موقعیت مکانی روی نقشه</string>
     <string name="house_type_entry_page_title">نوع مسکن</string>
     <string name="house_room_entry_page_title">اطلاعات اتاق</string>
     <string name="house_guest_entry_page_title">اطلاعات مهمان</string>
     <string name="house_features_entry_page_title">امکانات</string>
-    <string name="house_images_entry_page_title">تصاوير</string>
-    <string name="house_dates_entry_page_title">روزهای قابل سرويس دهی</string>
+    <string name="house_images_entry_page_title">تصاویر</string>
+    <string name="house_dates_entry_page_title">روزهای قابل سرویس دهی</string>
 
     <string name="house_entry_next_button">مرحله بعدی</string>
     <string name="house_entry_previous_button">مرحله قبلی</string>
-    <string name="house_entry_finish_button">ثبت نهايی</string>
+    <string name="house_entry_finish_button">ثبت نهایی</string>
 
     <string name="house_info_entry_title_hint">عنوان</string>
-    <string name="house_info_entry_summary_hint">توضيحات</string>
+    <string name="house_info_entry_summary_hint">توضیحات</string>
     <string name="house_info_entry_province_hint">انتخاب استان</string>
     <string name="house_info_entry_city_hint">انتخاب شهر</string>
     <string name="house_info_entry_address_hint">آدرس</string>
@@ -32,27 +32,27 @@
     <string name="house_room_entry_counter_caption">%s عدد</string>
     <string name="house_room_entry_rooms_caption">تعداد اتاق خواب</string>
     <string name="house_room_entry_beds_caption">تعداد تخت خواب</string>
-    <string name="house_room_entry_price_caption">قيمت هر شب اقامت (هزار تومان)</string>
+    <string name="house_room_entry_price_caption">قیمت هر شب اقامت (هزار تومان)</string>
     <string name="house_entry_price_hint">مثال : ۱۲۰</string>
 
     <!-- House guests section -->
     <string name="house_guest_entry_counter_caption">%s نفر</string>
     <string name="house_guest_entry_guests_caption">تعداد مهمانان</string>
     <string name="house_guest_entry_max_guests_caption">تعداد حداکثر مهمان</string>
-    <string name="house_guest_entry_extra_guest_price_caption">هزينه هر مهمان اضافی (ريال)</string>
+    <string name="house_guest_entry_extra_guest_price_caption">هزینه هر مهمان اضافی (ریال)</string>
 
     <!-- House pictures section -->
     <string name="house_images_entry_image_removed_alert">عکس مورد نظر حذف شد.</string>
-    <string name="house_images_entry_remove_alert_title">حذف تصوير خانه</string>
-    <string name="house_images_entry_remove_alert_message">آیا مطمئن هستيد که می خواهيد تصوير مورد نظر را حذف کنيد ؟</string>
+    <string name="house_images_entry_remove_alert_title">حذف تصویر خانه</string>
+    <string name="house_images_entry_remove_alert_message">آیا مطمئن هستید که می خواهید تصویر مورد نظر را حذف کنید ؟</string>
 
     <!-- Add house confirm -->
-    <string name="add_house_confirm_success_message">خانه شما با موفقيت ثبت شد</string>
+    <string name="add_house_confirm_success_message">خانه شما با موفقیت ثبت شد</string>
 
     <!-- Edit house -->
-    <string name="edit_house_page_title">ويرايش اطلاعات مسکن</string>
+    <string name="edit_house_page_title">ویرایش اطلاعات مسکن</string>
 
     <!-- Edit house detail -->
-    <string name="edit_house_detail_save_menu">ذخيره</string>
+    <string name="edit_house_detail_save_menu">ذخیره</string>
 
 </resources>
