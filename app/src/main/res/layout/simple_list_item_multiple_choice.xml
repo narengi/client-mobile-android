@@ -22,6 +22,8 @@
     android:textColor="@color/house_type_radio_button_text_color"
     android:gravity="center_vertical"
     android:checkMark="@null"
+    android:textDirection="rtl"
+    android:layoutDirection="rtl"
     android:drawablePadding="10dp"
     android:layout_marginLeft="10dp"
     android:drawableLeft="@drawable/house_type_radio_button_bg_left"
