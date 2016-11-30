@@ -268,15 +268,15 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View v = super.getView(position, convertView, parent);
                 String type = typesArray[position];
-                Drawable rightDrawable = getRightDrawable(type);
+//                Drawable rightDrawable = getRightDrawable(type);
 //                SparseBooleanArray sparseBooleanArray = featuresListView.getCheckedItemPositions();
 //                int key = sparseBooleanArray.keyAt(position);
 //                boolean isChecked = sparseBooleanArray.valueAt(sparseBooleanArray.indexOfKey(key));
 //                if (isChecked) {
 //                    rightDrawable = getResources().getDrawable(R.drawable.ic_action_about_narengi);
 //                }
-                ((CheckedTextView) v).setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.house_type_radio_button_bg_left),
-                        null, rightDrawable, null);
+//                ((CheckedTextView) v).setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.house_type_radio_button_bg_left),
+//                        null, rightDrawable, null);
 
                 return v;
             }
