@@ -192,7 +192,7 @@ public class HouseMapEntryFragment extends HouseEntryBaseFragment implements OnM
                     previousButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (validate() && getOnInteractionListener() != null) {
+                            if (getOnInteractionListener() != null) {
                                 getOnInteractionListener().onBackToPreviousSection(getHouse());
                             }
                         }

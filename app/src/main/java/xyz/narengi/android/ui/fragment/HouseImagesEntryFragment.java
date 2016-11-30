@@ -204,7 +204,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                     previousButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (validate() && getOnInteractionListener() != null) {
+                            if (getOnInteractionListener() != null) {
                                 if (getActivity() instanceof AddHouseActivity) {
                                     ((AddHouseActivity) getActivity()).setImageUris(imageUris);
                                     ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);

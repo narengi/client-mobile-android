@@ -90,7 +90,7 @@ public class HouseDatesEntryFragment extends HouseEntryBaseFragment
                     previousButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (validate() && getOnInteractionListener() != null) {
+                            if (getOnInteractionListener() != null) {
                                 if (getActivity() instanceof AddHouseActivity)
                                     ((AddHouseActivity)getActivity()).setSelectedDaysMap(selectedDaysMap);
                                 getOnInteractionListener().onBackToPreviousSection(getHouse());

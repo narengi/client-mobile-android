@@ -175,7 +175,7 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
                     previousButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (validate() && getOnInteractionListener() != null) {
+                            if (getOnInteractionListener() != null) {
                                 setExtraGuestPrice(extraGuestPriceEditText.getText().toString());
                                 getOnInteractionListener().onBackToPreviousSection(getHouse());
                             }

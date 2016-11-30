@@ -170,7 +170,7 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                     previousButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (validate() && getOnInteractionListener() != null) {
+                            if (getOnInteractionListener() != null) {
 //                                List<HouseFeature> selectedHouseFeatures = getSelectedHouseFeatures();
 //                                if (selectedHouseFeatures != null) {
 //                                    HouseFeature[] houseFeatures = new HouseFeature[selectedHouseFeatures.size()];
