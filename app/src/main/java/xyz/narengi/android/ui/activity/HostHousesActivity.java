@@ -243,9 +243,10 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         call.enqueue(new Callback<House[]>() {
             @Override
             public void onResponse(Call<House[]> call, Response<House[]> response) {
+				if (response.isSuccessful()) {
 //                hideProgress();
-                int statusCode = response.code();
-                hostHouses = response.body();
+					int statusCode = response.code();
+					hostHouses = response.body();
 
 //                ImagesAndDatesAsyncTask imagesAndDatesAsyncTask = new ImagesAndDatesAsyncTask();
 //                AsyncTask asyncTask = imagesAndDatesAsyncTask .execute();
@@ -258,14 +259,15 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 //                    e.printStackTrace();
 //                }
 
-                if (hostHouses == null || hostHouses.length == 0) {
-                    setupContentRecyclerView();
-                } else {
-                    readDatesAndImages();
+					if (hostHouses == null || hostHouses.length == 0) {
+						setupContentRecyclerView();
+					} else {
+						readDatesAndImages();
 
-                    setupContentRecyclerView();
-                }
-            }
+						setupContentRecyclerView();
+					}
+				}
+			}
 
             @Override
             public void onFailure(Call<House[]> call, Throwable t) {
@@ -368,7 +370,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 
         for (House house : hostHouses) {
 
-            readImageInfo(house);
+//            readImageInfo(house);
 
 //            Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getDetailUrl() + "/pictures");
 //
