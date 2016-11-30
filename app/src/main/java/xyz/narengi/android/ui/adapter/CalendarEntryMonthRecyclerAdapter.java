@@ -132,18 +132,19 @@ public class CalendarEntryMonthRecyclerAdapter extends RecyclerView.Adapter<Cale
 
 //                        viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.orange_light));
 
-                        if (isPreviousDaySelected(currentDay) && isNextDaySelected(currentDay)) {
-                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_middle_bg));
-                        } else if (!isPreviousDaySelected(currentDay) && !isNextDaySelected(currentDay)) {
-                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_bg));
-                        } else if (isPreviousDaySelected(currentDay)) {
-                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_end_bg));
-                        } else if (isNextDaySelected(currentDay)) {
-                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_start_bg));
-                        }
+//                        if (isPreviousDaySelected(currentDay) && isNextDaySelected(currentDay)) {
+//                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_middle_bg));
+//                        } else if (!isPreviousDaySelected(currentDay) && !isNextDaySelected(currentDay)) {
+//                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_bg));
+//                        } else if (isPreviousDaySelected(currentDay)) {
+//                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_end_bg));
+//                        } else if (isNextDaySelected(currentDay)) {
+//                            viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_start_bg));
+//                        }
 
 //                        viewHolder.dayItemButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.selected_day_bg));
-                        viewHolder.dayItemButton.setTextColor(context.getResources().getColor(R.color.orange_light));
+						viewHolder.dayItemButton.setTextColor(context.getResources().getColor(R.color.white));
+						viewHolder.dayItemButton.setBackgroundColor(context.getResources().getColor(R.color.green));
                     }
                 }
             }
