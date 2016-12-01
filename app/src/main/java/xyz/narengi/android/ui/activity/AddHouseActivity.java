@@ -863,7 +863,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.add_house_content, houseEntryFragment, "AddHouseContentFragment")
+                .replace(R.id.add_house_content, houseEntryFragment, "CalendarFragment")
                 .commit();
 
         updatePageTitle(R.string.house_dates_entry_page_title);

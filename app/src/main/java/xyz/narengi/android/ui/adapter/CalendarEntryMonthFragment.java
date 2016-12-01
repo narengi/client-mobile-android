@@ -23,6 +23,7 @@ import calendar.PersianDate;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.ui.fragment.CalendarFragment;
+import xyz.narengi.android.ui.fragment.HouseDatesEntryFragment;
 
 /**
  * @author Siavash Mahmoudpour
@@ -148,8 +149,8 @@ public class CalendarEntryMonthFragment extends Fragment implements View.OnClick
 
     private void changeMonth(int position) {
         Fragment calendarFragment = getActivity().getSupportFragmentManager().findFragmentByTag("CalendarFragment");
-        if (calendarFragment != null && (calendarFragment instanceof CalendarFragment)) {
-            ((CalendarFragment)calendarFragment).changeMonth(position);
+        if (calendarFragment != null && (calendarFragment instanceof HouseDatesEntryFragment)) {
+            ((HouseDatesEntryFragment)calendarFragment).changeMonth(position);
         }
 
     }

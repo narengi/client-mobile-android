@@ -108,8 +108,11 @@ public class HouseDatesEntryFragment extends HouseEntryBaseFragment
         }
     }
 
+	public void changeMonth(int position) {
+		viewPager.setCurrentItem(viewPager.getCurrentItem() + position, true);
+	}
 
-    private void setupCalendar(View view) {
+	private void setupCalendar(View view) {
         viewPager = (ViewPager)view.findViewById(R.id.house_dates_entry_calendarViewPager);
         Utils.getInstance().loadLanguageFromSettings(getContext());
         CalendarEntryPagerAdapter calendarEntryPagerAdapter = new CalendarEntryPagerAdapter(getActivity().getSupportFragmentManager(), getActivity(), this, selectedDaysMap, viewPager);
