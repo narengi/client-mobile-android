@@ -206,7 +206,17 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             viewHolder.housePriceTextView.setText(String.valueOf(house.getPrice().getPrice()) + " " + context.getString(R.string.currency_thousan_toman) /*house.getPrice().getCurrencyText()*/);
         }
 
-        viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		try {
+			Date firstAvailableDate = dateFormat.parse(house.getDates()[0]);
+			PersianCalendar persianCalendar = new PersianCalendar(firstAvailableDate.getTime());
+			String dateString = persianCalendar.getPersianShortDate();
+			viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, dateString));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+		}
+
 
 //        if (imageInfoList != null && imageInfoList.size() > position) {
 //            ImageInfo[] imageInfoArray = imageInfoList.get(position);

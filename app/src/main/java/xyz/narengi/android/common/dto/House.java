@@ -21,7 +21,8 @@ public class House implements Serializable {
     private String Summary;
     private String CityName;
     private String ProvinceName;
-    private String detailUrl;
+	private String detailUrl;
+	private String[] dates;
     private HouseReview[] Reviews;
     private HouseFeature[] FeatureList;
     private Type type;
@@ -37,7 +38,15 @@ public class House implements Serializable {
     private Location location;
     private String address;
 
-    public static String getDetailUrl(String houseId) {
+	public String[] getDates() {
+		return dates;
+	}
+
+	public void setDates(String[] dates) {
+		this.dates = dates;
+	}
+
+	public static String getDetailUrl(String houseId) {
         return String.format(Locale.ENGLISH, WebServiceConstants.House.HOUSE_DETAILS_API_FORMAT, houseId);
     }
 
