@@ -232,24 +232,25 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
 //        getHouseImages(house.getDetailUrl(), viewHolder);
 
-        if (house.getType() != null) {
-            switch (house.getType()) {
-                case "apartment":
-                    viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_apartment));
-                    break;
-                case "villa":
-                    viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_villa));
-                    break;
-                case "house":
-                    viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_house));
-                    break;
-                default:
-                    viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_house));
-                    break;
-            }
-        } else {
-            viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_house));
-        }
+		viewHolder.houseTypeTextView.setText(house.getType().getTitle());
+//        if (house.getType() != null) {
+//            switch (house.getType()) {
+//                case "apartment":
+//                    viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_apartment));
+//                    break;
+//                case "villa":
+//                    viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_villa));
+//                    break;
+//                case "house":
+//                    viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_house));
+//                    break;
+//                default:
+//                    viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_house));
+//                    break;
+//            }
+//        } else {
+//            viewHolder.houseTypeTextView.setText(context.getString(R.string.host_houses_type_house));
+//        }
 
         int bedsCount = 0, roomsCount = 0;
         if (house.getSpec() != null) {

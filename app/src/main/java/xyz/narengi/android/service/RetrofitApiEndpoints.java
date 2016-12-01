@@ -35,6 +35,7 @@ import xyz.narengi.android.common.dto.ProvinceCity;
 import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
 import xyz.narengi.android.common.dto.RequestVerification;
 import xyz.narengi.android.common.dto.SuggestionsResult;
+import xyz.narengi.android.common.dto.Type;
 
 /**
  * @author Siavash Mahmoudpour
@@ -97,7 +98,7 @@ public interface RetrofitApiEndpoints {
     Call<HouseAvailableDates> getHouseAvailableDates(@Url String url);
 
     @GET("/api/house-types")
-    Call<Map<String, String>[]> getHouseTypes();
+    Call<Type[]> getHouseTypes();
 
     @GET("http://api.narengi.xyz/api/house-features")
     Call<Map<String, String>[]> getHouseFeatures();

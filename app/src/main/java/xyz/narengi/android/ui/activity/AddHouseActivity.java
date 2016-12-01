@@ -375,16 +375,19 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 			location.setAddress(house.getAddress());
             houseEntryInput.setLocation(location);
         }
-        houseEntryInput.setType(house.getType());
+        houseEntryInput.setType(house.getType().getKey());
         houseEntryInput.setSpec(house.getSpec());
         houseEntryInput.setAvailableDates(getSelectedDates());
 
-		String[] features = new String[house.getFeatureList().length];
-		for (int i = 0; i < house.getFeatureList().length ; i++) {
-			features[i]= house.getFeatureList()[i].getType();
-		}
+		if (house.getFeatureList()!= null) {
+			String[] features = new String[house.getFeatureList().length];
+			for (int i = 0; i < house.getFeatureList().length; i++) {
+				features[i] = house.getFeatureList()[i].getType();
+			}
 
-        houseEntryInput.setFeatureList(features);
+			houseEntryInput.setFeatureList(features);
+
+		}
 
         return houseEntryInput;
     }

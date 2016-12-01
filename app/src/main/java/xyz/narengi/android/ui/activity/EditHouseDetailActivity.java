@@ -412,7 +412,7 @@ public class EditHouseDetailActivity extends AppCompatActivity {
             location.setCity(house.getCityName());
             houseEntryInput.setLocation(location);
         }
-        houseEntryInput.setType(house.getType());
+        houseEntryInput.setType(house.getType().getKey());
         houseEntryInput.setSpec(house.getSpec());
         houseEntryInput.setAvailableDates(getSelectedDates());
 

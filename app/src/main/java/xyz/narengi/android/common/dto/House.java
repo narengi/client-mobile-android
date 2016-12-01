@@ -3,6 +3,8 @@ package xyz.narengi.android.common.dto;
 import java.io.Serializable;
 import java.util.Locale;
 
+import xyz.narengi.android.common.model.*;
+import xyz.narengi.android.common.model.AroundLocation;
 import xyz.narengi.android.service.WebServiceConstants;
 
 /**
@@ -22,7 +24,7 @@ public class House implements Serializable {
     private String detailUrl;
     private HouseReview[] Reviews;
     private HouseFeature[] FeatureList;
-    private String Type;
+    private Type type;
     private String featureSummary;
     private String ReviewsURL;
     private String FeatureListURL;
@@ -135,12 +137,12 @@ public class House implements Serializable {
         FeatureList = featureList;
     }
 
-    public String getType() {
-        return Type;
+    public Type getType() {
+        return type;
     }
 
-    public void setType(String type) {
-        Type = type;
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public String getFeatureSummary() {

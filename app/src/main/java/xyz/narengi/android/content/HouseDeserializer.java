@@ -76,7 +76,7 @@ public class HouseDeserializer implements JsonDeserializer<House> {
 
         JsonElement typeElement = jsonElement.getAsJsonObject().get("type");
         String type = typeElement.getAsString();
-        house.setType(type);
+//        house.setType(type);
 
 //        JsonElement bedroomCountElement = jsonElement.getAsJsonObject().get("bedroomCount");
 //        int bedroomCount = bedroomCountElement.getAsInt();
