@@ -232,7 +232,9 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
 //        getHouseImages(house.getDetailUrl(), viewHolder);
 
-		viewHolder.houseTypeTextView.setText(house.getType().getTitle());
+		if (house.getType()!=null) {
+			viewHolder.houseTypeTextView.setText(house.getType().getTitle());
+		}
 //        if (house.getType() != null) {
 //            switch (house.getType()) {
 //                case "apartment":
