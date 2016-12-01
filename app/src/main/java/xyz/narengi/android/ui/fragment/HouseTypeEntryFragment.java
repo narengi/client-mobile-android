@@ -163,7 +163,7 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
 
                         String radioButtonText = (String) checkedRadioButton.getText();
                         if (houseTypeValue != null && houseTypeValue.equalsIgnoreCase(radioButtonText) && getHouse() != null) {
-                            getHouse().setType(houseTypeKey);
+                            getHouse().setType(houseTypeMap.get("key"));
                         }
                     }
                 }
