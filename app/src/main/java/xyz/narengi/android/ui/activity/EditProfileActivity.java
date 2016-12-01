@@ -838,31 +838,31 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void showUpdateProfileResultDialog(String message, final boolean isSuccessful) {
 
-        Toast toast = new Toast(getApplicationContext());
-        View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        if (params != null) {
-            int width = (getScreenWidth(this) * 3 / 5);
-            params.width = width;
-            params.height = width;
-            view.setLayoutParams(params);
-        }
-
-        toast.setView(view);
-        toast.setDuration(Toast.LENGTH_LONG);
-
-        int margin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        toast.setGravity(Gravity.CENTER, 0, margin);
-        toast.show();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+//        Toast toast = new Toast(getApplicationContext());
+//        View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
+//        ViewGroup.LayoutParams params = view.getLayoutParams();
+//        if (params != null) {
+//            int width = (getScreenWidth(this) * 3 / 5);
+//            params.width = width;
+//            params.height = width;
+//            view.setLayoutParams(params);
+//        }
+//
+//        toast.setView(view);
+//        toast.setDuration(Toast.LENGTH_LONG);
+//
+//        int margin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+//        toast.setGravity(Gravity.CENTER, 0, margin);
+//        toast.show();
+//
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
 //                openViewProfile();
                 setResult(401);
                 finish();
-            }
-        }, 1000);
+//            }
+//        }, 1000);
     }
 
     private void openViewProfile() {
