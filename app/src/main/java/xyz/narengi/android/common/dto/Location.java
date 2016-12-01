@@ -8,7 +8,8 @@ import java.io.Serializable;
 public class Location implements Serializable {
 
     private String City;
-    private String Province;
+	private String Province;
+	private String address;
 
     public String getCity() {
         return City;
@@ -25,4 +26,12 @@ public class Location implements Serializable {
     public void setProvince(String province) {
         this.Province = province;
     }
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 }
