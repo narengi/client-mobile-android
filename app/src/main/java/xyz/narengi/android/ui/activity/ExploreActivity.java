@@ -308,7 +308,11 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(View v) {
                 if (loggedIn) {
-                    openHostHouses();
+					if (TextUtils.isEmpty(AccountProfile.getLoggedInAccountProfile(context).getDisplayName())) {
+						openSignUpConfirm();
+					} else {
+						openHostHouses();
+					}
                 } else {
                     openSignInSignUp();
                 }
