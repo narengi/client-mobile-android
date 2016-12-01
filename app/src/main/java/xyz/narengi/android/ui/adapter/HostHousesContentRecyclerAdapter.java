@@ -194,7 +194,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
 //        viewHolder.houseImageView.setImageBitmap(null);
 //        viewHolder.houseImageView.setImageDrawable(null);
-        viewHolder.houseDatesTextView.setText("");
+//        viewHolder.houseDatesTextView.setText("");
 
         if (houses == null || position > houses.length)
             return;
@@ -203,7 +203,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
         viewHolder.houseTitleTextView.setText(house.getName());
         if (house.getPrice() != null) {
-            viewHolder.housePriceTextView.setText(String.valueOf(house.getPrice().getPrice()) + " " + house.getPrice().getCurrencyText());
+            viewHolder.housePriceTextView.setText(String.valueOf(house.getPrice().getPrice()) + " " + context.getString(R.string.currency_thousan_toman) /*house.getPrice().getCurrencyText()*/);
         }
 
         viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));

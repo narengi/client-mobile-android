@@ -7,18 +7,18 @@ import java.io.Serializable;
  */
 public class HousePrice implements Serializable {
 
-    private double price;
+    private int price;
     private String currency;
     private String currencyText;
     private double weeklyDiscount;
     private double monthlyDiscount;
-    private double extraGuestPrice;
+    private int extraGuestPrice;
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -54,11 +54,11 @@ public class HousePrice implements Serializable {
         this.monthlyDiscount = monthlyDiscount;
     }
 
-    public double getExtraGuestPrice() {
+    public int getExtraGuestPrice() {
         return extraGuestPrice;
     }
 
-    public void setExtraGuestPrice(double extraGuestPrice) {
+    public void setExtraGuestPrice(int extraGuestPrice) {
         this.extraGuestPrice = extraGuestPrice;
     }
 }

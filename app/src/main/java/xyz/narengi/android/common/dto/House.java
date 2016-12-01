@@ -27,7 +27,7 @@ public class House implements Serializable {
     private String ReviewsURL;
     private String FeatureListURL;
     private int reviewsCount;
-    private HousePrice Price;
+    private HousePrice prices;
     private HouseSpec spec;
     private HouseExtraService[] ExtraServices;
     private String bookingUrl;
@@ -176,11 +176,11 @@ public class House implements Serializable {
     }
 
     public HousePrice getPrice() {
-        return Price;
+        return prices;
     }
 
     public void setPrice(HousePrice price) {
-        Price = price;
+        this.prices = price;
     }
 
     public HouseSpec getSpec() {

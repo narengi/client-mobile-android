@@ -205,7 +205,7 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
         if (priceText == null || priceText.length() == 0 || getHouse() == null)
             return;
 
-        Double price = Double.parseDouble(priceText);
+        Integer price = Integer.parseInt(priceText);
         if (getHouse().getPrice() == null) {
             HousePrice housePrice = new HousePrice();
             getHouse().setPrice(housePrice);
