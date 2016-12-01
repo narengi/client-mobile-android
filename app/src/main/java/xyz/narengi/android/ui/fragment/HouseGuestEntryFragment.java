@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HousePrice;
@@ -91,6 +92,11 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
             }
         }
 
+		if (guestCount == 0) {
+			guestCount = 1;
+			maxGuestCount = 1;
+		}
+
         guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
         maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(maxGuestCount)));
 
@@ -112,13 +118,15 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
         removeGuestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                guestCount--;
-                if (guestCount < 0) {
-                    guestCount = 0;
-                }
-                guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
-                setGuestCount(guestCount);
-            }
+				if (guestCount > 1) {
+					guestCount--;
+					if (guestCount < 0) {
+						guestCount = 0;
+					}
+					guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
+					setGuestCount(guestCount);
+				}
+			}
         });
 
         increaseMaxGuestButton.setOnClickListener(new View.OnClickListener() {
@@ -133,22 +141,24 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
         decreaseMaxGuestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                maxGuestCount--;
-                if (maxGuestCount < 0) {
-                    maxGuestCount = 0;
-                }
-                maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(maxGuestCount)));
-                setMaxGuestCount(maxGuestCount);
+				if (maxGuestCount > 1) {
+					maxGuestCount--;
+					if (maxGuestCount < 0) {
+						maxGuestCount = 0;
+					}
+					maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(maxGuestCount)));
+					setMaxGuestCount(maxGuestCount);
 
 
-                if (guestCount > maxGuestCount) {
-                    guestCount--;
-                    if (guestCount < 0) {
-                        guestCount = 0;
-                    }
-                    guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
-                    setGuestCount(guestCount);
-                }
+					if (guestCount > maxGuestCount) {
+						guestCount--;
+						if (guestCount < 0) {
+							guestCount = 0;
+						}
+						guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
+						setGuestCount(guestCount);
+					}
+				}
             }
         });
 
@@ -227,4 +237,13 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
 
         getHouse().getPrice().setExtraGuestPrice(price);
     }
+
+	@Override
+	protected boolean validate() {
+		if (getHouse() == null || getHouse().getSpec() == null || getHouse().getSpec().getGuestCount() == 0) {
+			Toast.makeText(getContext(), R.string.invalid_data, Toast.LENGTH_LONG).show();
+			return false;
+		}
+		return true;
+	}
 }
