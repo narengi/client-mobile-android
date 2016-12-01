@@ -44,7 +44,7 @@ public class House implements Serializable {
     }
 
     public void setName(String name) {
-		name = name;
+		this.name = name;
     }
 
     public String[] getImages() {
@@ -188,7 +188,7 @@ public class House implements Serializable {
     }
 
     public void setSpec(HouseSpec spec) {
-		spec = spec;
+		this.spec = spec;
     }
 
     public HouseExtraService[] getExtraServices() {
