@@ -83,13 +83,11 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         }, 100);
 
         setupToolbar();
-        showProgress();
         getHostHouses();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showProgress();
                 getHostHouses();
             }
         });
@@ -114,8 +112,6 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
-        showProgress();
         getHostHouses();
     }
 
@@ -235,6 +231,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     }
 
     private void getHostHouses() {
+		showProgress();
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
@@ -243,8 +240,8 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         call.enqueue(new Callback<House[]>() {
             @Override
             public void onResponse(Call<House[]> call, Response<House[]> response) {
+				hideProgress();
 				if (response.isSuccessful()) {
-//                hideProgress();
 					int statusCode = response.code();
 					hostHouses = response.body();
 
@@ -286,6 +283,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         imagesCall.enqueue(new Callback<ImageInfo[]>() {
             @Override
             public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
+				hideProgress();
                 ImageInfo[] result = response.body();
                 allImageInfoArraysMap.put(house.getDetailUrl(), result);
 
@@ -296,12 +294,12 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
                     if (mRecyclerView == null)
                         mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
                     mRecyclerView.setAdapter(contentRecyclerAdapter);
-                    hideProgress();
                 }
             }
 
             @Override
             public void onFailure(Call<ImageInfo[]> call, Throwable t) {
+				hideProgress();
                 allImageInfoArraysMap.put(house.getDetailUrl(), null);
                 if (allImageInfoArraysMap.size() == hostHouses.length) {
                     HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
@@ -310,7 +308,6 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
                     if (mRecyclerView == null)
                         mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
                     mRecyclerView.setAdapter(contentRecyclerAdapter);
-                    hideProgress();
                 }
 
                 t.printStackTrace();
@@ -417,12 +414,12 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == 2001 || resultCode == 2002) {
-            showProgress();
             getHostHouses();
         }
     }
 
     private void removeHouse(House house) {
+		showProgress();
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
@@ -431,7 +428,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-//                hideProgress();
+                hideProgress();
                 int statusCode = response.code();
                 getHostHouses();
             }
@@ -458,7 +455,6 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 
         builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                showProgress();
                 removeHouse(house);
             }
         });
