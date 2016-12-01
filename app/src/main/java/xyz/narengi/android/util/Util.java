@@ -314,4 +314,10 @@ public class Util {
         }
 
     }
+
+	public static String convertNumber(String input){
+		return 	input.replaceAll("1","١").replaceAll("2","٢").replaceAll("3","٣")
+				.replaceAll("4", "۴").replaceAll("5", "۵").replaceAll("6", "۶").replaceAll("7", "۷")
+				.replaceAll("8", "۸").replaceAll("9", "۹").replaceAll("0", "۰");
+	}
 }

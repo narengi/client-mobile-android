@@ -44,6 +44,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,6 +74,7 @@ import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.activity.EditHouseActivity;
 import xyz.narengi.android.ui.activity.HouseActivity;
+import xyz.narengi.android.util.Util;
 
 /**
  * @author Siavash Mahmoudpour
@@ -203,7 +205,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
         viewHolder.houseTitleTextView.setText(house.getName());
         if (house.getPrice() != null) {
-            viewHolder.housePriceTextView.setText(String.valueOf(house.getPrice().getPrice()) + " " + context.getString(R.string.currency_thousan_toman) /*house.getPrice().getCurrencyText()*/);
+            viewHolder.housePriceTextView.setText(Util.convertNumber((String.valueOf(house.getPrice().getPrice()) + " " + context.getString(R.string.currency_thousan_toman) /*house.getPrice().getCurrencyText()*/)));
         }
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -211,7 +213,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 			Date firstAvailableDate = dateFormat.parse(house.getDates()[0]);
 			PersianCalendar persianCalendar = new PersianCalendar(firstAvailableDate.getTime());
 			String dateString = persianCalendar.getPersianShortDate();
-			viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, dateString));
+			viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, Util.convertNumber(dateString)));
 		} catch (ParseException e) {
 			e.printStackTrace();
 			viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
@@ -270,8 +272,8 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             roomsCount = house.getSpec().getBedroomCount();
         }
 
-        viewHolder.houseRoomsTextView.setText(context.getString(R.string.host_houses_spec_rooms, String.valueOf(roomsCount)));
-        viewHolder.houseBedsTextView.setText(context.getString(R.string.host_houses_spec_beds, String.valueOf(bedsCount)));
+        viewHolder.houseRoomsTextView.setText(context.getString(R.string.host_houses_spec_rooms, Util.convertNumber(String.valueOf(roomsCount))));
+        viewHolder.houseBedsTextView.setText(context.getString(R.string.host_houses_spec_beds, Util.convertNumber(String.valueOf(bedsCount))));
 
 //        if (houseAvailableDatesList != null && houseAvailableDatesList.size() > position) {
 //            HouseAvailableDates houseAvailableDates = houseAvailableDatesList.get(position);
