@@ -415,7 +415,12 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         houseEntryInput.setType(house.getType());
         houseEntryInput.setSpec(house.getSpec());
         houseEntryInput.setAvailableDates(getSelectedDates());
-        houseEntryInput.setFeatureList(house.getFeatureList());
+
+		String[] features = new String[house.getFeatureList().length];
+		for (int i = 0; i < house.getFeatureList().length ; i++) {
+			features[i]= house.getFeatureList()[i].getType();
+		}
+        houseEntryInput.setFeatureList(features);
 
         return houseEntryInput;
     }

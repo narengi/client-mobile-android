@@ -15,7 +15,7 @@ public class HouseEntryInput implements Serializable {
     private String type;
     private HouseSpec Spec;
     private String[] AvailableDates;
-    private HouseFeature[] FeatureList;
+    private String[] FeatureList;
 
 
     public HouseEntryInput() {
@@ -86,11 +86,11 @@ public class HouseEntryInput implements Serializable {
         this.AvailableDates = availableDates;
     }
 
-    public HouseFeature[] getFeatureList() {
+    public String[] getFeatureList() {
         return FeatureList;
     }
 
-    public void setFeatureList(HouseFeature[] featureList) {
+    public void setFeatureList(String[] featureList) {
         this.FeatureList = featureList;
     }
 }
