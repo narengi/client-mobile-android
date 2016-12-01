@@ -96,6 +96,8 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
 			guestCount = 1;
 			maxGuestCount = 1;
 		}
+		setGuestCount(guestCount);
+		setMaxGuestCount(maxGuestCount);
 
         guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
         maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(maxGuestCount)));
