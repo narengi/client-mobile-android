@@ -127,6 +127,7 @@ public class RetrofitService {
 
             AccountProfile loggedInProfile = AccountProfile.getLoggedInAccountProfile(NarengiApplication.getInstance());
             if(loggedInProfile != null && loggedInProfile.getToken() != null) {
+				Log.e("access-token", loggedInProfile.getToken().getAuthString());
                 builder.addHeader("access-token", loggedInProfile.getToken().getAuthString());
             }
             return chain.proceed(builder.build());
