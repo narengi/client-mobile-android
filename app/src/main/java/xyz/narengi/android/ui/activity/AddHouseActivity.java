@@ -1,6 +1,7 @@
 package xyz.narengi.android.ui.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -207,7 +208,12 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 
 
     private void addHouse() {
-		showProgress();
+//		showProgress();
+		final ProgressDialog progressDialog = new ProgressDialog(this);
+		progressDialog.setCancelable(false);
+		progressDialog.setMessage(getString(R.string.please_wait));
+		progressDialog.setCanceledOnTouchOutside(false);
+		progressDialog.show();
         //TODO : user test1003@test.com has more than 224 houses. use it for list test.
         HouseEntryInput houseEntryInput = getHouseEntryInput();
         if (houseEntryInput == null)
@@ -221,7 +227,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         call.enqueue(new Callback<House>() {
             @Override
             public void onResponse(Call<House> call, Response<House> response) {
-                hideProgress();
+//                hideProgress();
+				progressDialog.dismiss();
                 int statusCode = response.code();
                 House resultHouse = response.body();
                 if (resultHouse == null) {
@@ -242,7 +249,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 
             @Override
             public void onFailure(Call<House> call, Throwable t) {
-                hideProgress();
+				progressDialog.dismiss();
                 Toast.makeText(AddHouseActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }
