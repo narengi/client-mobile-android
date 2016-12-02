@@ -1,6 +1,7 @@
 package xyz.narengi.android.ui.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,10 +46,6 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.soundcloud.android.crop.Crop;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
@@ -141,13 +138,13 @@ public class EditProfileActivity extends AppCompatActivity {
                         startCropActivity(Uri.fromFile(new File(mCurrentPhotoPath)));
 
                     } else {
-                        Toast.makeText(EditProfileActivity.this, "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditProfileActivity.this, getString(R.string.cannot_retrieve_selected_image), Toast.LENGTH_SHORT).show();
                     }
                 } else if (requestCode == REQUEST_SELECT_PICTURE) {
                     if (data != null && data.getData() != null) {
                         startCropActivity(data.getData());
                     } else {
-                        Toast.makeText(EditProfileActivity.this, "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditProfileActivity.this, getString(R.string.cannot_retrieve_selected_image), Toast.LENGTH_SHORT).show();
                     }
                 } else if (requestCode == Crop.REQUEST_CROP) {
                     handleCropResult(data);
@@ -229,7 +226,7 @@ public class EditProfileActivity extends AppCompatActivity {
 //            ResultActivity.startWithUri(this, resultUri);
             setCapturedImage(resultUri);
         } else {
-            Toast.makeText(this, "toast_cannot_retrieve_cropped_image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.cannot_retrieve_selected_image), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -382,7 +379,7 @@ public class EditProfileActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
-                birthDateEditText.setText(birthDatePicker.getDisplayPersianDate().getPersianShortDate());
+                birthDateEditText.setText(Util.convertNumber(birthDatePicker.getDisplayPersianDate().getPersianShortDate()));
                 selectedBirthDate = birthDatePicker.getDisplayDate();
             }
         });
@@ -576,23 +573,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     @SuppressWarnings("ConstantConditions")
     private void getProfilePicture() {
-
-        final String authorizationJsonHeader = AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString();
-        OkHttpClient picassoClient = new OkHttpClient();
-
-        picassoClient.networkInterceptors().add(new Interceptor() {
-
-            @Override
-            public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder()
-                        .addHeader("access-token", authorizationJsonHeader)
-                        .build();
-                return chain.proceed(newRequest);
-            }
-        });
-
-        Picasso picasso = new Picasso.Builder(this).downloader(new OkHttpDownloader(picassoClient)).build();
-        picasso.load(AccountProfile.getLoggedInAccountProfile(this).getProfile().getAvatar()).into(profileImageView);
+        Picasso.with(this).load(AccountProfile.getLoggedInAccountProfile(this).getProfile().getAvatar()).into(profileImageView);
     }
 
     private void getProvinces() {
@@ -713,6 +694,12 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void uploadProfilePicture(Uri resultUri) {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
+
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         File file = new File(resultUri.getPath());
@@ -729,15 +716,14 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<AccountProfile> call, Response<AccountProfile> response) {
                 int statusCode = response.code();
-                Toast.makeText(EditProfileActivity.this, "Status : " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
                 if (statusCode == 201 || statusCode == 204) {
-                    Toast.makeText(EditProfileActivity.this, "Upload image success... :  " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
 
                 } else {
                     try {
                         if (response.errorBody() != null) {
                             Toast.makeText(EditProfileActivity.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
-                            showUpdateProfileResultDialog(response.errorBody().string(), false);
+//                            showUpdateProfileResultDialog(response.errorBody().string(), false);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -747,7 +733,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<AccountProfile> call, Throwable t) {
-                Toast.makeText(EditProfileActivity.this, "Upload image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                Toast.makeText(EditProfileActivity.this, getString(R.string.error_alert_title) + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }
         });
@@ -909,7 +896,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     EditText birthDateEditText = (EditText) findViewById(R.id.edit_profile_birthDate);
 
                     Util.SolarCalendar calendar = new Util.SolarCalendar(birthDate);
-                    birthDateEditText.setText(String.format(Locale.ENGLISH, "%d/%02d/%02d", calendar.year, calendar.month, calendar.date));
+                    birthDateEditText.setText(Util.convertNumber(String.format(Locale.ENGLISH, "%d/%02d/%02d", calendar.year, calendar.month, calendar.date)));
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
