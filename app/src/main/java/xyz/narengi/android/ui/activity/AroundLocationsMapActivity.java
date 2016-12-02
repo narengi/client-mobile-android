@@ -450,12 +450,36 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
 
     private void setUpCluster() {
 
-        mClusterManager = new ClusterManager<AroundLocationClusterItem>(this, mMap) {
-
-
+//        mClusterManager = new ClusterManager<AroundLocationClusterItem>(this, mMap) {  //todo fix it
+//
+//
+//            @Override
+//            public void onCameraChange(CameraPosition cameraPosition) {
+//                super.onCameraChange(cameraPosition);
+//
+//                if (mMap == null)
+//                    return;
+//                LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+//
+//                LatLng northeast = bounds.northeast;
+//                String boundLat = String.valueOf(northeast.latitude);
+//                String boundLong = String.valueOf(northeast.longitude);
+//
+//                LatLng southwest = bounds.southwest;
+//
+//                String boundLat2 = String.valueOf(southwest.latitude);
+//                String boundLong2 = String.valueOf(southwest.longitude);
+//
+////                addClusterItems();
+//
+//                mClusterManager.cluster();
+//
+//            }
+//        };
+//
+        GoogleMap.OnCameraMoveStartedListener a= new GoogleMap.OnCameraMoveStartedListener() {
             @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                super.onCameraChange(cameraPosition);
+            public void onCameraMoveStarted(int i) {
 
                 if (mMap == null)
                     return;
@@ -472,13 +496,12 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
 
 //                addClusterItems();
 
-                mClusterManager.cluster();
-
+//                mClusterManager.cluster();
             }
         };
         // Point the map's listeners at the listeners implemented by the cluster
         // manager.
-        mMap.setOnCameraChangeListener(mClusterManager);
+        mMap.setOnCameraMoveStartedListener(a);
         mClusterManager.setRenderer(new AroundLocationClusterRenderer(this, mMap, mClusterManager));
         mMap.setOnInfoWindowClickListener(mClusterManager);
         mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
@@ -913,9 +936,9 @@ public class AroundLocationsMapActivity extends AppCompatActivity implements OnM
 
         @Override
         public View getInfoContents(Marker marker) {
-
-            myContentsView = inflater.inflate(
-                    R.layout.info_window, null);
+//
+//            myContentsView = inflater.inflate( //todo fix it
+//                    R.layout.info_window, null);
 
             if (clickedClusterItem != null && clickedClusterItem.getAroundLocation() != null) {
 

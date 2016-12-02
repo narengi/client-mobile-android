@@ -811,36 +811,36 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
     }
 
     private void setUpCluster() {
-
-        mClusterManager = new ClusterManager<AroundLocationClusterItem>(this, mMap) {
-
-
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                super.onCameraChange(cameraPosition);
-
-                if (mMap == null)
-                    return;
-                LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-
-                LatLng northeast = bounds.northeast;
-                String boundLat = String.valueOf(northeast.latitude);
-                String boundLong = String.valueOf(northeast.longitude);
-
-                LatLng southwest = bounds.southwest;
-
-                String boundLat2 = String.valueOf(southwest.latitude);
-                String boundLong2 = String.valueOf(southwest.longitude);
-
-//                addClusterItems();
-
-                mClusterManager.cluster();
-
-            }
-        };
-        // Point the map's listeners at the listeners implemented by the cluster
-        // manager.
-        mMap.setOnCameraChangeListener(mClusterManager);
+//
+//        mClusterManager = new ClusterManager<AroundLocationClusterItem>(this, mMap) {
+//
+//
+//            @Override
+//            public void onCameraChange(CameraPosition cameraPosition) {
+//                super.onCameraChange(cameraPosition);
+//
+//                if (mMap == null)
+//                    return;
+//                LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+//
+//                LatLng northeast = bounds.northeast;
+//                String boundLat = String.valueOf(northeast.latitude);
+//                String boundLong = String.valueOf(northeast.longitude);
+//
+//                LatLng southwest = bounds.southwest;
+//
+//                String boundLat2 = String.valueOf(southwest.latitude);
+//                String boundLong2 = String.valueOf(southwest.longitude);
+//
+////                addClusterItems();
+//
+//                mClusterManager.cluster();
+//
+//            }
+//        };
+//        // Point the map's listeners at the listeners implemented by the cluster
+//        // manager.
+//        mMap.setOnCameraChangeListener(mClusterManager);  //todo fix it
         mClusterManager.setRenderer(new AroundLocationClusterRenderer(this, mMap, mClusterManager));
         mMap.setOnInfoWindowClickListener(mClusterManager);
         mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
@@ -1237,8 +1237,8 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
         @Override
         public View getInfoContents(Marker marker) {
 
-            myContentsView = inflater.inflate(
-                    R.layout.info_window, null);
+//            myContentsView = inflater.inflate(
+//                    R.layout.info_window, null); //todo fix it
 
             if (clickedClusterItem != null && clickedClusterItem.getAroundLocation() != null) {
 
