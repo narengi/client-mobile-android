@@ -779,6 +779,10 @@ public class EditProfileActivity extends AppCompatActivity {
         profile.setBio(bioEditText.getText().toString());
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage(getString(R.string.please_wait));
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call call = apiEndpoints.updateProfile(profile);
 
@@ -786,6 +790,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) {
                 int statusCode = response.code();
+                progressDialog.dismiss();
                 if (statusCode == 201 || statusCode == 204) {
                     saveDisplayName(nameEditText.getText().toString(), familyEditText.getText().toString());
                     SecurityUtils.getInstance(EditProfileActivity.this).setUpdateUserTitleNeeded(true);
@@ -804,6 +809,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call call, Throwable t) {
+                progressDialog.dismiss();
                 t.printStackTrace();
             }
         });
