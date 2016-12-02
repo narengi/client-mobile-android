@@ -55,12 +55,14 @@
             android:name=".ui.activity.SignInSignUpActivity"
             android:label=""
             android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.activity.ExploreActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -82,6 +84,7 @@
         <activity
             android:name=".ui.activity.SearchableActivity"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -97,12 +100,15 @@
         </activity>
         <activity
             android:name=".ui.activity.CityActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.HouseActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.HouseFeaturesActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
 
         <provider
@@ -122,64 +128,78 @@
 
         <activity
             android:name=".ui.activity.HostActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.activity.SearchResultActivity" />
+        <activity android:name=".ui.activity.SearchResultActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.AttractionActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.SignUpConfirmActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.EditProfileActivity"
+            android:screenOrientation="portrait"
             android:label="@string/edit_profile_page_title"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.MobileInputActivity"
             android:label="@string/mobile_input_page_title"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.MobileVerificationActivity"
             android:label="@string/mobile_verification_page_title"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.ViewProfileActivity"
             android:label="@string/view_profile_page_title"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <activity
             android:name=".ui.activity.VerificationIntroActivity"
+            android:screenOrientation="portrait"
             android:label="@string/verification_intro_page_title"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.VerificationViewActivity"
+            android:screenOrientation="portrait"
             android:label="@string/verification_view_page_title"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.IdentityCardActivity"
             android:label="@string/identity_card_page_title"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.VerificationConfirmActivity"
             android:label="@string/verification_confirm_page_title"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.BookActivity"
             android:label="@string/book_page_title"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity android:name=".ui.activity.SearchResultMapActivity" />
         <activity
             android:name=".ui.activity.BookSummaryActivity"
             android:label="@string/book_summary_page_title"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activity.BookServiceFeeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".ui.activity.BookResultActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -193,10 +213,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".ui.activity.HouseMapActivity" />
-        <activity android:name=".ui.activity.HouseEntryActivity" />
+        <activity android:name=".ui.activity.HouseMapActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.HouseEntryActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.HostHousesActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_host_houses"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
@@ -215,21 +238,27 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.activity.EditHouseActivity" />
-        <activity android:name=".ui.activity.EditHouseDetailActivity" />
+        <activity android:name=".ui.activity.EditHouseActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.EditHouseDetailActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.AddHouseConfirmActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Translucent" />
-        <activity android:name=".ui.activity.AroundLocationsMapActivity" />
+        <activity android:name=".ui.activity.AroundLocationsMapActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.BookRequestsActivity"
             android:label="@string/title_activity_book_requests"
-            android:theme="@style/AppTheme"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".ui.activity.BookRequestDetailActivity"
             android:label=""
-            android:theme="@style/AppTheme"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
