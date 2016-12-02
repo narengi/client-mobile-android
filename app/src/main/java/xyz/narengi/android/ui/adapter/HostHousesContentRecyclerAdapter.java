@@ -24,14 +24,6 @@ import com.byagowi.persiancalendar.Entity.Day;
 import com.byagowi.persiancalendar.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
@@ -77,7 +69,6 @@ import xyz.narengi.android.util.Util;
  */
 public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final ImageLoader imageLoader;
     private Context context;
     private House[] houses;
     private List<ImageInfo[]> imageInfoList;
@@ -91,8 +82,8 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     private Map<String, HouseAvailableDates> allHouseAvailableDatesMap;
 
     //TODO : use AsyncQueryHandler
-    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
-    private DisplayImageOptions displayImageOptions;
+//    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+//    private DisplayImageOptions displayImageOptions;
 
     public HostHousesContentRecyclerAdapter(Context context, House[] houses, List<ImageInfo[]> imageInfoList,
                                             List<HouseAvailableDates> houseAvailableDatesList, RemoveHouseListener removeHouseListener,
@@ -113,8 +104,8 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             this.allHouseAvailableDatesMap = allHouseAvailableDatesMap;
         }
 
-        imageLoader = ImageLoader.getInstance(); // Get singleton instance
-        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+//        imageLoader = ImageLoader.getInstance(); // Get singleton instance
+//        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
 
 //        displayImageOptions = new DisplayImageOptions.Builder()
 //                .showImageOnLoading(R.xml.progress)
@@ -126,14 +117,14 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //                .displayer(new SimpleBitmapDisplayer())
 //                .build();
 
-        displayImageOptions = new DisplayImageOptions.Builder()
-                .showImageForEmptyUri(new ColorDrawable(context.getResources().getColor(R.color.gray_light)))
-                .showImageOnFail(R.drawable.ic_action_close)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .displayer(new SimpleBitmapDisplayer())
-                .build();
+//        displayImageOptions = new DisplayImageOptions.Builder()
+//                .showImageForEmptyUri(new ColorDrawable(context.getResources().getColor(R.color.gray_light)))
+//                .showImageOnFail(R.drawable.ic_action_close)
+//                .cacheInMemory(true)
+//                .cacheOnDisk(true)
+//                .considerExifParams(true)
+//                .displayer(new SimpleBitmapDisplayer())
+//                .build();
     }
 
     @Override
@@ -349,50 +340,51 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
 //            picasso.load(imageInfo.getUrl()).networkPolicy(NetworkPolicy.NO_STORE).into(viewHolder.houseImageView);
 
-            imageLoader.displayImage(imageInfo.getUrl(), viewHolder.houseImageView, displayImageOptions, animateFirstListener);
+            Picasso.with(context).load(imageInfo.getUrl()).into(viewHolder.houseImageView);  //todo check image loader behdad
+//            imageLoader.displayImage(imageInfo.getUrl(), viewHolder.houseImageView, displayImageOptions, animateFirstListener);
 
             // Load image, decode it to Bitmap and return Bitmap to callback
-            imageLoader.loadImage(imageInfo.getUrl(), null, displayImageOptions, new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                    }
-                    viewHolder.houseImageView.setImageBitmap(loadedImage);
-                }
-
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    super.onLoadingStarted(imageUri, view);
-                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                        viewHolder.imageProgressBar.setVisibility(View.VISIBLE);
-                        viewHolder.imageProgressBarLayout.setVisibility(View.VISIBLE);
-                    }
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    super.onLoadingFailed(imageUri, view, failReason);
-                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                    }
-                    //                viewHolder.houseImageView.setImageBitmap(null);
-                    //                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-                    super.onLoadingCancelled(imageUri, view);
-                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                    }
-//                    viewHolder.houseImageView.setImageBitmap(null);
-//                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-                }
-            });
+//            imageLoader.loadImage(imageInfo.getUrl(), null, displayImageOptions, new SimpleImageLoadingListener() {
+//                @Override
+//                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                    }
+//                    viewHolder.houseImageView.setImageBitmap(loadedImage);
+//                }
+//
+//                @Override
+//                public void onLoadingStarted(String imageUri, View view) {
+//                    super.onLoadingStarted(imageUri, view);
+//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                        viewHolder.imageProgressBar.setVisibility(View.VISIBLE);
+//                        viewHolder.imageProgressBarLayout.setVisibility(View.VISIBLE);
+//                    }
+//                }
+//
+//                @Override
+//                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//                    super.onLoadingFailed(imageUri, view, failReason);
+//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                    }
+//                    //                viewHolder.houseImageView.setImageBitmap(null);
+//                    //                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//                }
+//
+//                @Override
+//                public void onLoadingCancelled(String imageUri, View view) {
+//                    super.onLoadingCancelled(imageUri, view);
+//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                    }
+////                    viewHolder.houseImageView.setImageBitmap(null);
+////                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//                }
+//            });
 
             /*ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, viewHolder, authorizationJson, imageInfo.getUrl());
             AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
@@ -449,7 +441,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //            viewHolder.houseImageView.setImageBitmap(null);
 //            viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
 //            viewHolder.houseImageView.invalidate();
-            imageLoader.displayImage("", viewHolder.houseImageView, displayImageOptions, animateFirstListener);
+//            imageLoader.displayImage("", viewHolder.houseImageView, displayImageOptions, animateFirstListener);
         }
     }
 
@@ -728,22 +720,22 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         public void onRemoveHouse(House house);
     }
 
-    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
-
-        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
-
-        @Override
-        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            if (loadedImage != null) {
-                ImageView imageView = (ImageView) view;
-                boolean firstDisplay = !displayedImages.contains(imageUri);
-                if (firstDisplay) {
-                    FadeInBitmapDisplayer.animate(imageView, 500);
-                    displayedImages.add(imageUri);
-                }
-            }
-        }
-    }
+//    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+//
+//        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+//
+//        @Override
+//        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//            if (loadedImage != null) {
+//                ImageView imageView = (ImageView) view;
+//                boolean firstDisplay = !displayedImages.contains(imageUri);
+//                if (firstDisplay) {
+//                    FadeInBitmapDisplayer.animate(imageView, 500);
+//                    displayedImages.add(imageUri);
+//                }
+//            }
+//        }
+//    }
 
     public class EmptyDataViewHolder extends RecyclerView.ViewHolder {
 

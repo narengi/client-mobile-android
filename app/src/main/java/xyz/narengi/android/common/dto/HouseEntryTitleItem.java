@@ -1,9 +1,5 @@
 package xyz.narengi.android.common.dto;
 
-import com.bignerdranch.expandablerecyclerview.Model.ParentObject;
-
-import java.util.List;
-
 /**
  * @author Siavash Mahmoudpour
  */

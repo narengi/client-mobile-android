@@ -11,10 +11,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
-import com.bignerdranch.expandablerecyclerview.Model.ParentObject;
-import com.bignerdranch.expandablerecyclerview.ViewHolder.ChildViewHolder;
-import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
 import com.byagowi.persiancalendar.Entity.Day;
 import com.byagowi.persiancalendar.Utils;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemConstants;
