@@ -1,10 +1,10 @@
 package xyz.narengi.android.service;
 
-import com.squareup.okhttp.RequestBody;
 
 import java.util.Map;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -92,7 +92,7 @@ public interface RetrofitApiEndpoints {
 
     @POST("/api/accounts/verifications/request/{type}")
     Call<AccountVerification> requestIdVerification(@Path("type") String type,
-                                                    @Body RequestBody picture);
+                                                    @Part("file\";name=\"picture\"; filename=\"pp.png\" ") RequestBody picture);
 
     @GET
     Call<HouseAvailableDates> getHouseAvailableDates(@Url String url);

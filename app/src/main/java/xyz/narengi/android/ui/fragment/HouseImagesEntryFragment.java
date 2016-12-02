@@ -37,9 +37,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.soundcloud.android.crop.Crop;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.RequestBody;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -53,6 +50,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -262,8 +261,8 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         HashMap<String, RequestBody> map = new HashMap<>(imageUris.size());
 
 
-        MultipartBuilder builder = new MultipartBuilder();
-        builder.type(MultipartBuilder.FORM);
+//        MultipartBuilder builder = new MultipartBuilder();
+//        builder.type(MultipartBuilder.FORM);
 
         for (Uri uri : imageUris) {
             File file = new File(uri.getPath());

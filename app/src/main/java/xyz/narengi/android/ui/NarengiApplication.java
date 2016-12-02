@@ -4,18 +4,17 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.picasso.Downloader;
-import com.squareup.picasso.OkHttpDownloader;
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.io.IOException;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import xyz.narengi.android.common.dto.AccountProfile;
 
 /**
@@ -32,21 +31,22 @@ public class NarengiApplication extends Application {
         JodaTimeAndroid.init(this);
 
         final String authorizationJsonHeader = AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString();
-        OkHttpClient picassoClient = new OkHttpClient();
-        picassoClient.networkInterceptors().add(new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder()
-                        .addHeader("access-token", authorizationJsonHeader)
-                        .build();
-                return chain.proceed(newRequest);
-            }
-        });
+
+        OkHttpClient picassoClient = new OkHttpClient.Builder()
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Interceptor.Chain chain) throws IOException {
+                        Request newRequest = chain.request().newBuilder()
+                                .addHeader("access-token", authorizationJsonHeader)
+                                .build();
+                        return chain.proceed(newRequest);
+                    }
+                }).build();
 
         Picasso.setSingletonInstance(
                 new Picasso
                         .Builder(this)
-                        .downloader(new OkHttpDownloader(picassoClient))
+                        .downloader(new OkHttp3Downloader(picassoClient))
                         .build());
     }
 

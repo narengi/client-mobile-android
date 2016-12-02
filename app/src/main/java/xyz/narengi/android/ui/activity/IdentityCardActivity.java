@@ -35,15 +35,14 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.soundcloud.android.crop.Crop;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.RequestBody;
 
 import java.io.File;
 import java.io.IOException;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -298,13 +297,13 @@ public class IdentityCardActivity extends AppCompatActivity {
         File file = new File(resultUri.getPath());
 
         RequestBody photoRequestBody = RequestBody.create(MediaType.parse("application/image"), file);
-        RequestBody requestBody = new MultipartBuilder()
-                .type(MultipartBuilder.FORM)
-                .addFormDataPart("picture", file.getName(), photoRequestBody)
-                .build();
+//        RequestBody requestBody = new MultipartBuilder()
+//                .type(MultipartBuilder.FORM)
+//                .addFormDataPart("picture", file.getName(), photoRequestBody)
+//                .build();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<AccountVerification> call = apiEndpoints.requestIdVerification("ID", requestBody);
+        Call<AccountVerification> call = apiEndpoints.requestIdVerification("ID", photoRequestBody); //todo test this
 
         call.enqueue(new Callback<AccountVerification>() {
             @Override
