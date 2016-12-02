@@ -23,10 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -245,22 +241,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
             tvUserFullName = (TextView) findViewById(R.id.tvUserFullName);
             tvUserFullName.setText(TextUtils.isEmpty(AccountProfile.getLoggedInAccountProfile(context).getDisplayName()) ? "نام، نام خانوادگی" : AccountProfile.getLoggedInAccountProfile(context).getDisplayName());
 
-            final String authorizationJsonHeader = AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString();
-            OkHttpClient picassoClient = new OkHttpClient();
-
-            picassoClient.networkInterceptors().add(new Interceptor() {
-
-                @Override
-                public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                    Request newRequest = chain.request().newBuilder()
-                            .addHeader("access-token", authorizationJsonHeader)
-                            .build();
-                    return chain.proceed(newRequest);
-                }
-            });
-
-            Picasso picasso = new Picasso.Builder(this).downloader(new OkHttpDownloader(picassoClient)).build();
-            picasso.load(AccountProfile.getLoggedInAccountProfile(context).getProfile().getAvatar())
+            Picasso.with(context).load(AccountProfile.getLoggedInAccountProfile(context).getProfile().getAvatar())
                     .error(R.drawable.profile_image).into(imgUserAvatar);
         } else {
             drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_login_register), R.drawable.ic_action_login_signup, DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP));

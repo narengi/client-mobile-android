@@ -37,13 +37,9 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.soundcloud.android.crop.Crop;
-import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -840,38 +836,21 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
         private Bitmap getImageBitmap(String url) {
 
-            Picasso picasso;
-            try {
-
-                if (authorization != null && authorization.length() > 0) {
-
-                    OkHttpClient picassoClient = new OkHttpClient();
-
-                    picassoClient.networkInterceptors().add(new Interceptor() {
-
-                        @Override
-                        public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                            Request newRequest = chain.request().newBuilder()
-                                    .addHeader("access-token", authorization)
-                                    .build();
-                            return chain.proceed(newRequest);
-                        }
-                    });
-
-                    picasso = new Picasso.Builder(context).downloader(new OkHttpDownloader(picassoClient)).build();
-                } else {
-                    picasso = Picasso.with(context);
-                }
 
                 if (width > 0 && height > 0) {
-                    return picasso.load(imageUrl).resize(width, height).centerCrop().get();
+                    try {
+                        return Picasso.with(getContext()).load(imageUrl).resize(width, height).centerCrop().get();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 } else {
-                    return picasso.load(imageUrl).resize(120, 80).centerCrop().get();
+                    try {
+                        return Picasso.with(getContext()).load(imageUrl).resize(120, 80).centerCrop().get();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             return null;
         }
     }

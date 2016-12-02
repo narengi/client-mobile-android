@@ -32,10 +32,6 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
@@ -513,28 +509,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                         e.printStackTrace();
                     }*/
 
-                    Picasso picasso;
-                    if (authorizationJson != null && authorizationJson.length() > 0) {
-
-                        OkHttpClient picassoClient = new OkHttpClient();
-
-                        picassoClient.networkInterceptors().add(new Interceptor() {
-
-                            @Override
-                            public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                                Request newRequest = chain.request().newBuilder()
-                                        .addHeader("access-token", authorizationJson)
-                                        .build();
-                                return chain.proceed(newRequest);
-                            }
-                        });
-
-                        picasso = new Picasso.Builder(context).downloader(new OkHttpDownloader(picassoClient)).build();
-                    } else {
-                        picasso = Picasso.with(context);
-                    }
-
-                    picasso.load(result[0].getUrl()).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
+                    Picasso.with(context).load(result[0].getUrl()).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
                             if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
@@ -855,29 +830,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         }
 
         private Object getImage() {
-
-            Picasso picasso;
-            if (authorization != null && authorization.length() > 0) {
-
-                OkHttpClient picassoClient = new OkHttpClient();
-
-                picassoClient.networkInterceptors().add(new Interceptor() {
-
-                    @Override
-                    public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                        Request newRequest = chain.request().newBuilder()
-                                .addHeader("access-token", authorization)
-                                .build();
-                        return chain.proceed(newRequest);
-                    }
-                });
-
-                picasso = new Picasso.Builder(context).downloader(new OkHttpDownloader(picassoClient)).build();
-            } else {
-                picasso = Picasso.with(context);
-            }
-
-            picasso.load(imageUrl).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
+            Picasso.with(context).load(imageUrl).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
                     if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {

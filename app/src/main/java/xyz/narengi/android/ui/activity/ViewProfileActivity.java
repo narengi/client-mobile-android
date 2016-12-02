@@ -20,10 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -208,22 +204,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         ImageView profileImageView = (ImageView) findViewById(R.id.view_profile_profileImage);
 
-        final String authorizationJsonHeader = AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString();
-        OkHttpClient picassoClient = new OkHttpClient();
-
-        picassoClient.networkInterceptors().add(new Interceptor() {
-
-            @Override
-            public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder()
-                        .addHeader("access-token", authorizationJsonHeader)
-                        .build();
-                return chain.proceed(newRequest);
-            }
-        });
-
-        Picasso picasso = new Picasso.Builder(this).downloader(new OkHttpDownloader(picassoClient)).build();
-        picasso.load(Constants.SERVER_BASE_URL + "/api/v1/user-profiles/picture").into(profileImageView);
+        Picasso.with(this).load(Constants.SERVER_BASE_URL + "/api/v1/user-profiles/picture").into(profileImageView);
     }
 
     private void showProgress() {

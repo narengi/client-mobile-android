@@ -13,10 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -157,19 +153,6 @@ public class VerificationViewActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void getIdentityCardImage(ImageView identityCardImageView) {
 
-        final String authorizationJsonHeader = AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString();
-        OkHttpClient picassoClient = new OkHttpClient();
-
-        picassoClient.networkInterceptors().add(new Interceptor() {
-
-            @Override
-            public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder()
-                        .addHeader("access-token", authorizationJsonHeader)
-                        .build();
-                return chain.proceed(newRequest);
-            }
-        });
 
         final float scale = getResources().getDisplayMetrics().density;
         int pixels = (int) (96 * scale);
@@ -184,9 +167,7 @@ public class VerificationViewActivity extends AppCompatActivity {
             height = pixels;
         }
 
-        Picasso picasso = new Picasso.Builder(this).downloader(new OkHttpDownloader(picassoClient)).build();
-
-        picasso.load(Constants.SERVER_BASE_URL + "/api/v1/accounts/id-card").resize(pixels, pixels).centerCrop().into(identityCardImageView);
+        Picasso.with(this).load(Constants.SERVER_BASE_URL + "/api/v1/accounts/id-card").resize(pixels, pixels).centerCrop().into(identityCardImageView);
 
     }
 }
