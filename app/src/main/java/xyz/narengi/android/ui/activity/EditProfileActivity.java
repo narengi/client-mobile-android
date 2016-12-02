@@ -47,7 +47,6 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Picasso;
-import com.yalantis.ucrop.UCrop;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -161,59 +160,59 @@ public class EditProfileActivity extends AppCompatActivity {
      * @param uCrop - ucrop builder instance
      * @return - ucrop builder instance
      */
-    private UCrop basisConfig(@NonNull UCrop uCrop) {
-//        switch (mRadioGroupAspectRatio.getCheckedRadioButtonId()) {
-//            case R.id.radio_origin:
-//                uCrop = uCrop.useSourceImageAspectRatio();
-//                break;
-//            case R.id.radio_square:
-//                uCrop = uCrop.withAspectRatio(1, 1);
-//                break;
-//            case R.id.radio_dynamic:
-//                // do nothing
-//                break;
-//            default:
-//                try {
-//                    float ratioX = Float.valueOf(mEditTextRatioX.getText().toString().trim());
-//                    float ratioY = Float.valueOf(mEditTextRatioY.getText().toString().trim());
-//                    if (ratioX > 0 && ratioY > 0) {
-//                        uCrop = uCrop.withAspectRatio(ratioX, ratioY);
-//                    }
-//                } catch (NumberFormatException e) {
-//                    Log.e(TAG, "Number please", e);
-//                }
-//                break;
-//        }
+//    private UCrop basisConfig(@NonNull UCrop uCrop) {
+////        switch (mRadioGroupAspectRatio.getCheckedRadioButtonId()) {
+////            case R.id.radio_origin:
+////                uCrop = uCrop.useSourceImageAspectRatio();
+////                break;
+////            case R.id.radio_square:
+////                uCrop = uCrop.withAspectRatio(1, 1);
+////                break;
+////            case R.id.radio_dynamic:
+////                // do nothing
+////                break;
+////            default:
+////                try {
+////                    float ratioX = Float.valueOf(mEditTextRatioX.getText().toString().trim());
+////                    float ratioY = Float.valueOf(mEditTextRatioY.getText().toString().trim());
+////                    if (ratioX > 0 && ratioY > 0) {
+////                        uCrop = uCrop.withAspectRatio(ratioX, ratioY);
+////                    }
+////                } catch (NumberFormatException e) {
+////                    Log.e(TAG, "Number please", e);
+////                }
+////                break;
+////        }
+////
+////        if (mCheckBoxMaxSize.isChecked()) {
+////            try {
+////                int maxWidth = Integer.valueOf(mEditTextMaxWidth.getText().toString().trim());
+////                int maxHeight = Integer.valueOf(mEditTextMaxHeight.getText().toString().trim());
+////                if (maxWidth > 0 && maxHeight > 0) {
+////                    uCrop = uCrop.withMaxResultSize(maxWidth, maxHeight);
+////                }
+////            } catch (NumberFormatException e) {
+////                Log.e(TAG, "Number please", e);
+////            }
+////        }
 //
-//        if (mCheckBoxMaxSize.isChecked()) {
-//            try {
-//                int maxWidth = Integer.valueOf(mEditTextMaxWidth.getText().toString().trim());
-//                int maxHeight = Integer.valueOf(mEditTextMaxHeight.getText().toString().trim());
-//                if (maxWidth > 0 && maxHeight > 0) {
-//                    uCrop = uCrop.withMaxResultSize(maxWidth, maxHeight);
-//                }
-//            } catch (NumberFormatException e) {
-//                Log.e(TAG, "Number please", e);
-//            }
-//        }
-
-
-//        uCrop = uCrop.withAspectRatio(1, 1);
-        uCrop = uCrop.useSourceImageAspectRatio();
-
-        return uCrop;
-    }
-
-    /**
-     * Sometimes you want to adjust more options, it's done via {@link com.yalantis.ucrop.UCrop.Options} class.
-     *
-     * @param uCrop - ucrop builder instance
-     * @return - ucrop builder instance
-     */
-    private UCrop advancedConfig(@NonNull UCrop uCrop) {
-        UCrop.Options options = new UCrop.Options();
-        return uCrop.withOptions(options);
-    }
+//
+////        uCrop = uCrop.withAspectRatio(1, 1);
+//        uCrop = uCrop.useSourceImageAspectRatio();
+//
+//        return uCrop;
+//    }
+//
+//    /**
+//     * Sometimes you want to adjust more options, it's done via {@link com.yalantis.ucrop.UCrop.Options} class.
+//     *
+//     * @param uCrop - ucrop builder instance
+//     * @return - ucrop builder instance
+//     */
+//    private UCrop advancedConfig(@NonNull UCrop uCrop) {
+//        UCrop.Options options = new UCrop.Options();
+//        return uCrop.withOptions(options);
+//    }
 
     private void startCropActivity(@NonNull Uri uri) {
         Crop.of(uri, mDestinationUri).asSquare().start(this, Crop.REQUEST_CROP);
