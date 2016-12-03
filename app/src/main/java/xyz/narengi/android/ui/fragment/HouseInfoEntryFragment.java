@@ -130,7 +130,6 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
     }
 
     private void initViews(View view) {
-
         titleEditText = (EditText) view.findViewById(R.id.house_info_entry_title);
         summaryEditText = (EditText) view.findViewById(R.id.house_info_entry_summary);
         provinceSpinner = (Spinner) view.findViewById(R.id.house_info_entry_province);
@@ -232,7 +231,6 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         house.setName(titleEditText.getText().toString());
         house.setSummary(summaryEditText.getText().toString());
         house.setAddress(addressEditText.getText().toString());
-        Location location = new Location();
         house.setCityName(citySpinner.getSelectedItem().toString());
         house.setProvinceName(provinceSpinner.getSelectedItem().toString());
 
@@ -254,22 +252,24 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         call.enqueue(new Callback<Map<String, ProvinceCity[]>>() {
             @Override
             public void onResponse(Call<Map<String, ProvinceCity[]>> call, Response<Map<String, ProvinceCity[]>> response) {
-                int statusCode = response.code();
-                provincesMap = response.body();
-                if (provincesMap != null && !provincesMap.isEmpty()) {
-                    initProvinceSpinner(provincesMap, house);
+                if (response.isSuccessful()) {
+                    provincesMap = response.body();
+                    if (provincesMap != null && !provincesMap.isEmpty()) {
+                        initProvinceSpinner(provincesMap, house);
+                    }
+                } else {
+                    Toast.makeText(getContext(), R.string.error_alert_title, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Map<String, ProvinceCity[]>> call, Throwable t) {
-                t.printStackTrace();
+                Toast.makeText(getContext(), R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void initProvinceSpinner(final Map<String, ProvinceCity[]> provincesMap, final House house) {
-
         if (provinceSpinner == null || citySpinner == null || provincesMap == null || provincesMap.isEmpty())
             return;
 
