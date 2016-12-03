@@ -201,8 +201,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 			PersianCalendar persianCalendar = new PersianCalendar(firstAvailableDate.getTime());
 			String dateString = persianCalendar.getPersianShortDate();
 			viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, Util.convertNumber(dateString)));
-		} catch (ParseException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
 			viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
 		}
 
