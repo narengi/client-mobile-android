@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
@@ -242,7 +243,6 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             public void onResponse(Call<House[]> call, Response<House[]> response) {
 				hideProgress();
 				if (response.isSuccessful()) {
-					int statusCode = response.code();
 					hostHouses = response.body();
 
 //                ImagesAndDatesAsyncTask imagesAndDatesAsyncTask = new ImagesAndDatesAsyncTask();
@@ -259,7 +259,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 					if (hostHouses == null || hostHouses.length == 0) {
 						setupContentRecyclerView();
 					} else {
-						readDatesAndImages();
+//						readDatesAndImages();
 
 						setupContentRecyclerView();
 					}
@@ -320,12 +320,12 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 
     }
 
-    private void readDatesAndImages() {
-
-        if (hostHouses == null || hostHouses.length == 0)
-            return;
-
-        allImageInfoArraysMap = new HashMap<String, ImageInfo[]>();
+//    private void readDatesAndImages() {
+//
+//        if (hostHouses == null || hostHouses.length == 0)
+//            return;
+//
+//        allImageInfoArraysMap = new HashMap<String, ImageInfo[]>();
 
 //        final SharedPreferences preferences = getSharedPreferences("profile", 0);
 //        String accessToken = preferences.getString("accessToken", "");
@@ -365,7 +365,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 //        imageInfoList = new ArrayList<ImageInfo[]>();
 //        houseAvailableDatesList = new ArrayList<HouseAvailableDates>();
 
-        for (House house : hostHouses) {
+//        for (House house : hostHouses) {
 
 //            readImageInfo(house);
 
@@ -393,8 +393,8 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
                 houseAvailableDatesList.add(null);
                 e.printStackTrace();
             }*/
-        }
-    }
+//        }
+//    }
 
     public List<HouseAvailableDates> getHouseAvailableDatesList() {
 
@@ -423,20 +423,23 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<Object> call = apiEndpoints.removeHouse(house.getDetailUrl());
+        Call<Object> call = apiEndpoints.removeHouse(house.getId());
 
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
                 hideProgress();
-                int statusCode = response.code();
-                getHostHouses();
+                if (response.isSuccessful()) {
+                    getHostHouses();
+                } else {
+                    Toast.makeText(HostHousesActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
                 hideProgress();
-                t.printStackTrace();
+                Toast.makeText(HostHousesActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -468,15 +471,6 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         AlertDialog dialog = builder.create();
 //        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
-    }
-
-    public class ImagesAndDatesAsyncTask extends AsyncTask {
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            readDatesAndImages();
-            return null;
-        }
     }
 
 }
