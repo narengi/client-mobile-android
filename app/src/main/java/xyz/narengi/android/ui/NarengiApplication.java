@@ -11,6 +11,9 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.io.IOException;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
+
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -29,6 +32,7 @@ public class NarengiApplication extends Application {
         super.onCreate();
         instance = this;
         JodaTimeAndroid.init(this);
+        Fabric.with(this, new Crashlytics());
 
         final String authorizationJsonHeader = AccountProfile.getLoggedInAccountProfile(this).getToken().getAuthString();
 
