@@ -112,8 +112,8 @@ public interface RetrofitApiEndpoints {
     @PUT
     Call<House> updateHouse(@Url String url, @Body HouseEntryInput houseEntryInput);
 
-    @DELETE
-    Call<Object> removeHouse(@Url String url);
+    @DELETE("/api/houses/{id}")
+    Call<Object> removeHouse(@Path("id") String id);
 
     @Multipart
     @POST

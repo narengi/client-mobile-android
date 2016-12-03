@@ -37,8 +37,17 @@ public class House implements Serializable {
     private Commission Commission;
     private Location location;
     private String address;
+    private String id;
 
-	public String[] getDates() {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String[] getDates() {
 		return dates;
 	}
 
