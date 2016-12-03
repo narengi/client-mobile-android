@@ -1,6 +1,7 @@
 package xyz.narengi.android.ui.fragment;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.Map;
 
@@ -92,6 +94,12 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
     }
 
     private void getHouseTypes() {
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
+
         final House house = super.getHouse();
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
@@ -102,16 +110,22 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
         call.enqueue(new Callback<Type[]>() {
             @Override
 			public void onResponse(Call<Type[]> call, Response<Type[]> response) {
-                int statusCode = response.code();
-                houseTypes = response.body();
-                if (houseTypes != null && houseTypes.length > 0) {
-                    initHouseTypeRadioGroup(houseTypes, house);
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    houseTypes = response.body();
+                    if (houseTypes != null && houseTypes.length > 0) {
+                        initHouseTypeRadioGroup(houseTypes, house);
+                    }
+                } else {
+                    Toast.makeText(getContext(), R.string.error_alert_title, Toast.LENGTH_SHORT).show();
                 }
             }
 
 			@Override
             public void onFailure(Call<Type[]> call, Throwable t) {
-                t.printStackTrace();
+                progressDialog.dismiss();
+                Toast.makeText(getContext(), R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
         });
     }
