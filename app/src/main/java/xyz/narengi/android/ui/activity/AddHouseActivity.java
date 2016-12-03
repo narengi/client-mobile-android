@@ -12,7 +12,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -229,9 +228,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
             public void onResponse(Call<House> call, Response<House> response) {
 //                hideProgress();
 				progressDialog.dismiss();
-                int statusCode = response.code();
-                House resultHouse = response.body();
-                if (resultHouse == null) {
+                if (!response.isSuccessful()) {
                     try {
                         if (response.errorBody() != null) {
                             Toast.makeText(AddHouseActivity.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
@@ -240,10 +237,15 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                         e.printStackTrace();
                     }
                 } else {
+//                    if (currentStep == HouseEntryStep.HOUSE_INFO){
+                    house.setDetailUrl(response.body().getDetailUrl());
+                        goToNextSection();
+//                    } else {
 //                    house = resultHouse;
 //                    showUpdateHouseResultDialog();
-
-                openAddHouseConfirm();
+//
+//                        openAddHouseConfirm();
+//                    }
                 }
             }
 
@@ -299,44 +301,50 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 //        }, 1000);
 //    }
 
-//    private void updateHouse() {
-//        HouseEntryInput houseEntryInput = getHouseEntryInput();
-//        if (houseEntryInput == null)
-//            return;
-//
-//        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
-//
-//        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-//        Call<House> call = apiEndpoints.updateHouse(house.getDetailUrl(), houseEntryInput);
-//
-//        call.enqueue(new Callback<House>() {
-//            @Override
-//            public void onResponse(Call<House> call, Response<House> response) {
-//                int statusCode = response.code();
-//                House resultHouse = response.body();
-//                if (resultHouse == null) {
-//                    try {
-//                        if (response.errorBody() != null) {
-//                            Toast.makeText(AddHouseActivity.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    house = resultHouse;
-//                    showUpdateHouseResultDialog();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<House> call, Throwable t) {
+    private void updateHouse() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
+
+        HouseEntryInput houseEntryInput = getHouseEntryInput();
+        if (houseEntryInput == null)
+            return;
+
+        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
+
+        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+        Call<House> call = apiEndpoints.updateHouse(house.getDetailUrl(), houseEntryInput);
+
+        call.enqueue(new Callback<House>() {
+            @Override
+            public void onResponse(Call<House> call, Response<House> response) {
+                progressDialog.dismiss();
+                if (!response.isSuccessful()) {
+                    try {
+                        if (response.errorBody() != null) {
+                            Toast.makeText(AddHouseActivity.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+
+                        openAddHouseConfirm();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<House> call, Throwable t) {
+                progressDialog.dismiss();
 //                hideProgress();
-//                Toast.makeText(AddHouseActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
-//                t.printStackTrace();
-//            }
-//        });
-//    }
+                Toast.makeText(AddHouseActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
+            }
+        });
+    }
 
 //    private void addUpdateHouse() {
 //
@@ -375,7 +383,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 			location.setAddress(house.getAddress());
             houseEntryInput.setLocation(location);
         }
-        houseEntryInput.setType(house.getType().getKey());
+
+        if (house.getType() != null) {
+            houseEntryInput.setType(house.getType().getKey());
+        }
+
         houseEntryInput.setSpec(house.getSpec());
         houseEntryInput.setAvailableDates(getSelectedDates());
 
@@ -488,6 +500,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 
         switch (currentStep) {
             case HOUSE_INFO:
+
+//				addHouse();
                 currentStep = HouseEntryStep.HOUSE_MAP;
                 goToMapSection();
                 break;
@@ -516,7 +530,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                 goToDatesSection();
                 break;
             case HOUSE_DATES:
-				addHouse();
+//				addHouse();
+                updateHouse();
 //                openAddHouseConfirm();
                 break;
         }
@@ -1220,10 +1235,14 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     public void onGoToNextSection(House house) {
         this.house = house;
 
-		goToNextSection();
+        if (currentStep == HouseEntryStep.HOUSE_INFO && (this.house.getDetailUrl()== null || this.house.getDetailUrl().isEmpty())){
+            addHouse();
+        } else {
+            goToNextSection();
+        }
+
 //		showUpdateHouseResultDialog();
 //        showProgress();
-//        addUpdateHouse();
     }
 
     @Override
