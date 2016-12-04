@@ -239,6 +239,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
                 } else {
 //                    if (currentStep == HouseEntryStep.HOUSE_INFO){
                     house.setDetailUrl(response.body().getDetailUrl());
+                    house.setId(response.body().getId());
                         goToNextSection();
 //                    } else {
 //                    house = resultHouse;

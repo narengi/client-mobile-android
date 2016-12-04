@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -257,22 +258,26 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
 
-        final MediaType MEDIA_TYPE = MediaType.parse("image/png");
-        HashMap<String, RequestBody> map = new HashMap<>(imageUris.size());
+//        final MediaType MEDIA_TYPE = MediaType.parse("image/png");
+//        HashMap<String, RequestBody> map = new HashMap<>(imageUris.size());
 
 
 //        MultipartBuilder builder = new MultipartBuilder();
 //        builder.type(MultipartBuilder.FORM);
 
-        for (Uri uri : imageUris) {
-            File file = new File(uri.getPath());
-            RequestBody photoRequestBody = RequestBody.create(MEDIA_TYPE, file);
-            map.put("pictures\"; filename=\"" + file.getName(), photoRequestBody);
-        }
+//        for (Uri uri : imageUris) {
+//            File file = new File(uri.getPath());
+//            RequestBody photoRequestBody = RequestBody.create(MEDIA_TYPE, file);
+//            map.put("pictures\"; filename=\"" + file.getName(), photoRequestBody);
+//        }
+
+
+        File file = new File(imageUris.get(0).getPath());
+        final RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
 
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> call = apiEndpoints.uploadHouseImages(getHouse().getDetailUrl() + "/pictures", map);
+        Call<ImageInfo[]> call = apiEndpoints.uploadHouseImages(getHouse().getId(), requestBody);
 
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
@@ -469,11 +474,27 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         Toast.makeText(getContext(), R.string.house_images_entry_image_removed_alert, Toast.LENGTH_SHORT).show();
     }
 
-    private void updateViewPager(Uri resultUri) {
+    private void updateViewPager(Uri resultUri1) {
         if (imageUris == null)
             imageUris = new ArrayList<Uri>();
 
-        imageUris.add(resultUri);
+
+//     File compressedImageFile = Compressor.getDefault(getContext()).compressToFile(new File(resultUri.getPath()));
+
+
+      File compressedImage = new Compressor.Builder(getContext())
+                .setMaxWidth(640)
+                .setMaxHeight(480)
+                .setQuality(75)
+                .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                .build()
+                .compressToFile(new File(resultUri1.getPath()));
+
+
+        Uri uri = Uri.fromFile(compressedImage);
+        imageUris.add(uri);
         viewPagerAdapter = new HouseImageEntryViewPagerAdapter(getContext(), imageUris, imageInfoArray);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(viewPagerAdapter.getCount() - 1);
@@ -481,7 +502,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
         updateRemoveButtonVisibility();
 
-        addThumbnail(resultUri);
+        addThumbnail(uri);
     }
 
     private void setupThumbnailsRecyclerView(View view) {
@@ -604,14 +625,16 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 if (!TextUtils.isEmpty(mCurrentPhotoPath)) {
-                    startCropActivity(Uri.fromFile(new File(mCurrentPhotoPath)));
+//                    startCropActivity(Uri.fromFile(new File(mCurrentPhotoPath)));
 
+                    updateViewPager(Uri.fromFile(new File(mCurrentPhotoPath)));
                 } else {
                     Toast.makeText(getContext(), "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
                 }
             } else if (requestCode == REQUEST_SELECT_PICTURE) {
                 if (data != null && data.getData() != null) {
-                    startCropActivity(data.getData());
+                    updateViewPager(data.getData());
+//                    startCropActivity(data.getData());
                 } else {
                     Toast.makeText(getContext(), "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
                 }
@@ -653,19 +676,19 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         dialog.show();
     }
 
-    private void startCropActivity(@NonNull Uri uri) {
+//    private void startCropActivity(@NonNull Uri uri) {
 //        UCrop uCrop = UCrop.of(uri, mDestinationUri);
 //        uCrop = basisConfig(uCrop);
 //        uCrop.start(this);
 
-        mDestinationUri = Uri.fromFile(new File(getActivity().getCacheDir(), "house_image_" + UUID.randomUUID().toString() + ".jpeg"));
-        Crop.of(uri, mDestinationUri).asSquare().start(getContext(), this, Crop.REQUEST_CROP);
+//        mDestinationUri = Uri.fromFile(new File(getActivity().getCacheDir(), "house_image_" + UUID.randomUUID().toString() + ".jpeg"));
+//        Crop.of(uri, mDestinationUri).asSquare().start(getContext(), this, Crop.REQUEST_CROP);
 
 //        UCrop.of(uri, mDestinationUri)
 //                .withAspectRatio(16, 9)
 //                .withMaxResultSize(getScreenWidth(this), getScreenWidth(this))
 //                .start(this);
-    }
+//    }
 
     private void handleCropResult(@NonNull Intent result) {
 //        final Uri resultUri = UCrop.getOutput(result);

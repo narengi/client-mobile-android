@@ -86,6 +86,7 @@ dependencies {
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1.1@aar'
     compile 'info.semsamot:actionbar-rtlizer:2.1.0@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'id.zelory:compressor:1.0.4'
     compile project(':persianDatePickermaster')
     compile ('cn.trinea.android.view.autoscrollviewpager:android-auto-scroll-view-pager:1.1.2') {
         exclude module: 'support-v4'

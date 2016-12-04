@@ -116,8 +116,10 @@ public interface RetrofitApiEndpoints {
     Call<Object> removeHouse(@Path("id") String id);
 
     @Multipart
-    @POST
-    Call<ImageInfo[]> uploadHouseImages(@Url String url, @PartMap() Map<String, RequestBody> picture);
+    @POST("/api/houses/{id}/picture")
+    Call<RequestBody> uploadHouseImages(@Path("id") String id,
+                                        @Part("name=\"picture\"; filename=\"pp.jpeg\"") RequestBody file);
+//                                        @PartMap() Map<String, RequestBody> picture);
 
     @POST
     Call<ImageInfo[]> removeHouseImages(@Url String url, @Body RemoveHouseImagesInfo removeHouseImagesInfo);
