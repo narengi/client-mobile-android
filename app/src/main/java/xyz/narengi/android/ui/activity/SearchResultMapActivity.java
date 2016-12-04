@@ -1063,7 +1063,7 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
         private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
         private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
         private final ImageView mImageView;
-        private final ImageView mClusterImageView;
+//        private final ImageView mClusterImageView;
 //        private final int mDimension;
 
         public AroundLocationClusterRenderer(Context context, GoogleMap map,
@@ -1076,9 +1076,9 @@ public class SearchResultMapActivity extends AppCompatActivity implements OnMapR
 //            int padding = (int)(2 * displayMetrics.density);
             int padding = 0;
 
-            View imageMarkerView = getLayoutInflater().inflate(R.layout.map_image_marker, null);
-            mClusterIconGenerator.setContentView(imageMarkerView);
-            mClusterImageView = (ImageView) imageMarkerView.findViewById(R.id.map_image_marker_image);
+//            View imageMarkerView = getLayoutInflater().inflate(R.layout.map_image_marker, null);
+//            mClusterIconGenerator.setContentView(imageMarkerView);
+//            mClusterImageView = (ImageView) imageMarkerView.findViewById(R.id.map_image_marker_image);
 
             mImageView = new ImageView(getApplicationContext());
 //            mDimension = (int) getResources().getDimension(R.dimen.custom_profile_image);
