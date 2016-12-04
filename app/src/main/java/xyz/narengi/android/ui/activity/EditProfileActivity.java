@@ -105,6 +105,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private AlertDialog mAlertDialog;
     private String mCurrentPhotoPath;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -115,7 +116,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         setupToolbar();
         initViews();
-        getProvinces();
+//        getProvinces();
         getProfile();
     }
 
@@ -588,6 +589,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(String requestUrl, Object response) {
+                progressDialog.dismiss();
                 JSONObject responseObject = (JSONObject) response;
                 Iterator<String> keys = responseObject.keys();
                 while (keys.hasNext()) {
@@ -620,7 +622,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
             @Override
             public void onError(String requestUrl, VolleyError error) {
-
+                progressDialog.dismiss();
+                Toast.makeText(EditProfileActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -663,6 +666,12 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void getProfile() {
+         progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
+
         WebService service = new WebService();
         service.setResponseHandler(new WebService.ResponseHandler() {
             @Override
@@ -674,17 +683,23 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onSuccess(String requestUrl, Object response) {
                 JSONObject responseObject = (JSONObject) response;
                 AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
+
                 if (loggedInProfile != null) {
                     loggedInProfile.saveToSharedPref(EditProfileActivity.this);
                     setProfile(loggedInProfile);
+                    getProvinces();
                 } else {
                     // TODO: 11/3/2016 AD show error
                     Log.d("User", "logged in user is empty");
+
+                    Toast.makeText(EditProfileActivity.this, R.string.error_alert_title,Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onError(String requestUrl, VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(EditProfileActivity.this, R.string.error_alert_title,Toast.LENGTH_SHORT).show();
                 error.printStackTrace();
             }
         });
@@ -783,6 +798,7 @@ public class EditProfileActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call call = apiEndpoints.updateProfile(profile);
 
