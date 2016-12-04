@@ -217,16 +217,20 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //            getHouseImage(viewHolder, null);
 //        }
 
-        if (allImageInfoArraysMap != null && allImageInfoArraysMap.get(house.getDetailUrl()) != null) {
-            ImageInfo[] imageInfoArray = allImageInfoArraysMap.get(house.getDetailUrl());
-            if (imageInfoArray != null && imageInfoArray.length > 0) {
-                imageInfoArraysMap.put(house.getDetailUrl(), imageInfoArray);
-                getHouseImage(viewHolder, imageInfoArray[0]);
-            } else
-                getHouseImage(viewHolder, null);
-        } else {
-            getHouseImage(viewHolder, null);
-        }
+//        if (allImageInfoArraysMap != null && allImageInfoArraysMap.get(house.getDetailUrl()) != null) {
+//            ImageInfo[] imageInfoArray = allImageInfoArraysMap.get(house.getDetailUrl());
+//            if (imageInfoArray != null && imageInfoArray.length > 0) {
+//                imageInfoArraysMap.put(house.getDetailUrl(), imageInfoArray);
+//                getHouseImage(viewHolder, imageInfoArray[0]);
+//            } else
+//                getHouseImage(viewHolder, null);
+//        } else {
+//            getHouseImage(viewHolder, null);
+//        }
+
+        try {
+            Picasso.with(context).load("http://api.narengi.xyz/api/houses/" + house.getId() + "/pictures/" + house.getPictures()[0].getHash()).into(viewHolder.houseImageView);
+        } catch (Exception e){}
 
 //        getHouseImages(house.getDetailUrl(), viewHolder);
 
@@ -304,16 +308,16 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //                    final int thumbnailHeightPx = thumbnailWidthPx * 38 / 62;
         final int thumbnailHeightPx = thumbnailWidthPx * 7 / 10;
 
-        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
-        int imageWidth = imageLayoutParams.width;
-        if (imageWidth <= 0) {
-            imageWidth = thumbnailWidthPx;
-            int imageHeight = imageWidth * 7 / 10;
-            imageLayoutParams.width = imageWidth;
-            imageLayoutParams.height = imageHeight;
-            viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
-
-        }
+//        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
+//        int imageWidth = imageLayoutParams.width;
+//        if (imageWidth <= 0) {
+//            imageWidth = thumbnailWidthPx;
+//            int imageHeight = imageWidth * 7 / 10;
+//            imageLayoutParams.width = imageWidth;
+//            imageLayoutParams.height = imageHeight;
+//            viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
+//
+//        }
 
         if (imageInfo != null && imageInfo.getUrl() != null) {
             /*Picasso picasso;
@@ -339,7 +343,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
 //            picasso.load(imageInfo.getUrl()).networkPolicy(NetworkPolicy.NO_STORE).into(viewHolder.houseImageView);
 
-            Picasso.with(context).load(imageInfo.getUrl()).into(viewHolder.houseImageView);  //todo check image loader behdad
+//            Picasso.with(context).load(imageInfo.getUrl()).into(viewHolder.houseImageView);  //todo check image loader behdad
 //            imageLoader.displayImage(imageInfo.getUrl(), viewHolder.houseImageView, displayImageOptions, animateFirstListener);
 
             // Load image, decode it to Bitmap and return Bitmap to callback
@@ -434,7 +438,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             });*/
         } else {
             if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                viewHolder.imageProgressBar.setVisibility(View.GONE);
                 viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
             }
 //            viewHolder.houseImageView.setImageBitmap(null);
@@ -462,16 +466,16 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //                    final int thumbnailHeightPx = thumbnailWidthPx * 38 / 62;
         final int thumbnailHeightPx = thumbnailWidthPx * 7 / 10;
 
-        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
-        int imageWidth = imageLayoutParams.width;
-        if (imageWidth <= 0) {
-            imageWidth = thumbnailWidthPx;
-            int imageHeight = imageWidth * 7 / 10;
-            imageLayoutParams.width = imageWidth;
-            imageLayoutParams.height = imageHeight;
-            viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
-
-        }
+//        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
+//        int imageWidth = imageLayoutParams.width;
+//        if (imageWidth <= 0) {
+//            imageWidth = thumbnailWidthPx;
+//            int imageHeight = imageWidth * 7 / 10;
+//            imageLayoutParams.width = imageWidth;
+//            imageLayoutParams.height = imageHeight;
+//            viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
+//
+//        }
 
         call.enqueue(new Callback<ImageInfo[]>() {
             @Override
@@ -500,35 +504,35 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                         e.printStackTrace();
                     }*/
 
-                    Picasso.with(context).load(result[0].getUrl()).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                                viewHolder.imageProgressBar.setVisibility(View.GONE);
-                                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                            }
-                        }
-
-                        @Override
-                        public void onError() {
-                            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                                viewHolder.imageProgressBar.setVisibility(View.GONE);
-                                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                            }
-                            viewHolder.houseImageView.setImageBitmap(null);
-                            viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-                            viewHolder.houseImageView.invalidate();
-                        }
-                    });
+//                    Picasso.with(context).load(result[0].getUrl()).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                                viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                                viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                            }
+//                            viewHolder.houseImageView.setImageBitmap(null);
+//                            viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//                            viewHolder.houseImageView.invalidate();
+//                        }
+//                    });
 
                 } else {
-                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                    }
-                    viewHolder.houseImageView.setImageBitmap(null);
-                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-                    viewHolder.houseImageView.invalidate();
+//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                    }
+//                    viewHolder.houseImageView.setImageBitmap(null);
+//                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//                    viewHolder.houseImageView.invalidate();
                 }
             }
 
@@ -538,10 +542,10 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
                     viewHolder.imageProgressBar.setVisibility(View.GONE);
                     viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
                 }
-                viewHolder.houseImageView.setImageBitmap(null);
-                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-                viewHolder.houseImageView.invalidate();
-                t.printStackTrace();
+//                viewHolder.houseImageView.setImageBitmap(null);
+//                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//                viewHolder.houseImageView.invalidate();
+//                t.printStackTrace();
             }
         });
     }
@@ -821,24 +825,24 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         }
 
         private Object getImage() {
-            Picasso.with(context).load(imageUrl).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onError() {
-                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                    }
-                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-                }
-            });
+//            Picasso.with(context).load(imageUrl).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
+//                @Override
+//                public void onSuccess() {
+//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                    }
+//                }
+//
+//                @Override
+//                public void onError() {
+//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                    }
+////                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//                }
+//            });
 
             return null;
         }

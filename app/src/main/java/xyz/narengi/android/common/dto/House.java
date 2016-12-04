@@ -38,6 +38,15 @@ public class House implements Serializable {
     private Location location;
     private String address;
     private String id;
+    private Pictures[] pictures;
+
+    public Pictures[] getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(Pictures[] pictures) {
+        this.pictures = pictures;
+    }
 
     public String getId() {
         return id;
