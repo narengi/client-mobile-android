@@ -36,6 +36,7 @@ import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
 import xyz.narengi.android.common.dto.RequestVerification;
 import xyz.narengi.android.common.dto.SuggestionsResult;
 import xyz.narengi.android.common.dto.Type;
+import xyz.narengi.android.common.dto.UploadImage;
 
 /**
  * @author Siavash Mahmoudpour
@@ -117,8 +118,8 @@ public interface RetrofitApiEndpoints {
 
     @Multipart
     @POST("/api/houses/{id}/picture")
-    Call<RequestBody> uploadHouseImages(@Path("id") String id,
-                                        @Part("name=\"picture\"; filename=\"pp.jpeg\"") RequestBody file);
+    Call<UploadImage> uploadHouseImages(@Path("id") String id,
+                                        @Part("picture\"; filename=\"pp.jpeg\"") RequestBody file);
 //                                        @PartMap() Map<String, RequestBody> picture);
 
     @POST

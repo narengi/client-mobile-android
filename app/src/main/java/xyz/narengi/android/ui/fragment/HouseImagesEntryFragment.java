@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
@@ -19,6 +20,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -61,6 +63,7 @@ import xyz.narengi.android.BuildConfig;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
+import xyz.narengi.android.common.dto.UploadImage;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.activity.AddHouseActivity;
@@ -277,42 +280,44 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> call = apiEndpoints.uploadHouseImages(getHouse().getId(), requestBody);
+        Call<UploadImage> call = apiEndpoints.uploadHouseImages(getHouse().getId(), requestBody);
 
-        call.enqueue(new Callback<ImageInfo[]>() {
+        call.enqueue(new Callback<UploadImage>() {
             @Override
-            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
+            public void onResponse(Call<UploadImage> call, Response<UploadImage> response) {
                 hideProgress();
-                int statusCode = response.code();
-                ImageInfo[] result = response.body();
+                imageUris.remove(0);
+                uploadHouseImages();
+//                int statusCode = response.code();
+//                ImageInfo[] result = response.body();
 //                if (statusCode == 201 || statusCode == 204) {
-                if (result != null) {
-                    imageInfoArray = result;
+//                if (result != null) {
+//                    imageInfoArray = result;
 //                    Toast.makeText(getActivity(), "Upload image success... :  " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
-                    imageUris = null;
-                    if (getActivity() instanceof AddHouseActivity) {
-                        ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);
-                        ((AddHouseActivity) getActivity()).setImageUris(imageUris);
-                    } else if (getActivity() instanceof EditHouseDetailActivity) {
-                        ((EditHouseDetailActivity) getActivity()).setImageInfoArray(imageInfoArray);
-                        ((EditHouseDetailActivity) getActivity()).setImageUris(imageUris);
-                        ((EditHouseDetailActivity) getActivity()).showUpdateHouseResultDialog();
-                    }
-                    if (getOnInteractionListener() != null)
-                        getOnInteractionListener().onGoToNextSection(getHouse());
-                } else {
-                    try {
-                        if (response.errorBody() != null) {
-                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+//                    imageUris = null;
+//                    if (getActivity() instanceof AddHouseActivity) {
+//                        ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);
+//                        ((AddHouseActivity) getActivity()).setImageUris(imageUris);
+//                    } else if (getActivity() instanceof EditHouseDetailActivity) {
+//                        ((EditHouseDetailActivity) getActivity()).setImageInfoArray(imageInfoArray);
+//                        ((EditHouseDetailActivity) getActivity()).setImageUris(imageUris);
+//                        ((EditHouseDetailActivity) getActivity()).showUpdateHouseResultDialog();
+//                    }
+//                    if (getOnInteractionListener() != null)
+//                        getOnInteractionListener().onGoToNextSection(getHouse());
+//                } else {
+//                    try {
+//                        if (response.errorBody() != null) {
+//                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_LONG).show();
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
 
             @Override
-            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
+            public void onFailure(Call<UploadImage> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(getActivity(), "Upload image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
@@ -633,7 +638,18 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                 }
             } else if (requestCode == REQUEST_SELECT_PICTURE) {
                 if (data != null && data.getData() != null) {
-                    updateViewPager(data.getData());
+
+                    Uri selectedImageUri = data.getData();
+                    String[] projection = {MediaStore.MediaColumns.DATA};
+                    CursorLoader cursorLoader = new CursorLoader(getContext(),
+                            selectedImageUri, projection, null, null, null);
+
+                    Cursor cursor = cursorLoader.loadInBackground();
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+                    cursor.moveToFirst();
+                    String selectedImagePath = cursor.getString(column_index);
+
+                    updateViewPager(Uri.fromFile(new File(selectedImagePath )));
 //                    startCropActivity(data.getData());
                 } else {
                     Toast.makeText(getContext(), "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
@@ -723,11 +739,21 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                     "permission_read_storage_rationale",
                     REQUEST_STORAGE_READ_ACCESS_PERMISSION);
         } else {
-            Intent intent = new Intent();
+//            Intent intent = new Intent();
+//            intent.setType("image/*");
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+////            intent.addCategory(Intent.CATEGORY_OPENABLE);
+//            startActivityForResult(Intent.createChooser(intent, "label_select_picture"), REQUEST_SELECT_PICTURE);
+
+            Intent intent = new Intent(
+                    Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
             intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+
             startActivityForResult(Intent.createChooser(intent, "label_select_picture"), REQUEST_SELECT_PICTURE);
+//            startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file)), SELECT_FILE);
         }
     }
 
