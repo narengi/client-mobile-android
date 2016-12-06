@@ -2,6 +2,7 @@ package xyz.narengi.android.common.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ public class SearchListAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.list_item_search, parent, false);
             holder = new ViewHolder();
-            holder.vpImages = (AutoScrollViewPager) convertView.findViewById(R.id.vpImages);
+            holder.vpImages = (ViewPager) convertView.findViewById(R.id.vpImages);
             holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
             holder.tvSummary = (TextView) convertView.findViewById(R.id.tvSummary);
             holder.tvHousePrice = (TextView) convertView.findViewById(R.id.tvHousePricePerNight);
@@ -100,9 +101,9 @@ public class SearchListAdapter extends BaseAdapter {
             holder.vpImages.setAdapter(adapter);
 
         }
-        holder.vpImages.setInterval(autoScrollIntervals[new Random().nextInt(autoScrollIntervals.length)]);
-        holder.vpImages.startAutoScroll();
-        holder.vpImages.setStopScrollWhenTouch(false);
+//        holder.vpImages.setInterval(autoScrollIntervals[new Random().nextInt(autoScrollIntervals.length)]);
+//        holder.vpImages.startAutoScroll();
+//        holder.vpImages.setStopScrollWhenTouch(false);
 
         convertView.setTag(holder);
         return convertView;
@@ -110,7 +111,7 @@ public class SearchListAdapter extends BaseAdapter {
 
 
     class ViewHolder {
-        AutoScrollViewPager vpImages;
+        ViewPager vpImages;
         TextView tvName;
         TextView tvSummary;
         TextView tvHousePrice;
