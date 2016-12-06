@@ -93,7 +93,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
         JSONObject params = new JSONObject();
         try {
-            params.put(WebServiceConstants.Search.TERM_QUERY_KEY, "ت");
+            params.put(WebServiceConstants.Search.TERM_QUERY_KEY, "ت"); //todo
             params.put(WebServiceConstants.Search.FILTER_LIMIT_QUERY_KEY, 30);
             params.put(WebServiceConstants.Search.FILTER_SKIP_QUERY_KEY, 0);
         } catch (JSONException e) {

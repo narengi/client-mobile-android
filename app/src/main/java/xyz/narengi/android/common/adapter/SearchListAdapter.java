@@ -133,16 +133,19 @@ public class SearchListAdapter extends BaseAdapter {
             img.setLayoutParams(params);
             img.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            Picasso
-                    .with(context)
-                    .load(pictures == null || pictures.length <= position ? "http://google.com" : pictures[position])
-                    .error(
-                            type == AroundLocation.Type.HOUSE ? R.drawable.house_default_image :
-                                    type == AroundLocation.Type.ATTRACTION ? R.drawable.attraction_default_image :
-                                            type == AroundLocation.Type.CITY ? R.drawable.city_default_image :
-                                                    R.drawable.city_default_image
-                    )
-                    .into(img);
+//            Picasso
+//                    .with(context)
+//                    .load(pictures[position])
+//                    .error(
+//                            type == AroundLocation.Type.HOUSE ? R.drawable.house_default_image :
+//                                    type == AroundLocation.Type.ATTRACTION ? R.drawable.attraction_default_image :
+//                                            type == AroundLocation.Type.CITY ? R.drawable.city_default_image :
+//                                                    R.drawable.city_default_image
+//                    )
+//                    .into(img);
+            try {
+                Picasso.with(context).load("http://api.narengi.xyz/api" + pictures[position]).into(img);
+            } catch (Exception e){}
 
             container.addView(img);
             return img;
@@ -155,7 +158,7 @@ public class SearchListAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            return pictures == null || pictures.length == 0 ? 1 : pictures.length;
+            return pictures.length;
         }
 
         @Override
