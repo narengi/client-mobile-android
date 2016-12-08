@@ -9,7 +9,7 @@
     <color name="text_gray_light">#7F7F7F</color>
     <color name="text_gray_dark">#3C3C3C</color>
     <color name="green">#288b2c</color>
-    <color name="orange_light">#FD8023</color>
+    <color name="orange_light">#f06305</color>
     <color name="orange_dark">#D06A1D</color>
     <color name="orange_light_alpha">#77FD8023</color>
     <color name="translucent_dialog_bg">#000000ff</color>

@@ -76,12 +76,12 @@ public class SearchListAdapter extends BaseAdapter {
         }
 
         AroundLocation location = locations.get(position);
-        holder.tvHousePrice.setVisibility(location.getType() == AroundLocation.Type.HOUSE ? View.VISIBLE : View.GONE);
-        holder.llNarengiSuggestion.setVisibility(location.getType() == AroundLocation.Type.HOUSE ? View.VISIBLE : View.GONE);
+//        holder.tvHousePrice.setVisibility(location.getType() == AroundLocation.Type.HOUSE ? View.VISIBLE : View.GONE);
+//        holder.llNarengiSuggestion.setVisibility(location.getType() == AroundLocation.Type.HOUSE ? View.VISIBLE : View.GONE);
 
         if (location.getType() == AroundLocation.Type.HOUSE) {
-            holder.tvHousePrice.setVisibility(View.GONE);
-            holder.llNarengiSuggestion.setVisibility(View.GONE);
+//            holder.tvHousePrice.setVisibility(View.GONE);
+//            holder.llNarengiSuggestion.setVisibility(View.GONE);
             holder.tvName.setText(((AroundLocationDataHouse) location.getData()).getName());
             holder.tvSummary.setText(((AroundLocationDataHouse) location.getData()).getSummary());
 

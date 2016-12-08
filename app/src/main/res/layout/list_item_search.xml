@@ -12,7 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
         android:layout_marginBottom="32dp"
         android:gravity="center"
         android:orientation="vertical">
@@ -53,24 +53,12 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <xyz.narengi.android.ui.widget.CustomTextView
-                android:id="@+id/tvHousePricePerNight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:background="#77000000"
-                android:paddingBottom="2dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:paddingTop="2dp"
-                android:text="شبی ۹۸۰ هزار تومان"
-                android:textColor="#FFF" />
-
             <LinearLayout
                 android:id="@+id/llNarengiSuggestionContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
 
@@ -95,4 +83,23 @@
         </LinearLayout>
 
     </LinearLayout>
+
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/tvHousePricePerNight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:background="@color/orange_light"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:text="۹۸۰ هزارتومان"
+        android:textColor="#FFF" />
+
 </RelativeLayout>
