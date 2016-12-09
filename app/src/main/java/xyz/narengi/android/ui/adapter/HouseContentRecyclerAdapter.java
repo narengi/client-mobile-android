@@ -298,11 +298,11 @@ public class HouseContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         featureTextView.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
         featureTextView.setGravity(Gravity.CENTER);
         featureTextView.setTypeface(featureTextView.getTypeface(), Typeface.BOLD);
-        featureTextView.setText(houseFeature.getName());
+        featureTextView.setText(houseFeature.getTitle());
         featureTextView.setLayoutParams(params);
 
-        if (houseFeature.getType() != null) {
-            switch (houseFeature.getType()) {
+        if (houseFeature.getKey() != null) {
+            switch (houseFeature.getKey()) {
                 case "furniture":
                     Drawable drawable = context.getResources().getDrawable(android.R.drawable.ic_menu_gallery);
                     drawable.setColorFilter(context.getResources().getColor(android.R.color.holo_orange_dark),PorterDuff.Mode.SRC_ATOP);

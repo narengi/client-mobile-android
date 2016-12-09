@@ -7,32 +7,41 @@ import java.io.Serializable;
  */
 public class HouseFeature implements Serializable {
 
-    private String name;
-    private String type;
-    private boolean available;
+    private String key;
+    private String title;
+    private String group;
+    private String id;
 
 
-    public String getName() {
-        return name;
+    public String getGroup() {
+        return group;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
-    public String getType() {
-        return type;
+    public String getId() {
+        return id;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public String getKey() {
+        return key;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

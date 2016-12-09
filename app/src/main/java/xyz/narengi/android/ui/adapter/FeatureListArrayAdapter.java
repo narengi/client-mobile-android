@@ -61,12 +61,12 @@ public class FeatureListArrayAdapter extends ArrayAdapter<HouseFeature> {
         if( objects != null && position < objects.length ) {
             HouseFeature houseFeature = objects[position];
 
-            viewHolder.titleTextView.setText(houseFeature.getName());
+            viewHolder.titleTextView.setText(houseFeature.getTitle());
 
 
             Drawable drawable;
-            if (houseFeature.getType() != null) {
-                switch (houseFeature.getType()) {
+            if (houseFeature.getKey() != null) {
+                switch (houseFeature.getKey()) {
                     case "furniture":
                         drawable = context.getResources().getDrawable(android.R.drawable.ic_menu_call);
                         drawable.setColorFilter(context.getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);

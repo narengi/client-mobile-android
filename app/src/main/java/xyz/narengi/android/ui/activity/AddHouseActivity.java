@@ -395,7 +395,7 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
 		if (house.getFeatureList()!= null) {
 			String[] features = new String[house.getFeatureList().length];
 			for (int i = 0; i < house.getFeatureList().length; i++) {
-				features[i] = house.getFeatureList()[i].getType();
+				features[i] = house.getFeatureList()[i].getKey();
 			}
 
 			houseEntryInput.setFeatureList(features);

@@ -208,11 +208,11 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                 HouseFeature houseFeature = new HouseFeature();
 				Iterator<Map.Entry<String, String>> iterator = selectedFeatureMap.entrySet().iterator();
                 Map.Entry<String, String> entry = iterator.next();
-                houseFeature.setType(entry.getValue());
+                houseFeature.setKey(entry.getValue());
 
 				entry = iterator.next();
-                houseFeature.setName(entry.getValue());
-                houseFeature.setAvailable(true);
+                houseFeature.setTitle(entry.getValue());
+//                houseFeature.setAvailable(true);
                 selectedHouseFeatures.add(houseFeature);
             }
 
@@ -258,8 +258,8 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
         final String[] titlesArray = new String[houseFeatureArray.length];
         final String[] typesArray = new String[houseFeatureArray.length];
         for (int i = 0; i < houseFeatureArray.length; i++) {
-            titlesArray[i] = houseFeatureArray[i].getName();
-            typesArray[i] = houseFeatureArray[i].getType();
+            titlesArray[i] = houseFeatureArray[i].getTitle();
+            typesArray[i] = houseFeatureArray[i].getKey();
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 R.layout.simple_list_item_multiple_choice, titlesArray) {
@@ -288,7 +288,7 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
             for (int i = 0; i < houseFeatureArray.length; i++) {
                 HouseFeature houseFeature = houseFeatureArray[i];
                 for (HouseFeature selectedHouseFeature : getHouse().getFeatureList()) {
-                    if (houseFeature.getType().equalsIgnoreCase(selectedHouseFeature.getType())) {
+                    if (houseFeature.getKey().equalsIgnoreCase(selectedHouseFeature.getKey())) {
                         featuresListView.setItemChecked(i, true);
                         break;
                     }
@@ -305,16 +305,16 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
         HouseFeature[] houseFeatureArray = new HouseFeature[houseFeaturesMapArray.length];
         for (int i = 0; i < houseFeaturesMapArray.length; i++) {
             HouseFeature houseFeature = new HouseFeature();
-            houseFeature.setAvailable(true);
+//            houseFeature.setAvailable(true);
             Map<String, String> houseFeatureMap = houseFeaturesMapArray[i];
             if (houseFeatureMap == null || houseFeatureMap.isEmpty())
                 continue;
 			Iterator<Map.Entry<String, String>> iterator = houseFeatureMap.entrySet().iterator();
             Map.Entry<String, String> entry = iterator.next();
-            houseFeature.setType(entry.getValue());
+            houseFeature.setKey(entry.getValue());
 
 			entry = iterator.next();
-            houseFeature.setName(entry.getValue());
+            houseFeature.setTitle(entry.getValue());
 
             houseFeatureArray[i] = houseFeature;
         }
@@ -385,12 +385,12 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
             if (objects != null && position < objects.length) {
                 final HouseFeature houseFeature = objects[position];
 
-                viewHolder.titleCheckBox.setText(houseFeature.getName());
+                viewHolder.titleCheckBox.setText(houseFeature.getTitle());
                 boolean isChecked = false;
 
                 if (selectedFeatures != null) {
                     for (String featureType : selectedFeatures) {
-                        if (featureType.equalsIgnoreCase(houseFeature.getType())) {
+                        if (featureType.equalsIgnoreCase(houseFeature.getKey())) {
                             isChecked = true;
                         }
                     }
@@ -403,12 +403,12 @@ public class HouseFeaturesEntryFragment extends HouseEntryBaseFragment {
                         if (((CheckBox) view).isChecked()) {
                             if (selectedFeatures == null)
                                 selectedFeatures = new ArrayList<String>();
-                            selectedFeatures.add(houseFeature.getType());
+                            selectedFeatures.add(houseFeature.getKey());
                         } else {
                             Iterator<String> iterator = selectedFeatures.iterator();
                             while (iterator.hasNext()) {
                                 String featureType = iterator.next();
-                                if (featureType.equalsIgnoreCase(houseFeature.getType())) {
+                                if (featureType.equalsIgnoreCase(houseFeature.getKey())) {
                                     iterator.remove();
 
                                 }

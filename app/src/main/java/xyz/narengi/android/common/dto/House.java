@@ -18,13 +18,13 @@ public class House implements Serializable {
     private GeoPoint Position;
     private Host Host;
     private String Rating;
-    private String Summary;
+    private String summary;
     private String CityName;
     private String ProvinceName;
 	private String detailUrl;
 	private String[] dates;
     private HouseReview[] Reviews;
-    private HouseFeature[] FeatureList;
+    private HouseFeature[] features;
     private Type type;
     private String featureSummary;
     private String ReviewsURL;
@@ -117,11 +117,11 @@ public class House implements Serializable {
     }
 
     public String getSummary() {
-        return Summary;
+        return summary;
     }
 
     public void setSummary(String summary) {
-        Summary = summary;
+        this.summary = summary;
     }
 
     public String getCityName() {
@@ -157,11 +157,11 @@ public class House implements Serializable {
     }
 
     public HouseFeature[] getFeatureList() {
-        return FeatureList;
+        return features;
     }
 
-    public void setFeatureList(HouseFeature[] featureList) {
-        FeatureList = featureList;
+    public void setFeatureList(HouseFeature[] features) {
+        this.features = features;
     }
 
     public Type getType() {

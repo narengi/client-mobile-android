@@ -7,24 +7,24 @@ import java.io.Serializable;
  */
 public class Location implements Serializable {
 
-    private String City;
-	private String Province;
+    private String city;
+	private String province;
 	private String address;
 
     public String getCity() {
-        return City;
+        return city;
     }
 
     public void setCity(String city) {
-        this.City = city;
+        this.city = city;
     }
 
     public String getProvince() {
-        return Province;
+        return province;
     }
 
     public void setProvince(String province) {
-        this.Province = province;
+        this.province = province;
     }
 
 	public String getAddress() {

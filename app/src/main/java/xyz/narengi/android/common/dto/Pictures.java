@@ -7,13 +7,13 @@ import java.io.Serializable;
  */
 public class Pictures implements Serializable {
 
-    private String hash;
+    private String url;
 
-    public String getHash() {
-        return hash;
+    public String getUrl() {
+        return url;
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
