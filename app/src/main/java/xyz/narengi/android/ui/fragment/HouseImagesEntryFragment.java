@@ -749,12 +749,10 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 ////            intent.addCategory(Intent.CATEGORY_OPENABLE);
 //            startActivityForResult(Intent.createChooser(intent, "label_select_picture"), REQUEST_SELECT_PICTURE);
 
-            Intent intent = new Intent(
-                    Intent.ACTION_PICK,
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
+            Intent intent = new Intent();
             intent.setType("image/*");
-
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
 
             startActivityForResult(Intent.createChooser(intent, "label_select_picture"), REQUEST_SELECT_PICTURE);
 //            startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file)), SELECT_FILE);
