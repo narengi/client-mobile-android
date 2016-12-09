@@ -136,7 +136,7 @@ public class HouseTypeEntryFragment extends HouseEntryBaseFragment {
 
         int counter = 1;
 
-        if (house.getType() != null && house.getType().getTitle().isEmpty())
+        if (house.getType() == null || house.getType().getTitle().isEmpty())
 		    getHouse().setType(houseTypes[0]);
 
         for (Type houseType : houseTypes) {
