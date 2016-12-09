@@ -426,6 +426,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
             }
             final SearchListAdapter adapter = new SearchListAdapter(context, locations);
             lstSearchList.setAdapter(adapter);
+
             lstSearchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -333,10 +333,14 @@ public class HouseActivity extends ActionBarActivity {
         name.setText(house.getName());
 
         TextView location = (TextView) findViewById(R.id.location);
-        location.setText(house.getLocation().getCity() + "، " + house.getLocation().getProvince());
+        if (location!= null) {
+            location.setText(house.getLocation().getCity() + "، " + house.getLocation().getProvince());
+        }
 
         TextView priceTextView = (TextView) findViewById(R.id.house_price);
-        priceTextView.setText(Util.convertNumber(house.getPrice().getPrice() + ""));
+        if (house.getPrice()!=null) {
+            priceTextView.setText(Util.convertNumber(house.getPrice().getPrice() + ""));
+        }
 
         TextView typeText = (TextView) findViewById(R.id.typeText);
         if (house.getType() != null) {

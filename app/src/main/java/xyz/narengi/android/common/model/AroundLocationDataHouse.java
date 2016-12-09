@@ -13,6 +13,7 @@ public class AroundLocationDataHouse extends AroundLocationsData {
     public static final String ID_JSON_KEY = "id";
     public static final String OWNER_ID_JSON_KEY = "ownerId";
     public static final String NAME_JSON_KEY = "name";
+    public static final String PRICE_KEY = "price";
     public static final String PICTURES_JSON_KEY = "pictures";
     public static final String CITY_JSON_KEY = "city";
     public static final String LOCATION_JSON_KEY = "location";
@@ -28,6 +29,7 @@ public class AroundLocationDataHouse extends AroundLocationsData {
     private String city;
     private String province;
     private String summary;
+    private String price;
     private String detailUrl;
     private String[] features;
 
@@ -70,6 +72,14 @@ public class AroundLocationDataHouse extends AroundLocationsData {
 
     public String getProvince() {
         return province;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public void setProvince(String province) {
@@ -118,6 +128,7 @@ public class AroundLocationDataHouse extends AroundLocationsData {
             id = object.isNull(ID_JSON_KEY) ? "" : object.getString(ID_JSON_KEY);
             ownerId = object.isNull(OWNER_ID_JSON_KEY) ? "" : object.getString(OWNER_ID_JSON_KEY);
             name = object.isNull(NAME_JSON_KEY) ? "" : object.getString(NAME_JSON_KEY);
+            price = object.isNull(PRICE_KEY) ? "" : object.getString(PRICE_KEY);
             summary = object.isNull(SUMMARY_JSON_KEY) ? "" : object.getString(SUMMARY_JSON_KEY);
             detailUrl = object.isNull(DETAIL_URL_JSON_KEY) ? "" : object.getString(DETAIL_URL_JSON_KEY);
             if (object.has(LOCATION_JSON_KEY)) {

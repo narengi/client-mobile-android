@@ -1,6 +1,7 @@
 package xyz.narengi.android.common.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import xyz.narengi.android.common.model.AroundLocation;
 import xyz.narengi.android.common.model.AroundLocationDataAttraction;
 import xyz.narengi.android.common.model.AroundLocationDataCity;
 import xyz.narengi.android.common.model.AroundLocationDataHouse;
+import xyz.narengi.android.ui.activity.HouseActivity;
 import xyz.narengi.android.ui.widget.AutoScrollViewPager;
 
 /**
@@ -61,7 +63,7 @@ public class SearchListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.list_item_search, parent, false);
@@ -71,6 +73,16 @@ public class SearchListAdapter extends BaseAdapter {
             holder.tvSummary = (TextView) convertView.findViewById(R.id.tvSummary);
             holder.tvHousePrice = (TextView) convertView.findViewById(R.id.tvHousePricePerNight);
             holder.llNarengiSuggestion = convertView.findViewById(R.id.llNarengiSuggestionContainer);
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent = new Intent(context, HouseActivity.class);
+                    intent.putExtra("houseId",  ((AroundLocationDataHouse)locations.get(position).getData()).getId());
+                    context.startActivity(intent);
+                }
+            });
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
@@ -84,6 +96,7 @@ public class SearchListAdapter extends BaseAdapter {
 //            holder.llNarengiSuggestion.setVisibility(View.GONE);
             holder.tvName.setText(((AroundLocationDataHouse) location.getData()).getName());
             holder.tvSummary.setText(((AroundLocationDataHouse) location.getData()).getSummary());
+            holder.tvHousePrice.setText(((AroundLocationDataHouse) location.getData()).getPrice());
 
             PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataHouse) location.getData()).getPictures(), AroundLocation.Type.HOUSE);
             holder.vpImages.setAdapter(adapter);
