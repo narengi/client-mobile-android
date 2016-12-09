@@ -1,5 +1,6 @@
 package xyz.narengi.android.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -27,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,6 +37,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.concurrent.ExecutionException;
@@ -48,11 +52,13 @@ import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.ImageInfo;
+import xyz.narengi.android.common.dto.Pictures;
 import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.HouseContentRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
+import xyz.narengi.android.util.Util;
 
 /**
  * @author Siavash Mahmoudpour
@@ -65,14 +71,25 @@ public class HouseActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_house);
+        setContentView(R.layout.activity_house1);
         setupToolbar();
 
+
+        View back = findViewById(R.id.icon_toolbar_back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        if (getIntent() != null && getIntent().getStringExtra("houseId") != null) {
         showProgress();
-        if (getIntent() != null && getIntent().getStringExtra("houseUrl") != null) {
-            String houseUrl = getIntent().getStringExtra("houseUrl");
-            getHouseImage(houseUrl);
+            String houseUrl = getIntent().getStringExtra("houseId");
+//            getHouseImage(houseUrl);
             getHouse(houseUrl);
+        } else {
+            Toast.makeText(this, getString(R.string.error_alert_title), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -312,57 +329,135 @@ public class HouseActivity extends ActionBarActivity {
 //        }
 
 //        setupTitleInfoLayout(house);
-        TextView priceTextView = (TextView) findViewById(R.id.house_price);
-        priceTextView.setVisibility(View.VISIBLE);
-        priceTextView.setText(house.getCost());
+        TextView name = (TextView) findViewById(R.id.house_name);
+        name.setText(house.getName());
 
-        FloatingActionButton houseHostFab = (FloatingActionButton) findViewById(R.id.house_hostFab);
-        houseHostFab.setVisibility(View.VISIBLE);
-        houseHostFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        TextView location = (TextView) findViewById(R.id.location);
+        location.setText(house.getLocation().getCity() + "، " + house.getLocation().getProvince());
+
+        TextView priceTextView = (TextView) findViewById(R.id.house_price);
+        priceTextView.setText(Util.convertNumber(house.getPrice().getPrice() + ""));
+
+        TextView typeText = (TextView) findViewById(R.id.typeText);
+        if (house.getType() != null) {
+            typeText.setText(house.getType().getTitle());
+        }
+
+        TextView room = (TextView) findViewById(R.id.room);
+        if (house.getSpec() != null) {
+            room.setText(Util.convertNumber(house.getSpec().getBedroomCount() + " " + getString(R.string.bedroom)));
+        }
+
+        TextView geust = (TextView) findViewById(R.id.geust);
+        if (house.getSpec() != null) {
+            geust.setText(Util.convertNumber(house.getSpec().getGuestCount() + " " + getString(R.string.geust)));
+        }
+
+        TextView bed = (TextView) findViewById(R.id.bed);
+        if (house.getSpec() != null) {
+            bed.setText(Util.convertNumber(house.getSpec().getBedCount() + " " + getString(R.string.bed)));
+        }
+
+        TextView description = (TextView) findViewById(R.id.description);
+        description.setText(house.getSummary());
+
+        ViewPager vpImages = (ViewPager) findViewById(R.id.vpImage);
+//        Picasso.with(this).load(house.getPictures()[0].getHash())
+
+        ImageView map = (ImageView) findViewById(R.id.map);
+        Picasso.with(this).load("http://www.techstrikers.com/GoogleMap/Code/images/google-map-draw-circle-on-marker-onclick.png").into(map);
+
+        PicturesPagerAdapter adapter = new PicturesPagerAdapter(house.getPictures(), this);
+        vpImages.setAdapter(adapter);
+
+        if (house.getFeatureList() != null && house.getFeatureList().length > 0) {
+            View view = findViewById(R.id.feature1);
+            View featureList = findViewById(R.id.featureList);
+            TextView featureText1 = (TextView) findViewById(R.id.featureText1);
+            featureText1.setText(house.getFeatureList()[0].getTitle());
+            view.setVisibility(View.VISIBLE);
+            featureList.setVisibility(View.VISIBLE);
+        }
+
+        if (house.getFeatureList() != null && house.getFeatureList().length > 1) {
+            View view = findViewById(R.id.feature2);
+            TextView featureText2 = (TextView) findViewById(R.id.featureText2);
+            featureText2.setText(house.getFeatureList()[1].getTitle());
+            view.setVisibility(View.VISIBLE);
+        }
+
+        if (house.getFeatureList() != null && house.getFeatureList().length > 2) {
+            View view = findViewById(R.id.feature3);
+            TextView featureText3 = (TextView) findViewById(R.id.featureText3);
+            featureText3.setText(house.getFeatureList()[2].getTitle());
+            view.setVisibility(View.VISIBLE);
+        }
+
+        if (house.getFeatureList() != null && house.getFeatureList().length > 3) {
+            View view = findViewById(R.id.feature4);
+            TextView featureText4 = (TextView) findViewById(R.id.featureText4);
+            featureText4.setText(house.getFeatureList()[3].getTitle());
+            view.setVisibility(View.VISIBLE);
+        }
+
+        if (house.getFeatureList() != null && house.getFeatureList().length > 4) {
+            View more_feature = findViewById(R.id.more_feature);
+            TextView moreFeatureText = (TextView) findViewById(R.id.moreFeatureText);
+            moreFeatureText.setText(house.getFeatureList().length - 4 + "+");
+            more_feature.setVisibility(View.VISIBLE);
+        }
+
+//        TextView priceTextView = (TextView) findViewById(R.id.house_price);
+//        priceTextView.setVisibility(View.VISIBLE);
+//        priceTextView.setText(house.getCost());
+
+//        FloatingActionButton houseHostFab = (FloatingActionButton) findViewById(R.id.house_hostFab);
+//        houseHostFab.setVisibility(View.VISIBLE);
+//        houseHostFab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
 //                house.getHost().setImageUrl(house.getPictures()[0]);
-                if (house.getHost() != null && house.getHost().getHostURL() != null)
-                    openHostActivity(house.getHost().getHostURL());
-            }
-        });
-        if (house.getHost() != null && house.getHost().getImageUrl() != null)
-            setupHostFab(house.getHost().getImageUrl());
+//                if (house.getHost() != null && house.getHost().getHostURL() != null)
+//                    openHostActivity(house.getHost().getHostURL());
+//            }
+//        });
+//        if (house.getHost() != null && house.getHost().getImageUrl() != null)
+//            setupHostFab(house.getHost().getImageUrl());
 
 //        setupSpecsLayout(house);
 //        setDescription(house);
 //        setupFeaturesLayout(house);
 
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.house_contentRecyclerView);
+//        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.house_contentRecyclerView);
 
         // use a linear layout manager
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
 //        MyLinearLayoutManager mLayoutManager = new MyLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false, getScreenHeight(this), 0);
 //        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
 //        HouseLinearLayoutManager mLayoutManager = new HouseLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+//        mRecyclerView.setLayoutManager(mLayoutManager);
 
-        HouseContentRecyclerAdapter recyclerAdapter = new HouseContentRecyclerAdapter(this, house);
-        mRecyclerView.setAdapter(recyclerAdapter);
+//        HouseContentRecyclerAdapter recyclerAdapter = new HouseContentRecyclerAdapter(this, house);
+//        mRecyclerView.setAdapter(recyclerAdapter);
 //        mRecyclerView.setHasFixedSize(false);
 //        mRecyclerView.setNestedScrollingEnabled(true);
 
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.house_collapse_toolbar);
-        collapsingToolbarLayout.setTitle(house.getName());
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+//        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.house_collapse_toolbar);
+//        collapsingToolbarLayout.setTitle(house.getName());
+//        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
 
 //        collapsingToolbarLayout.setContentScrimColor(getResources().getColor(android.R.color.holo_orange_dark));
 //        collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(android.R.color.holo_orange_light));
 
 //        setupToolbar();
 
-        Button bookHouseButton = (Button) findViewById(R.id.house_bookButton);
-        bookHouseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openBookHouse();
-            }
-        });
+//        Button bookHouseButton = (Button) findViewById(R.id.house_bookButton);
+//        bookHouseButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                openBookHouse();
+//            }
+//        });
     }
 
     private void openBookHouse() {
@@ -448,9 +543,15 @@ public class HouseActivity extends ActionBarActivity {
         }
     }
 
-    private void getHouse(String url) {
+    private void getHouse(String id) {
 
-        url = url + "?filter[review]=5&filter[feature]=10000";
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+//        showProgress();
+//        url = url + "?filter[review]=5&filter[feature]=10000";
 
 //        Gson gson = new GsonBuilder()
 //                .registerTypeAdapter(House.class, new HouseDeserializer()).create();
@@ -460,18 +561,24 @@ public class HouseActivity extends ActionBarActivity {
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
 
-        Call<House> call = apiEndpoints.getHouse(url);
+        Call<House> call = apiEndpoints.getHouse("http://api.narengi.xyz/api/houses/" + id);
         call.enqueue(new Callback<House>() {
             @Override
             public void onResponse(Call<House> call, Response<House> response) {
 //                int statusCode = response.code();
-                hideProgress();
-                House house = response.body();
-                if (house != null) {
+//                hideProgress();
+                progressDialog.dismiss();
+                if (response.isSuccessful()) {
+                    House house = response.body();
+                    if (house != null) {
 
-                    Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-                    int height = display.getHeight();
-                    setHouse(house);
+                        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+                        int height = display.getHeight();
+                        setHouse(house);
+                    }
+                } else {
+                    Toast.makeText(HouseActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
+
                 }
             }
 
@@ -479,10 +586,52 @@ public class HouseActivity extends ActionBarActivity {
             public void onFailure(Call<House> call, Throwable t) {
                 // Log error here since request failed
                 t.printStackTrace();
+
+                progressDialog.dismiss();
                 Log.d("HouseActivity", "getHouse onFailure : " + t.getMessage(), t);
-                hideProgress();
-                Toast.makeText(HouseActivity.this, "Error getting house data!", Toast.LENGTH_LONG).show();
+//                hideProgress();
+                Toast.makeText(HouseActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    class PicturesPagerAdapter extends PagerAdapter {
+        private Pictures[] pictures;
+        private Context context;
+        public PicturesPagerAdapter(Pictures[] pictures, Context context) {
+            this.pictures = pictures;
+            this.context = context;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ImageView img = new ImageView(context);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            img.setLayoutParams(params);
+            img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            try {
+                Picasso.with(context).load("http://api.narengi.xyz/api" + house.getPictures()[position].getUrl()).into(img);
+            } catch (Exception e){}
+
+            container.addView(img);
+            return img;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public int getCount() {
+            return pictures.length;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
     }
 }

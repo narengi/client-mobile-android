@@ -13,4 +13,5 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="expandable_list_item_height">64dp</dimen>
+    <dimen name="featureIconSize">34dp</dimen>
 </resources>

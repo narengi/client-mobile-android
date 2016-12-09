@@ -65,5 +65,14 @@
 	<string name="invalid_day">حداقل ۱ روز را انتخاب کنید</string>
 	<string name="currency_thousan_toman">هزار تومان</string>
     <string name="cannot_retrieve_selected_image">مشکل در دریافت عکس</string>
+    <string name="harshabeghamat">هزار تومن\nهر شب اقامت</string>
+    <string name="bedroom">اتاق خواب</string>
+    <string name="geust">مهمان</string>
+    <string name="bed">تخت</string>
+    <string name="owner_profile">پروفایل مالک</string>
+    <string name="owner_contact">ارتباط با مالک</string>
+    <string name="more_service">خدمات و قیمت‌های اضافی</string>
+    <string name="terms">شرایط و قوانین</string>
+    <string name="book">اجاره میکنم</string>
 
 </resources>
