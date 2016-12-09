@@ -54,6 +54,9 @@ import java.util.concurrent.ExecutionException;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -276,11 +279,12 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
 
         File file = new File(imageUris.get(0).getPath());
-        final RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
 
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", "aa.jpeg", requestFile);
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<UploadImage> call = apiEndpoints.uploadHouseImages(getHouse().getId(), requestBody);
+        Call<UploadImage> call = apiEndpoints.uploadHouseImages(getHouse().getId(), body);
 
         call.enqueue(new Callback<UploadImage>() {
             @Override
@@ -491,7 +495,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                 .setMaxWidth(640)
                 .setMaxHeight(480)
                 .setQuality(75)
-                .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                .setCompressFormat(Bitmap.CompressFormat.JPEG)
                 .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES).getAbsolutePath())
                 .build()
