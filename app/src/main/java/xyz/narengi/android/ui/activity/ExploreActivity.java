@@ -352,10 +352,9 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void openHouseDetail(String houseId) {
-        String houseUrl = House.getDetailUrl(houseId);
-        Intent intent = new Intent(this, HouseActivity.class);
-        intent.putExtra("houseUrl", houseUrl);
-        startActivity(intent);
+        Intent intent = new Intent(context, HouseActivity.class);
+        intent.putExtra("houseId", houseId);
+        context.startActivity(intent);
     }
 
     private void openHostHouses() {

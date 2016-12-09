@@ -229,7 +229,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //        }
 
         try {
-            Picasso.with(context).load("http://api.narengi.xyz/api/houses/" + house.getId() + "/pictures/" + house.getPictures()[0].getHash()).into(viewHolder.houseImageView);
+            Picasso.with(context).load("http://api.narengi.xyz/api" + house.getPictures()[0].getUrl()).into(viewHolder.houseImageView);
         } catch (Exception e){}
 
 //        getHouseImages(house.getDetailUrl(), viewHolder);
@@ -278,7 +278,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         viewHolder.viewHouseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openHouseDetail(house.getDetailUrl());
+                openHouseDetail(house.getId());
             }
         });
 
@@ -700,9 +700,9 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         return selectedDaysMap;
     }
 
-    private void openHouseDetail(String houseUrl) {
+    private void openHouseDetail(String houseID) {
         Intent intent = new Intent(context, HouseActivity.class);
-        intent.putExtra("houseUrl", houseUrl);
+        intent.putExtra("houseId", houseID);
         context.startActivity(intent);
     }
 

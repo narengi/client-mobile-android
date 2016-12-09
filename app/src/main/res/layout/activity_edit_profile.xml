@@ -60,7 +60,7 @@
                     android:src="@drawable/ic_action_back" />
                 <!--style="@style/IconFont.XLarge"-->
 
-                <TextView
+                <xyz.narengi.android.ui.widget.CustomTextView
                     android:id="@+id/text_toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
