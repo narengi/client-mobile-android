@@ -12,7 +12,7 @@ public class HousePrice implements Serializable {
     private String currencyText;
     private double weeklyDiscount;
     private double monthlyDiscount;
-    private int extraGuestPrice;
+    private int extra_guest_price;
 
     public int getPrice() {
         return price;
@@ -55,10 +55,10 @@ public class HousePrice implements Serializable {
     }
 
     public int getExtraGuestPrice() {
-        return extraGuestPrice;
+        return extra_guest_price;
     }
 
     public void setExtraGuestPrice(int extraGuestPrice) {
-        this.extraGuestPrice = extraGuestPrice;
+        this.extra_guest_price = extraGuestPrice;
     }
 }

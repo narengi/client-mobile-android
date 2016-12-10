@@ -71,15 +71,15 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
     private Context context;
     private House[] houses;
-    private List<ImageInfo[]> imageInfoList;
-    private List<HouseAvailableDates> houseAvailableDatesList;
+//    private List<ImageInfo[]> imageInfoList;
+//    private List<HouseAvailableDates> houseAvailableDatesList;
     private RemoveHouseListener removeHouseListener;
     private Map<String, ImageInfo[]> imageInfoArraysMap;
     //    private Map<String,HouseAvailableDates> houseAvailableDatesMap;
     private HashMap<String, HashMap<String, List<Day>>> housesSelectedDaysMap;
 
-    private Map<String, ImageInfo[]> allImageInfoArraysMap;
-    private Map<String, HouseAvailableDates> allHouseAvailableDatesMap;
+//    private Map<String, ImageInfo[]> allImageInfoArraysMap;
+//    private Map<String, HouseAvailableDates> allHouseAvailableDatesMap;
 
     //TODO : use AsyncQueryHandler
 //    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
@@ -92,16 +92,16 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     ) {
         this.context = context;
         this.houses = houses;
-        this.imageInfoList = imageInfoList;
-        this.houseAvailableDatesList = houseAvailableDatesList;
+//        this.imageInfoList = imageInfoList;
+//        this.houseAvailableDatesList = houseAvailableDatesList;
         this.removeHouseListener = removeHouseListener;
         if (houses != null) {
             imageInfoArraysMap = new HashMap<String, ImageInfo[]>();
 //            houseAvailableDatesMap = new HashMap<String,HouseAvailableDates>();
             housesSelectedDaysMap = new HashMap<String, HashMap<String, List<Day>>>();
 
-            this.allImageInfoArraysMap = allImageInfoArraysMap;
-            this.allHouseAvailableDatesMap = allHouseAvailableDatesMap;
+//            this.allImageInfoArraysMap = allImageInfoArraysMap;
+//            this.allHouseAvailableDatesMap = allHouseAvailableDatesMap;
         }
 
 //        imageLoader = ImageLoader.getInstance(); // Get singleton instance
@@ -298,234 +298,135 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             }
         });
     }
-
-    private void getHouseImage(final HostHousesItemViewHolder viewHolder, ImageInfo imageInfo) {
-
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        float thumbnailWidthDp = dpWidth / 3;
-        final int thumbnailWidthPx = (int) (thumbnailWidthDp * displayMetrics.density);
-//                    final int thumbnailHeightPx = thumbnailWidthPx * 38 / 62;
-        final int thumbnailHeightPx = thumbnailWidthPx * 7 / 10;
-
-//        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
-//        int imageWidth = imageLayoutParams.width;
-//        if (imageWidth <= 0) {
-//            imageWidth = thumbnailWidthPx;
-//            int imageHeight = imageWidth * 7 / 10;
-//            imageLayoutParams.width = imageWidth;
-//            imageLayoutParams.height = imageHeight;
-//            viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
 //
-//        }
-
-        if (imageInfo != null && imageInfo.getUrl() != null) {
-            /*Picasso picasso;
-            if (authorizationJson != null && authorizationJson.length() > 0) {
-
-                OkHttpClient picassoClient = new OkHttpClient();
-
-                picassoClient.networkInterceptors().add(new Interceptor() {
-
-                    @Override
-                    public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                        Request newRequest = chain.request().newBuilder()
-                                .addHeader("authorization", authorizationJson)
-                                .build();
-                        return chain.proceed(newRequest);
-                    }
-                });
-
-                picasso = new Picasso.Builder(context).downloader(new OkHttpDownloader(picassoClient)).build();
-            } else {
-                picasso = Picasso.with(context);
-            }*/
-
-//            picasso.load(imageInfo.getUrl()).networkPolicy(NetworkPolicy.NO_STORE).into(viewHolder.houseImageView);
-
-//            Picasso.with(context).load(imageInfo.getUrl()).into(viewHolder.houseImageView);  //todo check image loader behdad
-//            imageLoader.displayImage(imageInfo.getUrl(), viewHolder.houseImageView, displayImageOptions, animateFirstListener);
-
-            // Load image, decode it to Bitmap and return Bitmap to callback
-//            imageLoader.loadImage(imageInfo.getUrl(), null, displayImageOptions, new SimpleImageLoadingListener() {
+//    private void getHouseImage(final HostHousesItemViewHolder viewHolder, ImageInfo imageInfo) {
+//
+//        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+//        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+//        float thumbnailWidthDp = dpWidth / 3;
+//        final int thumbnailWidthPx = (int) (thumbnailWidthDp * displayMetrics.density);
+////                    final int thumbnailHeightPx = thumbnailWidthPx * 38 / 62;
+//        final int thumbnailHeightPx = thumbnailWidthPx * 7 / 10;
+//
+////        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
+////        int imageWidth = imageLayoutParams.width;
+////        if (imageWidth <= 0) {
+////            imageWidth = thumbnailWidthPx;
+////            int imageHeight = imageWidth * 7 / 10;
+////            imageLayoutParams.width = imageWidth;
+////            imageLayoutParams.height = imageHeight;
+////            viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
+////
+////        }
+//
+//        if (imageInfo != null && imageInfo.getUrl() != null) {
+//            /*Picasso picasso;
+//            if (authorizationJson != null && authorizationJson.length() > 0) {
+//
+//                OkHttpClient picassoClient = new OkHttpClient();
+//
+//                picassoClient.networkInterceptors().add(new Interceptor() {
+//
+//                    @Override
+//                    public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
+//                        Request newRequest = chain.request().newBuilder()
+//                                .addHeader("authorization", authorizationJson)
+//                                .build();
+//                        return chain.proceed(newRequest);
+//                    }
+//                });
+//
+//                picasso = new Picasso.Builder(context).downloader(new OkHttpDownloader(picassoClient)).build();
+//            } else {
+//                picasso = Picasso.with(context);
+//            }*/
+//
+////            picasso.load(imageInfo.getUrl()).networkPolicy(NetworkPolicy.NO_STORE).into(viewHolder.houseImageView);
+//
+////            Picasso.with(context).load(imageInfo.getUrl()).into(viewHolder.houseImageView);  //todo check image loader behdad
+////            imageLoader.displayImage(imageInfo.getUrl(), viewHolder.houseImageView, displayImageOptions, animateFirstListener);
+//
+//            // Load image, decode it to Bitmap and return Bitmap to callback
+////            imageLoader.loadImage(imageInfo.getUrl(), null, displayImageOptions, new SimpleImageLoadingListener() {
+////                @Override
+////                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+////                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+////                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+////                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+////                    }
+////                    viewHolder.houseImageView.setImageBitmap(loadedImage);
+////                }
+////
+////                @Override
+////                public void onLoadingStarted(String imageUri, View view) {
+////                    super.onLoadingStarted(imageUri, view);
+////                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+////                        viewHolder.imageProgressBar.setVisibility(View.VISIBLE);
+////                        viewHolder.imageProgressBarLayout.setVisibility(View.VISIBLE);
+////                    }
+////                }
+////
+////                @Override
+////                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+////                    super.onLoadingFailed(imageUri, view, failReason);
+////                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+////                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+////                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+////                    }
+////                    //                viewHolder.houseImageView.setImageBitmap(null);
+////                    //                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+////                }
+////
+////                @Override
+////                public void onLoadingCancelled(String imageUri, View view) {
+////                    super.onLoadingCancelled(imageUri, view);
+////                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+////                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+////                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+////                    }
+//////                    viewHolder.houseImageView.setImageBitmap(null);
+//////                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+////                }
+////            });
+//
+//            /*ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, viewHolder, authorizationJson, imageInfo.getUrl());
+//            AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
+//            try {
+//                Object asyncTaskResult = asyncTask.get();
+//                if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                    viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                    viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                }
+//                if (asyncTaskResult != null) {
+//                    Bitmap bitmap = (Bitmap)asyncTaskResult;
+//                    viewHolder.houseImageView.setImageBitmap(bitmap);
+//                } else {
+//                    viewHolder.houseImageView.setImageBitmap(null);
+//                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//                }
+//            } catch (InterruptedException | ExecutionException e) {
+//                viewHolder.houseImageView.setImageBitmap(null);
+//                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//
+//                if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                    viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                    viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                }
+//                e.printStackTrace();
+//            }*/
+//
+//            /*picasso.load(imageInfo.getUrl()).networkPolicy(NetworkPolicy.NO_CACHE).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
 //                @Override
-//                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                public void onSuccess() {
 //                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
 //                        viewHolder.imageProgressBar.setVisibility(View.GONE);
 //                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
 //                    }
-//                    viewHolder.houseImageView.setImageBitmap(loadedImage);
+//                    viewHolder.houseImageView.invalidate();
 //                }
 //
 //                @Override
-//                public void onLoadingStarted(String imageUri, View view) {
-//                    super.onLoadingStarted(imageUri, view);
-//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-//                        viewHolder.imageProgressBar.setVisibility(View.VISIBLE);
-//                        viewHolder.imageProgressBarLayout.setVisibility(View.VISIBLE);
-//                    }
-//                }
-//
-//                @Override
-//                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//                    super.onLoadingFailed(imageUri, view, failReason);
-//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-//                    }
-//                    //                viewHolder.houseImageView.setImageBitmap(null);
-//                    //                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-//                }
-//
-//                @Override
-//                public void onLoadingCancelled(String imageUri, View view) {
-//                    super.onLoadingCancelled(imageUri, view);
-//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-//                    }
-////                    viewHolder.houseImageView.setImageBitmap(null);
-////                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-//                }
-//            });
-
-            /*ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, viewHolder, authorizationJson, imageInfo.getUrl());
-            AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
-            try {
-                Object asyncTaskResult = asyncTask.get();
-                if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                    viewHolder.imageProgressBar.setVisibility(View.GONE);
-                    viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                }
-                if (asyncTaskResult != null) {
-                    Bitmap bitmap = (Bitmap)asyncTaskResult;
-                    viewHolder.houseImageView.setImageBitmap(bitmap);
-                } else {
-                    viewHolder.houseImageView.setImageBitmap(null);
-                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                viewHolder.houseImageView.setImageBitmap(null);
-                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-
-                if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                    viewHolder.imageProgressBar.setVisibility(View.GONE);
-                    viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                }
-                e.printStackTrace();
-            }*/
-
-            /*picasso.load(imageInfo.getUrl()).networkPolicy(NetworkPolicy.NO_CACHE).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                    }
-                    viewHolder.houseImageView.invalidate();
-                }
-
-                @Override
-                public void onError() {
-                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                    }
-                    viewHolder.houseImageView.setImageBitmap(null);
-                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-                    viewHolder.houseImageView.invalidate();
-                }
-            });*/
-        } else {
-            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-//                viewHolder.imageProgressBar.setVisibility(View.GONE);
-                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-            }
-//            viewHolder.houseImageView.setImageBitmap(null);
-//            viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-//            viewHolder.houseImageView.invalidate();
-//            imageLoader.displayImage("", viewHolder.houseImageView, displayImageOptions, animateFirstListener);
-        }
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private void getHouseImages(final String houseUrl, final HostHousesItemViewHolder viewHolder) {
-
-        final String authorizationJson = AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString();
-
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
-
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> call = apiEndpoints.getHouseImages(houseUrl + "/pictures");
-
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        float thumbnailWidthDp = dpWidth / 3;
-        final int thumbnailWidthPx = (int) (thumbnailWidthDp * displayMetrics.density);
-//                    final int thumbnailHeightPx = thumbnailWidthPx * 38 / 62;
-        final int thumbnailHeightPx = thumbnailWidthPx * 7 / 10;
-
-//        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
-//        int imageWidth = imageLayoutParams.width;
-//        if (imageWidth <= 0) {
-//            imageWidth = thumbnailWidthPx;
-//            int imageHeight = imageWidth * 7 / 10;
-//            imageLayoutParams.width = imageWidth;
-//            imageLayoutParams.height = imageHeight;
-//            viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
-//
-//        }
-
-        call.enqueue(new Callback<ImageInfo[]>() {
-            @Override
-            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
-                int statusCode = response.code();
-                ImageInfo[] result = response.body();
-                if (result != null && result.length > 0) {
-
-                    imageInfoArraysMap.put(houseUrl, result);
-//                    imageLayoutParams.width = thumbnailWidthPx;
-//                    imageLayoutParams.height = thumbnailHeightPx;
-//                    viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
-
-//                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)viewHolder.houseInfoLayout.getLayoutParams();
-//                    layoutParams.height = thumbnailWidthPx * 7 / 10;
-//                    viewHolder.houseInfoLayout.setLayoutParams(layoutParams);
-
-//                    Picasso.with(context).load(result[0].getUrl()).resize(thumbnailWidthPx, thumbnailHeightPx).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
-
-
-                    /*ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, viewHolder, authorizationJson, result[0].getUrl());
-                    AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
-                    try {
-                        Object asyncTaskResult = asyncTask.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }*/
-
-//                    Picasso.with(context).load(result[0].getUrl()).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//                            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-//                                viewHolder.imageProgressBar.setVisibility(View.GONE);
-//                                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-//                                viewHolder.imageProgressBar.setVisibility(View.GONE);
-//                                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-//                            }
-//                            viewHolder.houseImageView.setImageBitmap(null);
-//                            viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-//                            viewHolder.houseImageView.invalidate();
-//                        }
-//                    });
-
-                } else {
+//                public void onError() {
 //                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
 //                        viewHolder.imageProgressBar.setVisibility(View.GONE);
 //                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
@@ -533,172 +434,271 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //                    viewHolder.houseImageView.setImageBitmap(null);
 //                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
 //                    viewHolder.houseImageView.invalidate();
-                }
-            }
+//                }
+//            });*/
+//        } else {
+//            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+////                viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//            }
+////            viewHolder.houseImageView.setImageBitmap(null);
+////            viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+////            viewHolder.houseImageView.invalidate();
+////            imageLoader.displayImage("", viewHolder.houseImageView, displayImageOptions, animateFirstListener);
+//        }
+//    }
 
-            @Override
-            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
-                if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-                    viewHolder.imageProgressBar.setVisibility(View.GONE);
-                    viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-                }
-//                viewHolder.houseImageView.setImageBitmap(null);
-//                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-//                viewHolder.houseImageView.invalidate();
+    @SuppressWarnings("ConstantConditions")
+//    private void getHouseImages(final String houseUrl, final HostHousesItemViewHolder viewHolder) {
+//
+//        final String authorizationJson = AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString();
+//
+//        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
+//
+//
+//        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+//        Call<ImageInfo[]> call = apiEndpoints.getHouseImages(houseUrl + "/pictures");
+//
+//        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+//        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+//        float thumbnailWidthDp = dpWidth / 3;
+//        final int thumbnailWidthPx = (int) (thumbnailWidthDp * displayMetrics.density);
+////                    final int thumbnailHeightPx = thumbnailWidthPx * 38 / 62;
+//        final int thumbnailHeightPx = thumbnailWidthPx * 7 / 10;
+//
+////        RelativeLayout.LayoutParams imageLayoutParams = (RelativeLayout.LayoutParams) viewHolder.houseImageView.getLayoutParams();
+////        int imageWidth = imageLayoutParams.width;
+////        if (imageWidth <= 0) {
+////            imageWidth = thumbnailWidthPx;
+////            int imageHeight = imageWidth * 7 / 10;
+////            imageLayoutParams.width = imageWidth;
+////            imageLayoutParams.height = imageHeight;
+////            viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
+////
+////        }
+//
+//        call.enqueue(new Callback<ImageInfo[]>() {
+//            @Override
+//            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
+//                int statusCode = response.code();
+//                ImageInfo[] result = response.body();
+//                if (result != null && result.length > 0) {
+//
+//                    imageInfoArraysMap.put(houseUrl, result);
+////                    imageLayoutParams.width = thumbnailWidthPx;
+////                    imageLayoutParams.height = thumbnailHeightPx;
+////                    viewHolder.houseImageView.setLayoutParams(imageLayoutParams);
+//
+////                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)viewHolder.houseInfoLayout.getLayoutParams();
+////                    layoutParams.height = thumbnailWidthPx * 7 / 10;
+////                    viewHolder.houseInfoLayout.setLayoutParams(layoutParams);
+//
+////                    Picasso.with(context).load(result[0].getUrl()).resize(thumbnailWidthPx, thumbnailHeightPx).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
+//
+//
+//                    /*ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(context, viewHolder, authorizationJson, result[0].getUrl());
+//                    AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
+//                    try {
+//                        Object asyncTaskResult = asyncTask.get();
+//                    } catch (InterruptedException | ExecutionException e) {
+//                        e.printStackTrace();
+//                    }*/
+//
+////                    Picasso.with(context).load(result[0].getUrl()).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
+////                        @Override
+////                        public void onSuccess() {
+////                            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+////                                viewHolder.imageProgressBar.setVisibility(View.GONE);
+////                                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+////                            }
+////                        }
+////
+////                        @Override
+////                        public void onError() {
+////                            if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+////                                viewHolder.imageProgressBar.setVisibility(View.GONE);
+////                                viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+////                            }
+////                            viewHolder.houseImageView.setImageBitmap(null);
+////                            viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+////                            viewHolder.houseImageView.invalidate();
+////                        }
+////                    });
+//
+//                } else {
+////                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+////                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+////                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+////                    }
+////                    viewHolder.houseImageView.setImageBitmap(null);
+////                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+////                    viewHolder.houseImageView.invalidate();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
+//                if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//                    viewHolder.imageProgressBar.setVisibility(View.GONE);
+//                    viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//                }
+////                viewHolder.houseImageView.setImageBitmap(null);
+////                viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+////                viewHolder.houseImageView.invalidate();
+////                t.printStackTrace();
+//            }
+//        });
+//    }
+//
+//    private void setFirstAvailableDate(final HostHousesItemViewHolder viewHolder, HouseAvailableDates houseAvailableDates, String houseUrl) {
+//        if (houseAvailableDates != null && houseAvailableDates.getStartDate() != null) {
+//
+//            HashMap<String, List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
+//            if (selectedDaysMap != null) {
+//                housesSelectedDaysMap.put(houseUrl, selectedDaysMap);
+//            }
+//
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+//            try {
+//                Date firstAvailableDate = dateFormat.parse(houseAvailableDates.getStartDate());
+//                PersianCalendar persianCalendar = new PersianCalendar(firstAvailableDate.getTime());
+//                String dateString = persianCalendar.getPersianShortDate();
+//                viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, dateString));
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//                viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+//            }
+//        } else {
+//            viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+//        }
+//    }
+//
+//    private void getHouseAvailableDates(final House house, final HostHousesItemViewHolder viewHolder) {
+//
+//        Gson gson = new GsonBuilder().create();
+//
+//        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
+//
+//        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+//
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        Date startDate = new Date();
+//        final Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(startDate);
+//        calendar.add(Calendar.MONTH, 3);
+//        Date endDate = calendar.getTime();
+//        String startDateString = simpleDateFormat.format(startDate);
+//        String endDateString = simpleDateFormat.format(endDate);
+//
+//        String url = house.getDetailUrl();
+//        url = url + "/available-dates/start-" + startDateString + "/end-" + endDateString;
+//
+//        Call<HouseAvailableDates> call = apiEndpoints.getHouseAvailableDates(url);
+//        call.enqueue(new Callback<HouseAvailableDates>() {
+//            @Override
+//            public void onResponse(Call<HouseAvailableDates> call, Response<HouseAvailableDates> response) {
+//                HouseAvailableDates houseAvailableDates = response.body();
+//                if (houseAvailableDates != null && houseAvailableDates.getStartDate() != null) {
+//
+//                    HashMap<String, List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
+//                    if (selectedDaysMap != null) {
+//                        housesSelectedDaysMap.put(house.getDetailUrl(), selectedDaysMap);
+//                    }
+//
+//                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+//                    try {
+//                        Date firstAvailableDate = dateFormat.parse(houseAvailableDates.getStartDate());
+//                        PersianCalendar persianCalendar = new PersianCalendar(firstAvailableDate.getTime());
+//                        String dateString = persianCalendar.getPersianShortDate();
+//                        viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, dateString));
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                        viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+//                    }
+//                } else {
+//                    viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<HouseAvailableDates> call, Throwable t) {
 //                t.printStackTrace();
-            }
-        });
-    }
+//                Log.d("HostHousesContent", "getHouseAvailableDates onFailure : " + t.getMessage(), t);
+//                viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
+//            }
+//        });
+//    }
 
-    private void setFirstAvailableDate(final HostHousesItemViewHolder viewHolder, HouseAvailableDates houseAvailableDates, String houseUrl) {
-        if (houseAvailableDates != null && houseAvailableDates.getStartDate() != null) {
-
-            HashMap<String, List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
-            if (selectedDaysMap != null) {
-                housesSelectedDaysMap.put(houseUrl, selectedDaysMap);
-            }
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            try {
-                Date firstAvailableDate = dateFormat.parse(houseAvailableDates.getStartDate());
-                PersianCalendar persianCalendar = new PersianCalendar(firstAvailableDate.getTime());
-                String dateString = persianCalendar.getPersianShortDate();
-                viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, dateString));
-            } catch (ParseException e) {
-                e.printStackTrace();
-                viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
-            }
-        } else {
-            viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
-        }
-    }
-
-    private void getHouseAvailableDates(final House house, final HostHousesItemViewHolder viewHolder) {
-
-        Gson gson = new GsonBuilder().create();
-
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = new Date();
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        calendar.add(Calendar.MONTH, 3);
-        Date endDate = calendar.getTime();
-        String startDateString = simpleDateFormat.format(startDate);
-        String endDateString = simpleDateFormat.format(endDate);
-
-        String url = house.getDetailUrl();
-        url = url + "/available-dates/start-" + startDateString + "/end-" + endDateString;
-
-        Call<HouseAvailableDates> call = apiEndpoints.getHouseAvailableDates(url);
-        call.enqueue(new Callback<HouseAvailableDates>() {
-            @Override
-            public void onResponse(Call<HouseAvailableDates> call, Response<HouseAvailableDates> response) {
-                HouseAvailableDates houseAvailableDates = response.body();
-                if (houseAvailableDates != null && houseAvailableDates.getStartDate() != null) {
-
-                    HashMap<String, List<Day>> selectedDaysMap = createSelectedDaysMap(houseAvailableDates);
-                    if (selectedDaysMap != null) {
-                        housesSelectedDaysMap.put(house.getDetailUrl(), selectedDaysMap);
-                    }
-
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                    try {
-                        Date firstAvailableDate = dateFormat.parse(houseAvailableDates.getStartDate());
-                        PersianCalendar persianCalendar = new PersianCalendar(firstAvailableDate.getTime());
-                        String dateString = persianCalendar.getPersianShortDate();
-                        viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, dateString));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
-                    }
-                } else {
-                    viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<HouseAvailableDates> call, Throwable t) {
-                t.printStackTrace();
-                Log.d("HostHousesContent", "getHouseAvailableDates onFailure : " + t.getMessage(), t);
-                viewHolder.houseDatesTextView.setText(context.getString(R.string.host_houses_first_available_date, ""));
-            }
-        });
-    }
-
-    private HashMap<String, List<Day>> createSelectedDaysMap(HouseAvailableDates houseAvailableDates) {
-
-        if (houseAvailableDates == null || houseAvailableDates.getDates() == null || houseAvailableDates.getDates().length == 0)
-            return null;
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
-        HashMap<String, List<Day>> selectedDaysMap = new HashMap<String, List<Day>>();
-        char[] digits = Utils.getInstance().preferredDigits(context);
-        PersianDate todayPersianDate = Utils.getToday();
-
-        for (String dateString : houseAvailableDates.getDates()) {
-            try {
-                Date availableDate = dateFormat.parse(dateString);
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(availableDate);
-                CivilDate civilDate = new CivilDate(calendar);
-                PersianDate persianDate = DateConverter.civilToPersian(civilDate);
-                if (persianDate != null) {
-
-                    if (persianDate.getYear() < todayPersianDate.getYear())
-                        continue;
-                    else if (persianDate.getYear() == todayPersianDate.getYear() &&
-                            persianDate.getMonth() < todayPersianDate.getMonth())
-                        continue;
-
-                    int position = -1;
-
-                    Day day = new Day();
-                    day.setDayOfWeek(persianDate.getDayOfWeek());
-                    day.setNum(Utils.formatNumber(persianDate.getDayOfMonth(), digits));
-                    day.setPersianDate(persianDate);
-                    day.setToday(false);
-
-                    if (persianDate.getYear() == todayPersianDate.getYear()) {
-                        if (persianDate.getMonth() == todayPersianDate.getMonth()) {
-                            position = Constants.CALENDAR_MONTHS_LIMIT / 2;
-                            if (persianDate.getDayOfMonth() == todayPersianDate.getDayOfMonth())
-                                day.setToday(true);
-                        } else {
-                            position = Constants.CALENDAR_MONTHS_LIMIT / 2 - (persianDate.getMonth() - todayPersianDate.getMonth());
-                        }
-                    } else {
-                        if (persianDate.getMonth() == todayPersianDate.getMonth()) {
-                            position = Constants.CALENDAR_MONTHS_LIMIT / 2 - 12;
-                        } else if (persianDate.getMonth() > todayPersianDate.getMonth()) {
-                            position = Constants.CALENDAR_MONTHS_LIMIT / 2 - 12 - (persianDate.getMonth() - todayPersianDate.getMonth());
-                        } else {
-                            position = Constants.CALENDAR_MONTHS_LIMIT / 2 - (12 + persianDate.getMonth() - todayPersianDate.getMonth());
-                        }
-                    }
-
-                    if (position >= 0) {
-                        List<Day> days = selectedDaysMap.get(String.valueOf(position));
-                        if (days == null)
-                            days = new ArrayList<Day>();
-
-                        days.add(day);
-                        selectedDaysMap.put(String.valueOf(position), days);
-                    }
-                }
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return selectedDaysMap;
-    }
+//    private HashMap<String, List<Day>> createSelectedDaysMap(HouseAvailableDates houseAvailableDates) {
+//
+//        if (houseAvailableDates == null || houseAvailableDates.getDates() == null || houseAvailableDates.getDates().length == 0)
+//            return null;
+//
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+//
+//        HashMap<String, List<Day>> selectedDaysMap = new HashMap<String, List<Day>>();
+//        char[] digits = Utils.getInstance().preferredDigits(context);
+//        PersianDate todayPersianDate = Utils.getToday();
+//
+//        for (String dateString : houseAvailableDates.getDates()) {
+//            try {
+//                Date availableDate = dateFormat.parse(dateString);
+//
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTime(availableDate);
+//                CivilDate civilDate = new CivilDate(calendar);
+//                PersianDate persianDate = DateConverter.civilToPersian(civilDate);
+//                if (persianDate != null) {
+//
+//                    if (persianDate.getYear() < todayPersianDate.getYear())
+//                        continue;
+//                    else if (persianDate.getYear() == todayPersianDate.getYear() &&
+//                            persianDate.getMonth() < todayPersianDate.getMonth())
+//                        continue;
+//
+//                    int position = -1;
+//
+//                    Day day = new Day();
+//                    day.setDayOfWeek(persianDate.getDayOfWeek());
+//                    day.setNum(Utils.formatNumber(persianDate.getDayOfMonth(), digits));
+//                    day.setPersianDate(persianDate);
+//                    day.setToday(false);
+//
+//                    if (persianDate.getYear() == todayPersianDate.getYear()) {
+//                        if (persianDate.getMonth() == todayPersianDate.getMonth()) {
+//                            position = Constants.CALENDAR_MONTHS_LIMIT / 2;
+//                            if (persianDate.getDayOfMonth() == todayPersianDate.getDayOfMonth())
+//                                day.setToday(true);
+//                        } else {
+//                            position = Constants.CALENDAR_MONTHS_LIMIT / 2 - (persianDate.getMonth() - todayPersianDate.getMonth());
+//                        }
+//                    } else {
+//                        if (persianDate.getMonth() == todayPersianDate.getMonth()) {
+//                            position = Constants.CALENDAR_MONTHS_LIMIT / 2 - 12;
+//                        } else if (persianDate.getMonth() > todayPersianDate.getMonth()) {
+//                            position = Constants.CALENDAR_MONTHS_LIMIT / 2 - 12 - (persianDate.getMonth() - todayPersianDate.getMonth());
+//                        } else {
+//                            position = Constants.CALENDAR_MONTHS_LIMIT / 2 - (12 + persianDate.getMonth() - todayPersianDate.getMonth());
+//                        }
+//                    }
+//
+//                    if (position >= 0) {
+//                        List<Day> days = selectedDaysMap.get(String.valueOf(position));
+//                        if (days == null)
+//                            days = new ArrayList<Day>();
+//
+//                        days.add(day);
+//                        selectedDaysMap.put(String.valueOf(position), days);
+//                    }
+//                }
+//
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        return selectedDaysMap;
+//    }
 
     private void openHouseDetail(String houseID) {
         Intent intent = new Intent(context, HouseActivity.class);
@@ -785,66 +785,66 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
             removeHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemRemoveButton);
         }
     }
-
-    public class ImageDownloaderAsyncTask extends AsyncTask {
-        private Context context;
-        private HostHousesItemViewHolder viewHolder;
-        private String imageUrl;
-        private String authorization;
-
-        public ImageDownloaderAsyncTask(Context context, HostHousesItemViewHolder viewHolder, String authorization, String imageUrl) {
-            this.context = context;
-            this.viewHolder = viewHolder;
-            this.authorization = authorization;
-            this.imageUrl = imageUrl;
-        }
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-//            return getImage();
-
-            URL aURL;
-            try {
-                aURL = new URL(imageUrl);
-                URLConnection conn = aURL.openConnection();
-                conn.connect();
-                InputStream is = conn.getInputStream();
-                BufferedInputStream bis = new BufferedInputStream(is);
-                Bitmap bitmap = BitmapFactory.decodeStream(bis);
-                bis.close();
-                is.close();
-
-                return bitmap;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        private Object getImage() {
-//            Picasso.with(context).load(imageUrl).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
-//                @Override
-//                public void onSuccess() {
-//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-//                    }
-//                }
 //
-//                @Override
-//                public void onError() {
-//                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
-//                        viewHolder.imageProgressBar.setVisibility(View.GONE);
-//                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
-//                    }
-////                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
-//                }
-//            });
-
-            return null;
-        }
-    }
+//    public class ImageDownloaderAsyncTask extends AsyncTask {
+//        private Context context;
+//        private HostHousesItemViewHolder viewHolder;
+//        private String imageUrl;
+//        private String authorization;
+//
+//        public ImageDownloaderAsyncTask(Context context, HostHousesItemViewHolder viewHolder, String authorization, String imageUrl) {
+//            this.context = context;
+//            this.viewHolder = viewHolder;
+//            this.authorization = authorization;
+//            this.imageUrl = imageUrl;
+//        }
+//
+//        @Override
+//        protected Object doInBackground(Object[] objects) {
+////            return getImage();
+//
+//            URL aURL;
+//            try {
+//                aURL = new URL(imageUrl);
+//                URLConnection conn = aURL.openConnection();
+//                conn.connect();
+//                InputStream is = conn.getInputStream();
+//                BufferedInputStream bis = new BufferedInputStream(is);
+//                Bitmap bitmap = BitmapFactory.decodeStream(bis);
+//                bis.close();
+//                is.close();
+//
+//                return bitmap;
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            return null;
+//        }
+//
+////        private Object getImage() {
+//////            Picasso.with(context).load(imageUrl).into(viewHolder.houseImageView, new com.squareup.picasso.Callback() {
+//////                @Override
+//////                public void onSuccess() {
+//////                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//////                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+//////                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//////                    }
+//////                }
+//////
+//////                @Override
+//////                public void onError() {
+//////                    if (viewHolder.imageProgressBarLayout != null && viewHolder.imageProgressBar != null) {
+//////                        viewHolder.imageProgressBar.setVisibility(View.GONE);
+//////                        viewHolder.imageProgressBarLayout.setVisibility(View.GONE);
+//////                    }
+////////                    viewHolder.houseImageView.setImageDrawable(new ColorDrawable(context.getResources().getColor(R.color.gray_light)));
+//////                }
+//////            });
+////
+////            return null;
+////        }
+//    }
 }

@@ -98,7 +98,7 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
         if (super.getHouse() != null) {
             titleEditText.setText(super.getHouse().getName());
             summaryEditText.setText(super.getHouse().getSummary());
-            addressEditText.setText(super.getHouse().getAddress());
+            addressEditText.setText(super.getHouse().getLocation().getAddress());
         }
 
         TextView titleTextView = (TextView) view.findViewById(R.id.house_info_entry_title);
@@ -230,9 +230,11 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
 
         house.setName(titleEditText.getText().toString());
         house.setSummary(summaryEditText.getText().toString());
-        house.setAddress(addressEditText.getText().toString());
-        house.setCityName(citySpinner.getSelectedItem().toString());
-        house.setProvinceName(provinceSpinner.getSelectedItem().toString());
+        Location location = new Location();
+        location.setAddress(addressEditText.getText().toString());
+        location.setCity(citySpinner.getSelectedItem().toString());
+        location.setProvince(provinceSpinner.getSelectedItem().toString());
+        house.setLocation(location);
 
         return house;
     }
@@ -373,11 +375,11 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
                         citySpinner.setAdapter(cityArrayAdapter);
                         citySpinner.setPromptId(R.string.house_info_entry_city_hint);
 
-                        if (house != null && house.getCityName() != null &&
-                                house.getCityName().length() > 0) {
+                        if (house != null && house.getLocation() != null &&
+                                house.getLocation().getCity().length() > 0) {
                             for (int i = 0; i < cityArray.length; i++) {
                                 ProvinceCity provinceCity = cityArray[i];
-                                if (house.getCityName().trim().equalsIgnoreCase(provinceCity.getCity().trim())) {
+                                if (house.getLocation().getCity().trim().equalsIgnoreCase(provinceCity.getCity().trim())) {
                                     citySpinner.setSelection(i);
                                     citySpinner.invalidate();
                                 }
@@ -393,19 +395,19 @@ public class HouseInfoEntryFragment extends HouseEntryBaseFragment {
             }
         });
 
-        if (!provincesMap.isEmpty() && house != null && (house.getCityName() != null ||
-                house.getProvinceName() != null)) {
+        if (!provincesMap.isEmpty() && house != null && (house.getLocation() != null ||
+                house.getLocation().getCity() != null)) {
 
             ProvinceCity[] cityArray = null;
 
-            if (house.getProvinceName() != null && house.getProvinceName().length() > 0) {
-                if (provincesMap.containsKey(house.getProvinceName().trim())) {
+            if (house.getLocation() != null && house.getLocation().getProvince().length() > 0) {
+                if (provincesMap.containsKey(house.getLocation().getProvince().trim())) {
                     provincesMap.keySet().toArray(provinceArray);
                     for (int i = 0; i < provinceArray.length; i++) {
-                        if (house.getProvinceName().trim().equalsIgnoreCase(provinceArray[i].trim())) {
+                        if (house.getLocation().getProvince().trim().equalsIgnoreCase(provinceArray[i].trim())) {
                             provinceSpinner.setSelection(i);
                             provinceSpinner.invalidate();
-                            cityArray = provincesMap.get(house.getProvinceName().trim());
+                            cityArray = provincesMap.get(house.getLocation().getProvince().trim());
                         }
                     }
                 }

@@ -377,11 +377,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         houseEntryInput.setPosition(house.getPosition());
         houseEntryInput.setSummary(house.getSummary());
 
-        if (house.getProvinceName() != null || house.getCityName() != null) {
+        if (house.getLocation() != null) {
             Location location = new Location();
-            location.setProvince(house.getProvinceName());
-			location.setCity(house.getCityName());
-			location.setAddress(house.getAddress());
+            location.setProvince(house.getLocation().getProvince());
+			location.setCity(house.getLocation().getCity());
+			location.setAddress(house.getLocation().getAddress());
             houseEntryInput.setLocation(location);
         }
 

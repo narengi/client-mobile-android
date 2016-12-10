@@ -273,52 +273,52 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             }
         });
     }
-
-    private void readImageInfo(final House house) {
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getDetailUrl() + "/pictures");
-
-        imagesCall.enqueue(new Callback<ImageInfo[]>() {
-            @Override
-            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
-				hideProgress();
-                ImageInfo[] result = response.body();
-                allImageInfoArraysMap.put(house.getDetailUrl(), result);
-
-                if (allImageInfoArraysMap.size() == hostHouses.length) {
-                    HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
-                            hostHouses, null, null, HostHousesActivity.this, allImageInfoArraysMap, allHouseAvailableDatesMap);
-
-                    if (mRecyclerView == null)
-                        mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
-                    mRecyclerView.setAdapter(contentRecyclerAdapter);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
-				hideProgress();
-                allImageInfoArraysMap.put(house.getDetailUrl(), null);
-                if (allImageInfoArraysMap.size() == hostHouses.length) {
-                    HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
-                            hostHouses, null, null, HostHousesActivity.this, allImageInfoArraysMap, allHouseAvailableDatesMap);
-
-                    if (mRecyclerView == null)
-                        mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
-                    mRecyclerView.setAdapter(contentRecyclerAdapter);
-                }
-
-                t.printStackTrace();
-
-            }
-        });
-    }
-
-    private void readAvailableDates(House house) {
-
-    }
+//
+//    private void readImageInfo(final House house) {
+//        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
+//
+//        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+//        Call<ImageInfo[]> imagesCall = apiEndpoints.getHouseImages(house.getDetailUrl() + "/pictures");
+//
+//        imagesCall.enqueue(new Callback<ImageInfo[]>() {
+//            @Override
+//            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
+//				hideProgress();
+//                ImageInfo[] result = response.body();
+//                allImageInfoArraysMap.put(house.getDetailUrl(), result);
+//
+//                if (allImageInfoArraysMap.size() == hostHouses.length) {
+//                    HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
+//                            hostHouses, null, null, HostHousesActivity.this, allImageInfoArraysMap, allHouseAvailableDatesMap);
+//
+//                    if (mRecyclerView == null)
+//                        mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
+//                    mRecyclerView.setAdapter(contentRecyclerAdapter);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
+//				hideProgress();
+//                allImageInfoArraysMap.put(house.getDetailUrl(), null);
+//                if (allImageInfoArraysMap.size() == hostHouses.length) {
+//                    HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(HostHousesActivity.this,
+//                            hostHouses, null, null, HostHousesActivity.this, allImageInfoArraysMap, allHouseAvailableDatesMap);
+//
+//                    if (mRecyclerView == null)
+//                        mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
+//                    mRecyclerView.setAdapter(contentRecyclerAdapter);
+//                }
+//
+//                t.printStackTrace();
+//
+//            }
+//        });
+//    }
+//
+//    private void readAvailableDates(House house) {
+//
+//    }
 
 //    private void readDatesAndImages() {
 //

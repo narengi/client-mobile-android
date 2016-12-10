@@ -14,6 +14,7 @@ import xyz.narengi.android.common.dto.Host;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseFeature;
 import xyz.narengi.android.common.dto.HouseReview;
+import xyz.narengi.android.common.dto.Location;
 
 /**
  * @author Siavash Mahmoudpour
@@ -56,7 +57,9 @@ public class HouseDeserializer implements JsonDeserializer<House> {
 
         JsonElement cityNameElement = jsonElement.getAsJsonObject().get("CityName");
         String cityName = cityNameElement.getAsString();
-        house.setCityName(cityName);
+        Location location = new Location();
+        location.setCity(cityName);
+        house.setLocation(location);
 
         JsonElement urlElement = jsonElement.getAsJsonObject().get("URL");
         String url = urlElement.getAsString();

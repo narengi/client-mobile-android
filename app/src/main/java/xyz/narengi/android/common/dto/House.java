@@ -19,8 +19,8 @@ public class House implements Serializable {
     private Host Host;
     private String Rating;
     private String summary;
-    private String CityName;
-    private String ProvinceName;
+//    private String CityName;
+//    private String ProvinceName;
 	private String detailUrl;
 	private String[] dates;
     private HouseReview[] Reviews;
@@ -36,9 +36,10 @@ public class House implements Serializable {
     private String bookingUrl;
     private Commission Commission;
     private Location location;
-    private String address;
+//    private String address;
     private String id;
     private Pictures[] pictures;
+    private String ownerId;
 
     public Pictures[] getPictures() {
         return pictures;
@@ -124,21 +125,21 @@ public class House implements Serializable {
         this.summary = summary;
     }
 
-    public String getCityName() {
-        return CityName;
-    }
+//    public String getCityName() {
+//        return CityName;
+//    }
 
-    public void setCityName(String cityName) {
-        CityName = cityName;
-    }
+//    public void setCityName(String cityName) {
+//        CityName = cityName;
+//    }
 
-    public String getProvinceName() {
-        return ProvinceName;
-    }
+//    public String getProvinceName() {
+//        return ProvinceName;
+//    }
 
-    public void setProvinceName(String provinceName) {
-        ProvinceName = provinceName;
-    }
+//    public void setProvinceName(String provinceName) {
+//        ProvinceName = provinceName;
+//    }
 
     public String getDetailUrl() {
         return detailUrl;
@@ -252,13 +253,13 @@ public class House implements Serializable {
         this.location = location;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
+//    public String getAddress() {
+//        return address;
+//    }
+//
+//    public void setAddress(String address) {
+//        this.address = address;
+//    }
 
     public class Commission implements Serializable {
         private double rate;
