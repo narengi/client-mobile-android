@@ -86,6 +86,16 @@ public class SearchListAdapter extends BaseAdapter {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, itemHeght);
             convertView.setLayoutParams(params);
 
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent = new Intent(context, HouseActivity.class);
+                    intent.putExtra("houseId",  ((AroundLocationDataHouse)locations.get(position).getData()).getId());
+                    context.startActivity(intent);
+                }
+            });
+
 
         } else {
             holder = (ViewHolder) convertView.getTag();
