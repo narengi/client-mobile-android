@@ -473,4 +473,9 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         dialog.show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getHostHouses();
+    }
 }

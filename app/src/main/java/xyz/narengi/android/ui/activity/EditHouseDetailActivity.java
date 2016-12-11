@@ -337,6 +337,9 @@ public class EditHouseDetailActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     house = response.body();
+                    Intent intent = new Intent();
+                    intent.putExtra("updatedHouse", house);
+                    setResult(2002, intent);
                     finish();
                 } else {
                     Toast.makeText(EditHouseDetailActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
