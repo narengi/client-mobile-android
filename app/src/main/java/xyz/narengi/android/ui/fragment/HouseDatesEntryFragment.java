@@ -57,13 +57,13 @@ public class HouseDatesEntryFragment extends HouseEntryBaseFragment
         else if (getActivity() instanceof EditHouseDetailActivity)
             selectedDaysMap = ((EditHouseDetailActivity)getActivity()).getSelectedDaysMap();
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
                 setupCalendar(view);
-            }
-        }, 30);
+//            }
+//        }, 30);
 //        setupCalendar(view);
 
         Button nextButton = (Button)view.findViewById(R.id.house_dates_entry_finishButton);
