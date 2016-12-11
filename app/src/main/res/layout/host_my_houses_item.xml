@@ -172,7 +172,7 @@
                 android:textColor="@color/text_gray_dark"
                 android:gravity="center"
                 android:background="@android:color/transparent"
-                android:drawableTop="@drawable/ic_action_hosting"
+                android:drawableTop="@drawable/icon_room"
                 android:textSize="10sp"
                 />
 
@@ -187,7 +187,7 @@
                 android:textColor="@color/text_gray_dark"
                 android:gravity="center"
                 android:background="@android:color/transparent"
-                android:drawableTop="@drawable/ic_action_hosting"
+                android:drawableTop="@drawable/icon_bed"
                 android:textSize="10sp"
                 />
 
@@ -203,7 +203,7 @@
                 android:textColor="@color/text_gray_dark"
                 android:gravity="center"
                 android:background="@android:color/transparent"
-                android:drawableTop="@drawable/ic_action_hosting"
+                android:drawableTop="@drawable/icon_type_house"
                 android:textSize="10sp"
                 />
 
