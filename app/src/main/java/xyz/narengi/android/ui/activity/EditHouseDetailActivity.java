@@ -1,5 +1,6 @@
 package xyz.narengi.android.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -144,12 +145,12 @@ public class EditHouseDetailActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_edit_house_detail, menu);
-        return true;
-    }
+//        getMenuInflater().inflate(R.menu.menu_edit_house_detail, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -160,9 +161,9 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (id == R.id.edit_house_detail_save) {
-            updateHouseRequested();
-            return true;
+//        } else if (id == R.id.edit_house_detail_save) {
+//            updateHouseRequested();
+//            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -181,6 +182,15 @@ public class EditHouseDetailActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.edit_house_detail_toolbar);
+
+        View view = findViewById(R.id.tvSave);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateHouseRequested();
+
+            }
+        });
 
         /*Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
@@ -242,7 +252,7 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         if (fragment instanceof HouseImagesEntryFragment) {
             ((HouseImagesEntryFragment) fragment).uploadHouseImages();
         } else {
-            showProgress();
+//            showProgress();
             updateHouse();
         }
     }
@@ -305,6 +315,12 @@ public class EditHouseDetailActivity extends AppCompatActivity {
 
 
     private void updateHouse() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
         HouseEntryInput houseEntryInput = getHouseEntryInput();
         if (houseEntryInput == null)
             return;
@@ -316,79 +332,72 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         updateHouseRetrofitCall.enqueue(new Callback<House>() {
             @Override
             public void onResponse(Call<House> call, Response<House> response) {
-                hideProgress();
-                int statusCode = response.code();
-                House resultHouse = response.body();
-                if (resultHouse == null) {
-                    try {
-                        if (response.errorBody() != null) {
-                            Toast.makeText(EditHouseDetailActivity.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    house = resultHouse;
-                    showUpdateHouseResultDialog();
-                }
+//                hideProgress();
+                progressDialog.dismiss();
 
+                if (response.isSuccessful()) {
+                    house = response.body();
+                    finish();
+                } else {
+                    Toast.makeText(EditHouseDetailActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<House> call, Throwable t) {
-                hideProgress();
-                Toast.makeText(EditHouseDetailActivity.this, "Exception : " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                Toast.makeText(EditHouseDetailActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }
         });
     }
 
-    public void showUpdateHouseResultDialog() {
+//    public void showUpdateHouseResultDialog() {
+//
+//        Toast toast = new Toast(getApplicationContext());
+//        View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
+//        ViewGroup.LayoutParams params = view.getLayoutParams();
+//        if (params != null) {
+//            int width = (getScreenWidth(this) * 3 / 5);
+//            params.width = width;
+//            params.height = width;
+//            view.setLayoutParams(params);
+//        }
+//
+//        toast.setView(view);
+//        toast.setDuration(Toast.LENGTH_LONG);
+//
+//        int margin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+//        toast.setGravity(Gravity.CENTER, 0, margin);
+//        toast.show();
+//
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Intent intent = new Intent(EditHouseDetailActivity.this, EditHouseActivity.class);
+//                intent.putExtra("updatedHouse", house);
+//                intent.putExtra("updatedImageInfoArray", imageInfoArray);
+//                setResult(2002, intent);
+//                finish();
+//            }
+//        }, 2500);
+//    }
 
-        Toast toast = new Toast(getApplicationContext());
-        View view = getLayoutInflater().inflate(R.layout.dialog_sign_up_success, null);
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        if (params != null) {
-            int width = (getScreenWidth(this) * 3 / 5);
-            params.width = width;
-            params.height = width;
-            view.setLayoutParams(params);
-        }
-
-        toast.setView(view);
-        toast.setDuration(Toast.LENGTH_LONG);
-
-        int margin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        toast.setGravity(Gravity.CENTER, 0, margin);
-        toast.show();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(EditHouseDetailActivity.this, EditHouseActivity.class);
-                intent.putExtra("updatedHouse", house);
-                intent.putExtra("updatedImageInfoArray", imageInfoArray);
-                setResult(2002, intent);
-                finish();
-            }
-        }, 2500);
-    }
-
-    private int getScreenWidth(Context context) {
-        int measuredWidth;
-        Point size = new Point();
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            wm.getDefaultDisplay().getSize(size);
-            measuredWidth = size.x;
-        } else {
-            Display d = wm.getDefaultDisplay();
-            measuredWidth = d.getHeight();
-        }
-
-        return measuredWidth;
-    }
+//    private int getScreenWidth(Context context) {
+//        int measuredWidth;
+//        Point size = new Point();
+//        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+//            wm.getDefaultDisplay().getSize(size);
+//            measuredWidth = size.x;
+//        } else {
+//            Display d = wm.getDefaultDisplay();
+//            measuredWidth = d.getHeight();
+//        }
+//
+//        return measuredWidth;
+//    }
 
     private HouseEntryInput getHouseEntryInput() {
         if (house == null)
@@ -453,15 +462,15 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         return datesArray;
     }
 
-    public void showProgressBar() {
-        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.edit_house_detail_progressLayout);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.edit_house_detail_progressBar);
-
-        if (progressBar != null && progressBarLayout != null) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBarLayout.setVisibility(View.VISIBLE);
-        }
-    }
+//    public void showProgressBar() {
+//        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.edit_house_detail_progressLayout);
+//        ProgressBar progressBar = (ProgressBar) findViewById(R.id.edit_house_detail_progressBar);
+//
+//        if (progressBar != null && progressBarLayout != null) {
+//            progressBar.setVisibility(View.VISIBLE);
+//            progressBarLayout.setVisibility(View.VISIBLE);
+//        }
+//    }
 
     public void hideProgressBar() {
         LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.edit_house_detail_progressLayout);
@@ -473,42 +482,42 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void showProgress() {
-//        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.edit_house_detail_progressLayout);
-//        ProgressBar progressBar = (ProgressBar)findViewById(R.id.edit_house_detail_progressBar);
+//    private void showProgress() {
+////        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.edit_house_detail_progressLayout);
+////        ProgressBar progressBar = (ProgressBar)findViewById(R.id.edit_house_detail_progressBar);
+////
+////        if (progressBar != null && progressBarLayout != null) {
+////            progressBar.setVisibility(View.VISIBLE);
+////            progressBarLayout.setVisibility(View.VISIBLE);
+////        }
 //
-//        if (progressBar != null && progressBarLayout != null) {
-//            progressBar.setVisibility(View.VISIBLE);
-//            progressBarLayout.setVisibility(View.VISIBLE);
-//        }
-
-        if (progressDialog == null)
-            progressDialog = AlertUtils.getInstance().createModelProgress(this);
-        progressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                dialogInterface.dismiss();
-
-                if (updateHouseRetrofitCall != null)
-                    updateHouseRetrofitCall.cancel();
-            }
-        });
-
-        progressDialog.show();
-    }
-
-    private void hideProgress() {
-//        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.edit_house_detail_progressLayout);
-//        ProgressBar progressBar = (ProgressBar)findViewById(R.id.edit_house_detail_progressBar);
+//        if (progressDialog == null)
+//            progressDialog = AlertUtils.getInstance().createModelProgress(this);
+//        progressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialogInterface) {
+//                dialogInterface.dismiss();
 //
-//        if (progressBar != null && progressBarLayout != null) {
-//            progressBar.setVisibility(View.GONE);
-//            progressBarLayout.setVisibility(View.GONE);
-//        }
+//                if (updateHouseRetrofitCall != null)
+//                    updateHouseRetrofitCall.cancel();
+//            }
+//        });
+//
+//        progressDialog.show();
+//    }
 
-        if (progressDialog != null)
-            progressDialog.dismiss();
-    }
+//    private void hideProgress() {
+////        LinearLayout progressBarLayout = (LinearLayout)findViewById(R.id.edit_house_detail_progressLayout);
+////        ProgressBar progressBar = (ProgressBar)findViewById(R.id.edit_house_detail_progressBar);
+////
+////        if (progressBar != null && progressBarLayout != null) {
+////            progressBar.setVisibility(View.GONE);
+////            progressBarLayout.setVisibility(View.GONE);
+////        }
+//
+//        if (progressDialog != null)
+//            progressDialog.dismiss();
+//    }
 
 
     private HouseEntryStep getHouseEntryStep(int ordinal) {
@@ -530,9 +539,9 @@ public class EditHouseDetailActivity extends AppCompatActivity {
         return imageUris;
     }
 
-    public void setImageUris(List<Uri> imageUris) {
-        this.imageUris = imageUris;
-    }
+//    public void setImageUris(List<Uri> imageUris) {
+//        this.imageUris = imageUris;
+//    }
 
     public ImageInfo[] getImageInfoArray() {
         return imageInfoArray;

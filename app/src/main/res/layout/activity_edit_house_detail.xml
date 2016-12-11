@@ -119,14 +119,27 @@
                     />
                 <!--style="@style/IconFont.XLarge"-->
 
-                <TextView
+                <xyz.narengi.android.ui.widget.CustomTextView
                     android:id="@+id/text_toolbar_title"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_marginRight="16dp"
+                    android:textColor="@android:color/white"
                     android:layout_toLeftOf="@+id/icon_toolbar_back"
                     android:gravity="right|center_vertical"
                     />
+
+                <xyz.narengi.android.ui.widget.CustomTextView
+                    android:id="@+id/tvSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="ذخیره"
+                    android:textColor="@android:color/white" />
                 <!--style="@style/Textview.Dark.MediumLarge"-->
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
