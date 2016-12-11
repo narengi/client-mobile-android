@@ -1,14 +1,17 @@
 package xyz.narengi.android.common.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -29,6 +32,7 @@ import xyz.narengi.android.ui.widget.AutoScrollViewPager;
  */
 
 public class SearchListAdapter extends BaseAdapter {
+    private int itemHeght;
     private static final long[] autoScrollIntervals = {
             1500,
             2000,
@@ -42,9 +46,14 @@ public class SearchListAdapter extends BaseAdapter {
     private List<AroundLocation> locations;
 
 
-    public SearchListAdapter(Context context, List<AroundLocation> locations) {
-        this.context = context;
+    public SearchListAdapter(Activity activity, List<AroundLocation> locations) {
+        this.context = activity;
         this.locations = locations;
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        activity. getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int screenWidth = displaymetrics.widthPixels;
+        itemHeght = screenWidth*5/8;
     }
 
     @Override
@@ -73,6 +82,9 @@ public class SearchListAdapter extends BaseAdapter {
             holder.tvSummary = (TextView) convertView.findViewById(R.id.tvSummary);
             holder.tvHousePrice = (TextView) convertView.findViewById(R.id.tvHousePricePerNight);
             holder.llNarengiSuggestion = convertView.findViewById(R.id.llNarengiSuggestionContainer);
+
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, itemHeght);
+            convertView.setLayoutParams(params);
 
 
         } else {

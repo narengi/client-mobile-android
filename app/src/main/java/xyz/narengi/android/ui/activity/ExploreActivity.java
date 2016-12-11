@@ -424,7 +424,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
                     e.printStackTrace();
                 }
             }
-            final SearchListAdapter adapter = new SearchListAdapter(context, locations);
+            final SearchListAdapter adapter = new SearchListAdapter(this, locations);
             lstSearchList.setAdapter(adapter);
 
             lstSearchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
