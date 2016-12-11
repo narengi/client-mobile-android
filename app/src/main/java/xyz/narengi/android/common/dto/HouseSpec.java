@@ -8,8 +8,8 @@ import java.io.Serializable;
 public class HouseSpec implements Serializable {
 
     private int bedroom;
-    private int guestCount;
-    private int maxGuestCount;
+    private int guest_count;
+    private int max_guest_count;
     private int bed;
 
 	public int getBedroomCount() {
@@ -21,19 +21,19 @@ public class HouseSpec implements Serializable {
     }
 
     public int getGuestCount() {
-        return guestCount;
+        return guest_count;
     }
 
     public void setGuestCount(int guestCount) {
-        this.guestCount = guestCount;
+        this.guest_count = guestCount;
     }
 
     public int getMaxGuestCount() {
-        return maxGuestCount;
+        return max_guest_count;
     }
 
     public void setMaxGuestCount(int maxGuestCount) {
-        this.maxGuestCount = maxGuestCount;
+        this.max_guest_count = maxGuestCount;
     }
 
     public int getBedCount() {
