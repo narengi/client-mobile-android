@@ -74,15 +74,7 @@ public class SearchListAdapter extends BaseAdapter {
             holder.tvHousePrice = (TextView) convertView.findViewById(R.id.tvHousePricePerNight);
             holder.llNarengiSuggestion = convertView.findViewById(R.id.llNarengiSuggestionContainer);
 
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
 
-                    Intent intent = new Intent(context, HouseActivity.class);
-                    intent.putExtra("houseId",  ((AroundLocationDataHouse)locations.get(position).getData()).getId());
-                    context.startActivity(intent);
-                }
-            });
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
@@ -98,19 +90,19 @@ public class SearchListAdapter extends BaseAdapter {
             holder.tvSummary.setText(((AroundLocationDataHouse) location.getData()).getSummary());
             holder.tvHousePrice.setText(((AroundLocationDataHouse) location.getData()).getPrice());
 
-            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataHouse) location.getData()).getPictures(), AroundLocation.Type.HOUSE);
+            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataHouse) location.getData()).getPictures(), AroundLocation.Type.HOUSE, position);
             holder.vpImages.setAdapter(adapter);
         } else if (location.getType() == AroundLocation.Type.CITY) {
             holder.tvName.setText(((AroundLocationDataCity) location.getData()).getName());
             holder.tvSummary.setText(((AroundLocationDataCity) location.getData()).getDescription());
 
-            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataCity) location.getData()).getPictures(), AroundLocation.Type.CITY);
+            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataCity) location.getData()).getPictures(), AroundLocation.Type.CITY, position);
             holder.vpImages.setAdapter(adapter);
         } else if (location.getType() == AroundLocation.Type.ATTRACTION) {
             holder.tvName.setText(((AroundLocationDataAttraction) location.getData()).getName());
             holder.tvSummary.setText(((AroundLocationDataAttraction) location.getData()).getDescription());
 
-            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataAttraction) location.getData()).getPictures(), AroundLocation.Type.ATTRACTION);
+            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataAttraction) location.getData()).getPictures(), AroundLocation.Type.ATTRACTION, position);
             holder.vpImages.setAdapter(adapter);
 
         }
@@ -134,10 +126,12 @@ public class SearchListAdapter extends BaseAdapter {
     class PicturesPagerAdapter extends PagerAdapter {
         private String[] pictures;
         private AroundLocation.Type type;
+        private int housePosition;
 
-        public PicturesPagerAdapter(String[] pictures, AroundLocation.Type type) {
+        public PicturesPagerAdapter(String[] pictures, AroundLocation.Type type, int housePosition) {
             this.pictures = pictures;
             this.type = type;
+            this.housePosition = housePosition;
         }
 
         @Override
@@ -146,6 +140,16 @@ public class SearchListAdapter extends BaseAdapter {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             img.setLayoutParams(params);
             img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent = new Intent(context, HouseActivity.class);
+                    intent.putExtra("houseId",  ((AroundLocationDataHouse)locations.get(housePosition).getData()).getId());
+                    context.startActivity(intent);
+                }
+            });
 
 //            Picasso
 //                    .with(context)
