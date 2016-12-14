@@ -1,27 +1,16 @@
 package xyz.narengi.android.ui.activity;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
@@ -30,20 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
-import com.viewpagerindicator.CirclePageIndicator;
-
-import java.util.concurrent.ExecutionException;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
@@ -54,13 +37,8 @@ import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.House;
-import xyz.narengi.android.common.dto.ImageInfo;
-import xyz.narengi.android.common.dto.Pictures;
-import xyz.narengi.android.service.ImageDownloaderAsyncTask;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
-import xyz.narengi.android.ui.adapter.HouseContentRecyclerAdapter;
-import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;
 import xyz.narengi.android.util.Util;
 
 /**
@@ -84,13 +62,13 @@ public class HouseActivity extends AppCompatActivity {
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
-        View back = findViewById(R.id.icon_toolbar_back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+//        View back = findViewById(R.id.icon_toolbar_back);
+//        back.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                finish();
+//            }
+//        });
 
         if (getIntent() != null && getIntent().getStringExtra("houseId") != null){
             stringArray = getIntent().getStringArrayExtra("images");
