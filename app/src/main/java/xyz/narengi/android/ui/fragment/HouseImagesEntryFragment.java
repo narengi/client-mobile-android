@@ -231,31 +231,32 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         }
     }
 
-    public void showProgressBar() {
-//        LinearLayout progressBarLayout = (LinearLayout)getActivity().findViewById(R.id.house_images_entry_progressLayout);
-//        ProgressBar progressBar = (ProgressBar)getActivity().findViewById(R.id.house_images_entry_progressBar);
-//
-//        if (progressBar != null && progressBarLayout != null) {
-//            progressBar.setVisibility(View.VISIBLE);
-//            progressBarLayout.setVisibility(View.VISIBLE);
-//        }
-    }
+//    public void showProgressBar() {
+////        LinearLayout progressBarLayout = (LinearLayout)getActivity().findViewById(R.id.house_images_entry_progressLayout);
+////        ProgressBar progressBar = (ProgressBar)getActivity().findViewById(R.id.house_images_entry_progressBar);
+////
+////        if (progressBar != null && progressBarLayout != null) {
+////            progressBar.setVisibility(View.VISIBLE);
+////            progressBarLayout.setVisibility(View.VISIBLE);
+////        }
+//    }
 
-    public void hideProgressBar() {
-//        LinearLayout progressBarLayout = (LinearLayout)getActivity().findViewById(R.id.house_images_entry_progressLayout);
-//        ProgressBar progressBar = (ProgressBar)getActivity().findViewById(R.id.house_images_entry_progressBar);
-//
-//        if (progressBar != null && progressBarLayout != null) {
-//            progressBar.setVisibility(View.GONE);
-//            progressBarLayout.setVisibility(View.GONE);
-//        }
-    }
+//    public void hideProgressBar() {
+////        LinearLayout progressBarLayout = (LinearLayout)getActivity().findViewById(R.id.house_images_entry_progressLayout);
+////        ProgressBar progressBar = (ProgressBar)getActivity().findViewById(R.id.house_images_entry_progressBar);
+////
+////        if (progressBar != null && progressBarLayout != null) {
+////            progressBar.setVisibility(View.GONE);
+////            progressBarLayout.setVisibility(View.GONE);
+////        }
+//    }
 
     public void uploadHouseImages() {
         showProgress();
 
         if (imageUris == null || imageUris.size() == 0) {
             if (getOnInteractionListener() != null) {
+                hideProgress();
                 getOnInteractionListener().onGoToNextSection(getHouse());
             }
             return;
@@ -284,12 +285,11 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         MultipartBody.Part body = MultipartBody.Part.createFormData("picture", "aa.jpeg", requestFile);
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<UploadImage> call = apiEndpoints.uploadHouseImages(getHouse().getId(), body);
+        Call<UploadImage> call = apiEndpoints.uploadHouseImages(body);
 
         call.enqueue(new Callback<UploadImage>() {
             @Override
             public void onResponse(Call<UploadImage> call, Response<UploadImage> response) {
-                hideProgress();
                 imageUris.remove(0);
                 uploadHouseImages();
 //                int statusCode = response.code();

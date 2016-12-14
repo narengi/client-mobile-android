@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 public class UploadImage implements Serializable {
 
-    private String url;
+    private ImageUploadResult result;
 
-	public String getUrl() {
-		return url;
+	public ImageUploadResult getResult() {
+		return result;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setResult(ImageUploadResult result) {
+		this.result = result;
 	}
 }
