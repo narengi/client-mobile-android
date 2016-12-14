@@ -97,8 +97,10 @@ public class HouseActivity extends AppCompatActivity {
 
 
             ViewPager vpImages = (ViewPager) findViewById(R.id.vpImages);
-            PicturesPagerAdapter adapter = new PicturesPagerAdapter(stringArray, this);
-            vpImages.setAdapter(adapter);
+            if (stringArray != null) {
+                PicturesPagerAdapter adapter = new PicturesPagerAdapter(stringArray, this);
+                vpImages.setAdapter(adapter);
+            }
 
 //        showProgress();
             String houseUrl = getIntent().getStringExtra("houseId");
