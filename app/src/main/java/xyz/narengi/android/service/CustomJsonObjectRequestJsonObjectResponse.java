@@ -28,7 +28,7 @@ public class CustomJsonObjectRequestJsonObjectResponse extends JsonObjectRequest
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> headers = new HashMap<>();
         if (!TextUtils.isEmpty(token))
-            headers.put("access-token", token);
+            headers.put("Authorization", "Bearer "+token);
         return headers;
     }
 }

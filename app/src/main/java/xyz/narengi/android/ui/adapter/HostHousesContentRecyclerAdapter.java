@@ -229,7 +229,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //        }
 
         try {
-            Picasso.with(context).load("http://api.narengi.xyz/api" + house.getPictures()[0].getUrl()).into(viewHolder.houseImageView);
+            Picasso.with(context).load("https://api.narengi.xyz/v1" + house.getPictures()[0].getUrl()).into(viewHolder.houseImageView);
         } catch (Exception e){}
 
 //        getHouseImages(house.getDetailUrl(), viewHolder);

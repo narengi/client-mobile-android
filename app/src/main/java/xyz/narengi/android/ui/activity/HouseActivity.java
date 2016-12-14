@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +28,7 @@ import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -63,10 +66,11 @@ import xyz.narengi.android.util.Util;
 /**
  * @author Siavash Mahmoudpour
  */
-public class HouseActivity extends ActionBarActivity {
+public class HouseActivity extends AppCompatActivity {
 
     private House house;
     private ActionBarRtlizer rtlizer;
+    private String [] stringArray;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,11 @@ public class HouseActivity extends ActionBarActivity {
         setContentView(R.layout.activity_house1);
         setupToolbar();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
 
         View back = findViewById(R.id.icon_toolbar_back);
         back.setOnClickListener(new View.OnClickListener() {
@@ -83,8 +92,15 @@ public class HouseActivity extends ActionBarActivity {
             }
         });
 
-        if (getIntent() != null && getIntent().getStringExtra("houseId") != null) {
-        showProgress();
+        if (getIntent() != null && getIntent().getStringExtra("houseId") != null){
+            stringArray = getIntent().getStringArrayExtra("images");
+
+
+            ViewPager vpImages = (ViewPager) findViewById(R.id.vpImages);
+            PicturesPagerAdapter adapter = new PicturesPagerAdapter(stringArray, this);
+            vpImages.setAdapter(adapter);
+
+//        showProgress();
             String houseUrl = getIntent().getStringExtra("houseId");
 //            getHouseImage(houseUrl);
             getHouse(houseUrl);
@@ -257,52 +273,52 @@ public class HouseActivity extends ActionBarActivity {
 
     }
 
-    private void showProgress() {
-        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.house_progressLayout);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
-
-        if (progressBarLayout != null && progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBarLayout.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideProgress() {
-        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.house_progressLayout);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
-
-        if (progressBarLayout != null && progressBar != null) {
-            progressBar.setVisibility(View.GONE);
-            progressBarLayout.setVisibility(View.GONE);
-        }
-    }
-
-    private void getHouseImage(String houseUrl) {
-        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
-
-        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> call = apiEndpoints.getHouseImages(houseUrl + "/pictures");
-
-        call.enqueue(new Callback<ImageInfo[]>() {
-            @Override
-            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
-                int statusCode = response.code();
-                ImageInfo[] result = response.body();
-                if (result != null && result.length > 0) {
-                    String[] imageUrls = new String[result.length];
-                    for (int i = 0; i < result.length; i++) {
-                        imageUrls[i] = result[i].getUrl();
-                        setupImageViewPager(imageUrls);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
+//    private void showProgress() {
+//        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.house_progressLayout);
+//        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
+//
+//        if (progressBarLayout != null && progressBar != null) {
+//            progressBar.setVisibility(View.VISIBLE);
+//            progressBarLayout.setVisibility(View.VISIBLE);
+//        }
+//    }
+//
+//    private void hideProgress() {
+//        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.house_progressLayout);
+//        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
+//
+//        if (progressBarLayout != null && progressBar != null) {
+//            progressBar.setVisibility(View.GONE);
+//            progressBarLayout.setVisibility(View.GONE);
+//        }
+//    }
+//
+//    private void getHouseImage(String houseUrl) {
+//        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
+//
+//        RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
+//        Call<ImageInfo[]> call = apiEndpoints.getHouseImages(houseUrl + "/pictures");
+//
+//        call.enqueue(new Callback<ImageInfo[]>() {
+//            @Override
+//            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
+//                int statusCode = response.code();
+//                ImageInfo[] result = response.body();
+//                if (result != null && result.length > 0) {
+//                    String[] imageUrls = new String[result.length];
+//                    for (int i = 0; i < result.length; i++) {
+//                        imageUrls[i] = result[i].getUrl();
+//                        setupImageViewPager(imageUrls);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
+//                t.printStackTrace();
+//            }
+//        });
+//    }
 
     private void setHouse(final House house) {
 
@@ -365,14 +381,10 @@ public class HouseActivity extends ActionBarActivity {
         TextView description = (TextView) findViewById(R.id.description);
         description.setText(house.getSummary());
 
-        ViewPager vpImages = (ViewPager) findViewById(R.id.vpImage);
 //        Picasso.with(this).load(house.getPictures()[0].getHash())
 
         ImageView map = (ImageView) findViewById(R.id.map);
         Picasso.with(this).load("http://www.techstrikers.com/GoogleMap/Code/images/google-map-draw-circle-on-marker-onclick.png").into(map);
-
-        PicturesPagerAdapter adapter = new PicturesPagerAdapter(house.getPictures(), this);
-        vpImages.setAdapter(adapter);
 
         if (house.getFeatureList() != null && house.getFeatureList().length > 0) {
             View view = findViewById(R.id.feature1);
@@ -486,74 +498,74 @@ public class HouseActivity extends ActionBarActivity {
         intent.putExtra("hostUrl", hostUrl);
         startActivity(intent);
     }
-
-    private void setupImageViewPager(String[] images) {
-
-//        RelativeLayout viewPagerLayout = (RelativeLayout)findViewById(R.id.house_imageLayout);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.house_imageViewpager);
-
-        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        int height = display.getHeight();
-        viewPager.getLayoutParams().height = height / 2;
-//        viewPagerLayout.getLayoutParams().height = height/2;
-
-        ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(this, images);
-        viewPager.setAdapter(adapter);
-
-        CirclePageIndicator pageIndicator = (CirclePageIndicator) findViewById(R.id.house_imagePageIndicator);
-        pageIndicator.setViewPager(viewPager);
-    }
-
-    private void setupHostFab(String imageUrl) {
-
-        FloatingActionButton houseHostFab = (FloatingActionButton) findViewById(R.id.house_hostFab);
-        try {
-            int width = 0, height = 0;
-            if (houseHostFab != null) {
-                if (houseHostFab.getWidth() > 0 && houseHostFab.getHeight() > 0) {
-                    width = houseHostFab.getWidth();
-                    height = houseHostFab.getHeight();
-                } else if (houseHostFab.getLayoutParams() != null) {
-                    width = houseHostFab.getLayoutParams().width;
-                    height = houseHostFab.getLayoutParams().height;
-                }
-            }
-            ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(this, imageUrl,
-                    width, height);
-            AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
-
-            Bitmap hostImageBitmap = (Bitmap) asyncTask.get();
-            if (hostImageBitmap != null) {
-
-                Bitmap circleBitmap = Bitmap.createBitmap(hostImageBitmap.getWidth(), hostImageBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-
-                BitmapShader shader = new BitmapShader(hostImageBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-                Paint paint = new Paint();
-                paint.setShader(shader);
-                paint.setAntiAlias(true);
-                Canvas c = new Canvas(circleBitmap);
-                c.drawCircle(hostImageBitmap.getWidth() / 2, hostImageBitmap.getHeight() / 2, hostImageBitmap.getWidth() / 2, paint);
-
-                houseHostFab.setImageBitmap(hostImageBitmap);
-
-//                houseHostFab.setRippleColor(getResources().getColor(android.R.color.holo_orange_dark));
-//                houseHostFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.holo_orange_dark)));
-            }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-    }
+//
+//    private void setupImageViewPager(String[] images) {
+//
+////        RelativeLayout viewPagerLayout = (RelativeLayout)findViewById(R.id.house_imageLayout);
+//        ViewPager viewPager = (ViewPager) findViewById(R.id.house_imageViewpager);
+//
+//        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+//        int height = display.getHeight();
+//        viewPager.getLayoutParams().height = height / 2;
+////        viewPagerLayout.getLayoutParams().height = height/2;
+//
+//        ImageViewPagerAdapter adapter = new ImageViewPagerAdapter(this, images);
+//        viewPager.setAdapter(adapter);
+//
+//        CirclePageIndicator pageIndicator = (CirclePageIndicator) findViewById(R.id.house_imagePageIndicator);
+//        pageIndicator.setViewPager(viewPager);
+//    }
+////
+//    private void setupHostFab(String imageUrl) {
+//
+//        FloatingActionButton houseHostFab = (FloatingActionButton) findViewById(R.id.house_hostFab);
+//        try {
+//            int width = 0, height = 0;
+//            if (houseHostFab != null) {
+//                if (houseHostFab.getWidth() > 0 && houseHostFab.getHeight() > 0) {
+//                    width = houseHostFab.getWidth();
+//                    height = houseHostFab.getHeight();
+//                } else if (houseHostFab.getLayoutParams() != null) {
+//                    width = houseHostFab.getLayoutParams().width;
+//                    height = houseHostFab.getLayoutParams().height;
+//                }
+//            }
+//            ImageDownloaderAsyncTask imageDownloaderAsyncTask = new ImageDownloaderAsyncTask(this, imageUrl,
+//                    width, height);
+//            AsyncTask asyncTask = imageDownloaderAsyncTask.execute();
+//
+//            Bitmap hostImageBitmap = (Bitmap) asyncTask.get();
+//            if (hostImageBitmap != null) {
+//
+//                Bitmap circleBitmap = Bitmap.createBitmap(hostImageBitmap.getWidth(), hostImageBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+//
+//                BitmapShader shader = new BitmapShader(hostImageBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+//                Paint paint = new Paint();
+//                paint.setShader(shader);
+//                paint.setAntiAlias(true);
+//                Canvas c = new Canvas(circleBitmap);
+//                c.drawCircle(hostImageBitmap.getWidth() / 2, hostImageBitmap.getHeight() / 2, hostImageBitmap.getWidth() / 2, paint);
+//
+//                houseHostFab.setImageBitmap(hostImageBitmap);
+//
+////                houseHostFab.setRippleColor(getResources().getColor(android.R.color.holo_orange_dark));
+////                houseHostFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.holo_orange_dark)));
+//            }
+//
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void getHouse(String id) {
 
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+//        final ProgressDialog progressDialog = new ProgressDialog(this);
+//        progressDialog.setMessage(getString(R.string.please_wait));
+//        progressDialog.setCanceledOnTouchOutside(false);
+//        progressDialog.setCancelable(false);
+//        progressDialog.show();
 //        showProgress();
 //        url = url + "?filter[review]=5&filter[feature]=10000";
 
@@ -565,13 +577,13 @@ public class HouseActivity extends ActionBarActivity {
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
 
-        Call<House> call = apiEndpoints.getHouse("http://api.narengi.xyz/api/houses/" + id);
+        Call<House> call = apiEndpoints.getHouse("https://api.narengi.xyz/v1/houses/" + id);
         call.enqueue(new Callback<House>() {
             @Override
             public void onResponse(Call<House> call, Response<House> response) {
 //                int statusCode = response.code();
 //                hideProgress();
-                progressDialog.dismiss();
+//                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     House house = response.body();
                     if (house != null) {
@@ -591,7 +603,7 @@ public class HouseActivity extends ActionBarActivity {
                 // Log error here since request failed
                 t.printStackTrace();
 
-                progressDialog.dismiss();
+//                progressDialog.dismiss();
                 Log.d("HouseActivity", "getHouse onFailure : " + t.getMessage(), t);
 //                hideProgress();
                 Toast.makeText(HouseActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
@@ -601,9 +613,9 @@ public class HouseActivity extends ActionBarActivity {
 
 
     class PicturesPagerAdapter extends PagerAdapter {
-        private Pictures[] pictures;
+        private String[] pictures;
         private Context context;
-        public PicturesPagerAdapter(Pictures[] pictures, Context context) {
+        public PicturesPagerAdapter(String[] pictures, Context context) {
             this.pictures = pictures;
             this.context = context;
         }
@@ -616,7 +628,7 @@ public class HouseActivity extends ActionBarActivity {
             img.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
             try {
-                Picasso.with(context).load("http://api.narengi.xyz/api" + house.getPictures()[position].getUrl()).into(img);
+                Picasso.with(context).load("https://api.narengi.xyz/v1/" + pictures[position]).into(img);
             } catch (Exception e){}
 
             container.addView(img);

@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_gray_light"
-    android:fitsSystemWindows="true"
     tools:context="xyz.narengi.android.ui.activity.HostHousesActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/host_houses_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginTop="0dp"
         android:background="@android:color/white"
         android:elevation="0dp"
@@ -79,8 +79,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
 
         <LinearLayout
@@ -97,7 +96,8 @@
 
 
                 <android.support.v4.view.ViewPager
-                    android:id="@+id/vpImage"
+                    android:id="@+id/vpImages"
+                    android:transitionName="@string/transition_string"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="41dp">

@@ -3,6 +3,9 @@ package xyz.narengi.android.common.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -20,6 +23,8 @@ import java.util.List;
 import java.util.Random;
 
 import xyz.narengi.android.R;
+import xyz.narengi.android.common.dto.House;
+import xyz.narengi.android.common.dto.Pictures;
 import xyz.narengi.android.common.model.AroundLocation;
 import xyz.narengi.android.common.model.AroundLocationDataAttraction;
 import xyz.narengi.android.common.model.AroundLocationDataCity;
@@ -42,12 +47,12 @@ public class SearchListAdapter extends BaseAdapter {
             2500,
             4500
     };
-    private Context context;
+    private Activity activity;
     private List<AroundLocation> locations;
 
 
     public SearchListAdapter(Activity activity, List<AroundLocation> locations) {
-        this.context = activity;
+        this.activity = activity;
         this.locations = locations;
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -73,9 +78,9 @@ public class SearchListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.list_item_search, parent, false);
+            convertView = LayoutInflater.from(activity).inflate(R.layout.list_item_search, parent, false);
             holder = new ViewHolder();
             holder.vpImages = (ViewPager) convertView.findViewById(R.id.vpImages);
             holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
@@ -90,9 +95,23 @@ public class SearchListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
 
-                    Intent intent = new Intent(context, HouseActivity.class);
-                    intent.putExtra("houseId",  ((AroundLocationDataHouse)locations.get(position).getData()).getId());
-                    context.startActivity(intent);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        Intent intent = new Intent(activity, HouseActivity.class);
+                        String transitionName = activity.getString(R.string.transition_string);
+// Pass data object in the bundle and populate details activity.
+                        intent.putExtra("images", ((AroundLocationDataHouse)locations.get(position).getData()).getPictures());
+                        intent.putExtra("houseId", ((AroundLocationDataHouse) locations.get(position).getData()).getId());
+                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                                makeSceneTransitionAnimation(activity, (View)holder.vpImages, transitionName);
+//                        activity.startActivity(intent, options.toBundle());
+                        ActivityCompat.startActivity(activity, intent, options.toBundle());
+                    } else {
+
+                    Intent intent = new Intent(activity, HouseActivity.class);;
+                    intent.putExtra("houseId", (((AroundLocationDataHouse) locations.get(position).getData())).getId());
+                        activity.startActivity(intent);
+                    }
                 }
             });
 
@@ -105,29 +124,31 @@ public class SearchListAdapter extends BaseAdapter {
 //        holder.tvHousePrice.setVisibility(location.getType() == AroundLocation.Type.HOUSE ? View.VISIBLE : View.GONE);
 //        holder.llNarengiSuggestion.setVisibility(location.getType() == AroundLocation.Type.HOUSE ? View.VISIBLE : View.GONE);
 
-        if (location.getType() == AroundLocation.Type.HOUSE) {
+//        if (location.getType() == AroundLocation.Type.HOUSE) {
 //            holder.tvHousePrice.setVisibility(View.GONE);
 //            holder.llNarengiSuggestion.setVisibility(View.GONE);
             holder.tvName.setText(((AroundLocationDataHouse) location.getData()).getName());
             holder.tvSummary.setText(((AroundLocationDataHouse) location.getData()).getSummary());
             holder.tvHousePrice.setText(((AroundLocationDataHouse) location.getData()).getPrice());
 
-            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataHouse) location.getData()).getPictures(), AroundLocation.Type.HOUSE, position);
-            holder.vpImages.setAdapter(adapter);
-        } else if (location.getType() == AroundLocation.Type.CITY) {
-            holder.tvName.setText(((AroundLocationDataCity) location.getData()).getName());
-            holder.tvSummary.setText(((AroundLocationDataCity) location.getData()).getDescription());
+//            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataHouse) location.getData()).getPictures(), AroundLocation.Type.HOUSE, position);
+        PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataHouse) location.getData()).getPictures(), position, holder.vpImages);
 
-            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataCity) location.getData()).getPictures(), AroundLocation.Type.CITY, position);
-            holder.vpImages.setAdapter(adapter);
-        } else if (location.getType() == AroundLocation.Type.ATTRACTION) {
-            holder.tvName.setText(((AroundLocationDataAttraction) location.getData()).getName());
-            holder.tvSummary.setText(((AroundLocationDataAttraction) location.getData()).getDescription());
-
-            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataAttraction) location.getData()).getPictures(), AroundLocation.Type.ATTRACTION, position);
-            holder.vpImages.setAdapter(adapter);
-
-        }
+        holder.vpImages.setAdapter(adapter);
+//        } else if (location.getType() == AroundLocation.Type.CITY) {
+//            holder.tvName.setText(((AroundLocationDataCity) location.getData()).getName());
+//            holder.tvSummary.setText(((AroundLocationDataCity) location.getData()).getDescription());
+//
+//            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataCity) location.getData()).getPictures(), AroundLocation.Type.CITY, position, holder.vpImages);
+//            holder.vpImages.setAdapter(adapter);
+//        } else if (location.getType() == AroundLocation.Type.ATTRACTION) {
+//            holder.tvName.setText(((AroundLocationDataAttraction) location.getData()).getName());
+//            holder.tvSummary.setText(((AroundLocationDataAttraction) location.getData()).getDescription());
+//
+//            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataAttraction) location.getData()).getPictures(), AroundLocation.Type.ATTRACTION, position, holder.vpImages);
+//            holder.vpImages.setAdapter(adapter);
+//
+//        }
 //        holder.vpImages.setInterval(autoScrollIntervals[new Random().nextInt(autoScrollIntervals.length)]);
 //        holder.vpImages.startAutoScroll();
 //        holder.vpImages.setStopScrollWhenTouch(false);
@@ -147,18 +168,18 @@ public class SearchListAdapter extends BaseAdapter {
 
     class PicturesPagerAdapter extends PagerAdapter {
         private String[] pictures;
-        private AroundLocation.Type type;
         private int housePosition;
+        private ViewPager vpImages;
 
-        public PicturesPagerAdapter(String[] pictures, AroundLocation.Type type, int housePosition) {
+        public PicturesPagerAdapter(String[] pictures, int housePosition, ViewPager vpImages) {
             this.pictures = pictures;
-            this.type = type;
+            this.vpImages = vpImages;
             this.housePosition = housePosition;
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ImageView img = new ImageView(context);
+            ImageView img = new ImageView(activity);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             img.setLayoutParams(params);
             img.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -167,9 +188,28 @@ public class SearchListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
 
-                    Intent intent = new Intent(context, HouseActivity.class);
-                    intent.putExtra("houseId",  ((AroundLocationDataHouse)locations.get(housePosition).getData()).getId());
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(activity, HouseActivity.class);
+//                    intent.putExtra("houseId",  ((AroundLocationDataHouse)locations.get(housePosition).getData()).getId());
+//                    activity.startActivity(intent);
+
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        Intent intent = new Intent(activity, HouseActivity.class);
+                        String transitionName = activity.getString(R.string.transition_string);
+// Pass data object in the bundle and populate details activity.
+                        intent.putExtra("images", ((AroundLocationDataHouse)locations.get(housePosition).getData()).getPictures());
+                        intent.putExtra("houseId", ((AroundLocationDataHouse) locations.get(housePosition).getData()).getId());
+                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                                makeSceneTransitionAnimation(activity, (View)vpImages, transitionName);
+//                        activity.startActivity(intent, options.toBundle());
+                        ActivityCompat.startActivity(activity, intent, options.toBundle());
+                    } else {
+
+                        Intent intent = new Intent(activity, HouseActivity.class);;
+                        intent.putExtra("houseId", ((AroundLocationDataHouse) locations.get(housePosition).getData()).getId());
+                        activity.startActivity(intent);
+                    }
+
                 }
             });
 
@@ -184,7 +224,7 @@ public class SearchListAdapter extends BaseAdapter {
 //                    )
 //                    .into(img);
             try {
-                Picasso.with(context).load("http://api.narengi.xyz/api" + pictures[position]).into(img);
+                Picasso.with(activity).load("https://api.narengi.xyz/v1" + pictures[position]).into(img);
             } catch (Exception e){}
 
             container.addView(img);

@@ -101,7 +101,7 @@ public interface RetrofitApiEndpoints {
     @GET("/api/house-types")
     Call<Type[]> getHouseTypes();
 
-    @GET("http://api.narengi.xyz/api/house-features")
+    @GET("https://api.narengi.xyz/v1/house-features")
     Call<Map<String, String>[]> getHouseFeatures();
 
     @GET("/api/houses/my-houses")

@@ -54,7 +54,7 @@ public class NarengiApplication extends Application {
                     @Override
                     public Response intercept(Interceptor.Chain chain) throws IOException {
                         Request newRequest = chain.request().newBuilder()
-                                .addHeader("access-token", authorizationJsonHeader)
+                                .addHeader("Authorization", "Bearer " + authorizationJsonHeader)
                                 .build();
                         return chain.proceed(newRequest);
                     }

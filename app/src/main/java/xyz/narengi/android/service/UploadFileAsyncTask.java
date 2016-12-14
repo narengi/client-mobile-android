@@ -98,7 +98,7 @@ public class UploadFileAsyncTask extends AsyncTask<Void, Integer, String> {
             connection.setRequestMethod(requestMethod.toUpperCase(Locale.ENGLISH));
 
             //set headers
-            connection.addRequestProperty("access-token", token);
+            connection.addRequestProperty("Authorization", "Bearer " + token);
             connection.setRequestProperty("Connection", "Keep-Alive");
             connection.setRequestProperty("Cache-Control", "no-cache");
             connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + BOUNDARY);

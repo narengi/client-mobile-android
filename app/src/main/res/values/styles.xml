@@ -13,6 +13,7 @@
         <item name="colorPrimary">@color/orange_light</item>
         <item name="colorPrimaryDark">@color/orange_dark</item>
         <item name="colorAccent">@color/orange_light</item>
+        <item name="android:windowContentTransitions">true</item>
         <!--<item name="android:actionBarWidgetTheme">@style/MyDarkToolbarStyle</item>-->
         <!--<item name="android:actionButtonStyle">@style/ActionButtonStyle</item>-->
         <!-- Support library compatibility -->

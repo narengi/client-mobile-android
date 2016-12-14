@@ -74,5 +74,6 @@
     <string name="more_service">خدمات و قیمت‌های اضافی</string>
     <string name="terms">شرایط و قوانین</string>
     <string name="book">اجاره میکنم</string>
+    <string name="transition_string">shared</string>
 
 </resources>
