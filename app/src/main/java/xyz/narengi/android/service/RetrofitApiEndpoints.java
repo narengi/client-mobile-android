@@ -43,14 +43,14 @@ import xyz.narengi.android.common.dto.UploadImage;
  */
 public interface RetrofitApiEndpoints {
 
-    @GET("/api/search")
+    @GET("/v1/search")
     Call<AroundLocation[]> getAroundLocations(@Query("term") String searchTerm, @Query("filter[limit]") String filterLimit, @Query("filter[skip]") String filterSkip);
 
-    @GET("/api/search")
+    @GET("/v1/search")
     Call<AroundLocation[]> getAroundLocations(@Query("term") String searchTerm, @Query("filter[limit]") String filterLimit, @Query("filter[skip]") String filterSkip,
                                               @Query("position[lat]") double lat, @Query("position[lng]") double lng);
 
-    @GET("/api/suggestion")
+    @GET("/v1/suggestion")
     Call<SuggestionsResult> getAroundLocationSuggestions(@Query("term") String searchTerm,
                                                          @Query("filter[selection][city]") String cityCount,
                                                          @Query("filter[selection][attraction]") String attractionCount,
@@ -69,14 +69,14 @@ public interface RetrofitApiEndpoints {
     @GET
     Call<Attraction> getAttraction(@Url String url);
 
-    @POST("/api/accounts/register")
+    @POST("/v1/accounts/register")
     Call<AccountProfile> register(@Body Credential credential);
 
-    @POST("/api/accounts/verifications/request/{type}")
+    @POST("/v1/accounts/verifications/request/{type}")
     Call<AccountVerification> requestVerification(@Path("type") String type,
                                                   @Body RequestVerification requestVerification);
 
-    @POST("/api/accounts/verify/{type}/{code}")
+    @POST("/v1/accounts/verify/{type}/{code}")
     Call<AccountVerification> verifyAccount(@Path("type") String type,
                                             @Path("code") String code);
 
@@ -84,40 +84,40 @@ public interface RetrofitApiEndpoints {
     Call<AccountProfile> updateProfile(@Body Profile profile);
 
     @Multipart
-    @POST("/api/user-profiles/picture")
+    @POST("/v1/user-profiles/picture")
     Call<AccountProfile> uploadProfilePicture(@Part MultipartBody.Part picture);
 //    Call<AccountProfile> uploadProfilePicture(, @Part("picture") RequestBody picture);
 
-    @GET("/api/settings/provinces")
+    @GET("/v1/settings/provinces")
     Call<Map<String, ProvinceCity[]>> getProvinces();
 
-    @POST("/api/accounts/verifications/request/{type}")
+    @POST("/v1/accounts/verifications/request/{type}")
     Call<AccountVerification> requestIdVerification(@Path("type") String type,
                                                     @Part("file\";name=\"picture\"; filename=\"pp.png\" ") RequestBody picture);
 
     @GET
     Call<HouseAvailableDates> getHouseAvailableDates(@Url String url);
 
-    @GET("/api/house-types")
+    @GET("/v1/house-types")
     Call<Type[]> getHouseTypes();
 
     @GET("https://api.narengi.xyz/v1/house-features")
     Call<Map<String, String>[]> getHouseFeatures();
 
-    @GET("/api/houses/my-houses")
+    @GET("/v1/houses/my-houses")
     Call<House[]> getHostHouses();
 
-    @POST("/api/houses")
+    @POST("/v1/houses")
     Call<House> addHouse(@Body HouseEntryInput houseEntryInput);
 
     @PUT
     Call<House> updateHouse(@Url String url, @Body HouseEntryInput houseEntryInput);
 
-    @DELETE("/api/houses/{id}")
+    @DELETE("/v1/houses/{id}")
     Call<Object> removeHouse(@Path("id") String id);
 
     @Multipart
-    @POST("/api/houses/{id}/picture")
+    @POST("/v1/houses/{id}/picture")
     Call<UploadImage> uploadHouseImages(@Path("id") String id,
                                         @Part MultipartBody.Part file);
 
@@ -127,17 +127,17 @@ public interface RetrofitApiEndpoints {
     @GET
     Call<ImageInfo[]> getHouseImages(@Url String url);
 
-    @GET("/api/me/book-requests")
+    @GET("/v1/me/book-requests")
     Call<BookRequest[]> getBookRequests();
 
 
-    @GET("/api/me/book-requests")
+    @GET("/v1/me/book-requests")
     Call<BookRequestDTO[]> getBookRequestDTOs();
 
-    @PUT("/api/book-request/{request-id}/accept")
+    @PUT("/v1/book-request/{request-id}/accept")
     Call<BookRequest> approveBookRequest(@Path("request-id") String requestId);
 
-    @PUT("/api/book-request/{request-id}/reject")
+    @PUT("/v1/book-request/{request-id}/reject")
     Call<BookRequest> rejectBookRequest(@Path("request-id") String requestId);
 
 }
