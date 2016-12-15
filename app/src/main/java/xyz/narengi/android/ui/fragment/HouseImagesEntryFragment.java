@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
@@ -36,7 +37,9 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,6 +50,7 @@ import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -366,54 +370,69 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         });
     }
 
-    private void removeHouseImage(int position) {
-/*
+    private void removeHouseImage(final int position) {
+
         showProgress();
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
-        RemoveHouseImagesInfo removeHouseImagesInfo = new RemoveHouseImagesInfo();
-        String[] imageNames = new String[1];
-        imageNames[0] = imageInfo.getFilename();
-        removeHouseImagesInfo.setPicture_names(imageNames);
+//        RemoveHouseImagesInfo removeHouseImagesInfo = new RemoveHouseImagesInfo();
+//        String[] imageNames = new String[1];
+//        imageNames[0] = imageInfo.getFilename();
+//        removeHouseImagesInfo.setPicture_names(imageNames);
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
-        Call<ImageInfo[]> call = apiEndpoints.removeHouseImages(getHouse().getDetailUrl() + "/pictures", removeHouseImagesInfo);
-        call.enqueue(new Callback<ImageInfo[]>() {
+        Call<ResponseBody> call = apiEndpoints.removeHouseImages("https://api.narengi.xyz/v1/" + imageUrls.get(position).replace("get", "remove"));
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ImageInfo[]> call, Response<ImageInfo[]> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 hideProgress();
-                int statusCode = response.code();
-                ImageInfo[] result = response.body();
-//                if (statusCode == 201 || statusCode == 204) {
-                if (result != null || statusCode == 201 || statusCode == 204) {
-                    imageInfoArray = result;
-                    imageRemoved();
-                    Toast.makeText(getActivity(), "Remove image success... :  " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
-                    if (getActivity() instanceof AddHouseActivity) {
-                        ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);
-                    } else if (getActivity() instanceof EditHouseDetailActivity) {
-                        ((EditHouseDetailActivity) getActivity()).setImageInfoArray(imageInfoArray);
-                    }
+                if (response.isSuccessful()) {
+                    imageUrls.remove(position);
+//                    thumbnailsRecyclerAdapter.notifyDataSetChanged();
+
+
+                    thumbnailsRecyclerAdapter = new HouseEntryImageThumbnailsRecyclerAdapter(getActivity(), imageUris, imageUrls, HouseImagesEntryFragment.this);
+                    thumbnailsRecyclerView.setAdapter(thumbnailsRecyclerAdapter);
+
+                    viewPagerAdapter = new HouseImageEntryViewPagerAdapter(getContext(), imageUris, imageUrls);
+                    viewPager.setAdapter(viewPagerAdapter);
+                    viewPager.invalidate();
+
                 } else {
-                    try {
-                        if (response.errorBody() != null) {
-                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Toast.makeText(getContext(), R.string.error_alert_title, Toast.LENGTH_SHORT).show();
                 }
+//                int statusCode = response.code();
+//                ImageInfo[] result = response.body();
+//                if (statusCode == 201 || statusCode == 204) {
+//                if (result != null || statusCode == 201 || statusCode == 204) {
+//                    imageInfoArray = result;
+//                    imageRemoved();
+//                    Toast.makeText(getActivity(), "Remove image success... :  " + String.valueOf(statusCode), Toast.LENGTH_LONG).show();
+//                    if (getActivity() instanceof AddHouseActivity) {
+//                        ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);
+//                    } else if (getActivity() instanceof EditHouseDetailActivity) {
+//                        ((EditHouseDetailActivity) getActivity()).setImageInfoArray(imageInfoArray);
+//                    }
+//                } else {
+//                    try {
+//                        if (response.errorBody() != null) {
+//                            Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_LONG).show();
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
 
             @Override
-            public void onFailure(Call<ImageInfo[]> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 hideProgress();
                 Toast.makeText(getActivity(), "Remove image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }
         });
-        */
+
     }
 
     private void setupViewPager(View view) {
@@ -675,6 +694,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 if (!TextUtils.isEmpty(mCurrentPhotoPath)) {
@@ -724,7 +744,14 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
                         dispatchTakePictureIntent();
                         break;
                     case 1:
-                        pickFromGallery();
+                        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                            requestPermissions(
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    REQUEST_STORAGE_READ_ACCESS_PERMISSION);
+                        } else {
+                            pickFromGallery();
+                        }
                         break;
                     case 2:
                         dialog.dismiss();
@@ -779,28 +806,37 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 //    }
 
     private void pickFromGallery() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN // Permission was added in API Level 16
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN // Permission was added in API Level 16
+//                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
 //                    getString(R.string.permission_read_storage_rationale),
-                    "permission_read_storage_rationale",
-                    REQUEST_STORAGE_READ_ACCESS_PERMISSION);
-        } else {
+//                    "permission_read_storage_rationale",
+//                    REQUEST_STORAGE_READ_ACCESS_PERMISSION);
+//        } else {
 //            Intent intent = new Intent();
 //            intent.setType("image/*");
 //            intent.setAction(Intent.ACTION_GET_CONTENT);
 ////            intent.addCategory(Intent.CATEGORY_OPENABLE);
 //            startActivityForResult(Intent.createChooser(intent, "label_select_picture"), REQUEST_SELECT_PICTURE);
 
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-            startActivityForResult(Intent.createChooser(intent, "label_select_picture"), REQUEST_SELECT_PICTURE);
+//            Intent intent = new Intent();
+//            intent.setType("image/*");
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//            intent.addCategory(Intent.CATEGORY_OPENABLE);
+//
+//            startActivityForResult(Intent.createChooser(intent, "label_select_picture"), REQUEST_SELECT_PICTURE);
 //            startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file)), SELECT_FILE);
-        }
+//        }
+
+
+        Intent intent = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        intent.setType("image/*");
+
+        startActivityForResult(Intent.createChooser(intent,"label_select_picture"), REQUEST_SELECT_PICTURE);
     }
 
     private void dispatchTakePictureIntent() {
@@ -839,21 +875,21 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         return image;
     }
 
-    protected void requestPermission(final String permission, String rationale, final int requestCode) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permission)) {
-//            showAlertDialog(getString(R.string.permission_title_rationale), rationale,
-            showAlertDialog("permission_title_rationale", rationale,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(getActivity(),
-                                    new String[]{permission}, requestCode);
-                        }
-                    }, "Ok", null, "Cancel");
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{permission}, requestCode);
-        }
-    }
+//    protected void requestPermission(final String permission, String rationale, final int requestCode) {
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permission)) {
+////            showAlertDialog(getString(R.string.permission_title_rationale), rationale,
+//            showAlertDialog("permission_title_rationale", rationale,
+//                    new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            ActivityCompat.requestPermissions(getActivity(),
+//                                    new String[]{permission}, requestCode);
+//                        }
+//                    }, "Ok", null, "Cancel");
+//        } else {
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{permission}, requestCode);
+//        }
+//    }
 
     protected void showAlertDialog(@Nullable String title, @Nullable String message,
                                    @Nullable DialogInterface.OnClickListener onPositiveButtonClickListener,
@@ -870,14 +906,12 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_STORAGE_READ_ACCESS_PERMISSION:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    pickFromGallery();
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_STORAGE_READ_ACCESS_PERMISSION) {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                pickFromGallery();
+            }
         }
     }
 

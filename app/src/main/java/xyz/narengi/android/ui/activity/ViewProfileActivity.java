@@ -204,7 +204,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         ImageView profileImageView = (ImageView) findViewById(R.id.view_profile_profileImage);
 
-        Picasso.with(this).load(Constants.SERVER_BASE_URL + "/api/v1/user-profiles/picture").into(profileImageView);
+        Picasso.with(this).load(Constants.SERVER_BASE_URL + "/v1/user-profiles/picture").into(profileImageView);
     }
 
     private void showProgress() {
