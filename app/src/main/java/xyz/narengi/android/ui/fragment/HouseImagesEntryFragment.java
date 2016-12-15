@@ -527,6 +527,9 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         } else if (selectedImagePosition < imageUriSize + imageUrlSize){
             imageUris.remove(selectedImagePosition);
             imageRemoved();
+
+            thumbnailsRecyclerAdapter = new HouseEntryImageThumbnailsRecyclerAdapter(getActivity(), imageUris, imageUrls, HouseImagesEntryFragment.this);
+            thumbnailsRecyclerView.setAdapter(thumbnailsRecyclerAdapter);
         }
     }
 
