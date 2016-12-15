@@ -58,6 +58,7 @@ import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.ImageInfo;
+import xyz.narengi.android.common.model.AroundLocationDataHouse;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.activity.EditHouseActivity;
@@ -229,7 +230,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //        }
 
         try {
-            Picasso.with(context).load("https://api.narengi.xyz" + house.getPictures()[0].getUrl()).into(viewHolder.houseImageView);
+            Picasso.with(context).load("https://api.narengi.xyz/v1" + house.getPictures()[0].getUrl()).into(viewHolder.houseImageView);
         } catch (Exception e){}
 
 //        getHouseImages(house.getDetailUrl(), viewHolder);
@@ -278,7 +279,13 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         viewHolder.viewHouseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openHouseDetail(house.getId());
+
+                String[] images = new String[house.getPictures().length];
+                for (int i = 0; i < house.getPictures().length; i ++) {
+                    images[i] = house.getPictures()[i].getUrl();
+
+                }
+                openHouseDetail(house.getId(), images);
             }
         });
 
@@ -700,9 +707,10 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //        return selectedDaysMap;
 //    }
 
-    private void openHouseDetail(String houseID) {
+    private void openHouseDetail(String houseID, String[] images) {
         Intent intent = new Intent(context, HouseActivity.class);
         intent.putExtra("houseId", houseID);
+        intent.putExtra("images", images);
         context.startActivity(intent);
     }
 

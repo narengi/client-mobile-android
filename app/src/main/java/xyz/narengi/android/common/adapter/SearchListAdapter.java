@@ -109,6 +109,7 @@ public class SearchListAdapter extends BaseAdapter {
                     } else {
 
                     Intent intent = new Intent(activity, HouseActivity.class);;
+                        intent.putExtra("images", ((AroundLocationDataHouse)locations.get(position).getData()).getPictures());
                     intent.putExtra("houseId", (((AroundLocationDataHouse) locations.get(position).getData())).getId());
                         activity.startActivity(intent);
                     }
@@ -207,6 +208,7 @@ public class SearchListAdapter extends BaseAdapter {
 
                         Intent intent = new Intent(activity, HouseActivity.class);;
                         intent.putExtra("houseId", ((AroundLocationDataHouse) locations.get(housePosition).getData()).getId());
+                        intent.putExtra("images", ((AroundLocationDataHouse)locations.get(housePosition).getData()).getPictures());
                         activity.startActivity(intent);
                     }
 
