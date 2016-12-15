@@ -84,7 +84,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
         }, 100);
 
         setupToolbar();
-        getHostHouses();
+//        getHostHouses();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

@@ -16,7 +16,7 @@ public class House implements Serializable {
     private String name;
     private List<String> Images;
     private String Cost;
-    private GeoPoint Position;
+    private GeoPoint position;
     private Host Host;
     private String Rating;
     private String summary;
@@ -95,11 +95,11 @@ public class House implements Serializable {
     }
 
     public GeoPoint getPosition() {
-        return Position;
+        return position;
     }
 
     public void setPosition(GeoPoint position) {
-        Position = position;
+        this.position = position;
     }
 
     public xyz.narengi.android.common.dto.Host getHost() {
