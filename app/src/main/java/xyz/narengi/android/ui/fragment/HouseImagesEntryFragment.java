@@ -300,7 +300,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             public void onResponse(Call<UploadImage> call, Response<UploadImage> response) {
                 if (response.isSuccessful()) {
                     imageUris.remove(0);
-                    imageUrls.add(response.body().getResult().getUids()[0]);
+                    imageUrls.add("/medias/get/" + response.body().getResult().getUids()[0]);
                     uploadHouseImages();
                 } else {
                     Toast.makeText(getContext(), R.string.error_alert_title, Toast.LENGTH_SHORT).show();

@@ -79,7 +79,7 @@ public class HouseImageEntryViewPagerAdapter extends PagerAdapter {
         }
 
         if (position < imageUrlSize) {
-            Picasso.with(context).load(imageUrls.get(position)).into(imageView);//todo
+            Picasso.with(context).load("https://api.narengi.xyz/v1" +imageUrls.get(position)).into(imageView);
         } else if (position < imageUriSize + imageUrlSize){
             Picasso.with(context).load("file://" + imageUris.get(position - imageUrlSize).getPath()).into(imageView);
         }
