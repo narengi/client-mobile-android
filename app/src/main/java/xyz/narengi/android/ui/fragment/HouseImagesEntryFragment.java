@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.io.File;
@@ -53,6 +54,7 @@ import retrofit2.Retrofit;
 import xyz.narengi.android.BuildConfig;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.House;
+import xyz.narengi.android.common.dto.Pictures;
 import xyz.narengi.android.common.dto.UploadImage;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
@@ -110,6 +112,10 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
         if (super.getHouse() != null && super.getHouse().getImages() != null) {
             imageUrls = super.getHouse().getImages();
+        } else if (super.getHouse() != null && super.getHouse().getPictures() != null) {
+            for (int i = 0; i< super.getHouse().getPictures().length; i++) {
+                imageUrls.add(super.getHouse().getPictures()[i].getUrl());
+            }
         }
 //        if (getActivity() instanceof AddHouseActivity) {
 //            imageInfoArray = ((AddHouseActivity) getActivity()).getImageInfoArray();
@@ -265,6 +271,24 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             if (getOnInteractionListener() != null) {
                 hideProgress();
                 getOnInteractionListener().onGoToNextSection(getHouse());
+            } else {
+                hideProgress();
+
+                House house = getHouse();
+
+                Pictures[] pics = new Pictures[imageUrls.size()];
+
+                for (int i = 0; i < pics.length; i++) {
+                    Pictures pictures = new Pictures();
+                    pictures.setUrl(imageUrls.get(i));
+                    pics[i] = pictures;
+                }
+
+                house.setPictures(pics);
+                Intent intent = new Intent();
+                intent.putExtra("updatedHouse", house);
+                getActivity().setResult(2002, intent);
+                getActivity().finish();
             }
             return;
         }
