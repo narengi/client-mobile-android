@@ -1,6 +1,7 @@
 package xyz.narengi.android.common.dto;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Locale;
 
 import xyz.narengi.android.common.model.*;
@@ -13,7 +14,7 @@ import xyz.narengi.android.service.WebServiceConstants;
 public class House implements Serializable {
 
     private String name;
-    private String[] Images;
+    private List<String> Images;
     private String Cost;
     private GeoPoint Position;
     private Host Host;
@@ -77,11 +78,11 @@ public class House implements Serializable {
 		this.name = name;
     }
 
-    public String[] getImages() {
+    public List<String> getImages() {
         return Images;
     }
 
-    public void setImages(String[] images) {
+    public void setImages(List<String> images) {
         Images = images;
     }
 

@@ -53,15 +53,15 @@ public class ImageViewPagerAdapter extends PagerAdapter {
                 false);
 
         final LinearLayout progressBarLayout = (LinearLayout)itemView.findViewById(R.id.image_viewpager_item_progressBarLayout);
-        final ProgressBar progressBar = (ProgressBar)itemView.findViewById(R.id.image_viewpager_item_progressBar);
-        progressBar.setVisibility(View.VISIBLE);
+//        final ProgressBar progressBar = (ProgressBar)itemView.findViewById(R.id.image_viewpager_item_progressBar);
+//        progressBar.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.VISIBLE);
         imageView = (ImageView) itemView.findViewById(R.id.image_viewpager_item_image);
 
         Picasso.with(context).load(imageUrls[position]).into(imageView, new Callback() {
             @Override
             public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
                 progressBarLayout.setVisibility(View.GONE);
             }
 

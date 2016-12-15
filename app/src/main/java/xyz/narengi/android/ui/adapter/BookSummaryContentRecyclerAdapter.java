@@ -106,9 +106,9 @@ public class BookSummaryContentRecyclerAdapter extends RecyclerView.Adapter<Recy
 
         if (bookProperties.getHouse() != null) {
 
-            if (bookProperties.getHouse().getImages() != null && bookProperties.getHouse().getImages().length > 0 ) {
+            if (bookProperties.getHouse().getImages() != null && bookProperties.getHouse().getImages().size() > 0 ) {
 
-                Picasso.with(context).load(bookProperties.getHouse().getImages()[0]).resize(160, 160).into(viewHolder.houseImageView);
+                Picasso.with(context).load(bookProperties.getHouse().getImages().get(0)).resize(160, 160).into(viewHolder.houseImageView);
             }
 
             viewHolder.houseTitleTextView.setText(bookProperties.getHouse().getLocation().getCity());

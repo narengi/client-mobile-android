@@ -26,16 +26,16 @@
         android:visibility="invisible"
         >
 
-        <ProgressBar
-            android:id="@+id/image_viewpager_item_progressBar"
-            style="@android:style/Widget.ProgressBar"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="center"
-            android:layout_margin="56dp"
-            android:background="@android:color/transparent"
-            android:indeterminateDrawable="@xml/progress"
-            android:visibility="invisible" />
+        <!--<ProgressBar-->
+            <!--android:id="@+id/image_viewpager_item_progressBar"-->
+            <!--style="@android:style/Widget.ProgressBar"-->
+            <!--android:layout_width="56dp"-->
+            <!--android:layout_height="56dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_margin="56dp"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:indeterminateDrawable="@xml/progress"-->
+            <!--android:visibility="invisible" />-->
 
     </LinearLayout>
 </RelativeLayout>

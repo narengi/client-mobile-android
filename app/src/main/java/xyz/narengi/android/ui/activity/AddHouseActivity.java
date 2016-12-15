@@ -85,8 +85,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     private ActionBarRtlizer rtlizer;
     private House house;
     private HouseEntryStep currentStep;
-    private List<Uri> imageUris;
-    private ImageInfo[] imageInfoArray;
+//    private List<Uri> imageUris;
+//    private ImageInfo[] imageInfoArray;
     private Map<String, List<Day>> selectedDaysMap;
     private long requestMillis = -1;
 
@@ -1376,13 +1376,13 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         }
     }
 
-    public List<Uri> getImageUris() {
-        return imageUris;
-    }
+//    public List<Uri> getImageUris() {
+//        return imageUris;
+//    }
 
-    public void setImageUris(List<Uri> imageUris) {
-        this.imageUris = imageUris;
-    }
+//    public void setImageUris(List<Uri> imageUris) {
+//        this.imageUris = imageUris;
+//    }
 
     public Map<String, List<Day>> getSelectedDaysMap() {
         return selectedDaysMap;
@@ -1392,11 +1392,11 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         this.selectedDaysMap = selectedDaysMap;
     }
 
-    public ImageInfo[] getImageInfoArray() {
-        return imageInfoArray;
-    }
+//    public ImageInfo[] getImageInfoArray() {
+//        return imageInfoArray;
+//    }
 
-    public void setImageInfoArray(ImageInfo[] imageInfoArray) {
-        this.imageInfoArray = imageInfoArray;
-    }
+//    public void setImageInfoArray(ImageInfo[] imageInfoArray) {
+//        this.imageInfoArray = imageInfoArray;
+//    }
 }

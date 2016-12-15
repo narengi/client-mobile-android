@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import xyz.narengi.android.common.dto.GeoPoint;
 import xyz.narengi.android.common.dto.Host;
@@ -32,8 +33,8 @@ public class HouseDeserializer implements JsonDeserializer<House> {
         house.setName(name);
 
         JsonElement imagesElement = jsonElement.getAsJsonObject().get("Images");
-        String[] images = gson.fromJson(imagesElement, String[].class);
-        house.setImages(images);
+//        List<String> images = gson.fromJson(imagesElement, List[].class);
+//        house.setImages(images);
 
         JsonElement costElement = jsonElement.getAsJsonObject().get("Cost");
         String cost = costElement.getAsString();

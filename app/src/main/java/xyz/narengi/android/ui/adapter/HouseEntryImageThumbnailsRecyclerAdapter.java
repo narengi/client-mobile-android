@@ -2,6 +2,7 @@ package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +25,17 @@ import xyz.narengi.android.R;
 public class HouseEntryImageThumbnailsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private ArrayList<Bitmap> imageThumbnailBitmaps;
+    //    private ArrayList<Bitmap> imageThumbnailBitmaps;
+    private List<Uri> imageUris;
+    private List<String> imageUrls;
     private OnAddImageClickListener onAddImageClickListener;
 
-    public HouseEntryImageThumbnailsRecyclerAdapter(Context context, ArrayList<Bitmap> imageThumbnailBitmaps, OnAddImageClickListener onAddImageClickListener) {
+    public HouseEntryImageThumbnailsRecyclerAdapter(Context context, List<Uri> imageUris, List<String> imageUrls, OnAddImageClickListener onAddImageClickListener) {
         this.context = context;
-        this.imageThumbnailBitmaps = imageThumbnailBitmaps;
+//        this.imageThumbnailBitmaps = imageThumbnailBitmaps;
+
+        this.imageUris = imageUris;
+        this.imageUrls = imageUrls;
         this.onAddImageClickListener = onAddImageClickListener;
     }
 
@@ -60,18 +68,42 @@ public class HouseEntryImageThumbnailsRecyclerAdapter extends RecyclerView.Adapt
                 break;
             default:
                 ImageThumbnailViewHolder imageThumbnailViewHolder = (ImageThumbnailViewHolder) viewHolder;
-                imageThumbnailViewHolder.thumbnailImageView.setImageBitmap(imageThumbnailBitmaps.get(position));
+//                imageThumbnailViewHolder.thumbnailImageView.setImageBitmap(imageThumbnailBitmaps.get(position));
+
+                int imageUrlSize = 0;
+                if (imageUrls != null) {
+                    imageUrlSize = imageUrls.size();
+                }
+
+                int imageUriSize = 0;
+                if (imageUris != null) {
+                    imageUriSize = imageUris.size();
+                }
+
+                if (position < imageUrlSize) {
+                    Picasso.with(context).load(imageUrls.get(position)).into(imageThumbnailViewHolder.thumbnailImageView); //todo
+                } else if (position < imageUriSize + imageUrlSize){
+                    Picasso.with(context).load("file://" +imageUris.get(position - imageUrlSize).getPath()).into(imageThumbnailViewHolder.thumbnailImageView);
+                }
                 break;
         }
     }
 
     @Override
     public int getItemCount() {
-        if (imageThumbnailBitmaps != null && imageThumbnailBitmaps.size() > 0) {
-            return imageThumbnailBitmaps.size() + 1;
-        } else {
-            return 1;
-        }
+//        if (imageThumbnailBitmaps != null && imageThumbnailBitmaps.size() > 0) {
+//            return imageThumbnailBitmaps.size() + 1;
+//        } else {
+//            return 1;
+//        }
+
+        int count = 0;
+        if (imageUrls != null)
+            count = imageUrls.size();
+        if (imageUris != null)
+            count += imageUris.size();
+
+        return count + 1;
     }
 
     @Override
@@ -89,7 +121,7 @@ public class HouseEntryImageThumbnailsRecyclerAdapter extends RecyclerView.Adapt
         public AddImageButtonViewHolder(View view) {
             super(view);
 
-            addImageButton = (ImageButton)view.findViewById(R.id.house_images_entry_addButton);
+            addImageButton = (ImageButton) view.findViewById(R.id.house_images_entry_addButton);
             addImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -103,14 +135,14 @@ public class HouseEntryImageThumbnailsRecyclerAdapter extends RecyclerView.Adapt
 
     public class ImageThumbnailViewHolder extends RecyclerView.ViewHolder {
 
-//        public Button removeThumbnailButton;
+        //        public Button removeThumbnailButton;
         private ImageView thumbnailImageView;
 
         public ImageThumbnailViewHolder(View view) {
             super(view);
 
 //            removeThumbnailButton = (Button)view.findViewById(R.id.city_housesCaption);
-            thumbnailImageView = (ImageView)view.findViewById(R.id.house_images_entry_thumbnailImage);
+            thumbnailImageView = (ImageView) view.findViewById(R.id.house_images_entry_thumbnailImage);
         }
     }
 
