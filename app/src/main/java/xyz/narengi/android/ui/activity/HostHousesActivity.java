@@ -191,7 +191,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 //        HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(this,
 //                hostHouses, imageInfoList, houseAvailableDatesList, this);
         HostHousesContentRecyclerAdapter contentRecyclerAdapter = new HostHousesContentRecyclerAdapter(this,
-                hostHouses, null, null, this, allImageInfoArraysMap, allHouseAvailableDatesMap);
+                hostHouses, /*null, null,*/ this/*, allImageInfoArraysMap, allHouseAvailableDatesMap*/);
         mRecyclerView.setAdapter(contentRecyclerAdapter);
     }
 

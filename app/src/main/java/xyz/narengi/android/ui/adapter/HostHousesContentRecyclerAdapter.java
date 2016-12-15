@@ -2,14 +2,8 @@ package xyz.narengi.android.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,50 +11,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.byagowi.persiancalendar.Entity.Day;
-import com.byagowi.persiancalendar.Utils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
-import calendar.CivilDate;
-import calendar.DateConverter;
-import calendar.PersianDate;
 import ir.smartlab.persindatepicker.util.PersianCalendar;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.Constants;
-import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.House;
-import xyz.narengi.android.common.dto.HouseAvailableDates;
-import xyz.narengi.android.common.dto.ImageInfo;
-import xyz.narengi.android.common.model.AroundLocationDataHouse;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
-import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.activity.EditHouseActivity;
 import xyz.narengi.android.ui.activity.HouseActivity;
 import xyz.narengi.android.util.Util;
@@ -75,9 +35,9 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //    private List<ImageInfo[]> imageInfoList;
 //    private List<HouseAvailableDates> houseAvailableDatesList;
     private RemoveHouseListener removeHouseListener;
-    private Map<String, ImageInfo[]> imageInfoArraysMap;
+//    private Map<String, ImageInfo[]> imageInfoArraysMap;
     //    private Map<String,HouseAvailableDates> houseAvailableDatesMap;
-    private HashMap<String, HashMap<String, List<Day>>> housesSelectedDaysMap;
+//    private HashMap<String, HashMap<String, List<Day>>> housesSelectedDaysMap;
 
 //    private Map<String, ImageInfo[]> allImageInfoArraysMap;
 //    private Map<String, HouseAvailableDates> allHouseAvailableDatesMap;
@@ -86,10 +46,12 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 //    private DisplayImageOptions displayImageOptions;
 
-    public HostHousesContentRecyclerAdapter(Context context, House[] houses, List<ImageInfo[]> imageInfoList,
-                                            List<HouseAvailableDates> houseAvailableDatesList, RemoveHouseListener removeHouseListener,
-                                            Map<String, ImageInfo[]> allImageInfoArraysMap,
-                                            Map<String, HouseAvailableDates> allHouseAvailableDatesMap
+    public HostHousesContentRecyclerAdapter(Context context, House[] houses,
+//                                            List<ImageInfo[]> imageInfoList,
+//                                            List<HouseAvailableDates> houseAvailableDatesList,
+                                            RemoveHouseListener removeHouseListener//,
+//                                            Map<String, ImageInfo[]> allImageInfoArraysMap,
+//                                            Map<String, HouseAvailableDates> allHouseAvailableDatesMap
     ) {
         this.context = context;
         this.houses = houses;
@@ -97,9 +59,9 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 //        this.houseAvailableDatesList = houseAvailableDatesList;
         this.removeHouseListener = removeHouseListener;
         if (houses != null) {
-            imageInfoArraysMap = new HashMap<String, ImageInfo[]>();
+//            imageInfoArraysMap = new HashMap<String, ImageInfo[]>();
 //            houseAvailableDatesMap = new HashMap<String,HouseAvailableDates>();
-            housesSelectedDaysMap = new HashMap<String, HashMap<String, List<Day>>>();
+//            housesSelectedDaysMap = new HashMap<String, HashMap<String, List<Day>>>();
 
 //            this.allImageInfoArraysMap = allImageInfoArraysMap;
 //            this.allHouseAvailableDatesMap = allHouseAvailableDatesMap;
@@ -717,11 +679,11 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
     private void openEditHouse(House house) {
         Intent intent = new Intent(context, EditHouseActivity.class);
         intent.putExtra("house", house);
-        if (imageInfoArraysMap != null && imageInfoArraysMap.get(house.getDetailUrl()) != null)
-            intent.putExtra("imageInfoArray", imageInfoArraysMap.get(house.getDetailUrl()));
-
-        if (housesSelectedDaysMap != null && housesSelectedDaysMap.get(house.getDetailUrl()) != null)
-            intent.putExtra("selectedDaysMap", housesSelectedDaysMap.get(house.getDetailUrl()));
+//        if (imageInfoArraysMap != null && imageInfoArraysMap.get(house.getDetailUrl()) != null)
+//            intent.putExtra("imageInfoArray", imageInfoArraysMap.get(house.getDetailUrl()));
+//
+//        if (housesSelectedDaysMap != null && housesSelectedDaysMap.get(house.getDetailUrl()) != null)
+//            intent.putExtra("selectedDaysMap", housesSelectedDaysMap.get(house.getDetailUrl()));
 
         if (context instanceof AppCompatActivity)
             ((AppCompatActivity) context).startActivityForResult(intent, 2002);

@@ -1,188 +1,95 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_gray_light"
-    tools:context="xyz.narengi.android.ui.activity.HostHousesActivity">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/host_houses_appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_marginTop="0dp"
-        android:background="@android:color/white"
-        android:elevation="0dp"
-        android:gravity="top|center_horizontal"
-        android:paddingTop="0dp"
-        app:elevation="0dp">
-
+        android:layout_height="240dp"
+        android:background="#fff"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbar"
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
-
-        <!--<android.support.v7.widget.Toolbar-->
-        <!--android:id="@+id/host_houses_toolbar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="0dp"-->
-        <!--android:background="?attr/colorPrimary"-->
-        <!--android:elevation="0dp"-->
-        <!--android:minHeight="?attr/actionBarSize"-->
-        <!--android:padding="0dp"-->
-        <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
-        <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-        <!--app:titleTextColor="@color/text_gray_dark" />-->
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/host_houses_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:contentInsetEnd="0dp"
-            app:contentInsetLeft="0dp"
-            app:contentInsetRight="0dp"
-            app:contentInsetStart="0dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/orange_light"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="148dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:scrimVisibleHeightTrigger="82dp">
 
             <RelativeLayout
+                android:id="@+id/sdddd"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax">
 
-
-                <RelativeLayout
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vpImages"
                     android:layout_width="match_parent"
-                    android:layout_height="240dp">
+                    android:layout_height="match_parent"
+                    android:transitionName="@string/transition_string">
 
+                </android.support.v4.view.ViewPager>
 
-                    <android.support.v4.view.ViewPager
-                        android:id="@+id/vpImages"
-                        android:transitionName="@string/transition_string"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="41dp">
-
-                    </android.support.v4.view.ViewPager>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginBottom="60dp"
-                        android:background="@color/orange_light"
-                        android:gravity="right">
-
-                        <xyz.narengi.android.ui.widget.CustomTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/harshabeghamat"
-                            android:textColor="#fff"
-                            android:textSize="12sp" />
-
-                        <xyz.narengi.android.ui.widget.CustomTextView
-                            android:id="@+id/house_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="14dp"
-                            android:textColor="#fff"
-                            android:textSize="20sp" />
-
-                    </LinearLayout>
-
-                    <com.github.siyamed.shapeimageview.mask.PorterShapeImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:layout_width="81dp"
-                        android:layout_height="81dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="15dp"
-                        android:scaleType="fitXY"
-                        android:src="#fff"
-                        app:siShape="@drawable/shape_rounded_circle"
-                        app:siSquare="false" />
-
-                    <com.github.siyamed.shapeimageview.mask.PorterShapeImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/avatar"
-                        android:layout_width="80dp"
-                        android:layout_marginBottom="1dp"
-                        android:layout_height="80dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="16dp"
-                        android:scaleType="fitXY"
-                        android:src="@mipmap/ic_profile_empty"
-                        app:siShape="@drawable/shape_rounded_circle"
-                        app:siSquare="false" />
-
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="30dp"
+                    android:background="@color/orange_light"
+                    android:gravity="right">
 
                     <xyz.narengi.android.ui.widget.CustomTextView
-                        android:id="@+id/location"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="16dp"
-                        android:gravity="center"
-                        android:textColor="@color/orange_dark"
-                        android:textSize="16sp" />
-                </RelativeLayout>
-                <!--&lt;!&ndash;selectableItemBackgroundBorderless&ndash;&gt;-->
-                <!--<ImageButton-->
-                    <!--android:id="@+id/icon_toolbar_back"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:background="@drawable/ic_action_back"-->
-                    <!--android:clickable="true"-->
-                    <!--android:focusable="true" />-->
-                <!--&lt;!&ndash;style="@style/IconFont.XLarge"&ndash;&gt;-->
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/harshabeghamat"
+                        android:textColor="#fff"
+                        android:textSize="12sp" />
 
-                <!--<TextView-->
-                    <!--android:id="@+id/text_toolbar_title"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="?attr/actionBarSize"-->
-                    <!--android:layout_marginRight="16dp"-->
-                    <!--android:layout_toLeftOf="@+id/icon_toolbar_back"-->
-                    <!--android:gravity="right|center_vertical" />-->
-                <!--style="@style/Textview.Dark.MediumLarge"-->
+                    <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/house_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="8dp"
+                        android:textColor="#fff"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
             </RelativeLayout>
-        </android.support.v7.widget.Toolbar>
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layoutDirection="rtl"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    </android.support.design.widget.CollapsingToolbarLayout>
-        <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1dp"-->
-            <!--android:background="@color/orange_light" />-->
-
-
-
-        <xyz.narengi.android.ui.widget.CustomTextView
-            android:id="@+id/house_name"
-            android:layout_marginTop="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:textColor="@color/green"
-            android:textSize="26sp" />
+        </android.support.design.widget.CollapsingToolbarLayout>
 
 
     </android.support.design.widget.AppBarLayout>
 
+
+    <!--<ImageButton--><!--android:id="@+id/icon_toolbar_back"--><!--android:layout_width="wrap_content"--><!--android:layout_marginTop="40dp"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentRight="true"--><!--android:layout_gravity="right|top"--><!--android:background="@drawable/ic_action_back"--><!--android:clickable="true"--><!--android:focusable="true" />-->
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <LinearLayout
@@ -192,51 +99,92 @@
             android:orientation="vertical"
             android:padding="0dp">
 
-
-
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:gravity="right">
+                android:layout_height="wrap_content">
 
-                <xyz.narengi.android.ui.widget.CustomTextView
+                <com.github.siyamed.shapeimageview.mask.PorterShapeImageView
+                    android:layout_width="81dp"
+                    android:layout_height="81dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="15dp"
+                    android:scaleType="fitXY"
+                    android:src="#fff"
+                    app:siShape="@drawable/shape_rounded_circle"
+                    app:siSquare="false" />
+
+                <com.github.siyamed.shapeimageview.mask.PorterShapeImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/avatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="16dp"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/ic_profile_empty"
+                    app:siShape="@drawable/shape_rounded_circle"
+                    app:siSquare="false" />
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="8dp"
-                    android:visibility="gone" />
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:gravity="right"
+                    android:orientation="vertical">
 
-                <RatingBar
-                    style="?android:attr/ratingBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:rating="5"
-                    android:layout_gravity="center_vertical" />
+                    <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="40dp"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:textColor="@color/orange_light"
+                        android:textSize="16sp" />
 
-            </LinearLayout>
+                    <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/house_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:minHeight="40dp"
+                        android:textColor="@color/green"
+                        android:textSize="26sp" />
+
+                    <RatingBar
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginBottom="10dp"
+                        android:rating="5" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/map"
-                android:layout_marginTop="8dp"
-                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
-                android:layout_height="180dp" />
+                android:layout_height="180dp"
+                android:scaleType="centerCrop" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#ccc"/>
+                android:background="#ccc" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingRight="8dp"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
                 android:background="#e5e5e5"
+                android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp"
                 android:weightSum="4">
 
 
@@ -254,10 +202,10 @@
                         android:src="@drawable/icon_bed" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/bed"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:id="@+id/bed"
                         android:gravity="center"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -277,33 +225,10 @@
                         android:src="@drawable/icon_geust" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
                         android:id="@+id/geust"
-                        android:gravity="center"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_room"/>
-
-                    <xyz.narengi.android.ui.widget.CustomTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:id="@+id/room"
                         android:gravity="center"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -320,12 +245,35 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/icon_type_house"/>
+                        android:src="@drawable/icon_room" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/room"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:gravity="center"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_type_house" />
+
+                    <xyz.narengi.android.ui.widget.CustomTextView
                         android:id="@+id/typeText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:gravity="center"
                         android:textSize="14sp" />
@@ -336,46 +284,46 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#ccc"/>
+                android:background="#ccc" />
 
             <xyz.narengi.android.ui.widget.CustomTextView
+                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:id="@+id/description"
                 android:textSize="14sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#ccc"/>
+                android:background="#ccc" />
 
             <LinearLayout
+                android:id="@+id/featureList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:id="@+id/featureList"
-                android:paddingRight="8dp"
                 android:gravity="right"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
                 android:visibility="gone"
                 android:weightSum="5">
 
                 <LinearLayout
+                    android:id="@+id/more_feature"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
                     android:layout_gravity="center"
-                    android:visibility="gone"
+                    android:layout_margin="4dp"
                     android:layout_weight="1"
-                    android:id="@+id/more_feature"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/moreFeatureText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:id="@+id/moreFeatureText"
                         android:gravity="center"
                         android:textColor="@color/orange_light"
                         android:textSize="24sp" />
@@ -383,14 +331,14 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_weight="1"
-                    android:visibility="gone"
                     android:id="@+id/feature4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="@dimen/featureIconSize"
@@ -398,47 +346,47 @@
                         android:src="@drawable/icon_wireless" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:gravity="center"
                         android:id="@+id/featureText4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:gravity="center"
                         android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:visibility="gone"
                     android:id="@+id/feature3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="@dimen/featureIconSize"
                         android:layout_height="@dimen/featureIconSize"
-                        android:src="@drawable/icon_wireless"/>
+                        android:src="@drawable/icon_wireless" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
                         android:id="@+id/featureText3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
                         android:gravity="center"
                         android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
                     android:id="@+id/feature2"
-                    android:visibility="gone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="@dimen/featureIconSize"
@@ -446,23 +394,23 @@
                         android:src="@drawable/icon_wireless" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/featureText2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:id="@+id/featureText2"
                         android:gravity="center"
                         android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/feature1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
-                    android:id="@+id/feature1"
                     android:layout_weight="1"
-                    android:visibility="gone"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="@dimen/featureIconSize"
@@ -470,10 +418,10 @@
                         android:src="@drawable/icon_wireless" />
 
                     <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/featureText1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:id="@+id/featureText1"
                         android:gravity="center"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -483,112 +431,112 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#ccc"/>
+                android:background="#ccc" />
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="right|center_vertical"
-                android:padding="16dp"
-                android:layout_height="wrap_content">
+                android:padding="16dp">
 
                 <xyz.narengi.android.ui.widget.CustomTextView
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
-                    android:textColor="@color/orange_dark"
                     android:text="@string/owner_profile"
-                    android:layout_height="wrap_content" />
+                    android:textColor="@color/orange_dark" />
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:src="@drawable/icon_owner_profile"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_owner_profile" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#ccc"/>
+                android:background="#ccc" />
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="right|center_vertical"
-                android:padding="16dp"
-                android:layout_height="wrap_content">
+                android:padding="16dp">
 
                 <xyz.narengi.android.ui.widget.CustomTextView
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
-                    android:textColor="@color/orange_dark"
                     android:text="@string/owner_contact"
-                    android:layout_height="wrap_content" />
+                    android:textColor="@color/orange_dark" />
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:src="@drawable/icon_connect_pwner"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_connect_pwner" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#ccc"/>
+                android:background="#ccc" />
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="right|center_vertical"
-                android:padding="16dp"
-                android:layout_height="wrap_content">
+                android:padding="16dp">
 
                 <xyz.narengi.android.ui.widget.CustomTextView
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
-                    android:textColor="@color/orange_dark"
                     android:text="@string/more_service"
-                    android:layout_height="wrap_content" />
+                    android:textColor="@color/orange_dark" />
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:src="@drawable/icon_extra_srvices"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_extra_srvices" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#ccc"/>
+                android:background="#ccc" />
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="right|center_vertical"
-                android:padding="16dp"
-                android:layout_height="wrap_content">
+                android:padding="16dp">
 
                 <xyz.narengi.android.ui.widget.CustomTextView
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
-                    android:textColor="@color/orange_dark"
                     android:text="@string/terms"
-                    android:layout_height="wrap_content" />
+                    android:textColor="@color/orange_dark" />
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:src="@drawable/icon_house_rules"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_house_rules" />
 
             </LinearLayout>
 
             <xyz.narengi.android.ui.widget.CustomTextView
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/green"
+                android:gravity="center"
+                android:padding="14dp"
                 android:text="@string/book"
                 android:textColor="#fff"
-                android:padding="14dp"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:layout_height="wrap_content"
-                android:background="@color/green"/>
+                android:textSize="20sp" />
 
         </LinearLayout>
 

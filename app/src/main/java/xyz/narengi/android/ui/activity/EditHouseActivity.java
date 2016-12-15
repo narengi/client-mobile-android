@@ -47,7 +47,7 @@ public class EditHouseActivity extends AppCompatActivity {
     private House house;
     private boolean isHouseUpdated = false;
     private ImageInfo[] imageInfoArray;
-    private HouseAvailableDates houseAvailableDates;
+//    private HouseAvailableDates houseAvailableDates;
     private HashMap<String,List<Day>> selectedDaysMap;
 
     static {

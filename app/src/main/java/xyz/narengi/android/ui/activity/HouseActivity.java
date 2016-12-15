@@ -50,6 +50,8 @@ public class HouseActivity extends AppCompatActivity {
     private ActionBarRtlizer rtlizer;
     private String [] stringArray;
 
+    private CollapsingToolbarLayout collapsingToolbar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +71,16 @@ public class HouseActivity extends AppCompatActivity {
 //                finish();
 //            }
 //        });
+
+
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(" ");
+
 
         if (getIntent() != null && getIntent().getStringExtra("houseId") != null){
             stringArray = getIntent().getStringArrayExtra("images");
@@ -303,7 +315,7 @@ public class HouseActivity extends AppCompatActivity {
     private void setHouse(final House house) {
 
         this.house = house;
-        setPageTitle(house.getName());
+//        setPageTitle(house.getName());
 
 //        String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=";
 //        if (house.getPosition() != null) {
@@ -327,6 +339,7 @@ public class HouseActivity extends AppCompatActivity {
 //        setupTitleInfoLayout(house);
         TextView name = (TextView) findViewById(R.id.house_name);
         name.setText(house.getName());
+
 
         TextView location = (TextView) findViewById(R.id.location);
         if (location!= null) {
