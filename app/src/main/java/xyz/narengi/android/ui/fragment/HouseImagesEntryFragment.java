@@ -84,8 +84,8 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
     protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 1002;
     static final int REQUEST_IMAGE_CAPTURE = 2002;
     private static final int REQUEST_SELECT_PICTURE = 0x02;
-    private static final String SAMPLE_CROPPED_IMAGE_NAME = "HouseCropImage.jpeg";
-    private Uri mDestinationUri;
+//    private static final String SAMPLE_CROPPED_IMAGE_NAME = "HouseCropImage.jpeg";
+//    private Uri mDestinationUri;
     private ViewPager viewPager;
     private HouseImageEntryViewPagerAdapter viewPagerAdapter;
     private List<Uri> imageUris;
