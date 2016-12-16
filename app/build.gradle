@@ -88,6 +88,8 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.github.siyamed:android-shape-imageview:0.9.3'
     compile 'id.zelory:compressor:1.0.4'
+
+    compile 'com.nineoldandroids:library:2.4.0'
     compile project(':persianDatePickermaster')
     compile ('cn.trinea.android.view.autoscrollviewpager:android-auto-scroll-view-pager:1.1.2') {
         exclude module: 'support-v4'

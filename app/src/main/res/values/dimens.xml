@@ -14,4 +14,6 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="expandable_list_item_height">64dp</dimen>
     <dimen name="featureIconSize">34dp</dimen>
+
+    <dimen name="parallax_image_height">160dp</dimen>
 </resources>

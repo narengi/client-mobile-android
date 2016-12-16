@@ -39,30 +39,49 @@ import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.ui.widget.ObservableScrollView;
+import xyz.narengi.android.ui.widget.ObservableScrollViewCallbacks;
+import xyz.narengi.android.ui.widget.ScrollState;
+import xyz.narengi.android.ui.widget.ScrollUtils;
 import xyz.narengi.android.util.Util;
+import com.nineoldandroids.view.ViewHelper;
 
 /**
  * @author Siavash Mahmoudpour
  */
-public class HouseActivity extends AppCompatActivity {
+public class HouseActivity extends AppCompatActivity implements ObservableScrollViewCallbacks {
 
     private House house;
     private ActionBarRtlizer rtlizer;
     private String [] stringArray;
 
-    private CollapsingToolbarLayout collapsingToolbar;
+
+    private View header;
+    private View mToolbarView;
+    private ObservableScrollView mScrollView;
+    private int mParallaxImageHeight;
+
+//    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_house1);
-        setupToolbar();
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_house2);
+//        setupToolbar();
 
+
+        mToolbarView = findViewById(R.id.toolbar);
+        mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.primary)));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        } else {
+            mToolbarView.setPadding(0, 0, 0, 0);
         }
+
 
 //        View back = findViewById(R.id.icon_toolbar_back);
 //        back.setOnClickListener(new View.OnClickListener() {
@@ -73,13 +92,26 @@ public class HouseActivity extends AppCompatActivity {
 //        });
 
 
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        header = findViewById(R.id.header);
+
+//        mToolbarView.
+
+        mScrollView = (ObservableScrollView) findViewById(R.id.scroll);
+        mScrollView.setScrollViewCallbacks(this);
+
+        mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
+
+
+
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
+//        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+//        collapsingToolbar.setTitle(" ");
 
 
         if (getIntent() != null && getIntent().getStringExtra("houseId") != null){
@@ -602,6 +634,28 @@ public class HouseActivity extends AppCompatActivity {
                 Toast.makeText(HouseActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        onScrollChanged(mScrollView.getCurrentScrollY(), false, false);
+    }
+
+    @Override
+    public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
+        int baseColor = getResources().getColor(R.color.primary);
+        float alpha = Math.min(1, (float) scrollY / mParallaxImageHeight);
+        mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(alpha, baseColor));
+        ViewHelper.setTranslationY(header, scrollY / 2);
+    }
+
+    @Override
+    public void onDownMotionEvent() {
+    }
+
+    @Override
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
     }
 
 
