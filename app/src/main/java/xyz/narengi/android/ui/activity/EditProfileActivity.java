@@ -1016,6 +1016,9 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }
 
+        nameEditText.requestFocus();
+        nameEditText.setSelection(nameEditText.getText().toString().length());
+
         //TODO : set province and city values.
     }
 }

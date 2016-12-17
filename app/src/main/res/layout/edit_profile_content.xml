@@ -64,9 +64,10 @@
             android:background="@android:color/transparent"
             android:gravity="right|center_vertical"
             android:hint="@string/edit_profile_name_hint"
-            android:singleLine="true"
             android:imeOptions="actionNext"
             android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
             android:textColorHint="@android:color/tertiary_text_dark" />
 
         <View
@@ -89,6 +90,7 @@
             android:hint="@string/edit_profile_family_hint"
             android:imeOptions="actionNext"
             android:maxLines="1"
+            android:textColor="@android:color/black"
             android:textColorHint="@android:color/tertiary_text_dark" />
 
     </LinearLayout>

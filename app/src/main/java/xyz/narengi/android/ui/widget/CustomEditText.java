@@ -1,6 +1,7 @@
 package xyz.narengi.android.ui.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.EditText;
@@ -33,9 +34,18 @@ public class CustomEditText extends EditText {
 //        super.onSelectionChanged(start, end);
 //    }
 
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+        if (focused) {
+            setSelection(getText().length());
+        }
+    }
+
     @Override
     public void setTypeface(Typeface tf, int style) {
-        if(isInEditMode())
+        if (isInEditMode())
             return;
         if (style == Typeface.BOLD) {
             super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans-Bold.ttf"));
@@ -46,7 +56,7 @@ public class CustomEditText extends EditText {
 
     @Override
     public void setTypeface(Typeface tf) {
-        if(isInEditMode())
+        if (isInEditMode())
             return;
         super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans.ttf"));
     }
