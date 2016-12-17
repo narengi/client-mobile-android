@@ -21,17 +21,17 @@ public class CustomEditText extends EditText {
         super(context, attrs, defStyleAttr);
     }
 
-    @Override
-    protected void onSelectionChanged(int start, int end) {
-        CharSequence text = getText();
-        if (text != null) {
-            if (start != text.length() || end != text.length()) {
-                setSelection(text.length(), text.length());
-                return;
-            }
-        }
-        super.onSelectionChanged(start, end);
-    }
+//    @Override
+//    protected void onSelectionChanged(int start, int end) {
+//        CharSequence text = getText();
+//        if (text != null) {
+//            if (start != text.length() || end != text.length()) {
+//                setSelection(text.length(), text.length());
+//                return;
+//            }
+//        }
+//        super.onSelectionChanged(start, end);
+//    }
 
     @Override
     public void setTypeface(Typeface tf, int style) {
