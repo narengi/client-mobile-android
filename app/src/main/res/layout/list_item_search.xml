@@ -40,6 +40,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:shadowColor="#000"
             android:shadowDx="1"
             android:shadowDy="1"
