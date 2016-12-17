@@ -81,7 +81,7 @@ public interface RetrofitApiEndpoints {
     Call<AccountVerification> verifyAccount(@Path("type") String type,
                                             @Path("code") String code);
 
-    @PUT("/api/accounts/update")
+    @PUT("/v1/accounts/update")
     Call<AccountProfile> updateProfile(@Body Profile profile);
 
     @Multipart
