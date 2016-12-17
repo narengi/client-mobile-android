@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -184,6 +185,11 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
                                 || actionId == EditorInfo.IME_ACTION_DONE
                                 || event.getAction() == KeyEvent.ACTION_DOWN
                                 && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            View view = getCurrentFocus();
+                            if (view != null) {
+                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            }
                             page = 1;
                             startDefaultSearch(1);
                             return true;
