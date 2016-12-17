@@ -413,7 +413,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 
         PorterShapeImageView avatar = (PorterShapeImageView) findViewById(R.id.avatar);
         try {
-            Picasso.with(this).load("https://api.narengi.xyz/v1" + house.getOwner().getPicture()).into(avatar);
+            Picasso.with(this).load("https://api.narengi.xyz/v1" + house.getOwner().getPicture().getUrl()).into(avatar);
         } catch (Exception ignored){}
 
         if (house.getFeatureList() != null && house.getFeatureList().length > 0) {

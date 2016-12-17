@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.narengi.android.R;
+import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.adapter.SearchListAdapter;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.Attraction;
@@ -286,7 +287,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
             tvUserFullName = (TextView) findViewById(R.id.tvUserFullName);
             tvUserFullName.setText(TextUtils.isEmpty(AccountProfile.getLoggedInAccountProfile(context).getDisplayName()) ? "نام، نام خانوادگی" : AccountProfile.getLoggedInAccountProfile(context).getDisplayName());
 
-            Picasso.with(context).load(AccountProfile.getLoggedInAccountProfile(context).getProfile().getAvatar())
+            Picasso.with(context).load(Constants.SERVER_BASE_URL + "/v1/medias/avatar")
                     .error(R.drawable.profile_image).into(imgUserAvatar);
         } else {
             drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_login_register), R.drawable.ic_action_login_signup, DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP));

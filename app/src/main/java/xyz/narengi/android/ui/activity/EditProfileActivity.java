@@ -74,6 +74,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.BuildConfig;
 import xyz.narengi.android.R;
+import xyz.narengi.android.common.Constants;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.common.dto.ProvinceCity;
@@ -573,7 +574,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     @SuppressWarnings("ConstantConditions")
     private void getProfilePicture() {
-        Picasso.with(this).load(AccountProfile.getLoggedInAccountProfile(this).getProfile().getAvatar()).into(profileImageView);
+        Picasso.with(this).load(Constants.SERVER_BASE_URL + "/v1/medias/avatar").into(profileImageView);
     }
 
     private void getProvinces() {
