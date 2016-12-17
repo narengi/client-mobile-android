@@ -29,6 +29,7 @@ public class AccountProfile implements Serializable {
     private static final String PROFILE_JSON_KEY = "profile";
     private static final String TOKEN_JSON_KEY = "token";
     private static final String VERIFICATION_JSON_KEY = "verifications";
+    private static final String AVATAR_JSON_KEY = "avatar";
     private static AccountProfile loggedInAccountProfile;
     private String registrationSource;
     private String cellNumber;
@@ -39,6 +40,7 @@ public class AccountProfile implements Serializable {
     private String lastLoginDate;
     private String email;
     private String username;
+    private String avatar;
     private Profile profile;
     private AccessToken token;
     private List<AccountVerification> verifications;
@@ -49,6 +51,7 @@ public class AccountProfile implements Serializable {
         AccountProfile result = new AccountProfile();
         try {
             result.username = object.isNull(USERNAME_SOURCE_JSON_KEY) ? "" : object.getString(USERNAME_SOURCE_JSON_KEY);
+            result.avatar = object.isNull(AVATAR_JSON_KEY) ? "" : object.getString(AVATAR_JSON_KEY);
             result.email = object.isNull(EMAIL_JSON_KEY) ? "" : object.getString(EMAIL_JSON_KEY);
             result.displayName = object.isNull(DISPLAY_NAME_JSON_KEY) ? "" : object.getString(DISPLAY_NAME_JSON_KEY);
             result.cellNumber = object.isNull(CELL_NUMBER_JSON_KEY) ? "" : object.getString(CELL_NUMBER_JSON_KEY);
@@ -89,6 +92,7 @@ public class AccountProfile implements Serializable {
         JSONObject result = new JSONObject();
         try {
             result.put(USERNAME_SOURCE_JSON_KEY, username == null ? JSONObject.NULL : username);
+            result.put(AVATAR_JSON_KEY, avatar == null ? JSONObject.NULL : avatar);
             result.put(EMAIL_JSON_KEY, email == null ? JSONObject.NULL : email);
             result.put(DISPLAY_NAME_JSON_KEY, displayName == null ? JSONObject.NULL : displayName);
             result.put(CELL_NUMBER_JSON_KEY, cellNumber == null ? JSONObject.NULL : cellNumber);
@@ -197,4 +201,11 @@ public class AccountProfile implements Serializable {
         this.verifications = verifications;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

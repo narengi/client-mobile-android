@@ -573,11 +573,6 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private void getProfilePicture() {
-        Picasso.with(this).load(Constants.SERVER_BASE_URL + "/v1/medias/avatar").into(profileImageView);
-    }
-
     private void getProvinces() {
 
         provincesMap = new HashMap<>();
@@ -915,7 +910,6 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void setProfile(final AccountProfile accountProfile) {
-        getProfilePicture();
         this.accountProfile = accountProfile;
 
         setPageTitle(accountProfile.getDisplayName());
@@ -1015,6 +1009,9 @@ public class EditProfileActivity extends AppCompatActivity {
                 genderSpinner.setSelection(1);
             }
         }
+
+
+        Picasso.with(this).load(Constants.SERVER_BASE_URL + "/v1" + accountProfile.getAvatar()).into(profileImageView);
 
         nameEditText.requestFocus();
         nameEditText.setSelection(nameEditText.getText().toString().length());

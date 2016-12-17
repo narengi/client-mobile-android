@@ -52,7 +52,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         setupToolbar();
         showProgress();
         getProfile();
-        getProfilePicture();
     }
 
     @Override
@@ -68,8 +67,6 @@ public class ViewProfileActivity extends AppCompatActivity {
 //            getProfile();
 //        }
         getProfile();
-        getProfilePicture();
-
     }
 
     @Override
@@ -197,14 +194,6 @@ public class ViewProfileActivity extends AppCompatActivity {
                 hideProgress();
             }
         });
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private void getProfilePicture() {
-
-        ImageView profileImageView = (ImageView) findViewById(R.id.view_profile_profileImage);
-
-        Picasso.with(this).load(Constants.SERVER_BASE_URL + "/v1/medias/avatar").into(profileImageView);
     }
 
     private void showProgress() {
@@ -358,6 +347,9 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
 
         }
+
+        ImageView profileImageView = (ImageView) findViewById(R.id.view_profile_profileImage);
+        Picasso.with(this).load(Constants.SERVER_BASE_URL + "/v1" + accountProfile.getAvatar()).into(profileImageView);
     }
 
     private void openVerificationIntro(AccountProfile accountProfile) {
