@@ -31,6 +31,7 @@ import xyz.narengi.android.common.model.AroundLocationDataCity;
 import xyz.narengi.android.common.model.AroundLocationDataHouse;
 import xyz.narengi.android.ui.activity.HouseActivity;
 import xyz.narengi.android.ui.widget.AutoScrollViewPager;
+import xyz.narengi.android.util.Util;
 
 /**
  * Created by Sepehr Behroozi on 11/20/16.
@@ -130,7 +131,7 @@ public class SearchListAdapter extends BaseAdapter {
 //            holder.llNarengiSuggestion.setVisibility(View.GONE);
             holder.tvName.setText(((AroundLocationDataHouse) location.getData()).getName());
             holder.tvSummary.setText(((AroundLocationDataHouse) location.getData()).getSummary());
-            holder.tvHousePrice.setText(((AroundLocationDataHouse) location.getData()).getPrice());
+            holder.tvHousePrice.setText(Util.convertNumber(((AroundLocationDataHouse) location.getData()).getPrice()));
 
 //            PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataHouse) location.getData()).getPictures(), AroundLocation.Type.HOUSE, position);
         PicturesPagerAdapter adapter = new PicturesPagerAdapter(((AroundLocationDataHouse) location.getData()).getPictures(), position, holder.vpImages);
