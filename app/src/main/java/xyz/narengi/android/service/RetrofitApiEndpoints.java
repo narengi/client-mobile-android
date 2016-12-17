@@ -85,8 +85,8 @@ public interface RetrofitApiEndpoints {
     Call<AccountProfile> updateProfile(@Body Profile profile);
 
     @Multipart
-    @POST("/v1/user-profiles/picture")
-    Call<AccountProfile> uploadProfilePicture(@Part MultipartBody.Part picture);
+    @POST("/v1/medias/upload/userprofile")
+    Call<AccountProfile> uploadProfilePicture(@Part MultipartBody.Part picture); ////
 //    Call<AccountProfile> uploadProfilePicture(, @Part("picture") RequestBody picture);
 
     @GET("/v1/settings/provinces")

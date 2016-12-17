@@ -719,9 +719,8 @@ public class EditProfileActivity extends AppCompatActivity {
         File file = new File(resultUri.getPath());
 //        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
 
-
-        RequestBody photoRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part photoPart = MultipartBody.Part.createFormData("picture", file.getName(), photoRequestBody);
+        RequestBody photoRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), file);
+        MultipartBody.Part photoPart = MultipartBody.Part.createFormData("files", file.getName(), photoRequestBody);
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AccountProfile> call = apiEndpoints.uploadProfilePicture(photoPart);
