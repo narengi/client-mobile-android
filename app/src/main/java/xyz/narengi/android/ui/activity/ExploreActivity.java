@@ -11,8 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -29,7 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +40,7 @@ import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.Attraction;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.common.dto.DrawerItem;
-import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.model.AroundLocation;
-import xyz.narengi.android.common.model.AroundLocationDataAttraction;
-import xyz.narengi.android.common.model.AroundLocationDataCity;
-import xyz.narengi.android.common.model.AroundLocationDataHouse;
 import xyz.narengi.android.service.WebService;
 import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.adapter.DrawerItemsListAdapter;
@@ -74,6 +71,11 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     private View llLoadingLayer;
     private View rlSearchContainer;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private boolean loading;
+    private int page = 1;
+    private List<AroundLocation> locations;
+    private SearchListAdapter adapter;
+    private boolean lastPage;
 
     private int saveScrollY = 0;
     private boolean isSearchHidden = false;
@@ -83,19 +85,22 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         this.context = this;
         setContentView(R.layout.activity_explore);
+
+        locations = new ArrayList<>();
         setupViews();
-        startDefaultSearch();
+        page = 1;
+        startDefaultSearch(1);
     }
 
-    private void startDefaultSearch() {
+    private void startDefaultSearch(int page) {
         WebService service = new WebService();
         service.setResponseHandler(this);
 
         JSONObject params = new JSONObject();
         try {
-            params.put(WebServiceConstants.Search.TERM_QUERY_KEY, "ت"); //todo
-            params.put(WebServiceConstants.Search.FILTER_LIMIT_QUERY_KEY, 30);
-            params.put(WebServiceConstants.Search.FILTER_SKIP_QUERY_KEY, 0);
+            params.put(WebServiceConstants.Search.TERM_QUERY_KEY, etToolbarSearch.getText().toString());
+            params.put("perpage", 20);
+            params.put("page", page);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -130,12 +135,14 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onError(String requestUrl, VolleyError error) {
-                    if (error.networkResponse.statusCode == 401 || error.networkResponse.statusCode == 403) {
-                        AccountProfile.logout(context);
-                        setupDrawerView(false);
-                    } else {
-                        setupDrawerView(true);
-                    }
+                    try {
+                        if (error.networkResponse.statusCode == 401 || error.networkResponse.statusCode == 403) {
+                            AccountProfile.logout(context);
+                            setupDrawerView(false);
+                        } else {
+                            setupDrawerView(true);
+                        }
+                    }catch (Exception e) {}
                 }
             });
             service.getJsonObject(WebServiceConstants.Accounts.ME);
@@ -166,6 +173,31 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
         imgDrawerMenu.setOnClickListener(this);
         btnRetry.setOnClickListener(this);
 
+
+        etToolbarSearch.setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        // Identifier of the action. This will be either the identifier you supplied,
+                        // or EditorInfo.IME_NULL if being called due to the enter key being pressed.
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH
+                                || actionId == EditorInfo.IME_ACTION_DONE
+                                || event.getAction() == KeyEvent.ACTION_DOWN
+                                && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            page = 1;
+                            startDefaultSearch(1);
+                            return true;
+                        }
+                        // Return true if you have consumed the action, else false.
+                        return false;
+                    }
+                });
+
+
+        adapter = new SearchListAdapter(this, locations);
+        lstSearchList.setAdapter(adapter);
+
+
         lstSearchList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -191,6 +223,13 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
                         showSearchBarAnimated();
                     }
                     saveScrollY = scrollY;
+                }
+
+                if (!loading && !lastPage) {
+                    if (firstVisibleItem + visibleItemCount  >= totalItemCount) {
+                        startDefaultSearch(page);
+                        loading = true;
+                    }
                 }
             }
         });
@@ -375,7 +414,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     private void showProgress() {
         hideError();
         llLoadingLayer.setVisibility(View.VISIBLE);
-        swipeRefreshLayout.setRefreshing(true);
+//        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void hideProgress() {
@@ -396,7 +435,8 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.btnRetry) {
-            startDefaultSearch();
+            page = 1;
+            startDefaultSearch(1);
         } else if (id == R.id.imgDrawerMenu) {
             drawerLayout.openDrawer(Gravity.RIGHT, true);
         }
@@ -412,10 +452,17 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onSuccess(String requestUrl, Object response) {
         if (requestUrl.startsWith(WebServiceConstants.Search.SEARCH)) {
+
+            loading = false;
             hideProgress();
 
+            if (page == 1) {
+                locations.clear();
+            }
+
+            page ++;
+
             JSONArray responseArray = (JSONArray) response;
-            List<AroundLocation> locations = new ArrayList<>();
             for (int i = 0; i < responseArray.length(); i++) {
                 try {
                     AroundLocation location = new AroundLocation(responseArray.getJSONObject(i));
@@ -424,28 +471,38 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
                     e.printStackTrace();
                 }
             }
-            final SearchListAdapter adapter = new SearchListAdapter(this, locations);
-            lstSearchList.setAdapter(adapter);
 
-            lstSearchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    AroundLocation location = (AroundLocation) adapter.getItem(position);
-                    switch (location.getType()) {
-                        case HOUSE:
-                            openHouseDetail(((AroundLocationDataHouse) location.getData()).getId());
-                            break;
-                        case CITY:
-                            openCityDetail(((AroundLocationDataCity) location.getData()).getId());
-                            break;
-                        case ATTRACTION:
-                            openAttractionDetail(((AroundLocationDataAttraction) location.getData()).getId());
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            });
+            if (responseArray.length() == 0) {
+                lastPage = true;
+            } else {
+                lastPage = false;
+            }
+
+            if (page == 1) {
+                adapter.notifyDataSetInvalidated();
+            } else {
+                adapter.notifyDataSetChanged();
+            }
+
+//            lstSearchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    AroundLocation location = (AroundLocation) adapter.getItem(position);
+//                    switch (location.getType()) {
+//                        case HOUSE:
+//                            openHouseDetail(((AroundLocationDataHouse) location.getData()).getId());
+//                            break;
+//                        case CITY:
+//                            openCityDetail(((AroundLocationDataCity) location.getData()).getId());
+//                            break;
+//                        case ATTRACTION:
+//                            openAttractionDetail(((AroundLocationDataAttraction) location.getData()).getId());
+//                            break;
+//                        default:
+//                            break;
+//                    }
+//                }
+//            });
 
         }
     }
@@ -459,6 +516,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onRefresh() {
-        startDefaultSearch();
+        page = 1;
+        startDefaultSearch(1);
     }
 }
