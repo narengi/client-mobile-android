@@ -1,5 +1,6 @@
 package xyz.narengi.android.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,9 +22,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.siyamed.shapeimageview.mask.PorterShapeImageView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
@@ -297,25 +300,19 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 
     }
 
-//    private void showProgress() {
-//        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.house_progressLayout);
-//        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
-//
-//        if (progressBarLayout != null && progressBar != null) {
-//            progressBar.setVisibility(View.VISIBLE);
-//            progressBarLayout.setVisibility(View.VISIBLE);
-//        }
-//    }
-//
-//    private void hideProgress() {
-//        LinearLayout progressBarLayout = (LinearLayout) findViewById(R.id.house_progressLayout);
-//        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
-//
-//        if (progressBarLayout != null && progressBar != null) {
-//            progressBar.setVisibility(View.GONE);
-//            progressBarLayout.setVisibility(View.GONE);
-//        }
-//    }
+    private void showProgress() {
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+        View content = findViewById(R.id.content);
+        content.setVisibility(View.GONE);
+    }
+
+    private void hideProgress() {
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
+        progressBar.setVisibility(View.GONE);
+        View content = findViewById(R.id.content);
+        content.setVisibility(View.VISIBLE);
+    }
 //
 //    private void getHouseImage(String houseUrl) {
 //        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
@@ -383,6 +380,9 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             priceTextView.setText(Util.convertNumber(house.getPrice().getPrice() + ""));
         }
 
+        View priceLayout = findViewById(R.id.priceLayout);
+        priceLayout.setVisibility(View.VISIBLE);
+
         TextView typeText = (TextView) findViewById(R.id.typeText);
         if (house.getType() != null) {
             typeText.setText(house.getType().getTitle());
@@ -410,6 +410,11 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 
         ImageView map = (ImageView) findViewById(R.id.map);
         Picasso.with(this).load("https://api.narengi.xyz/v1" + house.getGoogleMap()).into(map);
+
+        PorterShapeImageView avatar = (PorterShapeImageView) findViewById(R.id.avatar);
+        try {
+            Picasso.with(this).load("https://api.narengi.xyz/v1" + house.getOwner().getPicture()).into(avatar);
+        } catch (Exception ignored){}
 
         if (house.getFeatureList() != null && house.getFeatureList().length > 0) {
             View view = findViewById(R.id.feature1);
@@ -591,7 +596,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 //        progressDialog.setCanceledOnTouchOutside(false);
 //        progressDialog.setCancelable(false);
 //        progressDialog.show();
-//        showProgress();
+        showProgress();
 //        url = url + "?filter[review]=5&filter[feature]=10000";
 
 //        Gson gson = new GsonBuilder()
@@ -607,14 +612,14 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             @Override
             public void onResponse(Call<House> call, Response<House> response) {
 //                int statusCode = response.code();
-//                hideProgress();
+                hideProgress();
 //                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     House house = response.body();
                     if (house != null) {
 
-                        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-                        int height = display.getHeight();
+//                        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+//                        int height = display.getHeight();
                         setHouse(house);
                     }
                 } else {
