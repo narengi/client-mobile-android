@@ -41,6 +41,15 @@ public class House implements Serializable {
     private String id;
     private Pictures[] pictures;
     private String ownerId;
+    private String googleMap;
+
+    public String getGoogleMap() {
+        return googleMap;
+    }
+
+    public void setGoogleMap(String googleMap) {
+        this.googleMap = googleMap;
+    }
 
     public Pictures[] getPictures() {
         return pictures;

@@ -409,7 +409,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 //        Picasso.with(this).load(house.getPictures()[0].getHash())
 
         ImageView map = (ImageView) findViewById(R.id.map);
-        Picasso.with(this).load("http://www.techstrikers.com/GoogleMap/Code/images/google-map-draw-circle-on-marker-onclick.png").into(map);
+        Picasso.with(this).load("https://api.narengi.xyz/v1" + house.getGoogleMap()).into(map);
 
         if (house.getFeatureList() != null && house.getFeatureList().length > 0) {
             View view = findViewById(R.id.feature1);
