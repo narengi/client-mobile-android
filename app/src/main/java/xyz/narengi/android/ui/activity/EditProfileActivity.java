@@ -62,6 +62,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import id.zelory.compressor.Compressor;
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
 import info.semsamot.actionbarrtlizer.RtlizeEverything;
 import ir.smartlab.persindatepicker.PersianDatePicker;
@@ -717,11 +718,25 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 
-        File file = new File(resultUri.getPath());
+
+
+        File compressedImage = new Compressor.Builder(this)
+                .setMaxWidth(640)
+                .setMaxHeight(480)
+                .setQuality(75)
+                .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                .build()
+                .compressToFile(new File(resultUri.getPath()));
+
+
+
+//        File file = new File(resultUri.getPath());
 //        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
 
-        RequestBody photoRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), file);
-        MultipartBody.Part photoPart = MultipartBody.Part.createFormData("files", file.getName(), photoRequestBody);
+        RequestBody photoRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), compressedImage);
+        MultipartBody.Part photoPart = MultipartBody.Part.createFormData("files", compressedImage.getName(), photoRequestBody);
 
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         Call<AccountProfile> call = apiEndpoints.uploadProfilePicture(photoPart);
