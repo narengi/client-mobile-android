@@ -120,13 +120,14 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
     private void checkForLoggedInUser() {
 
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
         if (AccountProfile.getLoggedInAccountProfile(context) != null) {
+
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage(getString(R.string.please_wait));
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
             WebService service = new WebService();
             service.setToken(AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString());
             service.setResponseHandler(new WebService.ResponseHandler() {
@@ -309,22 +310,22 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
         List<DrawerItem> drawerItems = new ArrayList<>();
         if (loggedIn) {
             // TODO: 9/22/2016 AD fix icon and string
-            drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_HOME));
-            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_inbox), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_INBOX));
-            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_favorites), R.drawable.ic_action_favorite_list, DrawerItem.DrawerAction.ACTION_LOGOUT));
-            drawerItems.add(new DrawerItem(getString(R.string.profile), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_PROFILE));
-            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_settings), R.drawable.ic_action_settings, DrawerItem.DrawerAction.ACTION_SETTINGS));
-            drawerItems.add(new DrawerItem(getString(R.string.user_guide), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_USER_GUIDE));
+            drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.home_ic, DrawerItem.DrawerAction.ACTION_HOME));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_inbox), R.drawable.inbox_ic, DrawerItem.DrawerAction.ACTION_INBOX));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_favorites), R.drawable.heart_ic, DrawerItem.DrawerAction.ACTION_LOGOUT));
+//            drawerItems.add(new DrawerItem(getString(R.string.profile), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_PROFILE));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_settings), R.drawable.setting_ic, DrawerItem.DrawerAction.ACTION_SETTINGS));
+            drawerItems.add(new DrawerItem(getString(R.string.user_guide), R.drawable.help_ic, DrawerItem.DrawerAction.ACTION_USER_GUIDE));
             tvUserFullName = (TextView) findViewById(R.id.tvUserFullName);
             tvUserFullName.setText(TextUtils.isEmpty(AccountProfile.getLoggedInAccountProfile(context).getDisplayName()) ? "نام، نام خانوادگی" : AccountProfile.getLoggedInAccountProfile(context).getDisplayName());
 
             Picasso.with(context).load(Constants.SERVER_BASE_URL + "/v1" + AccountProfile.getLoggedInAccountProfile(context).getAvatar())
                     .error(R.mipmap.ic_launcher).into(imgUserAvatar);
         } else {
-            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_login_register), R.drawable.ic_action_login_signup, DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP));
-            drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_HOME));
-            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_settings), R.drawable.ic_action_settings, DrawerItem.DrawerAction.ACTION_SETTINGS));
-            drawerItems.add(new DrawerItem(getString(R.string.user_guide), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_USER_GUIDE));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_login_register), R.drawable.login_ic, DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP));
+            drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.inbox_ic, DrawerItem.DrawerAction.ACTION_HOME));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_settings), R.drawable.setting_ic, DrawerItem.DrawerAction.ACTION_SETTINGS));
+            drawerItems.add(new DrawerItem(getString(R.string.user_guide), R.drawable.help_ic, DrawerItem.DrawerAction.ACTION_USER_GUIDE));
         }
 
         this.rlUserInfoContainer.setOnClickListener(new View.OnClickListener() {

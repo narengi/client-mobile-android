@@ -224,7 +224,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="16dp"
-                    android:src="@drawable/ic_action_hosting" />
+                    android:src="@drawable/host_ic" />
 
                 <View
                     android:layout_width="match_parent"
