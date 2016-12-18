@@ -30,14 +30,14 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginLeft="8dp"
-                    android:src="@mipmap/ic_profile_empty" />
+                    android:src="@drawable/signoutbtnshadow" />
 
                 <ImageView
                     android:id="@+id/edit"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginLeft="8dp"
-                    android:src="@mipmap/ic_profile_empty" />
+                    android:src="@drawable/editprofilebtnshadow" />
 
             </LinearLayout>
 

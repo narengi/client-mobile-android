@@ -307,7 +307,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     private void setupDrawerView(final boolean loggedIn) {
         rlUserInfoContainer.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
         tvWelcomeMessage.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
-        tvWelcomeMessage.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
+        icon.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
 
 
         List<DrawerItem> drawerItems = new ArrayList<>();
