@@ -139,6 +139,7 @@
             <RelativeLayout
                 android:id="@+id/rlDrawerHeader"
                 android:layout_width="match_parent"
+                android:background="#f7f7f7"
                 android:layout_height="151dp">
 
                 <RelativeLayout
@@ -154,7 +155,6 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
                         android:layout_marginRight="16dp"
-                        android:src="@mipmap/ic_launcher"
                         app:civ_border_color="@android:color/holo_red_light"
                         app:civ_border_width="1dp" />
 
@@ -186,6 +186,18 @@
                     android:textColor="@color/orange_light"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/icon"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="16dp"
+                    android:src="@mipmap/ic_launcher"
+                    app:civ_border_color="@android:color/holo_red_light"
+                    app:civ_border_width="1dp" />
 
                 <View
                     android:layout_width="match_parent"

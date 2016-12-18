@@ -70,6 +70,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     private ImageView imgUserAvatar;
     private View rlUserInfoContainer;
     private View tvWelcomeMessage;
+    private View icon;
     private ListView lstNavigationMenu;
     private View rlFooterContainer;
     private DrawerItemsListAdapter menuItemsListAdapter;
@@ -177,6 +178,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
         imgUserAvatar = (ImageView) findViewById(R.id.imgUserAvatar);
         rlUserInfoContainer = findViewById(R.id.rlUserProfileInfoContainer);
         tvWelcomeMessage = findViewById(R.id.tvWelcomeMessage);
+        icon = findViewById(R.id.icon);
         lstNavigationMenu = (ListView) findViewById(R.id.lstDrawerItemsList);
         rlFooterContainer = findViewById(R.id.rlFooterContainer);
         llLoadingLayer = findViewById(R.id.llLoadingLayer);
@@ -304,6 +306,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
     private void setupDrawerView(final boolean loggedIn) {
         rlUserInfoContainer.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
+        tvWelcomeMessage.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
         tvWelcomeMessage.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
 
 

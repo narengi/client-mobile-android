@@ -101,7 +101,7 @@
                     android:focusable="true" />
                 <!--style="@style/IconFont.XLarge"-->
 
-                <TextView
+                <xyz.narengi.android.ui.widget.CustomTextView
                     android:id="@+id/text_toolbar_title"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
@@ -140,8 +140,10 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/host_houses_addHouseFab"
         android:layout_width="wrap_content"
+        android:backgroundTint="@color/green"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
+        android:tint="#fff"
         android:src="@android:drawable/ic_input_add"
         app:layout_anchor="@id/host_houses_recyclerView"
         app:layout_anchorGravity="bottom|end" />
