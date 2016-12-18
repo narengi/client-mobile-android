@@ -59,6 +59,9 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
     private View mToolbarView;
     private ObservableScrollView mScrollView;
     private int mParallaxImageHeight;
+    private View llErrorContainer;
+    private View btnRetry;
+    private String houseUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,15 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 //        setupToolbar();
 
 
+        btnRetry = findViewById(R.id.btnRetry);
+        btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getHouse(houseUrl);
+            }
+        });
+
+        llErrorContainer = findViewById(R.id.llErrorContainer);
         mToolbarView = findViewById(R.id.toolbar);
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.primary)));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -121,7 +133,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             }
 
 //        showProgress();
-            String houseUrl = getIntent().getStringExtra("houseId");
+            houseUrl = getIntent().getStringExtra("houseId");
 //            getHouseImage(houseUrl);
             getHouse(houseUrl);
         } else {
@@ -601,6 +613,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 //    }
 
     private void getHouse(String id) {
+        llErrorContainer.setVisibility(View.GONE);
 
 //        final ProgressDialog progressDialog = new ProgressDialog(this);
 //        progressDialog.setMessage(getString(R.string.please_wait));
@@ -634,8 +647,8 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
                         setHouse(house);
                     }
                 } else {
-                    Toast.makeText(HouseActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
-
+//                    Toast.makeText(HouseActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
+                    llErrorContainer.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -643,11 +656,12 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             public void onFailure(Call<House> call, Throwable t) {
                 // Log error here since request failed
                 t.printStackTrace();
+                llErrorContainer.setVisibility(View.VISIBLE);
 
 //                progressDialog.dismiss();
                 Log.d("HouseActivity", "getHouse onFailure : " + t.getMessage(), t);
-//                hideProgress();
-                Toast.makeText(HouseActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
+                hideProgress();
+//                Toast.makeText(HouseActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
         });
     }

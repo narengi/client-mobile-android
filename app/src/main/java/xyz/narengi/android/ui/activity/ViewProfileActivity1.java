@@ -37,6 +37,9 @@ public class ViewProfileActivity1 extends AppCompatActivity {
     private CustomTextView tvBio;
     private CustomTextView tvLocation;
     private CustomTextView tvName;
+    private View llErrorContainer;
+    private View btnRetry;
+    private String id = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +69,24 @@ public class ViewProfileActivity1 extends AppCompatActivity {
 
         adapter = new ViewProfileAdapter(header, houses, this);
         recyclerView.setAdapter(adapter);
+
+        llErrorContainer = findViewById(R.id.llErrorContainer);
+        btnRetry = findViewById(R.id.btnRetry);
+        btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getData(id);
+            }
+        });
+
         if (getIntent() != null && getIntent().getStringExtra("id") != null) {
-            getData(getIntent().getStringExtra("id"));
+            id = getIntent().getStringExtra("id");
+            getData(id);
         }
     }
 
     private void getData(String id) {
+        llErrorContainer.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
 
@@ -89,7 +104,8 @@ public class ViewProfileActivity1 extends AppCompatActivity {
                     showData(response.body());
                 } else {
 
-                    Toast.makeText(ViewProfileActivity1.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
+                    llErrorContainer.setVisibility(View.VISIBLE);
+//                    Toast.makeText(ViewProfileActivity1.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -97,7 +113,8 @@ public class ViewProfileActivity1 extends AppCompatActivity {
             @Override
             public void onFailure(Call<AccountProfile1> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(ViewProfileActivity1.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
+                llErrorContainer.setVisibility(View.VISIBLE);
+//                Toast.makeText(ViewProfileActivity1.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
         });
     }
