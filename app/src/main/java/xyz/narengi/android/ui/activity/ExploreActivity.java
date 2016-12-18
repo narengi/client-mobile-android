@@ -414,8 +414,9 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void openViewProfile() {
-        Intent intent = new Intent(this, ViewProfileActivity.class);
-        startActivityForResult(intent, ViewProfileActivity.REQUEST_CODE);
+        Intent intent = new Intent(this, ViewProfileActivity1.class);
+        intent.putExtra("id", AccountProfile.getLoggedInAccountProfile(context).getId());
+        startActivity(intent);
     }
 
     private void showProgress() {

@@ -17,6 +17,7 @@ import xyz.narengi.android.util.SharedPref;
 public class AccountProfile implements Serializable {
     private static final String ACCOUNT_PROFILE_JSON_STRING_SHARED_PREF_KEY = "accountProfile";
 
+    private static final String ID_JSON_KEY = "id";
     private static final String REGISTRATION_SOURCE_JSON_KEY = "registrationSource";
     private static final String USERNAME_SOURCE_JSON_KEY = "username";
     private static final String CELL_NUMBER_JSON_KEY = "cellNumber";
@@ -32,6 +33,7 @@ public class AccountProfile implements Serializable {
     private static final String AVATAR_JSON_KEY = "avatar";
     private static AccountProfile loggedInAccountProfile;
     private String registrationSource;
+    private String id;
     private String cellNumber;
     private String displayName;
     private String createdAt;
@@ -50,6 +52,7 @@ public class AccountProfile implements Serializable {
             return null;
         AccountProfile result = new AccountProfile();
         try {
+            result.id = object.isNull(ID_JSON_KEY) ? "" : object.getString(ID_JSON_KEY);
             result.username = object.isNull(USERNAME_SOURCE_JSON_KEY) ? "" : object.getString(USERNAME_SOURCE_JSON_KEY);
             result.avatar = object.isNull(AVATAR_JSON_KEY) ? "" : object.getString(AVATAR_JSON_KEY);
             result.email = object.isNull(EMAIL_JSON_KEY) ? "" : object.getString(EMAIL_JSON_KEY);
@@ -91,6 +94,7 @@ public class AccountProfile implements Serializable {
     public JSONObject toJsonObject() {
         JSONObject result = new JSONObject();
         try {
+            result.put(ID_JSON_KEY, id == null ? JSONObject.NULL : id);
             result.put(USERNAME_SOURCE_JSON_KEY, username == null ? JSONObject.NULL : username);
             result.put(AVATAR_JSON_KEY, avatar == null ? JSONObject.NULL : avatar);
             result.put(EMAIL_JSON_KEY, email == null ? JSONObject.NULL : email);
@@ -207,5 +211,13 @@ public class AccountProfile implements Serializable {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
