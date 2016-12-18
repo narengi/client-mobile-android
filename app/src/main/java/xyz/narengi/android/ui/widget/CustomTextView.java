@@ -24,10 +24,12 @@ public class CustomTextView extends TextView {
 
     @Override
     public void setTypeface(Typeface tf, int style) {
-        if(isInEditMode())
+        if (isInEditMode())
             return;
         if (style == Typeface.BOLD) {
             super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans-Bold.ttf"));
+        } else if (style == Typeface.ITALIC) {
+            super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans-Medium.ttf"));
         } else {
             super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans.ttf"));
         }
@@ -35,8 +37,17 @@ public class CustomTextView extends TextView {
 
     @Override
     public void setTypeface(Typeface tf) {
-        if(isInEditMode())
+        if (isInEditMode())
             return;
-        super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans.ttf"));
+
+        if (tf.isBold() && tf.isItalic()) {
+            super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans-Light.ttf"));
+        } else if (tf.isBold()) {
+            super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans-Bold.ttf"));
+        } else if (tf.isItalic()) {
+            super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans-Medium.ttf"));
+        } else {
+            super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans.ttf"));
+        }
     }
 }

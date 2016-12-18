@@ -154,7 +154,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
                         android:layout_marginRight="16dp"
-                        android:src="#654321"
+                        android:src="@mipmap/ic_launcher"
                         app:civ_border_color="@android:color/holo_red_light"
                         app:civ_border_width="1dp" />
 
@@ -226,6 +226,12 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="16dp"
                     android:src="@drawable/ic_action_hosting" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_alignParentTop="true"
+                    android:background="#bfbfbf"/>
 
             </RelativeLayout>
 

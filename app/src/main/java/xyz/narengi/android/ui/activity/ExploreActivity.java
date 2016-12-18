@@ -1,6 +1,7 @@
 package xyz.narengi.android.ui.activity;
 
 import android.animation.ValueAnimator;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -118,6 +119,13 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void checkForLoggedInUser() {
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         if (AccountProfile.getLoggedInAccountProfile(context) != null) {
             WebService service = new WebService();
             service.setToken(AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString());
@@ -129,6 +137,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onSuccess(String requestUrl, Object response) {
+                    progressDialog.dismiss();
                     JSONObject responseObject = (JSONObject) response;
                     AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
                     if (loggedInProfile != null) {
@@ -139,6 +148,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onError(String requestUrl, VolleyError error) {
+                    progressDialog.dismiss();
                     try {
                         if (error.networkResponse.statusCode == 401 || error.networkResponse.statusCode == 403) {
                             AccountProfile.logout(context);
@@ -308,8 +318,8 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
             tvUserFullName = (TextView) findViewById(R.id.tvUserFullName);
             tvUserFullName.setText(TextUtils.isEmpty(AccountProfile.getLoggedInAccountProfile(context).getDisplayName()) ? "نام، نام خانوادگی" : AccountProfile.getLoggedInAccountProfile(context).getDisplayName());
 
-            Picasso.with(context).load(Constants.SERVER_BASE_URL + "/v1/medias/avatar")
-                    .error(R.drawable.profile_image).into(imgUserAvatar);
+            Picasso.with(context).load(Constants.SERVER_BASE_URL + "/v1" + AccountProfile.getLoggedInAccountProfile(context).getAvatar())
+                    .error(R.mipmap.ic_launcher).into(imgUserAvatar);
         } else {
             drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_login_register), R.drawable.ic_action_login_signup, DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP));
             drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_HOME));

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="250dp"
+    android:orientation="vertical">
+
+    <!--<android.support.v7.widget.AppCompatTextView-->
+        <!--android:id="@+id/alert_title"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="@color/alert_title"-->
+        <!--android:textSize="16sp"-->
+        <!--android:textStyle="bold"/>-->
+
+    <!--<android.support.v7.widget.AppCompatImageView-->
+        <!--android:id="@+id/alert_icon"-->
+        <!--android:layout_width="48dp"-->
+        <!--android:layout_height="48dp"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:src="@drawable/icon_refresh"/>-->
+
+    <!--<android.support.v7.widget.AppCompatTextView-->
+        <!--android:id="@+id/alert_description"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:gravity="center"/>-->
+
+    <!--<android.support.v7.widget.AppCompatButton-->
+        <!--android:id="@+id/alert_button"-->
+        <!--android:layout_width="150dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:background="@drawable/background_dialog_alert_button"-->
+        <!--android:text="@string/done"-->
+        <!--android:textAllCaps="false"-->
+        <!--android:textColor="@color/white"/>-->
+
+</LinearLayout>
