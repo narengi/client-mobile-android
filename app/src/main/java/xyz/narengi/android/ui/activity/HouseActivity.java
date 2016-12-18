@@ -484,7 +484,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             view.setVisibility(View.VISIBLE);
         }
 
-//        if (house.getFeatureList() != null && house.getFeatureList().length > 4) {
+        if (house.getFeatureList() != null && house.getFeatureList().length > 4) {
             View more_feature = findViewById(R.id.more_feature);
             TextView moreFeatureText = (TextView) findViewById(R.id.moreFeatureText);
             moreFeatureText.setText(house.getFeatureList().length - 4 + "+");
@@ -496,7 +496,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
                     new FeatureDialog(HouseActivity.this, house.getFeatureList()).show();
                 }
             });
-//        }
+        }
 
 //        TextView priceTextView = (TextView) findViewById(R.id.house_price);
 //        priceTextView.setVisibility(View.VISIBLE);

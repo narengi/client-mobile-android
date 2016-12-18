@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HouseFeature;
@@ -35,6 +36,14 @@ public class FeatureDialog extends AppCompatDialog {
 
         FeatureAdaoter  adapter = new FeatureAdaoter(getContext(), houseFeature);
         recyclerView.setAdapter(adapter);
+
+        View vi = findViewById(R.id.close);
+        vi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
     }
 }

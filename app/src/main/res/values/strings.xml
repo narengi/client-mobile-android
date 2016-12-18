@@ -18,7 +18,7 @@
 
     <!-- Drawer menu, logged in -->
     <string name="drawer_menu_inbox">پیام ها</string>
-    <string name="drawer_menu_favorites">علاقه‌مندی‌ها (لاگ‌آوت)</string>
+    <string name="drawer_menu_favorites">علاقه‌مندی‌ها</string>
     <string name="drawer_menu_logout">خروج از حساب کاربری</string>
 
     <string-array name="search_history_array">

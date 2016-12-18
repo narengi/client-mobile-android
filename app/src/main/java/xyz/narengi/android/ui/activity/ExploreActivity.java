@@ -315,7 +315,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
             // TODO: 9/22/2016 AD fix icon and string
             drawerItems.add(new DrawerItem(getString(R.string.home), R.drawable.home_ic, DrawerItem.DrawerAction.ACTION_HOME));
             drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_inbox), R.drawable.inbox_ic, DrawerItem.DrawerAction.ACTION_INBOX));
-            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_favorites), R.drawable.heart_ic, DrawerItem.DrawerAction.ACTION_LOGOUT));
+            drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_favorites), R.drawable.heart_ic, DrawerItem.DrawerAction.ACTION_FAVORITES));
 //            drawerItems.add(new DrawerItem(getString(R.string.profile), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_PROFILE));
             drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_settings), R.drawable.setting_ic, DrawerItem.DrawerAction.ACTION_SETTINGS));
             drawerItems.add(new DrawerItem(getString(R.string.user_guide), R.drawable.help_ic, DrawerItem.DrawerAction.ACTION_USER_GUIDE));

@@ -211,8 +211,11 @@ public class ViewProfileActivity1 extends AppCompatActivity  {
         }
 
         Picasso.with(this).load("https://api.narengi.xyz/v1" + accountProfile1.getPicture().getUrl()).into(image);
-        Collections.addAll(houses, accountProfile1.getHouses());
-        adapter.notifyDataSetChanged();
+
+        try {
+            Collections.addAll(houses, accountProfile1.getHouses());
+            adapter.notifyDataSetChanged();
+        } catch (Exception e) {}
     }
 
 //    @Override
