@@ -1,11 +1,13 @@
 package xyz.narengi.android.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -20,6 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
+import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountProfile1;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
@@ -37,7 +40,10 @@ public class ViewProfileActivity1 extends AppCompatActivity {
     private CustomTextView tvLocation;
     private CustomTextView tvName;
     private View llErrorContainer;
+    private View logOut;
+    private View edit;
     private View btnRetry;
+    private View currentUserOption;
     private String id = "";
 
     @Override
@@ -50,12 +56,36 @@ public class ViewProfileActivity1 extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            public void onClick(View paramAnonymousView) {
+            public void onClick(View view) {
                 finish();
             }
         });
 
+        logOut = findViewById(R.id.logOut);
+        edit = findViewById(R.id.edit);
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ViewProfileActivity1.this, EditProfileActivity.class);
+                intent.putExtra("openedFromViewProfile", true);
+                startActivityForResult(intent, 103);
+            }
+        });
+
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AccountProfile.logout(ViewProfileActivity1.this);
+
+                Intent intent = new Intent(ViewProfileActivity1.this, ExploreActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
         progressBar = findViewById(R.id.progressBar);
+        currentUserOption = findViewById(R.id.currentUserOption);
         recyclerView = ((RecyclerView) findViewById(R.id.recyclerView));
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -81,7 +111,14 @@ public class ViewProfileActivity1 extends AppCompatActivity {
         if (getIntent() != null && getIntent().getStringExtra("id") != null) {
             id = getIntent().getStringExtra("id");
             getData(id);
+
+            try {
+                if (id.equals(AccountProfile.getLoggedInAccountProfile(this).getId())) {
+                    currentUserOption.setVisibility(View.VISIBLE);
+                }
+            } catch (Exception e) {}
         }
+
     }
 
     private void getData(String id) {
@@ -119,7 +156,12 @@ public class ViewProfileActivity1 extends AppCompatActivity {
     }
 
     private void showData(AccountProfile1 accountProfile1) {
-        tvName.setText(accountProfile1.getFullName());
+        if (accountProfile1.getFullName().isEmpty()) {
+            tvName.setText("نام و نام خوانوادگی");
+        } else {
+            tvName.setText(accountProfile1.getFullName());
+        }
+
         tvLocation.setText(accountProfile1.getCity() + ", " + accountProfile1.getProvince());
         tvBio.setText(accountProfile1.getBio());
         Picasso.with(this).load("https://api.narengi.xyz/v1" + accountProfile1.getPicture().getUrl()).into(image);

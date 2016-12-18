@@ -16,7 +16,32 @@
             android:layoutDirection="rtl"
             android:minHeight="?attr/actionBarSize"
             app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
-            app:theme="@style/Toolbar" />
+            app:theme="@style/Toolbar">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/currentUserOption"
+                android:layout_gravity="left">
+
+                <ImageView
+                    android:id="@+id/logOut"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="8dp"
+                    android:src="@mipmap/ic_profile_empty" />
+
+                <ImageView
+                    android:id="@+id/edit"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="8dp"
+                    android:src="@mipmap/ic_profile_empty" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
