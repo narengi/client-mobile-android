@@ -587,10 +587,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
+        android:gravity="center_vertical"
         android:layoutDirection="rtl"
         android:minHeight="?attr/actionBarSize"
         android:paddingTop="23dp"
         app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
-        app:theme="@style/Toolbar" />
+        app:theme="@style/Toolbar">
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+    </android.support.v7.widget.Toolbar>
 
 </FrameLayout>

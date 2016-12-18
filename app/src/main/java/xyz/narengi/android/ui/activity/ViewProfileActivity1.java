@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -30,8 +31,9 @@ import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.ViewProfileAdapter;
 import xyz.narengi.android.ui.widget.CustomTextView;
+import xyz.narengi.android.ui.widget.ScrollUtils;
 
-public class ViewProfileActivity1 extends AppCompatActivity {
+public class ViewProfileActivity1 extends AppCompatActivity  {
     private ViewProfileAdapter adapter;
     private List<House> houses;
     private ImageView image;
@@ -46,6 +48,8 @@ public class ViewProfileActivity1 extends AppCompatActivity {
     private View btnRetry;
     private View currentUserOption;
     private String id = "";
+    private int mParallaxImageHeight;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,7 @@ public class ViewProfileActivity1 extends AppCompatActivity {
 
         setContentView(R.layout.activity_view_profile1);
         houses = new ArrayList<>();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -64,6 +68,8 @@ public class ViewProfileActivity1 extends AppCompatActivity {
 
         logOut = findViewById(R.id.logOut);
         edit = findViewById(R.id.edit);
+
+        mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +97,16 @@ public class ViewProfileActivity1 extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//
+//                Log.e("tets", dy + "");
+//            }
+//        });
+
         View header = LayoutInflater.from(this).inflate(R.layout.profile_header, recyclerView, false);
         tvName = (CustomTextView) header.findViewById(R.id.tvName);
         tvLocation = (CustomTextView) header.findViewById(R.id.tvLocation);
@@ -117,7 +133,8 @@ public class ViewProfileActivity1 extends AppCompatActivity {
                 if (id.equals(AccountProfile.getLoggedInAccountProfile(this).getId())) {
                     currentUserOption.setVisibility(View.VISIBLE);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
 
     }
@@ -197,4 +214,13 @@ public class ViewProfileActivity1 extends AppCompatActivity {
         Collections.addAll(houses, accountProfile1.getHouses());
         adapter.notifyDataSetChanged();
     }
+
+//    @Override
+//    public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//
+//        int baseColor = getResources().getColor(R.color.primary);
+//        float alpha = Math.min(1, (float) scrollY / mParallaxImageHeight);
+//        mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(alpha, baseColor));
+//
+//    }
 }

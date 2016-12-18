@@ -16,4 +16,5 @@
     <dimen name="featureIconSize">34dp</dimen>
 
     <dimen name="parallax_image_height">160dp</dimen>
+    <dimen name="parallax_image_height2">230dp</dimen>
 </resources>

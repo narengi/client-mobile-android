@@ -42,6 +42,8 @@ import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.ui.dialog.FeatureDialog;
+import xyz.narengi.android.ui.widget.CustomTextView;
 import xyz.narengi.android.ui.widget.ObservableScrollView;
 import xyz.narengi.android.ui.widget.ObservableScrollViewCallbacks;
 import xyz.narengi.android.ui.widget.ScrollState;
@@ -60,9 +62,11 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
     private View mToolbarView;
     private ObservableScrollView mScrollView;
     private int mParallaxImageHeight;
+    private int mParallaxImageHeight2;
     private View llErrorContainer;
     private View btnRetry;
     private String houseUrl;
+    private CustomTextView toolbarTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,8 +117,10 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
         mScrollView.setScrollViewCallbacks(this);
 
         mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
+        mParallaxImageHeight2 = getResources().getDimensionPixelSize(R.dimen.parallax_image_height2);
 
 
+        toolbarTitle = (CustomTextView) findViewById(R.id.toolbarTitle);
 //        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -478,12 +484,19 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             view.setVisibility(View.VISIBLE);
         }
 
-        if (house.getFeatureList() != null && house.getFeatureList().length > 4) {
+//        if (house.getFeatureList() != null && house.getFeatureList().length > 4) {
             View more_feature = findViewById(R.id.more_feature);
             TextView moreFeatureText = (TextView) findViewById(R.id.moreFeatureText);
             moreFeatureText.setText(house.getFeatureList().length - 4 + "+");
             more_feature.setVisibility(View.VISIBLE);
-        }
+
+            more_feature.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new FeatureDialog(HouseActivity.this, house.getFeatureList()).show();
+                }
+            });
+//        }
 
 //        TextView priceTextView = (TextView) findViewById(R.id.house_price);
 //        priceTextView.setVisibility(View.VISIBLE);
@@ -687,11 +700,14 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
         int baseColor = getResources().getColor(R.color.primary);
         float alpha = Math.min(1, (float) scrollY / mParallaxImageHeight);
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(alpha, baseColor));
-        if (alpha >= 1) {
-            setTitle(house.getName());
+
+
+        float alpha2 = Math.min(1, (float) scrollY / mParallaxImageHeight2);
+        if (alpha2 >= 1) {
+            toolbarTitle.setText(house.getName());
         } else {
 
-            setTitle("");
+            toolbarTitle.setText("");
         }
         ViewHelper.setTranslationY(header, scrollY / 2);
     }
