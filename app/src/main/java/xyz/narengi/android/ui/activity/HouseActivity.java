@@ -1,5 +1,6 @@
 package xyz.narengi.android.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -615,12 +616,12 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
     private void getHouse(String id) {
         llErrorContainer.setVisibility(View.GONE);
 
-//        final ProgressDialog progressDialog = new ProgressDialog(this);
-//        progressDialog.setMessage(getString(R.string.please_wait));
-//        progressDialog.setCanceledOnTouchOutside(false);
-//        progressDialog.setCancelable(false);
-//        progressDialog.show();
-        showProgress();
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+//        showProgress();
 //        url = url + "?filter[review]=5&filter[feature]=10000";
 
 //        Gson gson = new GsonBuilder()
@@ -637,7 +638,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             public void onResponse(Call<House> call, Response<House> response) {
 //                int statusCode = response.code();
                 hideProgress();
-//                progressDialog.dismiss();
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     House house = response.body();
                     if (house != null) {

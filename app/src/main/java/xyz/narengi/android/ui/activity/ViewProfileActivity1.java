@@ -1,5 +1,6 @@
 package xyz.narengi.android.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -123,7 +124,12 @@ public class ViewProfileActivity1 extends AppCompatActivity {
 
     private void getData(String id) {
         llErrorContainer.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         recyclerView.setVisibility(View.GONE);
 
         Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
@@ -135,6 +141,7 @@ public class ViewProfileActivity1 extends AppCompatActivity {
             @Override
             public void onResponse(Call<AccountProfile1> call, Response<AccountProfile1> response) {
                 progressBar.setVisibility(View.GONE);
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     recyclerView.setVisibility(View.VISIBLE);
                     showData(response.body());
@@ -149,6 +156,7 @@ public class ViewProfileActivity1 extends AppCompatActivity {
             @Override
             public void onFailure(Call<AccountProfile1> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
+                progressDialog.dismiss();
                 llErrorContainer.setVisibility(View.VISIBLE);
 //                Toast.makeText(ViewProfileActivity1.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
@@ -156,14 +164,35 @@ public class ViewProfileActivity1 extends AppCompatActivity {
     }
 
     private void showData(AccountProfile1 accountProfile1) {
-        if (accountProfile1.getFullName().isEmpty()) {
+        if (accountProfile1.getFullName() == null || accountProfile1.getFullName().isEmpty()) {
             tvName.setText("نام و نام خوانوادگی");
         } else {
             tvName.setText(accountProfile1.getFullName());
         }
 
-        tvLocation.setText(accountProfile1.getCity() + ", " + accountProfile1.getProvince());
-        tvBio.setText(accountProfile1.getBio());
+        String city = "";
+        if (accountProfile1.getCity() == null || accountProfile1.getCity().isEmpty()) {
+            city = "شهر";
+        } else {
+
+            city = accountProfile1.getCity();
+        }
+
+        String province = "";
+        if (accountProfile1.getProvince() == null || accountProfile1.getProvince().isEmpty()) {
+            province = "استان";
+        } else {
+            province = accountProfile1.getProvince();
+        }
+
+        tvLocation.setText(city + ", " + province);
+
+        if (accountProfile1.getBio() == null || accountProfile1.getBio().isEmpty()) {
+            tvBio.setText("توضیحات ندارد");
+        } else {
+            tvBio.setText(accountProfile1.getBio());
+        }
+
         Picasso.with(this).load("https://api.narengi.xyz/v1" + accountProfile1.getPicture().getUrl()).into(image);
         Collections.addAll(houses, accountProfile1.getHouses());
         adapter.notifyDataSetChanged();

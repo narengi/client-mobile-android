@@ -65,7 +65,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((PicturesPagerAdapter) viewHolderItem.vpImages.getAdapter()).update(position - 1);
 
             try {
-                viewHolderItem.tvHousePricePerNight.setText(house.getPrice().getPrice());
+                viewHolderItem.tvHousePricePerNight.setText(house.getPriceString());
             } catch (Exception localException) {
                 viewHolderItem.tvHousePricePerNight.setText(R.string.free);
             }
@@ -123,7 +123,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public Object instantiateItem(ViewGroup viewGroup, int paramInt) {
             ImageView localImageView = new ImageView(activity);
-            localImageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
+            localImageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             localImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             localImageView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
@@ -143,6 +143,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     activity.startActivity(intent);
                 }
             });
+
             Picasso.with(activity).load("https://api.narengi.xyz/v1" + this.pictures[paramInt]).into(localImageView);
             viewGroup.addView(localImageView);
             return localImageView;

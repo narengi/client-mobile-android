@@ -32,6 +32,7 @@ public class House implements Serializable {
     private String FeatureListURL;
     private int reviewsCount;
     private HousePrice prices;
+    private String price;
     private HouseSpec spec;
     private HouseExtraService[] ExtraServices;
     private String bookingUrl;
@@ -43,6 +44,14 @@ public class House implements Serializable {
     private String ownerId;
     private String googleMap;
     private Owner owner;
+
+    public String getPriceString() {
+        return price;
+    }
+
+    public void setPriceString(String price) {
+        this.price = price;
+    }
 
     public Owner getOwner() {
         return owner;
