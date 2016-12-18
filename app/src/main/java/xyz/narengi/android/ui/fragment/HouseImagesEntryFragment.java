@@ -189,43 +189,41 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
         Button nextButton = (Button) view.findViewById(R.id.house_images_entry_nextButton);
         Button previousButton = (Button) view.findViewById(R.id.house_images_entry_previousButton);
 
-        switch (getEntryMode()) {
-            case ADD:
-                if (nextButton != null) {
-                    nextButton.setVisibility(View.VISIBLE);
-                    nextButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (validate() && getOnInteractionListener() != null) {
+        if (getEntryMode() == EntryMode.ADD) {
+            if (nextButton != null) {
+                nextButton.setVisibility(View.VISIBLE);
+                nextButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (validate() && getOnInteractionListener() != null) {
 //                                if (getActivity() instanceof AddHouseActivity)
 //                                    ((AddHouseActivity) getActivity()).setImageUris(imageUris);
 
-                                if (imageUris != null && imageUris.size() > 0)
-                                    uploadHouseImages();
-                                else
-                                    getOnInteractionListener().onGoToNextSection(getHouse());
-                            }
+                            if (imageUris != null && imageUris.size() > 0)
+                                uploadHouseImages();
+                            else
+                                getOnInteractionListener().onGoToNextSection(getHouse());
                         }
-                    });
-                }
+                    }
+                });
+            }
 
-                if (previousButton != null) {
-                    previousButton.setVisibility(View.VISIBLE);
-                    previousButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (getOnInteractionListener() != null) {
-                                if (getActivity() instanceof AddHouseActivity) {
+            if (previousButton != null) {
+                previousButton.setVisibility(View.VISIBLE);
+                previousButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (getOnInteractionListener() != null) {
+                            if (getActivity() instanceof AddHouseActivity) {
 //                                    ((AddHouseActivity) getActivity()).setImageUris(imageUris);
 //                                    ((AddHouseActivity) getActivity()).setImageInfoArray(imageInfoArray);
-                                }
-                                getOnInteractionListener().onBackToPreviousSection(getHouse());
                             }
+                            getOnInteractionListener().onBackToPreviousSection(getHouse());
                         }
-                    });
-                }
-                break;
-            case EDIT:
+                    }
+                });
+            }
+        } else if (getEntryMode() == EntryMode.EDIT){
                 if (nextButton != null)
                     nextButton.setVisibility(View.GONE);
                 if (previousButton != null)
@@ -235,7 +233,6 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 //                    ((EditHouseDetailActivity)getActivity()).hideProgressBar();
 //                }
 
-                break;
         }
     }
 
