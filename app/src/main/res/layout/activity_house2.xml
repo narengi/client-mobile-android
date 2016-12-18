@@ -120,6 +120,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@id/avatar"
+                        android:layout_marginLeft="8dp"
                         android:layout_marginRight="16dp"
                         android:gravity="right"
                         android:orientation="vertical">
@@ -330,9 +332,9 @@
                         android:visibility="gone">
 
                         <ImageView
+                            android:id="@+id/featureImage4"
                             android:layout_width="@dimen/featureIconSize"
-                            android:layout_height="@dimen/featureIconSize"
-                            android:src="@drawable/icon_wireless" />
+                            android:layout_height="@dimen/featureIconSize"/>
 
                         <xyz.narengi.android.ui.widget.CustomTextView
                             android:id="@+id/featureText4"
@@ -354,9 +356,9 @@
                         android:visibility="gone">
 
                         <ImageView
+                            android:id="@+id/featureImage3"
                             android:layout_width="@dimen/featureIconSize"
-                            android:layout_height="@dimen/featureIconSize"
-                            android:src="@drawable/icon_wireless" />
+                            android:layout_height="@dimen/featureIconSize"/>
 
                         <xyz.narengi.android.ui.widget.CustomTextView
                             android:id="@+id/featureText3"
@@ -378,9 +380,9 @@
                         android:visibility="gone">
 
                         <ImageView
+                            android:id="@+id/featureImage2"
                             android:layout_width="@dimen/featureIconSize"
-                            android:layout_height="@dimen/featureIconSize"
-                            android:src="@drawable/icon_wireless" />
+                            android:layout_height="@dimen/featureIconSize" />
 
                         <xyz.narengi.android.ui.widget.CustomTextView
                             android:id="@+id/featureText2"
@@ -402,9 +404,9 @@
                         android:visibility="gone">
 
                         <ImageView
+                            android:id="@+id/featureImage1"
                             android:layout_width="@dimen/featureIconSize"
-                            android:layout_height="@dimen/featureIconSize"
-                            android:src="@drawable/icon_wireless" />
+                            android:layout_height="@dimen/featureIconSize" />
 
                         <xyz.narengi.android.ui.widget.CustomTextView
                             android:id="@+id/featureText1"

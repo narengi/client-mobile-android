@@ -445,6 +445,8 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             View featureList = findViewById(R.id.featureList);
             TextView featureText1 = (TextView) findViewById(R.id.featureText1);
             featureText1.setText(house.getFeatureList()[0].getTitle());
+            ImageView featureImage1 = (ImageView) findViewById(R.id.featureImage1);
+            Picasso.with(this).load("http://api.narengi.xyz/v1/medias/feature/" + house.getFeatureList()[0].getKey()).into(featureImage1);
             view.setVisibility(View.VISIBLE);
             featureList.setVisibility(View.VISIBLE);
         }
@@ -454,12 +456,16 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             TextView featureText2 = (TextView) findViewById(R.id.featureText2);
             featureText2.setText(house.getFeatureList()[1].getTitle());
             view.setVisibility(View.VISIBLE);
+            ImageView featureImage2 = (ImageView) findViewById(R.id.featureImage2);
+            Picasso.with(this).load("http://api.narengi.xyz/v1/medias/feature/" + house.getFeatureList()[1].getKey()).into(featureImage2);
         }
 
         if (house.getFeatureList() != null && house.getFeatureList().length > 2) {
             View view = findViewById(R.id.feature3);
             TextView featureText3 = (TextView) findViewById(R.id.featureText3);
             featureText3.setText(house.getFeatureList()[2].getTitle());
+            ImageView featureImage3 = (ImageView) findViewById(R.id.featureImage3);
+            Picasso.with(this).load("http://api.narengi.xyz/v1/medias/feature/" + house.getFeatureList()[2].getKey()).into(featureImage3);
             view.setVisibility(View.VISIBLE);
         }
 
@@ -467,6 +473,8 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             View view = findViewById(R.id.feature4);
             TextView featureText4 = (TextView) findViewById(R.id.featureText4);
             featureText4.setText(house.getFeatureList()[3].getTitle());
+            ImageView featureImage4 = (ImageView) findViewById(R.id.featureImage4);
+            Picasso.with(this).load("http://api.narengi.xyz/v1/medias/feature/" + house.getFeatureList()[3].getKey()).into(featureImage4);
             view.setVisibility(View.VISIBLE);
         }
 
@@ -658,10 +666,11 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
                 // Log error here since request failed
                 t.printStackTrace();
                 llErrorContainer.setVisibility(View.VISIBLE);
+                progressDialog.dismiss();
 
 //                progressDialog.dismiss();
                 Log.d("HouseActivity", "getHouse onFailure : " + t.getMessage(), t);
-                hideProgress();
+//                hideProgress();
 //                Toast.makeText(HouseActivity.this, R.string.error_alert_title, Toast.LENGTH_SHORT).show();
             }
         });
