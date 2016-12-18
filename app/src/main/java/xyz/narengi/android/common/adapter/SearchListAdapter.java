@@ -109,7 +109,7 @@ public class SearchListAdapter extends BaseAdapter {
                         ActivityCompat.startActivity(activity, intent, options.toBundle());
                     } else {
 
-                    Intent intent = new Intent(activity, HouseActivity.class);;
+                    Intent intent = new Intent(activity, HouseActivity.class);
                         intent.putExtra("images", ((AroundLocationDataHouse)locations.get(position).getData()).getPictures());
                     intent.putExtra("houseId", (((AroundLocationDataHouse) locations.get(position).getData())).getId());
                         activity.startActivity(intent);

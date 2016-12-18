@@ -1,6 +1,5 @@
 package xyz.narengi.android.ui.activity;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +27,7 @@ import android.widget.Toast;
 import com.github.siyamed.shapeimageview.mask.PorterShapeImageView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nineoldandroids.view.ViewHelper;
 import com.squareup.picasso.Picasso;
 
 import info.semsamot.actionbarrtlizer.ActionBarRtlizer;
@@ -47,24 +46,19 @@ import xyz.narengi.android.ui.widget.ObservableScrollViewCallbacks;
 import xyz.narengi.android.ui.widget.ScrollState;
 import xyz.narengi.android.ui.widget.ScrollUtils;
 import xyz.narengi.android.util.Util;
-import com.nineoldandroids.view.ViewHelper;
 
 /**
  * @author Siavash Mahmoudpour
  */
 public class HouseActivity extends AppCompatActivity implements ObservableScrollViewCallbacks {
-
     private House house;
     private ActionBarRtlizer rtlizer;
-    private String [] stringArray;
-
+    private String[] stringArray;
 
     private View header;
     private View mToolbarView;
     private ObservableScrollView mScrollView;
     private int mParallaxImageHeight;
-
-//    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +102,6 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
         mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
 
 
-
 //        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -117,7 +110,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 //        collapsingToolbar.setTitle(" ");
 
 
-        if (getIntent() != null && getIntent().getStringExtra("houseId") != null){
+        if (getIntent() != null && getIntent().getStringExtra("houseId") != null) {
             stringArray = getIntent().getStringArrayExtra("images");
 
 
@@ -313,7 +306,16 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
         View content = findViewById(R.id.content);
         content.setVisibility(View.VISIBLE);
     }
-//
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.house_progressBar);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    //
 //    private void getHouseImage(String houseUrl) {
 //        Retrofit retrofit = RetrofitService.getInstance().getRetrofit();
 //
@@ -371,12 +373,12 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 
 
         TextView location = (TextView) findViewById(R.id.location);
-        if (location!= null) {
+        if (location != null) {
             location.setText(house.getLocation().getCity() + "، " + house.getLocation().getProvince());
         }
 
         TextView priceTextView = (TextView) findViewById(R.id.house_price);
-        if (house.getPrice()!=null) {
+        if (house.getPrice() != null) {
             priceTextView.setText(Util.convertNumber(house.getPrice().getPrice() + ""));
         }
 
@@ -412,9 +414,18 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
         Picasso.with(this).load("https://api.narengi.xyz/v1" + house.getGoogleMap()).into(map);
 
         PorterShapeImageView avatar = (PorterShapeImageView) findViewById(R.id.avatar);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent intent = new Intent(HouseActivity.this, ViewProfileActivity1.class);
+                intent.putExtra("id", house.getOwner().getUid());
+                startActivity(intent);
+            }
+        });
+
         try {
             Picasso.with(this).load("https://api.narengi.xyz/v1" + house.getOwner().getPicture().getUrl()).into(avatar);
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
         if (house.getFeatureList() != null && house.getFeatureList().length > 0) {
             View view = findViewById(R.id.feature1);
@@ -667,6 +678,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
     class PicturesPagerAdapter extends PagerAdapter {
         private String[] pictures;
         private Context context;
+
         public PicturesPagerAdapter(String[] pictures, Context context) {
             this.pictures = pictures;
             this.context = context;
@@ -681,7 +693,8 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 
             try {
                 Picasso.with(context).load("https://api.narengi.xyz/v1/" + pictures[position]).into(img);
-            } catch (Exception e){}
+            } catch (Exception e) {
+            }
 
             container.addView(img);
             return img;

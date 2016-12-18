@@ -75,5 +75,9 @@
     <string name="terms">شرایط و قوانین</string>
     <string name="book">اجاره میکنم</string>
     <string name="transition_string">shared</string>
+    <string name="free">رایگان</string>
+    <string name="identity">هویت من را تایید کن</string>
+    <string name="eghmat">اقامتگاه‌ها</string>
+    <string name="aboutme">درباره من</string>
 
 </resources>

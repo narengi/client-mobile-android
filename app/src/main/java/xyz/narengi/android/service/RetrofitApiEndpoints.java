@@ -19,6 +19,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 import xyz.narengi.android.common.dto.AccountProfile;
+import xyz.narengi.android.common.dto.AccountProfile1;
 import xyz.narengi.android.common.dto.AccountVerification;
 import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.Attraction;
@@ -66,6 +67,9 @@ public interface RetrofitApiEndpoints {
 
     @GET
     Call<HostProfile> getHostProfile(@Url String url);
+
+    @GET("/v1/accounts/{id}")
+    Call<AccountProfile1> getAccountProfile(@Path("id") String id);
 
     @GET
     Call<Attraction> getAttraction(@Url String url);
