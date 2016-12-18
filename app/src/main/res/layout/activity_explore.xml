@@ -165,7 +165,6 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="4dp"
                         android:layout_toLeftOf="@+id/imgUserAvatar"
-                        android:text="سپهر بهروزی"
                         android:textColor="@color/green" />
 
                     <View
