@@ -8,7 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -175,6 +177,25 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
         imgDrawerMenu.setOnClickListener(this);
         btnRetry.setOnClickListener(this);
 
+        etToolbarSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (etToolbarSearch.getText().length() == 0) {
+                    page = 1;
+                    startDefaultSearch(1);
+                }
+            }
+        });
 
         etToolbarSearch.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
