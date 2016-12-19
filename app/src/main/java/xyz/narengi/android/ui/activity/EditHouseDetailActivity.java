@@ -292,10 +292,8 @@ public class EditHouseDetailActivity extends AppCompatActivity {
                 updatePageTitle(R.string.house_images_entry_page_title);
                 break;
             case HOUSE_DATES:
-
-                new BetaDialog(this).show();
-//                houseEntryFragment = new HouseDatesEntryFragment();
-//                updatePageTitle(R.string.house_dates_entry_page_title);
+                houseEntryFragment = new HouseDatesEntryFragment();
+                updatePageTitle(R.string.house_dates_entry_page_title);
                 break;
         }
 

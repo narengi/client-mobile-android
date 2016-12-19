@@ -36,6 +36,7 @@ import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.ui.adapter.EditHouseContentRecyclerAdapter;
+import xyz.narengi.android.ui.dialog.BetaDialog;
 import xyz.narengi.android.ui.widget.LineDividerItemDecoration;
 
 /**
@@ -208,8 +209,14 @@ public class EditHouseActivity extends AppCompatActivity {
                 if (childView != null && mGestureDetector.onTouchEvent(e)) {
 
                     int position = rv.getChildAdapterPosition(childView);
-                    if (recyclerView.getAdapter().getItemCount() > position) {
-                        openEditHouseDetail(position);
+
+                    if (position == 7) {
+
+                        new BetaDialog(EditHouseActivity.this).show();
+                    } else {
+                        if (recyclerView.getAdapter().getItemCount() > position) {
+                            openEditHouseDetail(position);
+                        }
                     }
 
                 }
