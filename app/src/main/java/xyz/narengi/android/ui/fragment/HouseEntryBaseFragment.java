@@ -18,7 +18,7 @@ public abstract class HouseEntryBaseFragment extends Fragment {
     private OnInteractionListener onInteractionListener;
 
     public enum EntryMode {
-        ADD, EDIT
+        ADD, EDIT , NONE
     }
 
     public HouseEntryBaseFragment() {
@@ -38,6 +38,7 @@ public abstract class HouseEntryBaseFragment extends Fragment {
     }
 
     public EntryMode getEntryMode() {
+        if (entryMode == null) return EntryMode.NONE;
         return entryMode;
     }
 

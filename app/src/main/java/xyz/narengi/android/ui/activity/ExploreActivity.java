@@ -122,12 +122,12 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     private void checkForLoggedInUser() {
 
         if (AccountProfile.getLoggedInAccountProfile(context) != null) {
-
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage(getString(R.string.please_wait));
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+//
+//            final ProgressDialog progressDialog = new ProgressDialog(this);
+//            progressDialog.setMessage(getString(R.string.please_wait));
+//            progressDialog.setCanceledOnTouchOutside(false);
+//            progressDialog.setCancelable(false);
+//            progressDialog.show();
 
             WebService service = new WebService();
             service.setToken(AccountProfile.getLoggedInAccountProfile(context).getToken().getAuthString());
@@ -139,7 +139,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onSuccess(String requestUrl, Object response) {
-                    progressDialog.dismiss();
+//                    progressDialog.dismiss();
                     JSONObject responseObject = (JSONObject) response;
                     AccountProfile loggedInProfile = AccountProfile.fromJsonObject(responseObject);
                     if (loggedInProfile != null) {
@@ -150,7 +150,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onError(String requestUrl, VolleyError error) {
-                    progressDialog.dismiss();
+//                    progressDialog.dismiss();
                     try {
                         if (error.networkResponse.statusCode == 401 || error.networkResponse.statusCode == 403) {
                             AccountProfile.logout(context);
