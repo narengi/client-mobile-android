@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import xyz.narengi.android.R;
+import xyz.narengi.android.ui.dialog.BetaDialog;
 import xyz.narengi.android.util.SimpleTextWatcher;
 
 /**
@@ -108,6 +109,14 @@ public class SignInFragment extends Fragment {
             }
         });
 
+
+        view.findViewById(R.id.login_resetPasswordButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                new BetaDialog(getActivity()).show();
+            }
+        });
 
         return view;
     }

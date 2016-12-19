@@ -439,6 +439,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:id="@+id/v1"
                     android:layout_height="wrap_content"
                     android:gravity="right|center_vertical"
                     android:padding="16dp">
@@ -465,6 +466,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/v2"
                     android:gravity="right|center_vertical"
                     android:padding="16dp">
 
@@ -490,6 +492,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/v3"
                     android:gravity="right|center_vertical"
                     android:padding="16dp">
 
@@ -516,6 +519,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right|center_vertical"
+                    android:id="@+id/v4"
                     android:padding="16dp">
 
                     <xyz.narengi.android.ui.widget.CustomTextView
@@ -536,6 +540,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/green"
+                    android:id="@+id/book"
                     android:gravity="center"
                     android:padding="14dp"
                     android:text="@string/book"

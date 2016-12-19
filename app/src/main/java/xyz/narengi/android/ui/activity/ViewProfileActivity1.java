@@ -127,7 +127,7 @@ public class ViewProfileActivity1 extends AppCompatActivity  {
 
         if (getIntent() != null && getIntent().getStringExtra("id") != null) {
             id = getIntent().getStringExtra("id");
-            getData(id);
+//            getData(id);
 
             try {
                 if (id.equals(AccountProfile.getLoggedInAccountProfile(this).getId())) {
@@ -137,6 +137,13 @@ public class ViewProfileActivity1 extends AppCompatActivity  {
             }
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getData(id);
     }
 
     private void getData(String id) {

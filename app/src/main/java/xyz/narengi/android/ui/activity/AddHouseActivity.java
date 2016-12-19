@@ -115,7 +115,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
         indicatorTextView1.setBackgroundResource(R.drawable.circle_bg_orange);
 
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             new AlertDialog.Builder(this)
                     .setTitle("دسترسی")
                     .setMessage("برای اضافه کردن خانه، برنامه نیاز به داشتن دسترسی به مکان‌یاب شما دارد")
@@ -143,7 +144,8 @@ public class AddHouseActivity extends AppCompatActivity implements HouseEntryBas
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         long now = System.currentTimeMillis();
-        if (grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (now - requestMillis <= 100) {
                 Util.startInstalledAppDetailsActivity(this);
             }

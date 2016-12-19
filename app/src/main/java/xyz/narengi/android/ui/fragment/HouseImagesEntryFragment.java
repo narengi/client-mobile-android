@@ -361,7 +361,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             @Override
             public void onFailure(Call<UploadImage> call, Throwable t) {
                 hideProgress();
-                Toast.makeText(getActivity(), "Upload image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "خطا", Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }
         });
@@ -425,7 +425,7 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 hideProgress();
-                Toast.makeText(getActivity(), "Remove image exception : " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "خطا", Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }
         });
@@ -702,25 +702,31 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 
                     updateViewPager(Uri.fromFile(new File(mCurrentPhotoPath)));
                 } else {
-                    Toast.makeText(getContext(), "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "عدم توانایی در دریافت عکس", Toast.LENGTH_SHORT).show();
                 }
             } else if (requestCode == REQUEST_SELECT_PICTURE) {
                 if (data != null && data.getData() != null) {
 
-                    Uri selectedImageUri = data.getData();
-                    String[] projection = {MediaStore.MediaColumns.DATA};
-                    CursorLoader cursorLoader = new CursorLoader(getContext(),
-                            selectedImageUri, projection, null, null, null);
+                    try {
 
-                    Cursor cursor = cursorLoader.loadInBackground();
-                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-                    cursor.moveToFirst();
-                    String selectedImagePath = cursor.getString(column_index);
+                        Uri selectedImageUri = data.getData();
+                        String[] projection = {MediaStore.MediaColumns.DATA};
+                        CursorLoader cursorLoader = new CursorLoader(getContext(),
+                                selectedImageUri, projection, null, null, null);
 
-                    updateViewPager(Uri.fromFile(new File(selectedImagePath)));
+                        Cursor cursor = cursorLoader.loadInBackground();
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+                        cursor.moveToFirst();
+                        String selectedImagePath = cursor.getString(column_index);
+
+                        updateViewPager(Uri.fromFile(new File(selectedImagePath)));
+                    } catch (Exception e) {
+
+                        Toast.makeText(getContext(), "خطا", Toast.LENGTH_SHORT).show();
+                    }
 //                    startCropActivity(data.getData());
                 } else {
-                    Toast.makeText(getContext(), "toast_cannot_retrieve_selected_image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "عدم توانایی در دریافت عکس", Toast.LENGTH_SHORT).show();
                 }
 //            } else if (requestCode == Crop.REQUEST_CROP) {
 //                handleCropResult(data);

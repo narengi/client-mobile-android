@@ -49,6 +49,7 @@ import xyz.narengi.android.common.model.AroundLocation;
 import xyz.narengi.android.service.WebService;
 import xyz.narengi.android.service.WebServiceConstants;
 import xyz.narengi.android.ui.adapter.DrawerItemsListAdapter;
+import xyz.narengi.android.ui.dialog.BetaDialog;
 import xyz.narengi.android.util.Util;
 
 /**
@@ -158,7 +159,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
                         } else {
                             setupDrawerView(true);
                         }
-                    }catch (Exception e) {}
+                    }catch (Exception ignored) {}
                 }
             });
             service.getJsonObject(WebServiceConstants.Accounts.ME);
@@ -350,15 +351,21 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
                     // TODO: 9/22/2016 AD back to home
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_INBOX) {
 
+                    new BetaDialog(ExploreActivity.this).show();
+
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_FAVORITES) {
+
+                    new BetaDialog(ExploreActivity.this).show();
 
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_PROFILE) {
                     openViewProfile();
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_LOGIN_SIGN_UP) {
                     openSignInSignUp();
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_USER_GUIDE) {
+                    new BetaDialog(ExploreActivity.this).show();
 
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_SETTINGS) {
+                    new BetaDialog(ExploreActivity.this).show();
 
                 } else if (selectedItem.getAction() == DrawerItem.DrawerAction.ACTION_LOGOUT) {
                     AccountProfile.logout(context);

@@ -56,6 +56,7 @@ import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.Location;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.ui.dialog.BetaDialog;
 import xyz.narengi.android.ui.fragment.HouseDatesEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseEntryBaseFragment;
 import xyz.narengi.android.ui.fragment.HouseFeaturesEntryFragment;
@@ -291,8 +292,10 @@ public class EditHouseDetailActivity extends AppCompatActivity {
                 updatePageTitle(R.string.house_images_entry_page_title);
                 break;
             case HOUSE_DATES:
-                houseEntryFragment = new HouseDatesEntryFragment();
-                updatePageTitle(R.string.house_dates_entry_page_title);
+
+                new BetaDialog(this).show();
+//                houseEntryFragment = new HouseDatesEntryFragment();
+//                updatePageTitle(R.string.house_dates_entry_page_title);
                 break;
         }
 

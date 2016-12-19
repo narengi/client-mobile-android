@@ -2,6 +2,7 @@ package xyz.narengi.android.ui.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -11,6 +12,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -42,6 +44,7 @@ import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
+import xyz.narengi.android.ui.dialog.BetaDialog;
 import xyz.narengi.android.ui.dialog.FeatureDialog;
 import xyz.narengi.android.ui.widget.CustomTextView;
 import xyz.narengi.android.ui.widget.ObservableScrollView;
@@ -128,6 +131,11 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
 //        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 //        collapsingToolbar.setTitle(" ");
 
+        findViewById(R.id.book).setOnClickListener(a);
+        findViewById(R.id.v1).setOnClickListener(a);
+        findViewById(R.id.v2).setOnClickListener(a);
+        findViewById(R.id.v3).setOnClickListener(a);
+        findViewById(R.id.v4).setOnClickListener(a);
 
         if (getIntent() != null && getIntent().getStringExtra("houseId") != null) {
             stringArray = getIntent().getStringArrayExtra("images");
@@ -148,6 +156,12 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
         }
     }
 
+    View.OnClickListener a = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            showDialog();
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -760,5 +774,10 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
         public boolean isViewFromObject(View view, Object object) {
             return view == object;
         }
+    }
+
+    private void showDialog(){
+        new BetaDialog(this).show();
+
     }
 }
