@@ -210,7 +210,7 @@ public class EditHouseActivity extends AppCompatActivity {
 
                     int position = rv.getChildAdapterPosition(childView);
 
-                    if (position == 7) {
+                    if (position == 7 || position == 5) {
 
                         new BetaDialog(EditHouseActivity.this).show();
                     } else {
