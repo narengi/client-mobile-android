@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.github.siyamed.shapeimageview.mask.PorterShapeImageView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -752,7 +753,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
             img.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
             try {
-                Picasso.with(context).load("https://api.narengi.xyz/v1/" + pictures[position]).into(img);
+                Glide.with(context).load("https://api.narengi.xyz/v1/" + pictures[position]).into(img);
             } catch (Exception e) {
             }
 

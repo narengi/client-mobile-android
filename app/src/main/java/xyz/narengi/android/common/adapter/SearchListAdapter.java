@@ -1,7 +1,6 @@
 package xyz.narengi.android.common.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
@@ -17,20 +16,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
-import java.util.Random;
 
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.dto.House;
-import xyz.narengi.android.common.dto.Pictures;
 import xyz.narengi.android.common.model.AroundLocation;
-import xyz.narengi.android.common.model.AroundLocationDataAttraction;
-import xyz.narengi.android.common.model.AroundLocationDataCity;
 import xyz.narengi.android.common.model.AroundLocationDataHouse;
 import xyz.narengi.android.ui.activity.HouseActivity;
-import xyz.narengi.android.ui.widget.AutoScrollViewPager;
 import xyz.narengi.android.util.Util;
 
 /**
@@ -227,7 +220,7 @@ public class SearchListAdapter extends BaseAdapter {
 //                    )
 //                    .into(img);
             try {
-                Picasso.with(activity).load("https://api.narengi.xyz/v1" + pictures[position]).into(img);
+                Glide.with(activity).load("https://api.narengi.xyz/v1" + pictures[position]).into(img);
             } catch (Exception e){}
 
             container.addView(img);

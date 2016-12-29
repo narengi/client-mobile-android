@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -144,7 +144,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
             });
 
-            Picasso.with(activity).load("https://api.narengi.xyz/v1" + this.pictures[paramInt]).into(localImageView);
+            Glide.with(activity).load("https://api.narengi.xyz/v1" + this.pictures[paramInt]).into(localImageView);
             viewGroup.addView(localImageView);
             return localImageView;
         }
