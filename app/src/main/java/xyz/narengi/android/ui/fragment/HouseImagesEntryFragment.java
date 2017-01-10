@@ -835,13 +835,18 @@ public class HouseImagesEntryFragment extends HouseEntryBaseFragment implements 
 //            startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file)), SELECT_FILE);
 //        }
 
+//
+//        Intent intent = new Intent(
+//                Intent.ACTION_PICK,
+//                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//
+//        intent.setType("image/*");
 
-        Intent intent = new Intent(
-                Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
+        Intent intent = new Intent();
         intent.setType("image/*");
-
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(Intent.createChooser(intent,"label_select_picture"), REQUEST_SELECT_PICTURE);
     }
 
