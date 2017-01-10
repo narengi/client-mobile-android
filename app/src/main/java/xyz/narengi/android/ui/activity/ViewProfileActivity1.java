@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -217,7 +218,8 @@ public class ViewProfileActivity1 extends AppCompatActivity  {
             tvBio.setText(accountProfile1.getBio());
         }
 
-        Picasso.with(this).load("https://api.narengi.xyz/v1" + accountProfile1.getPicture().getUrl()).into(image);
+        Picasso.with(this).load("https://api.narengi.xyz/v1" + accountProfile1.getAvatar())
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(image);
 
         try {
             houses.clear();
