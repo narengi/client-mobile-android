@@ -15,6 +15,7 @@ import android.widget.Toast;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HousePrice;
 import xyz.narengi.android.common.dto.HouseSpec;
+import xyz.narengi.android.util.Util;
 
 /**
  * @author Siavash Mahmoudpour
@@ -64,6 +65,7 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+
             }
 
             @Override
@@ -99,19 +101,19 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
 		setGuestCount(guestCount);
 		setMaxGuestCount(maxGuestCount);
 
-        guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
-        maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(maxGuestCount)));
+        guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, Util.convertNumber(String.valueOf(guestCount))));
+        maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, Util.convertNumber(String.valueOf(maxGuestCount))));
 
         addGuestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 guestCount++;
-                guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
+                guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, Util.convertNumber(String.valueOf(guestCount))));
                 setGuestCount(guestCount);
 
                 if (guestCount > maxGuestCount) {
                     maxGuestCount++;
-                    maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(maxGuestCount)));
+                    maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, Util.convertNumber(String.valueOf(maxGuestCount))));
                     setMaxGuestCount(maxGuestCount);
                 }
             }
@@ -125,7 +127,7 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
 					if (guestCount < 0) {
 						guestCount = 0;
 					}
-					guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
+					guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, Util.convertNumber(String.valueOf(guestCount))));
 					setGuestCount(guestCount);
 				}
 			}
@@ -135,7 +137,7 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
             @Override
             public void onClick(View view) {
                 maxGuestCount++;
-                maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(maxGuestCount)));
+                maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, Util.convertNumber(String.valueOf(maxGuestCount))));
                 setMaxGuestCount(maxGuestCount);
             }
         });
@@ -148,7 +150,7 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
 					if (maxGuestCount < 0) {
 						maxGuestCount = 0;
 					}
-					maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(maxGuestCount)));
+					maxGuestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, Util.convertNumber(String.valueOf(maxGuestCount))));
 					setMaxGuestCount(maxGuestCount);
 
 
@@ -157,7 +159,7 @@ public class HouseGuestEntryFragment extends HouseEntryBaseFragment {
 						if (guestCount < 0) {
 							guestCount = 0;
 						}
-						guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, String.valueOf(guestCount)));
+						guestCountTextView.setText(getString(R.string.house_guest_entry_counter_caption, Util.convertNumber(String.valueOf(guestCount))));
 						setGuestCount(guestCount);
 					}
 				}

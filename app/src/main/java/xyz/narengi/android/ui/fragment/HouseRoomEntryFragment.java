@@ -15,6 +15,7 @@ import android.widget.Toast;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HousePrice;
 import xyz.narengi.android.common.dto.HouseSpec;
+import xyz.narengi.android.util.Util;
 
 /**
  * @author Siavash Mahmoudpour
@@ -93,14 +94,14 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
             }
         }
 
-        roomsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, String.valueOf(roomCount)));
-        bedsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, String.valueOf(bedCount)));
+        roomsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, Util.convertNumber(String.valueOf(roomCount))));
+        bedsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, Util.convertNumber(String.valueOf(bedCount))));
 
         addRoomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 roomCount++;
-                roomsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, String.valueOf(roomCount)));
+                roomsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, Util.convertNumber(String.valueOf(roomCount))));
                 setRoomCount(roomCount);
             }
         });
@@ -112,7 +113,7 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
                 if (roomCount < 0) {
                     roomCount = 0;
                 }
-                roomsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, String.valueOf(roomCount)));
+                roomsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, Util.convertNumber(String.valueOf(roomCount))));
                 setRoomCount(roomCount);
             }
         });
@@ -121,7 +122,7 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
             @Override
             public void onClick(View view) {
                 bedCount++;
-                bedsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, String.valueOf(bedCount)));
+                bedsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, Util.convertNumber(String.valueOf(bedCount))));
                 setBedCount(bedCount);
             }
         });
@@ -133,7 +134,7 @@ public class HouseRoomEntryFragment extends HouseEntryBaseFragment {
                 if (bedCount < 0) {
                     bedCount = 0;
                 }
-                bedsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, String.valueOf(bedCount)));
+                bedsCountTextView.setText(getString(R.string.house_room_entry_counter_caption, Util.convertNumber(String.valueOf(bedCount))));
                 setBedCount(bedCount);
             }
         });
