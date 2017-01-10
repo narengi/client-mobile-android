@@ -412,9 +412,14 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
         }
 
         TextView priceTextView = (TextView) findViewById(R.id.house_price);
-        if (house.getPrice() != null) {
-            priceTextView.setText(Util.convertNumber(house.getPrice().getPrice() + ""));
-        }
+//        if (house.getPrice() != null) {
+        priceTextView.setText(Util.convertNumber(house.getPriceString().split(" " , 2)[0] + ""));
+//        }
+        TextView priceText = (TextView) findViewById(R.id.price_string);
+//        if (house.getPrice() != null) {
+        priceText.setText(Util.convertNumber(house.getPriceString().split(" ", 2)[1] + " \n" + getString(R.string.harshabeghamat)));
+//        }
+
 
         View priceLayout = findViewById(R.id.priceLayout);
         priceLayout.setVisibility(View.VISIBLE);
