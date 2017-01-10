@@ -90,12 +90,13 @@ public class SearchListAdapter extends BaseAdapter {
                 public void onClick(View view) {
 
 
+                    int pos1 = position;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         Intent intent = new Intent(activity, HouseActivity.class);
                         String transitionName = activity.getString(R.string.transition_string);
 // Pass data object in the bundle and populate details activity.
-                        intent.putExtra("images", ((AroundLocationDataHouse)locations.get(position).getData()).getPictures());
-                        intent.putExtra("houseId", ((AroundLocationDataHouse) locations.get(position).getData()).getId());
+                        intent.putExtra("images", ((AroundLocationDataHouse)locations.get(pos1).getData()).getPictures());
+                        intent.putExtra("houseId", ((AroundLocationDataHouse) locations.get(pos1).getData()).getId());
                         ActivityOptionsCompat options = ActivityOptionsCompat.
                                 makeSceneTransitionAnimation(activity, (View)holder.vpImages, transitionName);
 //                        activity.startActivity(intent, options.toBundle());
@@ -103,8 +104,8 @@ public class SearchListAdapter extends BaseAdapter {
                     } else {
 
                     Intent intent = new Intent(activity, HouseActivity.class);
-                        intent.putExtra("images", ((AroundLocationDataHouse)locations.get(position).getData()).getPictures());
-                    intent.putExtra("houseId", (((AroundLocationDataHouse) locations.get(position).getData())).getId());
+                        intent.putExtra("images", ((AroundLocationDataHouse)locations.get(pos1).getData()).getPictures());
+                    intent.putExtra("houseId", (((AroundLocationDataHouse) locations.get(pos1).getData())).getId());
                         activity.startActivity(intent);
                     }
                 }
