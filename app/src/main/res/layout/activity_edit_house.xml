@@ -73,7 +73,7 @@
                     />
                 <!--style="@style/IconFont.XLarge"-->
 
-                <TextView
+                <xyz.narengi.android.ui.widget.CustomTextView
                     android:id="@+id/text_toolbar_title"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
