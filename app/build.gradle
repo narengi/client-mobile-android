@@ -92,6 +92,7 @@ dependencies {
     compile 'info.semsamot:actionbar-rtlizer:2.1.0@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.github.siyamed:android-shape-imageview:0.9.3'
+    compile 'com.bignerdranch.android:simple-item-decoration:1.0.0'
     compile 'id.zelory:compressor:1.0.4'
 
     compile 'com.nineoldandroids:library:2.4.0'

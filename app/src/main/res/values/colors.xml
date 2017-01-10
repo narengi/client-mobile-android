@@ -4,6 +4,7 @@
     <color name="green_dark">#00a651</color>
     <color name="rating_bar_yelloh">#FFFDEC00</color>
     <color name="gray_light">#E7E6E6</color>
+    <color name="divider">#7F7F7F</color>
 
     <color name="bg_gray_light">#eee</color>
     <color name="text_gray_light">#7F7F7F</color>
