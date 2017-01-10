@@ -502,7 +502,7 @@ public class HouseActivity extends AppCompatActivity implements ObservableScroll
         if (house.getFeatureList() != null && house.getFeatureList().length > 4) {
             View more_feature = findViewById(R.id.more_feature);
             TextView moreFeatureText = (TextView) findViewById(R.id.moreFeatureText);
-            moreFeatureText.setText(house.getFeatureList().length - 4 + "+");
+            moreFeatureText.setText(Util.convertNumber( "+" + (house.getFeatureList().length - 4)));
             more_feature.setVisibility(View.VISIBLE);
 
             more_feature.setOnClickListener(new View.OnClickListener() {
