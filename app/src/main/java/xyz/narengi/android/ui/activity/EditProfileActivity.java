@@ -92,8 +92,8 @@ import xyz.narengi.android.util.Util;
  */
 public class EditProfileActivity extends AppCompatActivity {
 
-    protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 1001;
-    protected static final int REQUEST_STORAGE_WRITE_ACCESS_PERMISSION = 1002;
+    protected static final int GALLERY_PERMISION = 1001;
+    protected static final int CAMERAPERMISION = 1002;
     static final int REQUEST_IMAGE_CAPTURE = 2001;
     private static final String TAG = EditProfileActivity.class.getName();
     private static final int REQUEST_SELECT_PICTURE = 0x01;
@@ -235,7 +235,7 @@ public class EditProfileActivity extends AppCompatActivity {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     private void handleCropError(@NonNull Intent result) {
 //        final Throwable cropError = UCrop.getError(result);
-        Toast.makeText(this, "Error getting image.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.cannot_retrieve_selected_image), Toast.LENGTH_SHORT).show();
 //        final Throwable cropError = Crop.getError(result);
 //        if (cropError != null) {
 //            Log.e(TAG, "handleCropError: ", cropError);
@@ -460,20 +460,30 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void dispatchTakePictureIntent() {
 //
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN // Permission was added in API Level 16
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+//                    getString(R.string.permission_read_storage_rationale),
+                    "permission_read_storage_rationale",
+                    CAMERAPERMISION);
+        } else {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                    return;
+                }
+                Uri photoURI = FileProvider.getUriForFile(EditProfileActivity.this,
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
-            Uri photoURI = FileProvider.getUriForFile(EditProfileActivity.this,
-                    BuildConfig.APPLICATION_ID + ".provider",
-                    photoFile);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
@@ -501,7 +511,7 @@ public class EditProfileActivity extends AppCompatActivity {
             requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
 //                    getString(R.string.permission_read_storage_rationale),
                     "permission_read_storage_rationale",
-                    REQUEST_STORAGE_READ_ACCESS_PERMISSION);
+                    GALLERY_PERMISION);
         } else {
             Intent intent = new Intent();
             intent.setType("image/*");
@@ -518,19 +528,19 @@ public class EditProfileActivity extends AppCompatActivity {
      * permission, otherwise it is requested directly.
      */
     protected void requestPermission(final String permission, String rationale, final int requestCode) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
 //            showAlertDialog(getString(R.string.permission_title_rationale), rationale,
-            showAlertDialog("permission_title_rationale", rationale,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(EditProfileActivity.this,
-                                    new String[]{permission}, requestCode);
-                        }
-                    }, "Ok", null, "Cancel");
-        } else {
+//            showAlertDialog("permission_title_rationale", rationale,
+//                    new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            ActivityCompat.requestPermissions(EditProfileActivity.this,
+//                                    new String[]{permission}, requestCode);
+//                        }
+//                    }, "Ok", null, "Cancel");
+//        } else {
             ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
-        }
+//        }
     }
 
     /**
@@ -562,15 +572,21 @@ public class EditProfileActivity extends AppCompatActivity {
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
         switch (requestCode) {
-            case REQUEST_STORAGE_READ_ACCESS_PERMISSION:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    pickFromGallery();
-                }
+            case CAMERAPERMISION:
+                dispatchTakePictureIntent();
                 break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            case GALLERY_PERMISION:
+                pickFromGallery();
+                break;
         }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void getProvinces() {
