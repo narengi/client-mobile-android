@@ -68,43 +68,43 @@ public class EditHouseContentRecyclerAdapter extends RecyclerView.Adapter<Recycl
         switch (position) {
             case 0:
                 viewHolder.menuItemTitleTextView.setText(context.getString(R.string.house_info_entry_page_title));
-                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
-                        null, null, null);
+//                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
+//                        null, null, null);
                 break;
             case 1:
                 viewHolder.menuItemTitleTextView.setText(context.getString(R.string.house_map_entry_page_title));
-                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
-                        null, null, null);
+//                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
+//                        null, null, null);
                 break;
             case 2:
                 viewHolder.menuItemTitleTextView.setText(context.getString(R.string.house_type_entry_page_title));
-                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
-                        null, null, null);
+//                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
+//                        null, null, null);
                 break;
             case 3:
                 viewHolder.menuItemTitleTextView.setText(context.getString(R.string.house_room_entry_page_title));
-                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
-                        null, null, null);
+//                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
+//                        null, null, null);
                 break;
             case 4:
                 viewHolder.menuItemTitleTextView.setText(context.getString(R.string.house_guest_entry_page_title));
-                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
-                        null, null, null);
+//                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
+//                        null, null, null);
                 break;
             case 5:
                 viewHolder.menuItemTitleTextView.setText(context.getString(R.string.house_features_entry_page_title));
-                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
-                        null, null, null);
+//                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
+//                        null, null, null);
                 break;
             case 6:
                 viewHolder.menuItemTitleTextView.setText(context.getString(R.string.house_images_entry_page_title));
-                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
-                        null, null, null);
+//                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
+//                        null, null, null);
                 break;
             case 7:
                 viewHolder.menuItemTitleTextView.setText(context.getString(R.string.house_dates_entry_page_title));
-                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
-                        null, null, null);
+//                viewHolder.menuItemTitleTextView.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_action_my_house_dates),
+//                        null, null, null);
                 break;
         }
 
