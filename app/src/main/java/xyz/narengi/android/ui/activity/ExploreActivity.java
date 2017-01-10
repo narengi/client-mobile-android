@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
@@ -16,6 +17,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -92,6 +95,17 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         this.context = this;
         setContentView(R.layout.activity_explore);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        } else {
+//            View rootLayout = findViewById(R.id.rootLayout);
+//            rootLayout.setPadding(0, 0, 0, 0);
+        }
+
 
         locations = new ArrayList<>();
         setupViews();
@@ -409,7 +423,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
     private void showSearchBarAnimated() {
         int startMargin = rlSearchContainer.getHeight() * -1;
-        int endMargin = (int) Util.convertDpToPx(context, 16);
+        int endMargin = (int) Util.convertDpToPx(context, 32);
 
         ValueAnimator animator = ValueAnimator.ofInt(startMargin, endMargin);
         animator.setDuration(300);

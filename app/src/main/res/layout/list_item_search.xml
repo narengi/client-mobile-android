@@ -47,7 +47,7 @@
             android:shadowDy="1"
             android:shadowRadius="4"
             android:textColor="#FFF"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="normal" />
 
         <LinearLayout
