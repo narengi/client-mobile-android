@@ -155,7 +155,7 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
 
         viewHolder.houseTitleTextView.setText(house.getName());
         if (house.getPrice() != null) {
-            viewHolder.housePriceTextView.setText(Util.convertNumber((String.valueOf(house.getPrice().getPrice()) + " " + context.getString(R.string.currency_thousan_toman) /*house.getPrice().getCurrencyText()*/)));
+            viewHolder.housePriceTextView.setText(house.getPriceString());
         }
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
