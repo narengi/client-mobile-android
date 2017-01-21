@@ -12,7 +12,7 @@ build/
 .Spotlight-V100
 .Trashes
 local.properties
-
+gradle.properties
 .iml
 *.iml
 *~
