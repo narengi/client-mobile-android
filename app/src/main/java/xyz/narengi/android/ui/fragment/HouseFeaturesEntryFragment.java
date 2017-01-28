@@ -13,12 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,7 +28,7 @@ import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseFeature;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.activity.AddHouseActivity;
 import xyz.narengi.android.ui.activity.EditHouseDetailActivity;

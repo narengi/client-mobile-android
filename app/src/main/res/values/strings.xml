@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Narengi</string>
+    <!--<string name="app_name">Narengi 2</string>-->
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -59,11 +59,11 @@
     <string name="please_wait">لطفا کمی صبر کنید...</string>
     <string name="i_forgot_my_password">رمز عبورم را فراموش کرده‌ام!</string>
     <string name="retry">تلاش مجدد</string>
-	<string name="invalid_data">اطلاعات به درستی وارد نشده است</string>
-	<string name="invalid_position">موقعیت رو بر روی نقشه مشخص کنید</string>
-	<string name="invalid_price">قیمت به درستی وارد نشده است</string>
-	<string name="invalid_day">حداقل ۱ روز را انتخاب کنید</string>
-	<string name="currency_thousan_toman">هزار تومان</string>
+    <string name="invalid_data">اطلاعات به درستی وارد نشده است</string>
+    <string name="invalid_position">موقعیت رو بر روی نقشه مشخص کنید</string>
+    <string name="invalid_price">قیمت به درستی وارد نشده است</string>
+    <string name="invalid_day">حداقل ۱ روز را انتخاب کنید</string>
+    <string name="currency_thousan_toman">هزار تومان</string>
     <string name="cannot_retrieve_selected_image">مشکل در دریافت عکس</string>
     <string name="harshabeghamat">هر شب اقامت</string>
     <string name="bedroom">اتاق خواب</string>
@@ -79,5 +79,8 @@
     <string name="identity">هویت من را تایید کن</string>
     <string name="eghmat">اقامتگاه‌ها</string>
     <string name="aboutme">درباره من</string>
+
+    <!--Armin Strings-->
+    <string name="search_view_scrolling_behavior">xyz.narengi.android.armin.utils.SearchViewScrollingBehavior</string>
 
 </resources>

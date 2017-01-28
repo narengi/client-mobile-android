@@ -32,8 +32,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
@@ -49,8 +47,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AccountVerification;
-import xyz.narengi.android.common.dto.Authorization;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 
 /**

@@ -327,7 +327,7 @@ class SuggestionsAdapter extends ResourceCursorAdapter implements View.OnClickLi
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void attachView(View view, Context context, Cursor cursor) {
         ChildViewCache views = (ChildViewCache) view.getTag();
 
         int flags = 0;

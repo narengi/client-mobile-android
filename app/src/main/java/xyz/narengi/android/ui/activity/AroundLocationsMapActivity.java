@@ -80,7 +80,7 @@ import xyz.narengi.android.content.AroundLocationDeserializer;
 import xyz.narengi.android.content.AroundPlaceAttractionDeserializer;
 import xyz.narengi.android.content.AroundPlaceCityDeserializer;
 import xyz.narengi.android.content.AroundPlaceHouseDeserializer;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.service.WebServiceConstants;
 

@@ -33,7 +33,7 @@ import retrofit2.Retrofit;
 import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.HostProfile;
 import xyz.narengi.android.content.HostProfileDeserializer;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.HostContentRecyclerAdapter;
 

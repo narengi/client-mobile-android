@@ -183,10 +183,10 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void setupViews() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        /*drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         llErrorContainer = findViewById(R.id.llErrorContainer);
         btnRetry = (Button) findViewById(R.id.btnRetry);
-        lstSearchList = (ListView) findViewById(R.id.lstSearchList);
+
         etToolbarSearch = (EditText) findViewById(R.id.etToolbarSearch);
         imgDrawerMenu = findViewById(R.id.imgDrawerMenu);
         tvUserFullName = (TextView) findViewById(R.id.tvUserFullName);
@@ -195,10 +195,9 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
         tvWelcomeMessage = findViewById(R.id.tvWelcomeMessage);
         icon = findViewById(R.id.icon);
         lstNavigationMenu = (ListView) findViewById(R.id.lstDrawerItemsList);
-        rlFooterContainer = findViewById(R.id.rlFooterContainer);
+        rlFooterContainer = findViewById(R.id.rlFooterContainer);*/
         llLoadingLayer = findViewById(R.id.llLoadingLayer);
         rlSearchContainer = findViewById(R.id.rlSearchContainer);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srlSearchList);
         swipeRefreshLayout.setColorSchemeColors(Util.getColor(context, R.color.primary));
         swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -334,7 +333,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 //            drawerItems.add(new DrawerItem(getString(R.string.profile), R.drawable.ic_action_inbox, DrawerItem.DrawerAction.ACTION_PROFILE));
             drawerItems.add(new DrawerItem(getString(R.string.drawer_menu_settings), R.drawable.setting_ic, DrawerItem.DrawerAction.ACTION_SETTINGS));
             drawerItems.add(new DrawerItem(getString(R.string.user_guide), R.drawable.help_ic, DrawerItem.DrawerAction.ACTION_USER_GUIDE));
-            tvUserFullName = (TextView) findViewById(R.id.tvUserFullName);
+//            tvUserFullName = (TextView) findViewById(R.id.tvUserFullName);
             tvUserFullName.setText(TextUtils.isEmpty(AccountProfile.getLoggedInAccountProfile(context).getDisplayName()) ? "نام، نام خانوادگی" : AccountProfile.getLoggedInAccountProfile(context).getDisplayName());
 
             Picasso.with(context).load(Constants.SERVER_BASE_URL + "/v1" + AccountProfile.getLoggedInAccountProfile(context).getAvatar())
@@ -497,13 +496,13 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.btnRetry) {
-            page = 1;
-            startDefaultSearch(1);
-        } else if (id == R.id.imgDrawerMenu) {
-            drawerLayout.openDrawer(Gravity.RIGHT, true);
-        }
+//        int id = v.getId();
+//        if (id == R.id.btnRetry) {
+//            page = 1;
+//            startDefaultSearch(1);
+//        } else if (id == R.id.imgDrawerMenu) {
+//            drawerLayout.openDrawer(Gravity.RIGHT, true);
+//        }
     }
 
     @Override

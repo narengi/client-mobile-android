@@ -51,7 +51,7 @@ import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.City;
 import xyz.narengi.android.content.CityDeserializer;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.AttractionsGridAdapter;
 import xyz.narengi.android.ui.adapter.CityContentRecyclerAdapter;

@@ -78,8 +78,8 @@ public class SearchListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.vpImages = (ViewPager) convertView.findViewById(R.id.vpImages);
             holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
-            holder.tvSummary = (TextView) convertView.findViewById(R.id.tvSummary);
-            holder.tvHousePrice = (TextView) convertView.findViewById(R.id.tvHousePricePerNight);
+//            holder.tvSummary = (TextView) convertView.findViewById(R.id.tvSummary);
+//            holder.tvHousePrice = (TextView) convertView.findViewById(R.id.tvHousePricePerNight);
             holder.llNarengiSuggestion = convertView.findViewById(R.id.llNarengiSuggestionContainer);
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, itemHeght);

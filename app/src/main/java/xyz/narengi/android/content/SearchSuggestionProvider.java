@@ -1,33 +1,23 @@
 package xyz.narengi.android.content;
 
 import android.app.SearchManager;
-import android.content.ContentProvider;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.SearchRecentSuggestionsProvider;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.provider.BaseColumns;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -35,11 +25,7 @@ import xyz.narengi.android.common.dto.AroundLocation;
 import xyz.narengi.android.common.dto.AroundPlaceAttraction;
 import xyz.narengi.android.common.dto.AroundPlaceCity;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
-import xyz.narengi.android.common.dto.GeoPoint;
-import xyz.narengi.android.common.dto.Host;
-import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.SuggestionsResult;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
 import xyz.narengi.android.service.SearchServiceAsyncTask;
 import xyz.narengi.android.service.SuggestionsServiceAsyncTask;
 

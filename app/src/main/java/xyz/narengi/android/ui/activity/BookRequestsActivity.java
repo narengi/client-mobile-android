@@ -1,6 +1,5 @@
 package xyz.narengi.android.ui.activity;
 
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,9 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +31,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import xyz.narengi.android.R;
-import xyz.narengi.android.common.dto.Authorization;
 import xyz.narengi.android.common.dto.BookRequest;
 import xyz.narengi.android.common.dto.BookRequestDTO;
-import xyz.narengi.android.common.dto.Credential;
-import xyz.narengi.android.content.CredentialDeserializer;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.fragment.BookRequestListFragment;
 

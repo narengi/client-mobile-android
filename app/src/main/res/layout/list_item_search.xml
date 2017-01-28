@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/vpImages"
+        android:id="@+id/ViewPagerImages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionName="@string/transition_string" />
@@ -19,7 +19,7 @@
         android:orientation="vertical">
 
         <xyz.narengi.android.ui.widget.CustomTextView
-            android:id="@+id/tvName"
+            android:id="@+id/TextViewHouseName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -34,7 +34,7 @@
             android:textStyle="bold" />
 
         <xyz.narengi.android.ui.widget.CustomTextView
-            android:id="@+id/tvSummary"
+            android:id="@+id/TextViewHouseDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -86,7 +86,7 @@
     </LinearLayout>
 
     <xyz.narengi.android.ui.widget.CustomTextView
-        android:id="@+id/tvHousePricePerNight"
+        android:id="@+id/TextViewPriceRent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

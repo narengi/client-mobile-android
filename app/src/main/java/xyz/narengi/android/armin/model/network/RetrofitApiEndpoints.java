@@ -1,6 +1,7 @@
-package xyz.narengi.android.service;
+package xyz.narengi.android.armin.model.network;
 
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -14,10 +15,10 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
-import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
+import xyz.narengi.android.armin.model.network.pojo.HouseModel;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountProfile1;
 import xyz.narengi.android.common.dto.AccountVerification;
@@ -34,7 +35,6 @@ import xyz.narengi.android.common.dto.HouseEntryInput;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.Profile;
 import xyz.narengi.android.common.dto.ProvinceCity;
-import xyz.narengi.android.common.dto.RemoveHouseImagesInfo;
 import xyz.narengi.android.common.dto.RequestVerification;
 import xyz.narengi.android.common.dto.SuggestionsResult;
 import xyz.narengi.android.common.dto.Type;
@@ -51,6 +51,11 @@ public interface RetrofitApiEndpoints {
     @GET("/v1/search")
     Call<AroundLocation[]> getAroundLocations(@Query("term") String searchTerm, @Query("filter[limit]") String filterLimit, @Query("filter[skip]") String filterSkip,
                                               @Query("position[lat]") double lat, @Query("position[lng]") double lng);
+
+    @GET("/search")
+    Call<ArrayList<HouseModel>> search(@Query("term") String searchTerm,
+                                       @Query("perpage") int perPage,
+                                       @Query("page") int page);
 
     @GET("/v1/suggestion")
     Call<SuggestionsResult> getAroundLocationSuggestions(@Query("term") String searchTerm,

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_margin="16dp"
+    app:layout_scrollFlags="scroll|enterAlways|snap">
+
+    <ImageButton
+        android:id="@+id/ImageButtonNavigationView"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:background="@drawable/transparent_alpha_orange_background_selector"
+        android:padding="12dp"
+        android:src="@drawable/ic_action_navigation_menu" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="?attr/actionBarSize"
+        android:background="@null"
+        android:hint="@string/search_hint"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textSize="13sp"
+        tools:ignore="MissingPrefix" />
+</android.support.v7.widget.CardView>

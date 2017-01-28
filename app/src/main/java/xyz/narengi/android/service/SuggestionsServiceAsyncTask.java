@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.common.dto.SuggestionsResult;
 import xyz.narengi.android.content.SuggestionsResultDeserializer;
 

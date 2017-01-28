@@ -61,13 +61,13 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ViewHolderItem viewHolderItem = (ViewHolderItem) viewHolder;
             house = houses.get(position - 1);
             viewHolderItem.tvName.setText(house.getName());
-            viewHolderItem.tvSummary.setText(house.getSummary());
+//            viewHolderItem.tvSummary.setText(house.getSummary());
             ((PicturesPagerAdapter) viewHolderItem.vpImages.getAdapter()).update(position - 1);
 
             try {
-                viewHolderItem.tvHousePricePerNight.setText(house.getPriceString());
+//                viewHolderItem.tvHousePricePerNight.setText(house.getPriceString());
             } catch (Exception localException) {
-                viewHolderItem.tvHousePricePerNight.setText(R.string.free);
+//                viewHolderItem.tvHousePricePerNight.setText(R.string.free);
             }
         }
     }
@@ -83,9 +83,9 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private class ViewHolderItem
             extends RecyclerView.ViewHolder
             implements View.OnClickListener {
-        CustomTextView tvHousePricePerNight = (CustomTextView) itemView.findViewById(R.id.tvHousePricePerNight);
+//        CustomTextView tvHousePricePerNight = (CustomTextView) itemView.findViewById(R.id.tvHousePricePerNight);
         CustomTextView tvName = (CustomTextView) itemView.findViewById(R.id.tvName);
-        CustomTextView tvSummary = (CustomTextView) itemView.findViewById(R.id.tvSummary);
+//        CustomTextView tvSummary = (CustomTextView) itemView.findViewById(R.id.tvSummary);
         ViewPager vpImages = (ViewPager) itemView.findViewById(R.id.vpImages);
 
         ViewHolderItem(View view) {

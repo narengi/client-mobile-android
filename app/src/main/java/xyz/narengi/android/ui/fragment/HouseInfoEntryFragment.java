@@ -23,7 +23,7 @@ import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.Location;
 import xyz.narengi.android.common.dto.ProvinceCity;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.SpinnerArrayAdapter;
 

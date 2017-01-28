@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,7 +21,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +34,7 @@ import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.House;
 import xyz.narengi.android.common.dto.HouseAvailableDates;
 import xyz.narengi.android.common.dto.ImageInfo;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.HostHousesContentRecyclerAdapter;
 

@@ -7,9 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -28,11 +26,10 @@ import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AccountProfile;
 import xyz.narengi.android.common.dto.AccountProfile1;
 import xyz.narengi.android.common.dto.House;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.ViewProfileAdapter;
 import xyz.narengi.android.ui.widget.CustomTextView;
-import xyz.narengi.android.ui.widget.ScrollUtils;
 
 public class ViewProfileActivity1 extends AppCompatActivity  {
     private ViewProfileAdapter adapter;

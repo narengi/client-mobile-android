@@ -40,7 +40,7 @@ import xyz.narengi.android.R;
 import xyz.narengi.android.common.dto.AroundPlaceHouse;
 import xyz.narengi.android.common.dto.Attraction;
 import xyz.narengi.android.content.AttractionDeserializer;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
 import xyz.narengi.android.ui.adapter.AttractionContentRecyclerAdapter;
 import xyz.narengi.android.ui.adapter.ImageViewPagerAdapter;

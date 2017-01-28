@@ -1,16 +1,11 @@
 package xyz.narengi.android.ui.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -18,13 +13,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -33,7 +24,6 @@ import android.widget.Toast;
 
 import com.byagowi.persiancalendar.Entity.Day;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,9 +44,8 @@ import xyz.narengi.android.common.dto.HouseEntryInput;
 import xyz.narengi.android.common.dto.HouseEntryPrice;
 import xyz.narengi.android.common.dto.ImageInfo;
 import xyz.narengi.android.common.dto.Location;
-import xyz.narengi.android.service.RetrofitApiEndpoints;
+import xyz.narengi.android.armin.model.network.RetrofitApiEndpoints;
 import xyz.narengi.android.service.RetrofitService;
-import xyz.narengi.android.ui.dialog.BetaDialog;
 import xyz.narengi.android.ui.fragment.HouseDatesEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseEntryBaseFragment;
 import xyz.narengi.android.ui.fragment.HouseFeaturesEntryFragment;
@@ -66,7 +55,6 @@ import xyz.narengi.android.ui.fragment.HouseInfoEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseMapEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseRoomEntryFragment;
 import xyz.narengi.android.ui.fragment.HouseTypeEntryFragment;
-import xyz.narengi.android.ui.util.AlertUtils;
 import xyz.narengi.android.util.DateUtils;
 
 /**
