@@ -114,9 +114,8 @@ public class ExploreFragment extends Fragment implements ExploreView, SwipeRefre
     @Override
     public void showError(String message) {
         if (getView() != null) {
-            Snackbar.make(getView(), message, Snackbar.LENGTH_LONG)
+            Snackbar.make(getView(), message, Snackbar.LENGTH_INDEFINITE)
                     .setAction("تلاش مجدد", this)
-                    .setDuration(4000)
                     .show();
         }
     }

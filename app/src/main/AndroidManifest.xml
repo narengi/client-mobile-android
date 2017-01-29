@@ -277,6 +277,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".armin.view.activities.AuthenticationActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

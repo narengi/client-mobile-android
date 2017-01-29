@@ -81,21 +81,21 @@ public class SignInFragment extends Fragment {
         if (view == null)
             return null;
 
-        Button loginButton = (Button) view.findViewById(R.id.login_loginButton);
+//        Button loginButton = (Button) view.findViewById(R.id.login_loginButton);
 
-        this.etxtEmail = (EditText) view.findViewById(R.id.login_email);
-        this.etxtPassword = (EditText) view.findViewById(R.id.login_password);
-        this.tilEmailLayout = (TextInputLayout) view.findViewById(R.id.tilEmailInputLayout);
-        this.tilPasswordLayout = (TextInputLayout) view.findViewById(R.id.tilPasswordInputLayout);
+//        this.etxtEmail = (EditText) view.findViewById(R.id.login_email);
+//        this.etxtPassword = (EditText) view.findViewById(R.id.login_password);
+//        this.tilEmailLayout = (TextInputLayout) view.findViewById(R.id.tilEmailInputLayout);
+//        this.tilPasswordLayout = (TextInputLayout) view.findViewById(R.id.tilPasswordInputLayout);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        /*loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String email = etxtEmail.getText().toString();
                 String password = etxtPassword.getText().toString();
                 onLoginButtonPressed(email, password);
             }
-        });
+        });*/
         this.etxtPassword.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -110,13 +110,13 @@ public class SignInFragment extends Fragment {
         });
 
 
-        view.findViewById(R.id.login_resetPasswordButton).setOnClickListener(new View.OnClickListener() {
+        /*view.findViewById(R.id.login_resetPasswordButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 new BetaDialog(getActivity()).show();
             }
-        });
+        });*/
 
         return view;
     }

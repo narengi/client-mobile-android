@@ -61,7 +61,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ActionBarRtlizer rtlizer;
-    private ImageView imgBackground;
+    //private ImageView imgBackground;
     private View loadingLayer;
     private ProgressDialog progressDialog;
 
@@ -77,29 +77,29 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED);
 
         viewPager = (ViewPager) findViewById(R.id.login_viewpager);
-        loadingLayer = findViewById(R.id.llLoadingLayer);
-        imgBackground = (ImageView) findViewById(R.id.imgBackground);
+        //loadingLayer = findViewById(R.id.llLoadingLayer);
+        //imgBackground = (ImageView) findViewById(R.id.imgBackground);
         setupViewPager();
 
         tabLayout = (TabLayout) findViewById(R.id.login_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        findViewById(R.id.rootLayout).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//        findViewById(R.id.rootLayout).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//
+//            @Override
+//            public void onGlobalLayout() {
+//                int heightDiff = findViewById(R.id.rootLayout).getRootView().getHeight() - findViewById(R.id.rootLayout).getHeight();
+//                if (heightDiff > Util.convertDpToPx(SignInSignUpActivity.this, 200)) { // if more than 200 dp, it's probably a keyboard...
+//                    toolbar.setVisibility(View.GONE);
+//                    findViewById(R.id.llWelcomeContainer).setVisibility(View.GONE);
+//                } else {
+//                    toolbar.setVisibility(View.VISIBLE);
+//                    findViewById(R.id.llWelcomeContainer).setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
 
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = findViewById(R.id.rootLayout).getRootView().getHeight() - findViewById(R.id.rootLayout).getHeight();
-                if (heightDiff > Util.convertDpToPx(SignInSignUpActivity.this, 200)) { // if more than 200 dp, it's probably a keyboard...
-                    toolbar.setVisibility(View.GONE);
-                    findViewById(R.id.llWelcomeContainer).setVisibility(View.GONE);
-                } else {
-                    toolbar.setVisibility(View.VISIBLE);
-                    findViewById(R.id.llWelcomeContainer).setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        imgBackground.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        /*imgBackground.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -113,7 +113,7 @@ public class SignInSignUpActivity extends AppCompatActivity implements SignUpFra
                 CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) imgBackground.getLayoutParams();
                 params.height = screenHeight;
             }
-        });
+        });*/
 
 
         tabLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

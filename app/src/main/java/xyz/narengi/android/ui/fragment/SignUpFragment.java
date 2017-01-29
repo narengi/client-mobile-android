@@ -78,11 +78,11 @@ public class SignUpFragment extends Fragment {
             return null;
 
 
-        this.tilPassword = (TextInputLayout) view.findViewById(R.id.tilPasswordInputLayout);
-        this.tilEmail = (TextInputLayout) view.findViewById(R.id.tilEmailInputLayout);
-        this.etEmail = (EditText) view.findViewById(R.id.etEmail);
-        this.etPassword = (EditText) view.findViewById(R.id.etPassword);
-        this.btnRegister = (Button) view.findViewById(R.id.btnRegister);
+//        this.tilPassword = (TextInputLayout) view.findViewById(R.id.tilPasswordInputLayout);
+//        this.tilEmail = (TextInputLayout) view.findViewById(R.id.tilEmailInputLayout);
+//        this.etEmail = (EditText) view.findViewById(R.id.etEmail);
+//        this.etPassword = (EditText) view.findViewById(R.id.etPassword);
+//        this.btnRegister = (Button) view.findViewById(R.id.btnRegister);
 
         final Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/IRAN-Sans.ttf");
 

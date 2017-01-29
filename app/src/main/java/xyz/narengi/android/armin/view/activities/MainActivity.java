@@ -1,6 +1,7 @@
 package xyz.narengi.android.armin.view.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
                 mainPresenter.menuHomeClick();
                 break;
             case R.id.MenuLoginRegister:
+                mainPresenter.menuAuthenticationClick();
                 break;
         }
         showNavigationView(false);
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
 
     @Override
     public void openAuthenticationScreen() {
-
+        startActivity(new Intent(MainActivity.this, AuthenticationActivity.class));
     }
 
 

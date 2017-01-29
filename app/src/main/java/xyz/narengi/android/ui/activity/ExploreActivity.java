@@ -196,7 +196,7 @@ public class ExploreActivity extends AppCompatActivity implements View.OnClickLi
         icon = findViewById(R.id.icon);
         lstNavigationMenu = (ListView) findViewById(R.id.lstDrawerItemsList);
         rlFooterContainer = findViewById(R.id.rlFooterContainer);*/
-        llLoadingLayer = findViewById(R.id.llLoadingLayer);
+        //llLoadingLayer = findViewById(R.id.llLoadingLayer);
         rlSearchContainer = findViewById(R.id.rlSearchContainer);
         swipeRefreshLayout.setColorSchemeColors(Util.getColor(context, R.color.primary));
         swipeRefreshLayout.setOnRefreshListener(this);
