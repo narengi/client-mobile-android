@@ -738,21 +738,21 @@ public class HostHousesContentRecyclerAdapter extends RecyclerView.Adapter<Recyc
         public HostHousesItemViewHolder(View itemView) {
             super(itemView);
 
-            houseInfoLayout = (LinearLayout) itemView.findViewById(R.id.host_my_houses_itemInfoLayout);
-            houseImageView = (ImageView) itemView.findViewById(R.id.host_my_houses_itemImage);
-            houseTitleTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemTitle);
-            houseDatesTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemAvailableDate);
-            housePriceTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemPrice);
-            imageProgressBarLayout = (LinearLayout) itemView.findViewById(R.id.host_my_houses_progressBarLayout);
-            imageProgressBar = (ProgressBar) itemView.findViewById(R.id.host_my_houses_progressBar);
-
-            houseTypeTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemHouseType);
-            houseBedsTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemBeds);
-            houseRoomsTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemRooms);
-
-            viewHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemViewButton);
-            editHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemEditButton);
-            removeHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemRemoveButton);
+//            houseInfoLayout = (LinearLayout) itemView.findViewById(R.id.host_my_houses_itemInfoLayout);
+//            houseImageView = (ImageView) itemView.findViewById(R.id.host_my_houses_itemImage);
+//            houseTitleTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemTitle);
+//            houseDatesTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemAvailableDate);
+//            housePriceTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemPrice);
+//            imageProgressBarLayout = (LinearLayout) itemView.findViewById(R.id.host_my_houses_progressBarLayout);
+//            imageProgressBar = (ProgressBar) itemView.findViewById(R.id.host_my_houses_progressBar);
+//
+//            houseTypeTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemHouseType);
+//            houseBedsTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemBeds);
+//            houseRoomsTextView = (TextView) itemView.findViewById(R.id.host_my_houses_itemRooms);
+//
+//            viewHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemViewButton);
+//            editHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemEditButton);
+//            removeHouseButton = (Button) itemView.findViewById(R.id.host_my_houses_itemRemoveButton);
         }
     }
 //

@@ -6,11 +6,11 @@ import xyz.narengi.android.armin.view.interfaces.main.MainActivityView;
  * Created by arminghm on 1/25/17.
  */
 
-public class MainPresenter {
+public class MainActivityPresenter {
     MainActivityView mainActivityView;
     boolean userLoggedIn = false;
 
-    public MainPresenter(MainActivityView mainActivityView) {
+    public MainActivityPresenter(MainActivityView mainActivityView) {
         this.mainActivityView = mainActivityView;
     }
 

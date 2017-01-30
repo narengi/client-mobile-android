@@ -8,6 +8,7 @@ import xyz.narengi.android.armin.dependency.modules.NetModule;
 import xyz.narengi.android.armin.presenter.auth.LoginPresenter;
 import xyz.narengi.android.armin.presenter.auth.RegisterPresenter;
 import xyz.narengi.android.armin.presenter.main.ExplorePresenter;
+import xyz.narengi.android.armin.presenter.main.UserPlacesForHostingPresenter;
 
 /**
  * Created by arminghm on 1/25/17.
@@ -21,4 +22,6 @@ public interface NetComponent {
     void inject(LoginPresenter loginPresenter);
 
     void inject(RegisterPresenter registerPresenter);
+
+    void inject(UserPlacesForHostingPresenter userPlacesForHostingPresenter);
 }

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="xyz.narengi.android.ui.activity.HostHousesActivity"
-    tools:showIn="@layout/activity_host_houses">
+    tools:showIn="@layout/fragment_user_places_for_hosting">
 
 
 </android.support.v4.widget.NestedScrollView>

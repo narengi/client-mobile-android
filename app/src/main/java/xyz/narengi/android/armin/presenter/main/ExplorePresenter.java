@@ -40,7 +40,7 @@ public class ExplorePresenter {
         this.exploreView = exploreView;
     }
 
-    public void detachView() {
+    public void detachView() {// TODO: arminghm 1/30/17 Check everywhere for exploreView != null.
         exploreView = null;
     }
 
@@ -68,7 +68,7 @@ public class ExplorePresenter {
         //region Network Api
         RetrofitApiEndpoints apiEndpoints = retrofit.create(RetrofitApiEndpoints.class);
         // TODO: arminghm 1/27/17 This should be explore API not search :|
-        Call<ArrayList<HouseModel>> call = apiEndpoints.search("", 20, 1);
+        /*Call<ArrayList<HouseModel>> call = apiEndpoints.search("", 20, 1);
         call.enqueue(new Callback<ArrayList<HouseModel>>() {
             @Override
             public void onResponse(Call<ArrayList<HouseModel>> call, Response<ArrayList<HouseModel>> response) {
@@ -79,7 +79,7 @@ public class ExplorePresenter {
             public void onFailure(Call<ArrayList<HouseModel>> call, Throwable t) {
                 exploreView.showError("NetworkError");
             }
-        });
+        });*/
         //endregion
 
         //region Temporary loading

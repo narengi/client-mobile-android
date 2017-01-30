@@ -17,9 +17,11 @@ import android.widget.TextView;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 import xyz.narengi.android.R;
-import xyz.narengi.android.armin.presenter.main.MainPresenter;
+import xyz.narengi.android.armin.presenter.main.MainActivityPresenter;
 import xyz.narengi.android.armin.view.fragments.main.ExploreFragment;
+import xyz.narengi.android.armin.view.fragments.main.UserPlacesForHostingFragment;
 import xyz.narengi.android.armin.view.interfaces.main.MainActivityView;
+import xyz.narengi.android.armin.view.interfaces.main.UserPlacesForHostingView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView
         .OnNavigationItemSelectedListener, ExploreFragment.ExplorerFragmentClickListener,
@@ -27,11 +29,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String EXPLORE_FRAGMENT_TAG = "EXPLORE_FRAGMENT";
+    private static final String USER_PLACES_FOR_HOSTING_FRAGMENT_TAG = "USER_PLACES_FOR_HOSTING_FRAGMENT";
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private TextView textViewHosting;
-    private MainPresenter mainPresenter;
+    private MainActivityPresenter mainActivityPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         // Set clickListener for FrameLayout in the NavigationView Header.
         navigationView.getHeaderView(0).setOnClickListener(this);
 
-        mainPresenter = new MainPresenter(this);
+        mainActivityPresenter = new MainActivityPresenter(this);
         // Show ExplorerFragment and check the home item on NavigationView.
         navigationView.setCheckedItem(R.id.MenuHome);
         navigationView.getMenu().performIdentifierAction(R.id.MenuHome, 0);
@@ -68,10 +71,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.MenuHome:
-                mainPresenter.menuHomeClick();
+                mainActivityPresenter.menuHomeClick();
                 break;
             case R.id.MenuLoginRegister:
-                mainPresenter.menuAuthenticationClick();
+                mainActivityPresenter.menuAuthenticationClick();
                 break;
         }
         showNavigationView(false);
@@ -106,7 +109,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView
 
     @Override
     public void openHostingScreen() {
-
+        UserPlacesForHostingFragment userPlacesForHostingFragment;
+        userPlacesForHostingFragment = (UserPlacesForHostingFragment) getSupportFragmentManager()
+                .findFragmentByTag(USER_PLACES_FOR_HOSTING_FRAGMENT_TAG);
+        if (userPlacesForHostingFragment == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.FrameLayoutFragmentContainer,
+                            new UserPlacesForHostingFragment(),
+                            USER_PLACES_FOR_HOSTING_FRAGMENT_TAG)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     @Override
@@ -126,12 +140,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.TextViewHosting:
-                mainPresenter.menuHostingClick();
+                mainActivityPresenter.menuHostingClick();
                 showNavigationView(!drawerLayout.isDrawerOpen(Gravity.RIGHT));
                 break;
             default:
                 // This is the ClickListener for NavigationView Header.
-                mainPresenter.menuProfileClick();
+                mainActivityPresenter.menuProfileClick();
+                showNavigationView(!drawerLayout.isDrawerOpen(Gravity.RIGHT));
                 break;
         }
     }

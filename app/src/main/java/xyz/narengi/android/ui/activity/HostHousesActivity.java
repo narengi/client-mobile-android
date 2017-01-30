@@ -53,8 +53,8 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_host_houses);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.host_houses_swipeRefreshLayout);
+        setContentView(R.layout.fragment_user_places_for_hosting);
+//        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.host_houses_swipeRefreshLayout);
 
 //        swipeRefreshLayout.setActivated(true);
 //        swipeRefreshLayout.dispatchSetActivated(true);
@@ -91,21 +91,21 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.host_houses_addHouseFab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openAddHouse();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.host_houses_addHouseFab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                openAddHouse();
+//            }
+//        });
     }
 
     private void setPageTitle(String title) {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.host_houses_toolbar);
-        if (toolbar != null) {
-            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
-            titleTextView.setText(title);
-        }
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.host_houses_toolbar);
+//        if (toolbar != null) {
+//            TextView titleTextView = (TextView) toolbar.findViewById(R.id.text_toolbar_title);
+//            titleTextView.setText(title);
+//        }
     }
 
     @Override
@@ -141,7 +141,7 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
 
 
     private void setupToolbar() {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.host_houses_toolbar);
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.host_houses_toolbar);
 
         /*Drawable backButtonDrawable = getResources().getDrawable(R.drawable.ic_action_back);
         backButtonDrawable.setColorFilter(getResources().getColor(android.R.color.holo_orange_dark), PorterDuff.Mode.SRC_ATOP);
@@ -153,34 +153,34 @@ public class HostHousesActivity extends AppCompatActivity implements HostHousesC
             }
         });*/
 
-        if (toolbar != null) {
-            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onBackPressed();
-                }
-            });
-        }
-
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-//            actionBar.setHomeButtonEnabled(true);
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//            actionBar.setDisplayShowHomeEnabled(true);
-//            actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setDisplayUseLogoEnabled(false);
-            actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-//            actionBar.setTitle(getString(R.string.host_houses_page_title));
-//            actionBar.setWindowTitle(getString(R.string.host_houses_page_title));
-            setPageTitle(getString(R.string.host_houses_page_title));
-        }
+//        if (toolbar != null) {
+//            ImageButton backButton = (ImageButton) toolbar.findViewById(R.id.icon_toolbar_back);
+//            backButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    onBackPressed();
+//                }
+//            });
+//        }
+//
+//        setSupportActionBar(toolbar);
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null) {
+////            actionBar.setHomeButtonEnabled(true);
+////            actionBar.setDisplayHomeAsUpEnabled(true);
+////            actionBar.setDisplayShowHomeEnabled(true);
+////            actionBar.setDisplayShowTitleEnabled(true);
+//            actionBar.setDisplayUseLogoEnabled(false);
+//            actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//
+////            actionBar.setTitle(getString(R.string.host_houses_page_title));
+////            actionBar.setWindowTitle(getString(R.string.host_houses_page_title));
+//            setPageTitle(getString(R.string.host_houses_page_title));
+//        }
     }
 
     private void setupContentRecyclerView() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
+//        mRecyclerView = (RecyclerView) findViewById(R.id.host_houses_recyclerView);
 
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
