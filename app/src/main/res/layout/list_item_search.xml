@@ -18,7 +18,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <xyz.narengi.android.ui.widget.CustomTextView
+        <TextView
             android:id="@+id/TextViewHouseName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <xyz.narengi.android.ui.widget.CustomTextView
+        <TextView
             android:id="@+id/TextViewHouseDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                 android:orientation="horizontal"
                 android:visibility="gone">
 
-                <xyz.narengi.android.ui.widget.CustomTextView
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -85,7 +85,7 @@
 
     </LinearLayout>
 
-    <xyz.narengi.android.ui.widget.CustomTextView
+    <TextView
         android:id="@+id/TextViewPriceRent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

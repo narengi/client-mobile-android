@@ -279,9 +279,9 @@
         </activity>
         <activity
             android:name=".armin.view.activities.AuthenticationActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".armin.view.activities.ProfileActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

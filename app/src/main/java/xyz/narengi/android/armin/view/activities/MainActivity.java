@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView
 
     @Override
     public void openProfileScreen() {
-
+        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
     }
 
     @Override

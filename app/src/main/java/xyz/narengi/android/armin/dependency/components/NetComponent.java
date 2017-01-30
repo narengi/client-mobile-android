@@ -9,6 +9,7 @@ import xyz.narengi.android.armin.presenter.auth.LoginPresenter;
 import xyz.narengi.android.armin.presenter.auth.RegisterPresenter;
 import xyz.narengi.android.armin.presenter.main.ExplorePresenter;
 import xyz.narengi.android.armin.presenter.main.UserPlacesForHostingPresenter;
+import xyz.narengi.android.armin.presenter.profile.ProfileDetailsPresenter;
 
 /**
  * Created by arminghm on 1/25/17.
@@ -24,4 +25,6 @@ public interface NetComponent {
     void inject(RegisterPresenter registerPresenter);
 
     void inject(UserPlacesForHostingPresenter userPlacesForHostingPresenter);
+
+    void inject(ProfileDetailsPresenter profileDetailsPresenter);
 }

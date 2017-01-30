@@ -8,7 +8,8 @@ import xyz.narengi.android.armin.view.interfaces.main.MainActivityView;
 
 public class MainActivityPresenter {
     MainActivityView mainActivityView;
-    boolean userLoggedIn = false;
+    // TODO: arminghm 1/31/17 This must be set true if the user was logged in.
+    boolean userLoggedIn = true;
 
     public MainActivityPresenter(MainActivityView mainActivityView) {
         this.mainActivityView = mainActivityView;
