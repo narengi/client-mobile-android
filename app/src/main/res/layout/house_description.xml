@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/house_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="10dp"
+        android:background="@android:color/transparent"
+        android:gravity="right|center_vertical"
+        android:padding="0dp"
+        android:singleLine="false"
+        android:textColor="@android:color/tertiary_text_dark"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textStyle="bold" />
+
+</LinearLayout>

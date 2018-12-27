@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_gray_light"
+    android:fitsSystemWindows="true"
+    tools:context="xyz.narengi.android.ui.activity.HostHousesActivity">
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/host_houses_progressLayout"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="fill_parent"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical"-->
+    <!-->-->
+
+    <!--<ProgressBar-->
+    <!--android:id="@+id/host_houses_progressBar"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/host_houses_swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@android:color/transparent">
+
+        <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_gray_light">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/host_houses_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_gray_light"
+                android:clipToPadding="false"
+                android:paddingBottom="80dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </android.support.design.widget.CoordinatorLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/host_houses_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:background="@android:color/white"
+        android:elevation="0dp"
+        android:gravity="top|center_horizontal"
+        android:paddingTop="0dp"
+        app:elevation="0dp">
+
+        <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/host_houses_toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="0dp"-->
+        <!--android:background="?attr/colorPrimary"-->
+        <!--android:elevation="0dp"-->
+        <!--android:minHeight="?attr/actionBarSize"-->
+        <!--android:padding="0dp"-->
+        <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
+        <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+        <!--app:titleTextColor="@color/text_gray_dark" />-->
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/host_houses_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="center_vertical">
+
+                <!--selectableItemBackgroundBorderless-->
+                <ImageButton
+                    android:id="@+id/icon_toolbar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ic_action_back"
+                    android:clickable="true"
+                    android:focusable="true" />
+                <!--style="@style/IconFont.XLarge"-->
+
+                <xyz.narengi.android.ui.widget.CustomTextView
+                    android:id="@+id/text_toolbar_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginRight="16dp"
+                    android:layout_toLeftOf="@+id/icon_toolbar_back"
+                    android:gravity="right|center_vertical" />
+                <!--style="@style/Textview.Dark.MediumLarge"-->
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/orange_light" />
+
+        <!--<android.support.design.widget.CollapsingToolbarLayout-->
+        <!--android:id="@+id/host_houses_collapse_toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:fitsSystemWindows="true"-->
+        <!--app:contentScrim="?attr/colorPrimary"-->
+        <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
+
+        <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/host_houses_toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?attr/actionBarSize"-->
+        <!--app:layout_collapseMode="pin"-->
+        <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
+
+        <!--</android.support.design.widget.CollapsingToolbarLayout>-->
+    </android.support.design.widget.AppBarLayout>
+
+    <!--<include layout="@layout/content_host_houses" />-->
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/host_houses_addHouseFab"
+        android:layout_width="wrap_content"
+        app:backgroundTint="@color/green"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="#fff"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_anchor="@id/host_houses_recyclerView"
+        app:layout_anchorGravity="bottom|end" />
+
+</android.support.design.widget.CoordinatorLayout>

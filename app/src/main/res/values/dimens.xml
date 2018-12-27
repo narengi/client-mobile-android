@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="font_size_x_large">36sp</dimen>
+    <dimen name="font_size_large">24sp</dimen>
+    <dimen name="font_size_normal">18sp</dimen>
+    <dimen name="font_size_small">16sp</dimen>
+
+    <dimen name="city_title_bottom_margin">24dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="expandable_list_item_height">64dp</dimen>
+    <dimen name="featureIconSize">34dp</dimen>
+
+    <dimen name="parallax_image_height">160dp</dimen>
+    <dimen name="parallax_image_height2">230dp</dimen>
+</resources>

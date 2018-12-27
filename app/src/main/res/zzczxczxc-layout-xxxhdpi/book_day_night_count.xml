@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    >
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/book_day_night_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="8dip"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/orange_light"
+        android:background="@android:color/transparent"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:background="@android:color/darker_gray"
+        />
+
+</LinearLayout>

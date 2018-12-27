@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- SignIn, signUp -->
+    <string name="login_register_page_title">ورود/ثبت نام</string>
+    <string name="login_title_1">به خانه خود</string>
+    <string name="login_title_2">خوش آمدید.</string>
+
+    <string name="login_email_hint">ایمیل</string>
+    <string name="login_password_hint">کلمه‌عبور</string>
+
+    <string name="login_button">ورود</string>
+    <string name="register_button">ثبت نام</string>
+
+    <string name="login_reset_password_caption">کلمه عبور خود را فراموش کرده اید؟</string>
+    <string name="login_reset_password_button">آن را بازنشانی کنید</string>
+
+    <string name="profile_skip_update_button">فعلا نه</string>
+    <string name="profile_complete_button">تکمیل پروفایل کاربری</string>
+    <string name="profile_registration_success_title">شما با موفقیت عضو نارنگی شدید.</string>
+    <string name="profile_registration_success_message">برای استفاده از خدمات و امکانات نارنگی می بایست پروفایل کاربری خود را کامل کنید. پیشنهادمی کنیم همین حالا اقدام به تکمیل نمایید.</string>
+    <string name="profile_registration_success_dialog_message">ذخیره شد</string>
+
+    <!-- Edit profile -->
+    <string name="edit_profile_page_title">ویرایش پروفایل</string>
+    <string name="edit_profile_add_image">افزودن تصویر پروفایل</string>
+    <string name="edit_profile_name_hint">نام</string>
+    <string name="edit_profile_family_hint">نام خانوادگی</string>
+    <string name="edit_profile_gender_hint">جنسیت</string>
+    <string name="edit_profile_birth_date_hint">تاریخ تولد</string>
+    <string name="edit_profile_province_hint">استان</string>
+    <string name="edit_profile_city_hint">شهر</string>
+    <string name="edit_profile_email_hint">ایمیل</string>
+    <string name="edit_profile_mobile_number_hint">تلفن همراه</string>
+    <string name="edit_profile_short_bio_hint">معرفی کوتاه از من…</string>
+
+    <string-array name="profile_capture_photo_array">
+        <item>باز کردن دوربین</item>
+        <item>انتخاب از گالری</item>
+        <item>انصراف</item>
+    </string-array>
+
+
+    <string-array name="gender_array">
+        <item>مرد</item>
+        <item>زن</item>
+    </string-array>
+
+    <string name="edit_profile_save_menu">ذخیره</string>
+
+
+    <!-- View profile -->
+    <string name="view_profile_page_title">پروفایل</string>
+    <string name="view_profile_member_from">عضو نارنگی از سال ۱۳۹۴</string>
+    <string name="view_profile_verification_unverified_button">هویت مرا تایید کن</string>
+    <string name="view_profile_verification_pending_button">هویت شما در حال تایید است</string>
+    <string name="view_profile_verification_verified_button">تغییر مشخصات هویتی</string>
+    <string name="view_profile_reservations_button">سوابق رزرواسیون</string>
+    <string name="view_profile_comments_button">نظرات من</string>
+    <string name="view_profile_introduce_button">معرفی به دوستان</string>
+    <string name="view_profile_logout">خروج از حساب کاربری</string>
+
+</resources>

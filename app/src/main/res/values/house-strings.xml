@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="house_rating_description">(رای %s(</string>
+
+    <string name="house_bed_count">%s تخت</string>
+    <string name="house_guest_count">%s مهمان</string>
+    <string name="house_bedroom_count">%s اتاق خواب</string>
+
+    <string name="house_type_house">خانه</string>
+    <string name="house_type_apartment">آپارتمان</string>
+    <string name="house_type_villa">ویلایی</string>
+
+    <string name="house_features_dialog_title">تسهیلات</string>
+    <string name="house_features_dialog_close_button">بستن</string>
+
+    <string name="house_book_button">اجاره می کنم</string>
+
+    <string name="house_user_rating">بر اساس %s رای</string>
+
+    <string name="house_host_profile_button">پروفایل مالک</string>
+    <string name="house_host_contact_button">ارتباط با مالک</string>
+    <string name="house_extra_services_button">خدمات و قیمت های اضافی</string>
+    <string name="house_terms_button">شرایط و قوانین</string>
+
+</resources>

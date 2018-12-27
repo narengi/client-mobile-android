@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="fill_parent"-->
+    <!--android:padding="5dp"-->
+    <!--android:background="@android:color/transparent"-->
+    <!-->-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/city_attractionsHeaderLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:orientation="horizontal"
+    android:background="@android:color/white"
+    android:focusable="false"
+    android:clickable="false"
+    >
+
+    <!--<xyz.narengi.android.ui.widget.CustomTextView-->
+        <!--android:id="@+id/search_result_item_title"-->
+        <!--style="@android:style/TextAppearance.Medium"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="right|center_vertical"-->
+        <!--android:layout_gravity="right|center_vertical"-->
+        <!--/>-->
+    <!--<xyz.narengi.android.ui.widget.CustomTextView-->
+        <!--android:id="@+id/search_result_item_summary"-->
+        <!--style="@android:style/TextAppearance.Small"-->
+        <!--android:maxLines="1"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="right|center_vertical"-->
+        <!--android:layout_gravity="right|center_vertical"-->
+        <!--/>-->
+
+    <!--<android.support.v7.internal.widget.TintImageView-->
+    <!--<ImageButton-->
+    <ImageView
+        android:id="@+id/search_result_item_icon"
+        style="?attr/actionButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:contentDescription=""
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:src="@android:drawable/ic_menu_recent_history"
+        android:background="@android:color/white"
+        android:clickable="false"
+        />
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/search_result_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/search_result_item_icon"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="right|center_vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="0dp"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textStyle="bold"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:clickable="false"
+        android:textColor="@android:color/black"
+        />
+
+</RelativeLayout>
+<!--</LinearLayout>-->

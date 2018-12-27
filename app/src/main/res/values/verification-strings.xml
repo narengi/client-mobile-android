@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Verification intro -->
+    <string name="verification_intro_page_title">تایید هویت</string>
+    <string name="verification_intro_message_one_1">فرآیند تایید هویت نارنگی بسیار ساده</string>
+    <string name="verification_intro_message_one_2">است و تنها راهی است که به ایجاد</string>
+    <string name="verification_intro_message_one_3">اعتماد میان کاربران کمک می کند</string>
+    <string name="verification_intro_message_two_1">نارنگی با استفاده از شماره تلفن، ایمیل و تصویر</string>
+    <string name="verification_intro_message_two_2">مدرک شناسایی رسمی شما، اقدام به تایید هویت</string>
+    <string name="verification_intro_message_two_3">شما می کند</string>
+    <string name="verification_intro_start_button">شروع فرآیند</string>
+
+    <!-- Verification view -->
+    <string name="verification_view_page_title">تایید هویت</string>
+    <string name="verification_view_message">فرآیند تایید هویت شما از طرف نارنگی در حال انجام است. در صورت تایید هویت از طریق ایمیل به شما اطلاع رسانی خواهد شد.</string>
+    <string name="verification_view_identity_card_caption">تصویر مدرک شناسایی</string>
+    <string name="verification_view_email_caption">ایمیل</string>
+    <string name="verification_view_cell_number_caption">تلفن همراه</string>
+
+    <!-- Mobile input -->
+    <string name="mobile_input_page_title">دریافت تلفن همراه</string>
+    <string name="mobile_input_caption">شماره تلفن همراه خود را وارد کنید.</string>
+    <string name="mobile_input_mobile_caption">تلفن همراه</string>
+    <string name="mobile_input_mobile_hint">۰۹*********</string>
+    <string name="mobile_input_send_button">تایید شماره تلفن همراه</string>
+
+    <!-- Mobile verifications -->
+    <string name="mobile_verification_page_title">تایید تلفن همراه</string>
+    <string name="mobile_verification_caption">کد ۴ رقمی ارسال شده را اینجا وارد کنید.</string>
+    <string name="mobile_verification_resend_caption">در صورت دریافت نکردن پیامک، علیات را دوباره تکرار نمایید.</string>
+    <string name="mobile_verification_send_button">ارسال</string>
+    <string name="mobile_verification_success_message">تایید شد</string>
+
+    <!-- Identity card verifications -->
+    <string name="identity_card_page_title">ارسال مدرک شناسایی</string>
+    <string name="identity_card_message_one">از مدرک شناسایی خود مانند کارت ملی یا شناسنامه عکس بگیرید و یا اگر از قبل تصویر آن را در گالری خود دارید آن را انتخاب کنید.</string>
+    <string name="identity_card_message_two">اطلاعات مدرک شناسایی شما باید با اطلاعات کاربری شما در نارنگی همخوانی داشته باشد. در غیر اینصورت نارنگی قادر به احراز هویت شما نیست.</string>
+    <string name="identity_card_select_photo_button">انتخاب تصویر مدرک شناسایی</string>
+    <string name="identity_card_select_photo_camera">عکس گرفتن با دوربین</string>
+    <string name="identity_card_select_photo_gallery">انتخاب از گالری تلفن همراه</string>
+    <string name="identity_card_select_photo_cancel">لغو</string>
+    <string name="identity_card_send_action_button">ارسال</string>
+    <string name="identity_card_no_photo_selected">ابتدا عکس کارت شناسایی را انتخاب نمایید.</string>
+
+    <!-- Verification confirm -->
+    <string name="verification_confirm_page_title">تایید هویت</string>
+    <string name="verification_confirm_message_one">با تشکر از شما!\nفرآیند درخواست تایید هویت\nشما به نارنگی ارسال شد.</string>
+    <!--<string name="verification_confirm_message_one_2">فرآیند درخواست هویت</string>-->
+    <string name="verification_confirm_message_two">نارنگی پس از بررسی اطلاعات ارسالی ظرف ۴۸ ساعت آینده نتیجه فرآیند را از طریق ایمیل برای شما ارسال خواهد کرد.</string>
+
+</resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="horizontal">
+
+    <xyz.narengi.android.ui.widget.CustomButton
+        android:id="@+id/book_extra_services_item_addButton"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="right|center_vertical"
+        android:layout_weight="0"
+        android:layout_margin="16dp"
+        android:text="@string/book_extra_services_add_caption"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:textColor="@color/text_gray_light"
+        android:background="@drawable/circle_bg_gray_border"
+        />
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/book_extra_services_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="16dp"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/text_gray_light"
+        android:background="@android:color/transparent"
+        />
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/book_extra_services_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:gravity="right|center_vertical"
+        android:layout_weight="0"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="0dp"
+        android:drawablePadding="8dp"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textStyle="bold"
+        android:textColor="@color/text_gray_dark"
+        android:background="@android:color/transparent"
+        />
+
+</LinearLayout>

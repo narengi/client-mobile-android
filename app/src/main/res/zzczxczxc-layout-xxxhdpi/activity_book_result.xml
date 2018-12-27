@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="16dp"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    tools:context="xyz.narengi.android.ui.activity.BookResultActivity">
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:id="@+id/book_result_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:gravity="center"
+            android:padding="0dp"
+            android:scaleType="center"
+            android:src="@drawable/signup_successful" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:id="@+id/book_result_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center_vertical"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="24dp"
+                android:layout_weight="0"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:singleLine="false"
+                android:text="@string/profile_registration_success_title"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/green_dark"
+                />
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:id="@+id/book_result_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center_vertical"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_weight="0"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:singleLine="false"
+                android:text="@string/profile_registration_success_message"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/text_gray_dark"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <xyz.narengi.android.ui.widget.CustomButton
+        android:id="@+id/book_result_closeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/dialog_button_bg"
+        android:elevation="0dp"
+        android:gravity="center"
+        android:shadowColor="@android:color/transparent"
+        android:shadowRadius="0"
+        android:stateListAnimator="@null"
+        android:text="@string/close_button"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@android:color/tertiary_text_dark" />
+</RelativeLayout>

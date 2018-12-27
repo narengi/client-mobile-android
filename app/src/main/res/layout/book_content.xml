@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/book_arriveDepartLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_vertical"
+        android:layout_weight="0"
+        android:background="@color/bg_gray_light"
+        android:minHeight="80dp"
+        android:orientation="horizontal">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|center_vertical"
+            android:layout_weight="1"
+            android:background="@color/bg_gray_light"
+            android:orientation="vertical">
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/bg_gray_light"
+                android:gravity="center"
+                android:text="@string/book_arrive_date_caption"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/text_gray_light" />
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:id="@+id/book_arriveDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/bg_gray_light"
+                android:gravity="center"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/orange_light" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/bg_gray_light"
+            android:src="@drawable/arrive_depart_arrow" />
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center_vertical"
+            android:layout_weight="1"
+            android:background="@color/bg_gray_light"
+            android:orientation="vertical">
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/bg_gray_light"
+                android:gravity="center"
+                android:text="@string/book_depart_date_caption"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/text_gray_light" />
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:id="@+id/book_departDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/bg_gray_light"
+                android:gravity="center"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/orange_light" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_margin="0dp"
+        android:layout_weight="0"
+        android:background="@android:color/holo_red_light"
+        android:padding="0dp" />
+
+    <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="top|center_vertical"-->
+    <!--android:layout_weight="0"-->
+    <!--android:background="@color/bg_gray_light"-->
+    <!-->-->
+    <FrameLayout
+        android:id="@+id/book_calendar_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:background="@color/bg_gray_light"
+        android:minHeight="390dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            />
+
+    </FrameLayout>
+    <!--</RelativeLayout>-->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_margin="0dp"
+        android:layout_weight="0"
+        android:background="@android:color/holo_blue_dark"
+        android:padding="0dp" />
+
+</LinearLayout>

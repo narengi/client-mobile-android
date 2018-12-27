@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.ExploreActivity">
+
+
+    <RelativeLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F6F7F8">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/srlSearchList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/lstSearchList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:divider="@drawable/divider" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlSearchContainer"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:background="#FFF"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <xyz.narengi.android.ui.widget.CustomEditText
+                android:id="@+id/etToolbarSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
+                android:hint="دنبال چه جور جایی هستی؟"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:textSize="13dp" />
+
+            <ImageView
+                android:id="@+id/imgDrawerMenu"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/transparent_alpha_orange_background_selector"
+                android:padding="12dp"
+                android:src="@drawable/ic_action_navigation_menu" />
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/llLoadingLayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#AAFFFFFF"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="در حال دریافت اطلاعات" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llErrorContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#AAFFFFFF"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <xyz.narengi.android.ui.widget.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:gravity="center"
+                android:text="@string/network_error_alert_message" />
+
+            <xyz.narengi.android.ui.widget.CustomButton
+                android:id="@+id/btnRetry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginRight="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rectangle_orange_background_selector"
+                android:text="@string/retry"
+                android:textColor="#FFF" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/explore_navigationView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        app:itemTextAppearance="?android:attr/textAppearanceSmall"
+        app:itemTextColor="@color/orange_light">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start">
+
+            <RelativeLayout
+                android:id="@+id/rlDrawerHeader"
+                android:layout_width="match_parent"
+                android:background="#f7f7f7"
+                android:layout_height="151dp">
+
+                <RelativeLayout
+                    android:id="@+id/rlUserProfileInfoContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgUserAvatar"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="16dp"
+                        app:civ_border_color="@android:color/holo_red_light"
+                        app:civ_border_width="1dp" />
+
+                    <xyz.narengi.android.ui.widget.CustomTextView
+                        android:id="@+id/tvUserFullName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="4dp"
+                        android:layout_toLeftOf="@+id/imgUserAvatar"
+                        android:textColor="@color/green" />
+
+                    <View
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@+id/tvUserFullName"
+                        android:background="@drawable/list_navigation_arrow" />
+
+                </RelativeLayout>
+
+                <xyz.narengi.android.ui.widget.CustomTextView
+                    android:id="@+id/tvWelcomeMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/drawer_welcome_message"
+                    android:textColor="@color/orange_light"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/icon"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="16dp"
+                    android:visibility="gone"
+                    android:src="@mipmap/ic_launcher"
+                    app:civ_border_color="@android:color/holo_red_light"
+                    app:civ_border_width="1dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#eeeeee" />
+            </RelativeLayout>
+
+            <ListView
+                android:id="@+id/lstDrawerItemsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/rlFooterContainer"
+                android:layout_below="@+id/rlDrawerHeader"
+                android:divider="@null" />
+
+            <RelativeLayout
+                android:id="@+id/rlFooterContainer"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true">
+
+                <xyz.narengi.android.ui.widget.CustomTextView
+                    android:id="@+id/tvHostingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_gray_light"
+                    android:gravity="center_vertical"
+                    android:paddingRight="16dp"
+                    android:text="@string/drawer_menu_hosting"
+                    android:textColor="@color/orange_light" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:src="@drawable/host_ic" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_alignParentTop="true"
+                    android:background="#bfbfbf"/>
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </android.support.design.widget.NavigationView>
+
+</android.support.v4.widget.DrawerLayout>

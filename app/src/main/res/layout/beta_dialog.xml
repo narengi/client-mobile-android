@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:background="@drawable/background_dialog"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="25dp"
+    android:layout_marginBottom="25dp"
+    android:padding="8dp">
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="نارنگی"
+        android:layout_margin="4dp"
+        android:textColor="@color/green"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+
+    <xyz.narengi.android.ui.widget.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ما سخت تلاش میکنیم که انجام این عملیات در نسخه بعدی برای شما فراهم شود.
+ممنون که از نسخه آزمایشی نارنگی استفاده میکنید :)"
+        android:layout_below="@id/title"
+        android:id="@+id/text"
+        android:lineSpacingExtra="4dp"
+        android:textAlignment="center"
+        android:layout_margin="6dp"
+        android:textSize="16sp" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#ccc"
+        android:layout_below="@id/title" />
+
+
+    <xyz.narengi.android.ui.widget.CustomButton
+        style="@style/TextAppearance.AppCompat.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/close"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/button_bg_gray"
+        android:gravity="center"
+        android:paddingBottom="4dp"
+        android:layout_below="@id/text"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:text="بستن"
+        android:textColor="@color/text_gray_light" />
+
+</RelativeLayout>

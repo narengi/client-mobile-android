@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- House entry -->
+    <string name="house_entry_add_page_title">ثبت خانه جدید</string>
+    <string name="house_entry_edit_page_title">ویرایش خانه</string>
+
+    <string-array name="house_entry_item_title_array">
+        <item>اطلاعات اصلی</item>
+        <item>اطلاعات موقعیتی</item>
+        <item>امکانات</item>
+    </string-array>
+
+    <string name="house_entry_price_caption">قیمت هر شب اقامت</string>
+    <string name="house_entry_price_currency">تومان</string>
+
+</resources>

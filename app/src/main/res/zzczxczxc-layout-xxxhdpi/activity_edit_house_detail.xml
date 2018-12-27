@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/edit_house_detail_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:background="@color/bg_gray_light"
+    android:padding="0dp"
+    tools:context=".ui.activity.EditHouseDetailActivity">
+
+    <LinearLayout
+        android:id="@+id/edit_house_detail_progressLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!--<ProgressBar-->
+            <!--android:id="@+id/edit_house_detail_progressBar"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:foregroundGravity="center"-->
+            <!--android:indeterminate="false" />-->
+        <ProgressBar
+            android:id="@+id/edit_house_detail_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:indeterminateDrawable="@xml/progress"
+            />
+    </LinearLayout>
+
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/edit_house_detail_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <FrameLayout
+            android:id="@+id/edit_house_detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent">
+
+        </FrameLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <!--<android.support.design.widget.AppBarLayout-->
+        <!--android:id="@+id/edit_house_detail_appbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:background="@android:color/white"-->
+        <!--android:elevation="0dp"-->
+        <!--android:gravity="top|center_horizontal"-->
+        <!--android:paddingTop="0dp"-->
+        <!--app:elevation="0dp">-->
+
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/edit_house_detail_toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="0dp"-->
+            <!--android:background="?attr/colorPrimary"-->
+            <!--android:elevation="0dp"-->
+            <!--android:minHeight="?attr/actionBarSize"-->
+            <!--android:padding="0dp"-->
+            <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
+            <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+            <!--app:titleTextColor="@color/text_gray_dark" />-->
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/edit_house_detail_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/edit_house_detail_toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:background="?attr/colorPrimary"-->
+            <!--app:layout_scrollFlags="scroll|enterAlways"/>-->
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/edit_house_detail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="center_vertical">
+
+                <!--selectableItemBackgroundBorderless-->
+                <ImageButton
+                    android:id="@+id/icon_toolbar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ic_action_back"
+                    android:clickable="true"
+                    android:focusable="true"
+                    />
+                <!--style="@style/IconFont.XLarge"-->
+
+                <TextView
+                    android:id="@+id/text_toolbar_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginRight="16dp"
+                    android:layout_toLeftOf="@+id/icon_toolbar_back"
+                    android:gravity="right|center_vertical"
+                    />
+                <!--style="@style/Textview.Dark.MediumLarge"-->
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/orange_light" />
+
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.design.widget.CoordinatorLayout>

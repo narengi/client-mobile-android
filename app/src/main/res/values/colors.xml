@@ -1,0 +1,19 @@
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="green_dark">#00a651</color>
+    <color name="rating_bar_yelloh">#FFFDEC00</color>
+    <color name="gray_light">#E7E6E6</color>
+    <color name="divider">#7F7F7F</color>
+
+    <color name="bg_gray_light">#eee</color>
+    <color name="text_gray_light">#7F7F7F</color>
+    <color name="text_gray_dark">#3C3C3C</color>
+    <color name="green">#00a651</color>
+    <color name="orange_light">#f06305</color>
+    <color name="orange_dark">#D06A1D</color>
+    <color name="orange_light_alpha">#77FD8023</color>
+    <color name="translucent_dialog_bg">#000000ff</color>
+	<color name="primary">@color/orange_light</color>
+    <color name="white">#fff</color>
+</resources>

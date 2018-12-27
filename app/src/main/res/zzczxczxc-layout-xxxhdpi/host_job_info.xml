@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="0dp"
+    android:padding="0dp"
+    >
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_margin="0dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal">
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:id="@+id/host_profile_job"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_margin="0dp"
+            android:layout_weight="0"
+            android:background="@android:color/transparent"
+            android:gravity="right|center_vertical"
+            android:padding="0dp"
+            android:singleLine="false"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@android:color/tertiary_text_dark"
+            android:textStyle="bold" />
+
+        <xyz.narengi.android.ui.widget.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_margin="10dp"
+            android:layout_weight="0"
+            android:background="@android:color/transparent"
+            android:gravity="right|center_vertical"
+            android:padding="0dp"
+            android:maxLines="1"
+            android:text="@string/host_profile_job_caption"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@android:color/holo_orange_dark"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_margin="0dp"
+        android:background="@android:color/darker_gray"/>
+
+</LinearLayout>

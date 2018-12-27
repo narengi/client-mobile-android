@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="host_houses_page_title">خانه های من</string>
+    <string name="host_houses_empty_data">شما هنوز هیچ خانه ای ثبت نکرده اید. برای ثبت خانه جدید، دکمه اضافه کردن خانه جدید در پایین صفحه را کلیک کنید</string>
+
+    <string name="host_houses_view_button">مشاهده</string>
+    <string name="host_houses_edit_button">ویرایش</string>
+    <string name="host_houses_remove_button">حذف</string>
+
+    <string name="host_houses_type_house">خانه</string>
+    <string name="host_houses_type_villa">ویلا</string>
+    <string name="host_houses_type_apartment">آپارتمان</string>
+
+    <string name="host_houses_spec_rooms">%s اتاق</string>
+    <string name="host_houses_spec_beds">%s تخت</string>
+    <string name="host_houses_first_available_date">اولین تاریخ آزاد: %s</string>
+
+    <string name="host_houses_remove_alert_title">حذف خانه</string>
+    <string name="host_houses_remove_alert_message">آیا مطمئن هستید که می خواهید خانه مورد نظر را حذف کنید ؟</string>
+
+</resources>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/add_house_scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@android:color/transparent"
+    android:scrollbars="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="xyz.narengi.android.ui.fragment.HouseInfoEntryFragment">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:orientation="vertical"
+        >
+
+        <!--<Space-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?attr/actionBarSize"-->
+        <!--android:layout_margin="0dp"-->
+        <!--android:padding="0dp"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--/>-->
+
+        <!--<Space-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?attr/actionBarSize"-->
+        <!--android:layout_margin="0dp"-->
+        <!--android:padding="0dp"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--/>-->
+
+        <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_margin="0dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@color/bg_gray_light"-->
+        <!--android:padding="0dp">-->
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+            <!--<Space-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:layout_margin="0dp"-->
+            <!--android:padding="0dp"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--/>-->
+
+            <xyz.narengi.android.ui.widget.CustomEditText
+                android:id="@+id/house_info_entry_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/round_rect_bg_white"
+                android:gravity="right|center_vertical"
+                android:hint="@string/house_info_entry_title_hint"
+                android:imeOptions="actionNext"
+                android:padding="8dp"
+                android:maxLines="1"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/tertiary_text_dark" />
+
+            <xyz.narengi.android.ui.widget.CustomEditText
+                android:id="@+id/house_info_entry_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/round_rect_bg_white"
+                android:gravity="right|top"
+                android:hint="@string/house_info_entry_summary_hint"
+                android:imeOptions="actionNext"
+                android:minLines="5"
+                android:padding="8dp"
+                android:singleLine="false"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/tertiary_text_dark" />
+
+            <Spinner
+                android:id="@+id/house_info_entry_province"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/round_rect_bg_white"
+                android:gravity="right|center_vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingRight="0dp"
+                android:paddingLeft="0dp"
+                android:prompt="@array/house_entry_province_array"
+                android:spinnerMode="dialog" />
+
+            <Spinner
+                android:id="@+id/house_info_entry_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/round_rect_bg_white"
+                android:gravity="right|center_vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingRight="0dp"
+                android:paddingLeft="0dp"
+                android:prompt="@array/house_entry_city_array"
+                android:spinnerMode="dialog" />
+
+            <xyz.narengi.android.ui.widget.CustomEditText
+                android:id="@+id/house_info_entry_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/round_rect_bg_white"
+                android:drawableLeft="@drawable/ic_action_location_on"
+                android:gravity="right|top"
+                android:hint="@string/house_info_entry_address_hint"
+                android:imeOptions="actionDone"
+                android:padding="8dp"
+                android:singleLine="false"
+                android:minLines="2"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/tertiary_text_dark" />
+
+        </LinearLayout>
+        <!--</RelativeLayout>-->
+
+        <!--<Space-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@android:color/transparent" />-->
+
+        <!--<xyz.narengi.android.ui.widget.CustomButton-->
+        <!--android:id="@+id/house_info_entry_nextButton"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="0"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_gravity="bottom|left"-->
+        <!--android:background="@drawable/button_bg_green"-->
+        <!--android:gravity="center"-->
+        <!--android:minHeight="40dp"-->
+        <!--android:paddingBottom="4dp"-->
+        <!--android:paddingLeft="16dp"-->
+        <!--android:paddingRight="16dp"-->
+        <!--android:paddingTop="4dp"-->
+        <!--android:text="@string/house_entry_next_button"-->
+        <!--style="@style/TextAppearance.AppCompat.Medium"-->
+        <!--android:textColor="@color/green_dark" />-->
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:layout_weight="0"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@android:color/transparent"
+            >
+
+            <xyz.narengi.android.ui.widget.CustomButton
+                android:id="@+id/house_info_entry_nextButton"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_bg_green"
+                android:gravity="center"
+                android:paddingBottom="0dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:text="@string/house_entry_next_button"
+                android:textColor="@color/green_dark" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
